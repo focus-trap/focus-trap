@@ -38,5 +38,8 @@
     "eslint": "1.1.0",
     "parallelshell": "2.0.0",
     "watchify": "3.3.1"
-  }
+  },
+  "files": [
+    "index.js"
+  ]
 }
