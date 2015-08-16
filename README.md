@@ -61,6 +61,30 @@ Simply deactivate any currently active focus trap.
 
 Read code in `demo/` (it's very simple), and [see how it works](http://davidtheclark.github.io/focus-trap/demo/).
 
+Here's what happens in `demo-one.js`:
+
+```js
+var focusTrap = require('focus-trap');
+
+var el = document.getElementById('demo-one');
+
+document.getElementById('activate-one').addEventListener('click', function() {
+  focusTrap.activate(el, {
+    onDeactivate: removeActiveClass,
+  });
+  el.className = 'trap is-active';
+});
+
+document.getElementById('deactivate-one').addEventListener('click', function() {
+  focusTrap.deactivate();
+  removeActiveClass();
+});
+
+function removeActiveClass() {
+  el.className = 'trap';
+}
+```
+
 ## Other details
 
 - *Only one focus trap can be active at a time.* So if Focus Trap X is active and you try to activate Focus Trap Y, *first* Focus Trap X will be deactivated, *then* Focus Trap Y will be activated.
