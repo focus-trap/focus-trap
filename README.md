@@ -4,7 +4,7 @@ Trap focus within a DOM node.
 
 There may come a time when you find it important to trap focus within a DOM node — so that when a user hits Tab or Shift+Tab or clicks around, she can't escape a certain cycle of focusable elements.
 
-*You will face this challenge when you are try to build an **accessible** modal or dropdown menu.*
+You will definitely face this challenge when you are try to build an **accessible modal or dropdown menu**.
 
 This module is a little **vanilla JS** solution to the problem.
 
