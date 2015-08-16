@@ -35,7 +35,7 @@ npm install focus-trap
 IE9+
 
 Why?
-Because this module [`EventTarget.addEventListener()`](document.createElement('button')).
+Because this module uses [`EventTarget.addEventListener()`](document.createElement('button')).
 And its only dependency, tabbable, uses [a couple of IE9+ functions](https://github.com/davidtheclark/tabbable#browser-support).
 
 ## Usage
