@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>focus-trap demo</title>
+
+  <link rel="stylesheet" href="style.css">
+  <meta name="description" content="A demo of focus-trap">
+
+</head>
+<body>
+  <h1 tabindex="0">focus-trap demo</h1>
+
+  <p>
+    In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus: you won't be able to do anything outside of the focus trap.
+  </p>
+
+  <p>
+    When a trap is active, you can deactivate it by pushing its deactivate button or pushing the Escape key.
+  </p>
+
+  <p>
+    <em>(Note that tab order is a little wonky on this page because of demo three.)</em>
+  </p>
+
+  <h2>demo one</h2>
+  <p>
+    Default behavior: When this focus trap activates, the first element in its tab order receives focus.
+  </p>
+  <p>
+    <button id="activate-one">
+      activate trap 1
+    </button>
+  </p>
+  <div id="demo-one" class="trap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <p>
+      <button id="deactivate-one">
+        deactivate trap 1
+      </button>
+    </p>
+  </div>
+
+  <h2>demo two</h2>
+  <p>
+    When this focus trap activates, focus jumps to a specific, manually specified element.
+  </p>
+  <p>
+    <button id="activate-two">
+      activate trap 2
+    </button>
+  </p>
+  <div id="demo-two" class="trap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <p>
+      <label htmlFor="focused-input" class="inline-label">
+        Initially focused input
+      </label>
+      <input id="focused-input" />
+    </p>
+    <p>
+      <button id="deactivate-two">
+        deactivate trap 2
+      </button>
+    </p>
+  </div>
+
+  <h2>demo three</h2>
+  <p>
+    Default behavior with a twist:
+    When this focus trap activates, the first element in its tab order receives focus,
+    <em>but because of positive tabindex attributes the tab order is not the same as the source order</em>.
+  </p>
+  <p>
+    <button id="activate-three">
+      activate trap 3
+    </button>
+  </p>
+  <div id="demo-three" class="trap">
+    <p>
+      <button tabIndex="3">
+        tabindex=3
+      </button>
+    </p>
+    <p>
+      <button tabIndex="2">
+        tabindex=2
+      </button>
+    </p>
+    <p>
+      <button tabIndex="4">tabindex 4</button>
+    </p>
+    <p>
+      <button>no tabindex</button>
+    </p>
+    <p>
+      <button id="deactivate-three" tabIndex="1">
+        deactivate trap 3 (tabindex=1)
+      </button>
+    </p>
+  </div>
+
+  <script src="demo-bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+body {
+  color: #333;
+  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  max-width: 600px;
+  margin: 0 auto 200px;
+  padding: 10px;
+}
+
+input:focus,
+a:focus,
+button:focus {
+  outline: 5px solid lightblue;
+}
+
+.trap {
+  border: 1px solid #ccc;
+  padding: 1em 2em;
+}
+
+.trap.is-active {
+  background: #FEE9FF;
+}
+
+.inline-label {
+  margin-right: 0.5em;
+}
