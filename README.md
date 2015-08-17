@@ -4,7 +4,7 @@ Trap focus within a DOM node.
 
 There may come a time when you find it important to trap focus within a DOM node — so that when a user hits Tab or Shift+Tab or clicks around, she can't escape a certain cycle of focusable elements.
 
-*You will face this challenge when you are try to build an **accessible** modal or dropdown menu.*
+You will definitely face this challenge when you are try to build an **accessible modal or dropdown menu**.
 
 This module is a little **vanilla JS** solution to the problem.
 
@@ -35,7 +35,7 @@ npm install focus-trap
 IE9+
 
 Why?
-Because this module [`EventTarget.addEventListener()`](document.createElement('button')).
+Because this module uses [`EventTarget.addEventListener()`](document.createElement('button')).
 And its only dependency, tabbable, uses [a couple of IE9+ functions](https://github.com/davidtheclark/tabbable#browser-support).
 
 ## Usage
@@ -60,6 +60,30 @@ Simply deactivate any currently active focus trap.
 ## Examples
 
 Read code in `demo/` (it's very simple), and [see how it works](http://davidtheclark.github.io/focus-trap/demo/).
+
+Here's what happens in `demo-one.js`:
+
+```js
+var focusTrap = require('focus-trap');
+
+var el = document.getElementById('demo-one');
+
+document.getElementById('activate-one').addEventListener('click', function() {
+  focusTrap.activate(el, {
+    onDeactivate: removeActiveClass,
+  });
+  el.className = 'trap is-active';
+});
+
+document.getElementById('deactivate-one').addEventListener('click', function() {
+  focusTrap.deactivate();
+  removeActiveClass();
+});
+
+function removeActiveClass() {
+  el.className = 'trap';
+}
+```
 
 ## Other details
 
