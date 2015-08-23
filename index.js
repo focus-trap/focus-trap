@@ -26,14 +26,16 @@ function activate(element, options) {
       if (!node) {
         throw new Error('You can\'t have a focus-trap without at least one focusable element');
       }
+      return node;
     }
+
     if (typeof config.initialFocus === 'string') {
       node = document.querySelector(config.initialFocus);
     } else {
       node = config.initialFocus;
     }
     if (!node) {
-      throw new Error('The `initialFocus` selector you passed refers to no known node');
+      throw new Error('The `initialFocus` selector you passed referred to no known node');
     }
     return node;
   }());
