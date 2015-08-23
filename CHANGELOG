@@ -1,3 +1,7 @@
+# 0.3.1
+
+- Even more helpful error messages.
+
 # 0.3.0
 
 - Add more helpful error message when no focusable elements are found.
