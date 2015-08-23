@@ -26,6 +26,9 @@ function activate(element, options) {
     }
     return config.initialFocus;
   }());
+  if (!focusNode) {
+    throw new Error('You can\'t have a focus-trap without at least one focusable element');
+  }
   focusNode.focus();
 
   document.addEventListener('focus', checkFocus, true);
