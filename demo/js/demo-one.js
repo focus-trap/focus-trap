@@ -3,7 +3,7 @@ var focusTrap = require('../../');
 var el = document.getElementById('demo-one');
 
 document.getElementById('activate-one').addEventListener('click', function() {
-  focusTrap.activate(el, {
+  focusTrap.activate('#demo-one', {
     onDeactivate: removeActiveClass,
   });
   el.className = 'trap is-active';

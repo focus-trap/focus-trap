@@ -3,9 +3,9 @@ var focusTrap = require('../../');
 var el = document.getElementById('demo-two');
 
 document.getElementById('activate-two').addEventListener('click', function() {
-  focusTrap.activate('demo-two', {
+  focusTrap.activate('#demo-two', {
     onDeactivate: removeActiveClass,
-    initialFocus: document.getElementById('focused-input'),
+    initialFocus: '#focused-input',
   });
   el.className = 'trap is-active';
 });

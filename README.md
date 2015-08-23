@@ -46,11 +46,13 @@ The module exposes two functions.
 
 Turn `element` into a focus trap.
 
-`element` can be a DOM node (the focus trap itself) or a string (which will be interpreted as the `id` of the intended focus trap).
+`element` can be a DOM node (the focus trap itself) or a selector string
+(which will be pass to `document.querySelector()` to find the DOM node).
 
 Options:
 
-- **initialFocus**: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node or a string (which will be interpreted as the `id` of the intended element).
+- **initialFocus**: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus.
+  Can be a DOM node or a selector string (which will be pass to `document.querySelector()` to find the DOM node).
 - **onDeactivate**: A function that will be called when the focus trap deactivates. This can be useful if, for example, you want to remove a modal from the screen when the user hits Escape and thereby deactivates the focus trap.
 
 ### focusTrap.deactivate()

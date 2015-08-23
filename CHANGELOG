@@ -1,3 +1,8 @@
+# 0.2.0
+
+- Strings passed instead of DOM nodes are now selectors passed to `document.querySelector()`,
+  instead of ids passed to `document.getElementById()`.
+
 # 0.1.0
 
 - Initial release.

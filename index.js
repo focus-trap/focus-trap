@@ -12,7 +12,7 @@ function activate(element, options) {
   activeFocusTrap = true;
 
   trap = (typeof element === 'string')
-    ? document.getElementById(element)
+    ? document.querySelector(element)
     : element;
   config = options || {};
   previouslyFocused = document.activeElement;
@@ -22,7 +22,7 @@ function activate(element, options) {
   var focusNode = (function() {
     if (!config.initialFocus) return tabbableNodes[0];
     if (typeof config.initialFocus === 'string') {
-      return document.getElementById(config.initialFocus);
+      return document.querySelector(config.initialFocus);
     }
     return config.initialFocus;
   }());
