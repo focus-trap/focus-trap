@@ -20,15 +20,23 @@ function activate(element, options) {
   updateTabbableNodes();
 
   var focusNode = (function() {
-    if (!config.initialFocus) return tabbableNodes[0];
-    if (typeof config.initialFocus === 'string') {
-      return document.querySelector(config.initialFocus);
+    var node;
+    if (!config.initialFocus) {
+      node = tabbableNodes[0];
+      if (!node) {
+        throw new Error('You can\'t have a focus-trap without at least one focusable element');
+      }
     }
-    return config.initialFocus;
+    if (typeof config.initialFocus === 'string') {
+      node = document.querySelector(config.initialFocus);
+    } else {
+      node = config.initialFocus;
+    }
+    if (!node) {
+      throw new Error('The `initialFocus` selector you passed refers to no known node');
+    }
+    return node;
   }());
-  if (!focusNode) {
-    throw new Error('You can\'t have a focus-trap without at least one focusable element');
-  }
   focusNode.focus();
 
   document.addEventListener('focus', checkFocus, true);
