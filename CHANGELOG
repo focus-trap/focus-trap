@@ -1,16 +1,3 @@
-# 0.3.2
-
-- Even more helpful error messages.
-
-# 0.3.0
-
-- Add more helpful error message when no focusable elements are found.
-
-# 0.2.0
-
-- Strings passed instead of DOM nodes are now selectors passed to `document.querySelector()`,
-  instead of ids passed to `document.getElementById()`.
-
-# 0.1.0
+# 1.0.0
 
 - Initial release.

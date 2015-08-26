@@ -1,6 +1,6 @@
 {
   "name": "focus-trap",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "description": "Trap focus within a DOM node.",
   "main": "index.js",
   "scripts": {
@@ -30,12 +30,12 @@
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^0.3.0"
+    "tabbable": "^1.0.0"
   },
   "devDependencies": {
     "browser-sync": "2.8.2",
     "browserify": "11.0.1",
-    "eslint": "1.1.0",
+    "eslint": "1.2.1",
     "parallelshell": "2.0.0",
     "watchify": "3.3.1"
   },
