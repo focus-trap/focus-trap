@@ -59,7 +59,9 @@ function deactivate() {
   if (config.onDeactivate) config.onDeactivate();
 
   setTimeout(function() {
-    previouslyFocused.focus();
+    if ( previouslyFocused ) {
+      previouslyFocused.focus();  
+    }
   }, 0);
 }
 
