@@ -19,32 +19,33 @@ function activate(element, options) {
 
   updateTabbableNodes();
 
-  var focusNode = (function() {
-    var node;
-    if (!config.initialFocus) {
-      node = tabbableNodes[0];
-      if (!node) {
-        throw new Error('You can\'t have a focus-trap without at least one focusable element');
-      }
-      return node;
-    }
-
-    if (typeof config.initialFocus === 'string') {
-      node = document.querySelector(config.initialFocus);
-    } else {
-      node = config.initialFocus;
-    }
-    if (!node) {
-      throw new Error('The `initialFocus` selector you passed referred to no known node');
-    }
-    return node;
-  }());
-  tryFocus(focusNode);
+  tryFocus(firstFocusNode());
 
   document.addEventListener('focus', checkFocus, true);
   document.addEventListener('click', checkClick, true);
-  document.addEventListener('touchend', checkClick, true);
   document.addEventListener('keydown', checkKey, true);
+}
+
+function firstFocusNode() {
+  var node;
+
+  if (!config.initialFocus) {
+    node = tabbableNodes[0];
+    if (!node) {
+      throw new Error('You can\'t have a focus-trap without at least one focusable element');
+    }
+    return node;
+  }
+
+  if (typeof config.initialFocus === 'string') {
+    node = document.querySelector(config.initialFocus);
+  } else {
+    node = config.initialFocus;
+  }
+  if (!node) {
+    throw new Error('The `initialFocus` selector you passed refers to no known node');
+  }
+  return node;
 }
 
 function deactivate() {
@@ -53,7 +54,6 @@ function deactivate() {
 
   document.removeEventListener('focus', checkFocus, true);
   document.removeEventListener('click', checkClick, true);
-  document.removeEventListener('touchend', checkClick, true);
   document.removeEventListener('keydown', checkKey, true);
 
   if (config.onDeactivate) config.onDeactivate();
@@ -77,29 +77,33 @@ function checkFocus(e) {
 
 function checkKey(e) {
   if (e.key === 'Tab' || e.keyCode === 9) {
-    e.preventDefault();
-    updateTabbableNodes();
-    var currentFocusIndex = tabbableNodes.indexOf(e.target);
-    var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
-    var firstTabbableNode = tabbableNodes[0];
-    if (e.shiftKey) {
-      if (e.target === firstTabbableNode) {
-        tryFocus(lastTabbableNode);
-        return;
-      }
-      tryFocus(tabbableNodes[currentFocusIndex - 1]);
-      return;
-    }
-    if (e.target === lastTabbableNode) {
-      tryFocus(firstTabbableNode);
-      return;
-    }
-    tryFocus(tabbableNodes[currentFocusIndex + 1]);
+    handleTab(e);
   }
 
   if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
     deactivate();
   }
+}
+
+function handleTab(e) {
+  e.preventDefault();
+  updateTabbableNodes();
+  var currentFocusIndex = tabbableNodes.indexOf(e.target);
+  var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
+  var firstTabbableNode = tabbableNodes[0];
+  if (e.shiftKey) {
+    if (e.target === firstTabbableNode) {
+      tryFocus(lastTabbableNode);
+      return;
+    }
+    tryFocus(tabbableNodes[currentFocusIndex - 1]);
+    return;
+  }
+  if (e.target === lastTabbableNode) {
+    tryFocus(firstTabbableNode);
+    return;
+  }
+  tryFocus(tabbableNodes[currentFocusIndex + 1]);
 }
 
 function updateTabbableNodes() {
