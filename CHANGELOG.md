@@ -1,4 +1,4 @@
-# Head
+# 1.0.1
 
 - Fix buggy attempts to focus nodes that don't exist.
 
