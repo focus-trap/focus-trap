@@ -39,7 +39,7 @@ function activate(element, options) {
     }
     return node;
   }());
-  focusNode.focus();
+  tryFocus(focusNode);
 
   document.addEventListener('focus', checkFocus, true);
   document.addEventListener('click', checkClick, true);
@@ -59,9 +59,7 @@ function deactivate() {
   if (config.onDeactivate) config.onDeactivate();
 
   setTimeout(function() {
-    if ( previouslyFocused && previouslyFocused.focus ) {
-      previouslyFocused.focus();  
-    }
+    tryFocus(previouslyFocused);
   }, 0);
 }
 
@@ -74,7 +72,7 @@ function checkClick(e) {
 function checkFocus(e) {
   updateTabbableNodes();
   if (trap.contains(e.target)) return;
-  tabbableNodes[0].focus();
+  tryFocus(tabbableNodes[0]);
 }
 
 function checkKey(e) {
@@ -86,17 +84,17 @@ function checkKey(e) {
     var firstTabbableNode = tabbableNodes[0];
     if (e.shiftKey) {
       if (e.target === firstTabbableNode) {
-        lastTabbableNode.focus();
+        tryFocus(lastTabbableNode);
         return;
       }
-      tabbableNodes[currentFocusIndex - 1].focus(0);
+      tryFocus(tabbableNodes[currentFocusIndex - 1]);
       return;
     }
     if (e.target === lastTabbableNode) {
-      firstTabbableNode.focus();
+      tryFocus(firstTabbableNode);
       return;
     }
-    tabbableNodes[currentFocusIndex + 1].focus();
+    tryFocus(tabbableNodes[currentFocusIndex + 1]);
   }
 
   if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
@@ -106,6 +104,10 @@ function checkKey(e) {
 
 function updateTabbableNodes() {
   tabbableNodes = tabbable(trap);
+}
+
+function tryFocus(node) {
+  if (node && node.focus) node.focus();
 }
 
 module.exports = {
