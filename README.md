@@ -8,6 +8,8 @@ You will definitely face this challenge when you are try to build an **accessibl
 
 This module is a little **vanilla JS** solution to the problem.
 
+If you are using React, check out [focus-trap-react](https://github.com/davidtheclark/focus-trap-react), a light wrapper around this library. If you are not a React user, consider creating light wrappers in your framework-of-choice!
+
 ## What it does
 
 [Check out the demo.](http://davidtheclark.github.io/focus-trap/demo/)
