@@ -111,7 +111,11 @@ function updateTabbableNodes() {
 }
 
 function tryFocus(node) {
-  if (node && node.focus) node.focus();
+  if (!node || !node.focus) return;
+  node.focus();
+  if (node.tagName.toLowerCase() === 'input') {
+    node.select();
+  }
 }
 
 module.exports = {
