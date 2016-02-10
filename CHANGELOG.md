@@ -1,7 +1,9 @@
-# 1.0.1
+# Changelog
+
+## 1.0.1
 
 - Fix buggy attempts to focus nodes that don't exist.
 
-# 1.0.0
+## 1.0.0
 
 - Initial release.
