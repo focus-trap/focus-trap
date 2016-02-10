@@ -6,9 +6,8 @@
   "scripts": {
     "lint": "eslint .",
     "demo-bundle": "browserify demo/js/index.js -o demo/demo-bundle.js",
-    "demo-watch": "watchify demo/js/index.js -d -o demo/demo-bundle.js",
-    "demo-bs": "browser-sync start --server demo --files=\"demo/**/*.css,demo/index.html,demo/demo-bundle.js\"",
-    "demo-dev": "parallelshell \"npm run demo-watch\" \"npm run demo-bs\"",
+    "demo-watch": "watchify demo/js/index.js -d -v -o demo/demo-bundle.js",
+    "demo-dev": "npm run demo-watch & http-server demo",
     "test": "npm run lint"
   },
   "repository": {
@@ -33,11 +32,10 @@
     "tabbable": "^1.0.0"
   },
   "devDependencies": {
-    "browser-sync": "2.8.2",
-    "browserify": "11.0.1",
-    "eslint": "1.2.1",
-    "parallelshell": "2.0.0",
-    "watchify": "3.3.1"
+    "browserify": "13.0.0",
+    "eslint": "1.10.3",
+    "http-server": "0.8.5",
+    "watchify": "3.7.0"
   },
   "files": [
     "index.js"
