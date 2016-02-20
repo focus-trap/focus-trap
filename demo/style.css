@@ -30,3 +30,7 @@ button:focus {
 .inline-label {
   margin-right: 0.5em;
 }
+
+#demo-four {
+  outline: 0;
+}

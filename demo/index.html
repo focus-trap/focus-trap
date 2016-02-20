@@ -25,7 +25,7 @@
     <em>(Note that tab order is a little wonky on this page because of demo three.)</em>
   </p>
 
-  <h2>demo one</h2>
+  <h2 id="demo-one-heading">demo one</h2>
   <p>
     Default behavior: When this focus trap activates, the first element in its tab order receives focus.
   </p>
@@ -45,7 +45,7 @@
     </p>
   </div>
 
-  <h2>demo two</h2>
+  <h2 id="demo-two-heading">demo two</h2>
   <p>
     When this focus trap activates, focus jumps to a specific, manually specified element.
   </p>
@@ -71,7 +71,7 @@
     </p>
   </div>
 
-  <h2>demo three</h2>
+  <h2 id="demo-three-heading">demo three</h2>
   <p>
     Default behavior with a twist:
     When this focus trap activates, the first element in its tab order receives focus,
@@ -102,6 +102,35 @@
     <p>
       <button id="deactivate-three" tabIndex="1">
         deactivate trap 3 (tabindex=1)
+      </button>
+    </p>
+  </div>
+
+  <h2 id="demo-four-heading">demo four</h2>
+  <p>
+    Initial focus on a containing element with a tabindex of -1 and no focus outline;
+    so when you "tab" you are within the trap, but by tabbing through focus does
+    not return to the container.
+  </p>
+  <p>
+    <button id="activate-four">
+      activate trap 4
+    </button>
+  </p>
+  <div id="demo-four" class="trap" tabindex="-1">
+    <p>
+      <button>
+        first
+      </button>
+    </p>
+    <p>
+      <button>
+        second
+      </button>
+    </p>
+    <p>
+      <button id="deactivate-four">
+        deactivate trap 4
       </button>
     </p>
   </div>
