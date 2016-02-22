@@ -65,6 +65,12 @@ function deactivate() {
 
 function checkClick(e) {
   if (trap.contains(e.target)) return;
+
+  if (config.nonModal) {
+    deactivate();
+    return;
+  }
+
   e.preventDefault();
   e.stopImmediatePropagation();
 }
