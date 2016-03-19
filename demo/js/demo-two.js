@@ -6,6 +6,7 @@ document.getElementById('activate-two').addEventListener('click', function() {
   focusTrap.activate('#demo-two', {
     onDeactivate: removeActiveClass,
     initialFocus: '#focused-input',
+    escapeDeactivates: false,
   });
   el.className = 'trap is-active';
 });

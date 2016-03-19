@@ -1,5 +1,9 @@
 # Changelog
 
+## Head
+
+- Add `escapeDeactivates` option.
+
 ## 1.0.2
 
 - Make sure to `select()` `<input>` elements when they receive focus via tab.

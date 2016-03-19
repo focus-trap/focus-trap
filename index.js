@@ -14,7 +14,10 @@ function activate(element, options) {
   trap = (typeof element === 'string')
     ? document.querySelector(element)
     : element;
+
   config = options || {};
+  if (config.escapeDeactivates === undefined) config.escapeDeactivates = true;
+
   previouslyFocused = document.activeElement;
 
   updateTabbableNodes();
@@ -80,7 +83,7 @@ function checkKey(e) {
     handleTab(e);
   }
 
-  if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+  if (config.escapeDeactivates && isEscapeEvent(e)) {
     deactivate();
   }
 }
@@ -116,6 +119,10 @@ function tryFocus(node) {
   if (node.tagName.toLowerCase() === 'input') {
     node.select();
   }
+}
+
+function isEscapeEvent(e) {
+  return e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27;
 }
 
 module.exports = {
