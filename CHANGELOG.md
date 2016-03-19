@@ -2,6 +2,7 @@
 
 ## Head
 
+- Add `clickOutsideDeactivates` option.
 - Add `escapeDeactivates` option.
 
 ## 1.0.2

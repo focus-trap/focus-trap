@@ -68,8 +68,13 @@ function deactivate() {
 
 function checkClick(e) {
   if (trap.contains(e.target)) return;
-  e.preventDefault();
-  e.stopImmediatePropagation();
+  if (config.clickOutsideDeactivates) {
+    deactivate();
+    e.target.focus();
+  } else {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
 }
 
 function checkFocus(e) {

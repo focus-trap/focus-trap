@@ -56,6 +56,7 @@ Options:
 - **initialFocus** {element|string}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node or a selector string (which will be pass to `document.querySelector()` to find the DOM node).
 - **onDeactivate** {function}: A function that will be called when the focus trap deactivates. This can be useful if, for example, you want to remove a modal from the screen when the user hits Escape and thereby deactivates the focus trap.
 - **escapeDeactivates** {boolean}: Default: `true`. If `false`, the Escape key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
+- **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to carry on.
 
 ### focusTrap.deactivate()
 

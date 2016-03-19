@@ -81,9 +81,11 @@
 
   <h2 id="demo-three-heading">demo three</h2>
   <p>
-    Default behavior with a twist:
     When this focus trap activates, the first element in its tab order receives focus,
-    <em>but because of positive tabindex attributes the tab order is not the same as the source order</em>.
+    but because of positive tabindex attributes the tab order is not the same as the source order.
+  </p>
+  <p>
+    Also, clicking outside of this trap deactivates it and does not prevent the click's intended action.
   </p>
   <p>
     <button id="activate-three">

@@ -5,6 +5,7 @@ var el = document.getElementById('demo-three');
 document.getElementById('activate-three').addEventListener('click', function() {
   focusTrap.activate(el, {
     onDeactivate: removeActiveClass,
+    clickOutsideDeactivates: true,
   });
   el.className = 'trap is-active';
 });
