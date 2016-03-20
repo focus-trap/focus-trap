@@ -1,6 +1,6 @@
 # Changelog
 
-## Head
+## 1.1.1
 
 - Improve `clickOutsideDeactivates` functionality.
 
