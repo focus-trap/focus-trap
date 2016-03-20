@@ -8,7 +8,7 @@ var config;
 
 function activate(element, options) {
   // There can be only one focus trap at a time
-  if (activeFocusTrap) deactivate();
+  if (activeFocusTrap) deactivate({ returnFocus: false });
   activeFocusTrap = true;
 
   trap = (typeof element === 'string')
@@ -16,7 +16,6 @@ function activate(element, options) {
     : element;
 
   config = options || {};
-  if (config.escapeDeactivates === undefined) config.escapeDeactivates = true;
 
   previouslyFocused = document.activeElement;
 
@@ -26,6 +25,8 @@ function activate(element, options) {
 
   document.addEventListener('focus', checkFocus, true);
   document.addEventListener('click', checkClick, true);
+  document.addEventListener('mousedown', checkClickInit, true);
+  document.addEventListener('touchstart', checkClickInit, true);
   document.addEventListener('keydown', checkKey, true);
 }
 
@@ -51,36 +52,46 @@ function firstFocusNode() {
   return node;
 }
 
-function deactivate() {
+function deactivate(deactivationOptions) {
+  deactivationOptions = deactivationOptions || {};
   if (!activeFocusTrap) return;
   activeFocusTrap = false;
 
   document.removeEventListener('focus', checkFocus, true);
   document.removeEventListener('click', checkClick, true);
+  document.addEventListener('mousedown', checkClickInit, true);
+  document.addEventListener('touchstart', checkClickInit, true);
   document.removeEventListener('keydown', checkKey, true);
 
   if (config.onDeactivate) config.onDeactivate();
 
-  setTimeout(function() {
-    tryFocus(previouslyFocused);
-  }, 0);
-}
-
-function checkClick(e) {
-  if (trap.contains(e.target)) return;
-  if (config.clickOutsideDeactivates) {
-    deactivate();
-    e.target.focus();
-  } else {
-    e.preventDefault();
-    e.stopImmediatePropagation();
+  if (deactivationOptions.returnFocus !== false) {
+    setTimeout(function() {
+      tryFocus(previouslyFocused);
+    }, 0);
   }
 }
 
-function checkFocus(e) {
-  updateTabbableNodes();
+// This needs to be done on mousedown and touchstart instead of click
+// so that it precedes the focus event
+function checkClickInit(e) {
+  if (config.clickOutsideDeactivates) {
+    deactivate({ returnFocus: false });
+  }
+}
+
+function checkClick(e) {
+  if (config.clickOutsideDeactivates) return;
   if (trap.contains(e.target)) return;
-  tryFocus(tabbableNodes[0]);
+  e.preventDefault();
+  e.stopImmediatePropagation();
+}
+
+function checkFocus(e) {
+  if (trap.contains(e.target)) return;
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  e.target.blur();
 }
 
 function checkKey(e) {
@@ -88,7 +99,7 @@ function checkKey(e) {
     handleTab(e);
   }
 
-  if (config.escapeDeactivates && isEscapeEvent(e)) {
+  if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
     deactivate();
   }
 }
