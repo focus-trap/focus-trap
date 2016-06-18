@@ -2,29 +2,31 @@
 
 Trap focus within a DOM node.
 
-There may come a time when you find it important to trap focus within a DOM node — so that when a user hits Tab or Shift+Tab or clicks around, she can't escape a certain cycle of focusable elements.
+There may come a time when you find it important to trap focus within a DOM node — so that when a user hits `Tab` or `Shift+Tab` or clicks around, she can't escape a certain cycle of focusable elements.
 
-You will definitely face this challenge when you are try to build an **accessible modal or dropdown menu**.
+You will definitely face this challenge when you are try to build **accessible modals or dropdown menus**.
 
-This module is a little **vanilla JS** solution to the problem.
+This module is a little **vanilla JS** solution to that problem.
 
 If you are using React, check out [focus-trap-react](https://github.com/davidtheclark/focus-trap-react), a light wrapper around this library. If you are not a React user, consider creating light wrappers in your framework-of-choice!
 
 ## What it does
 
-[Check out the demo.](http://davidtheclark.github.io/focus-trap/demo/)
+[Check out the demos.](http://davidtheclark.github.io/focus-trap/demo/)
 
 When a focus trap is activated, this is what should happen:
 
-- Some element within the focus trap receives focus. By default, this will be the first element in the focus trap's tab order (as determined by [tabbable](https://github.com/davidtheclark/tabbable)); alternately, you can specify an element that should receive this initial focus.
-- The Tab and Shift+Tab keys will cycle through the focus trap's tabbable elements *but will not leave the focus trap*.
+- Some element within the focus trap receives focus. By default, this will be the first element in the focus trap's tab order (as determined by [tabbable](https://github.com/davidtheclark/tabbable)). Alternately, you can specify an element that should receive this initial focus.
+- The `Tab` and `Shift+Tab` keys will cycle through the focus trap's tabbable elements *but will not leave the focus trap*.
 - Clicks within the focus trap behave normally; but clicks *outside* the focus trap are blocked.
-- The Escape key will deactivate the focus trap.
+- The `Escape` key will deactivate the focus trap.
 
 When the focus trap is deactivated, this is what should happen:
 
-- Focus is passed to *whichever element had focus when the trap was activated*. In the case of a modal dialog, for instance, some trigger button probably initiated the activation; so when the modal closes, that trigger button will receive focus.
+- Focus is passed to *whichever element had focus when the trap was activated* (e.g. the button that opened the modal or menu).
 - Tabbing and clicking behave normally everywhere.
+
+For more advanced usage (e.g. focus traps within focus traps), you can also pause a focus trap's behavior without deactivating it entirely, then unpause at will.
 
 ## Installation
 
@@ -42,25 +44,61 @@ And its only dependency, tabbable, uses [a couple of IE9+ functions](https://git
 
 ## Usage
 
-The module exposes two functions.
+### focusTrap = createFocusTrap(element[, createOptions]);
 
-### focusTrap.activate(element[, options])
+Returns a new focus trap on `element`.
 
-Turn `element` into a focus trap.
+`element` can be
+- a DOM node (the focus trap itself) or
+- a selector string (which will be pass to `document.querySelector()` to find the DOM node).
 
-`element` can be a DOM node (the focus trap itself) or a selector string
-(which will be pass to `document.querySelector()` to find the DOM node).
+`createOptions`:
 
-Options:
+- **onActivate** {function}: A function that will be called when the focus trap activates.
+- **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
+- **initialFocus** {element|string}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node or a selector string (which will be passed to `document.querySelector()` to find the DOM node).
+- **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
+- **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing.
+- ** returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
 
-- **initialFocus** {element|string}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node or a selector string (which will be pass to `document.querySelector()` to find the DOM node).
-- **onDeactivate** {function}: A function that will be called when the focus trap deactivates. This can be useful if, for example, you want to remove a modal from the screen when the user hits Escape and thereby deactivates the focus trap.
-- **escapeDeactivates** {boolean}: Default: `true`. If `false`, the Escape key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
-- **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to carry on.
+### focusTrap.activate()
 
-### focusTrap.deactivate()
+Activates the focus trap, adding various event listeners to the document.
 
-Simply deactivate any currently active focus trap.
+Returns the `focusTrap`.
+
+### focusTrap.deactivate([deactivateOptions])
+
+Deactivates the focus trap.
+
+Returns the `focusTrap`.
+
+`deactivateOptions`:
+
+These options are used to override the focus trap's default behavior for this particular deactivation.
+
+- **returnFocus** {boolean}: Default: whatever you chose for `createOptions.returnFocusOnDeactivate`.
+- **onDeactivate** {function | null | false}: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
+
+### focusTrap.pause()
+
+Pause an active focus trap's event listening without deactivating the trap.
+
+If the focus trap has not been activated, nothing happens.
+
+Returns the `focusTrap`.
+
+Any `onDeactivate` callback will not be called, and focus will not return to the element that was focused before the trap's activation. But the trap's behavior will be paused.
+
+This is useful in various cases, one of which is when you want one focus trap within another. `demo-six` exemplifies how you can implement this.
+
+### focusTrap.unpause()
+
+Unpause an active focus trap. (See `pause()`, above.)
+
+If the focus trap has not been activated or has not been paused, nothing happens.
+
+Returns the `focusTrap`.
 
 ## Examples
 
@@ -69,31 +107,29 @@ Read code in `demo/` (it's very simple), and [see how it works](http://davidthec
 Here's what happens in `demo-one.js`:
 
 ```js
-var focusTrap = require('focus-trap');
+var createFocusTrap = require('../../');
 
-var el = document.getElementById('demo-one');
+var containerOne = document.getElementById('demo-one');
+var focusTrapOne = createFocusTrap('#demo-one', {
+  onDeactivate: function() {
+    containerOne.className = 'trap';
+  },
+});
 
 document.getElementById('activate-one').addEventListener('click', function() {
-  focusTrap.activate(el, {
-    onDeactivate: removeActiveClass,
-  });
-  el.className = 'trap is-active';
+  focusTrapOne.activate();
+  containerOne.className = 'trap is-active';
 });
 
 document.getElementById('deactivate-one').addEventListener('click', function() {
-  focusTrap.deactivate();
-  removeActiveClass();
+  focusTrapOne.deactivate();
 });
-
-function removeActiveClass() {
-  el.className = 'trap';
-}
 ```
 
 ## Other details
 
-- *Only one focus trap can be active at a time.* So if Focus Trap X is active and you try to activate Focus Trap Y, *first* Focus Trap X will be deactivated, *then* Focus Trap Y will be activated.
+- *Only one focus trap can be listening at a time.* So if you want two focus traps active at a time, one of them has to be paused.
 
 ## Development
 
-Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests didn't make sense. (If you disagree and can help out, please PR!) So the demo is also the test: run it in browsers and see how it works.
+Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests didn't make sense. (If you disagree and can help out, please PR!) So the demo is also the test: run it in browsers and see how it works, checking the documented requirements.

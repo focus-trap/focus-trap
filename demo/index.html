@@ -179,6 +179,40 @@
     </div>
   </div>
 
+  <h2 id="demo-six-heading">demo six</h2>
+  <p>
+    Nested focus traps
+  </p>
+  <p>
+    <button id="activate-six">
+      activate trap 6
+    </button>
+  </p>
+  <div id="demo-six" class="trap" tabindex="-1" style="display:none;">
+    <p>
+      <button id="deactivate-six">
+        deactive outer trap
+      </button>
+    </p>
+    <p>
+      <button id="demo-six-activate-nested">
+        active inner trap
+      </button>
+    </p>
+    <div id="demo-six-nested" style="display:none;padding:5px 10px;background:pink;">
+      <p>
+        <button>
+          nothing
+        </button>
+      </p>
+      <p>
+        <button id="demo-six-deactivate-nested">
+          deactivate and close inner trap
+        </button>
+      </p>
+    </div>
+  </div>
+
   <p>
     <span style="font-size:2em;vertical-align:middle;">☜</span>
     <a href="https://github.com/davidtheclark/focus-trap" style="vertical-align:middle;">Return to the repository</a>

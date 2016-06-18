@@ -1,23 +1,25 @@
-var focusTrap = require('../../');
+var createFocusTrap = require('../../');
 
-var el = document.getElementById('demo-five');
-var more = document.getElementById('demo-five-more');
+var containerFive = document.getElementById('demo-five');
+var moreFive = document.getElementById('demo-five-more');
+
+var focusTrapFive = createFocusTrap(containerFive, {
+  onActivate: function() {
+    containerFive.className = 'trap is-active';
+  },
+  onDeactivate: function() {
+    containerFive.className = 'trap';
+  },
+});
 
 document.getElementById('activate-five').addEventListener('click', function() {
-  focusTrap.activate('#demo-five', {
-    onDeactivate: removeActiveClass,
-  });
-  el.className = 'trap is-active';
+  focusTrapFive.activate();
 });
 
 document.getElementById('demo-five-show-more').addEventListener('click', function() {
-  more.style.display = 'block';
+  moreFive.style.display = 'block';
 });
 
 document.getElementById('demo-five-show-less').addEventListener('click', function() {
-  more.style.display = 'none';
+  moreFive.style.display = 'none';
 });
-
-function removeActiveClass() {
-  el.className = 'trap';
-}

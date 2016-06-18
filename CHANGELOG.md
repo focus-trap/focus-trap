@@ -2,7 +2,7 @@
 
 ## Head
 
-- Remove all event listeners properly.
+- Rewrote the thing, altering the API. Read the new docs please.
 - Update `tabbable` to fix handling of traps with changing contents.
 
 ## 1.1.1

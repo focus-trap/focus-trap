@@ -1,20 +1,21 @@
-var focusTrap = require('../../');
+var createFocusTrap = require('../../');
 
-var el = document.getElementById('demo-four');
+var containerFour = document.getElementById('demo-four');
+
+var focusTrapfour = createFocusTrap('#demo-four', {
+  onActivate: function() {
+    containerFour.className = 'trap is-active';
+  },
+  onDeactivate: function() {
+    containerFour.className = 'trap';
+  },
+  initialFocus: '#demo-four',
+});
 
 document.getElementById('activate-four').addEventListener('click', function() {
-  focusTrap.activate('#demo-four', {
-    onDeactivate: removeActiveClass,
-    initialFocus: '#demo-four',
-  });
-  el.className = 'trap is-active';
+  focusTrapfour.activate();
 });
 
 document.getElementById('deactivate-four').addEventListener('click', function() {
-  focusTrap.deactivate();
-  removeActiveClass();
+  focusTrapfour.deactivate();
 });
-
-function removeActiveClass() {
-  el.className = 'trap';
-}
