@@ -1,5 +1,9 @@
 # Changelog
 
+## Head
+
+- Remove all event listeners properly.
+
 ## 1.1.1
 
 - Improve `clickOutsideDeactivates` functionality.

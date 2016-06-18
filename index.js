@@ -59,8 +59,8 @@ function deactivate(deactivationOptions) {
 
   document.removeEventListener('focus', checkFocus, true);
   document.removeEventListener('click', checkClick, true);
-  document.addEventListener('mousedown', checkClickInit, true);
-  document.addEventListener('touchstart', checkClickInit, true);
+  document.removeEventListener('mousedown', checkClickInit, true);
+  document.removeEventListener('touchstart', checkClickInit, true);
   document.removeEventListener('keydown', checkKey, true);
 
   if (config.onDeactivate) config.onDeactivate();
