@@ -31,7 +31,7 @@ document.getElementById('deactivate-six').addEventListener('click', function() {
 });
 
 document.getElementById('demo-six-activate-nested').addEventListener('click', function() {
-  primaryFocusTrapSix.pause();
+  // primaryFocusTrapSix.pause();
   nestedFocusTrapSix.activate();
 });
 

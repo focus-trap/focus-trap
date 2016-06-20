@@ -77,7 +77,7 @@ function focusTrap(element, userOptions) {
 
     // There can be only one listening focus trap at a time
     if (listeningFocusTrap) {
-      listeningFocusTrap.unlisten();
+      listeningFocusTrap.pause();
     }
     listeningFocusTrap = trap;
 

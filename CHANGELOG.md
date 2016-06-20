@@ -1,5 +1,9 @@
 # Changelog
 
+## Head
+
+- Fix bug when activating multiple focus traps.
+
 ## 2.0.0
 
 - Rewrote the thing, altering the API. Read the new docs please.
