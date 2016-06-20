@@ -1,6 +1,6 @@
 {
   "name": "focus-trap",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Trap focus within a DOM node.",
   "main": "index.js",
   "scripts": {

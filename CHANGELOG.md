@@ -1,6 +1,6 @@
 # Changelog
 
-## Head
+## 2.0.1
 
 - Fix bug when activating multiple focus traps.
 
