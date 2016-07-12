@@ -57,6 +57,7 @@ Returns a new focus trap on `element`.
 - **onActivate** {function}: A function that will be called when the focus trap activates.
 - **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
 - **initialFocus** {element|string}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node or a selector string (which will be passed to `document.querySelector()` to find the DOM node).
+- **initialFocusDelay** {number}: An option to delay the initial focus. Can come in handy if there is an animation in progress of the DOM container which contains the elements that can be focused.
 - **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
 - **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing.
 - ** returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
