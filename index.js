@@ -82,7 +82,7 @@ function focusTrap(element, userOptions) {
     listeningFocusTrap = trap;
 
     updateTabbableNodes();
-    tryFocus(firstFocusNode());
+    initialFocus()
     document.addEventListener('focus', checkFocus, true);
     document.addEventListener('click', checkClick, true);
     document.addEventListener('mousedown', checkPointerDown, true);
@@ -90,6 +90,16 @@ function focusTrap(element, userOptions) {
     document.addEventListener('keydown', checkKey, true);
 
     return trap;
+  }
+
+  function initialFocus() {
+    if (config.initialFocusDelay) {
+      setTimeout(function() {
+        tryFocus(firstFocusNode())
+      }, config.initialFocusDelay)
+    } else {
+      tryFocus(firstFocusNode())
+    }
   }
 
   function removeListeners() {
