@@ -112,7 +112,7 @@ function focusTrap(element, userOptions) {
     if (!config.initialFocus) {
       node = tabbableNodes[0];
       if (!node) {
-        throw new Error('You can\'t have a focus-trap without at least one focusable element');
+        return null;
       }
       return node;
     }
