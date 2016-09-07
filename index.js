@@ -130,7 +130,7 @@ function focusTrap(element, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event
   function checkPointerDown(e) {
-    if (config.clickOutsideDeactivates) {
+    if (config.clickOutsideDeactivates && !container.contains(e.target)) {
       deactivate({ returnFocus: false });
     }
   }
