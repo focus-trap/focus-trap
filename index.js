@@ -143,7 +143,7 @@ function focusTrap(element, userOptions) {
   }
 
   function checkFocus(e) {
-    if (container.contains(e.target)) return;
+    if (container.contains(e.target) || e.target === document) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     e.target.blur();
