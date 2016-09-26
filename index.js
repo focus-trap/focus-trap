@@ -146,7 +146,8 @@ function focusTrap(element, userOptions) {
     if (container.contains(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    e.target.blur();
+    // Checking for a blur method here resolves a Firefox issue (#15)
+    if (typeof e.target.blur === 'function') e.target.blur();
   }
 
   function checkKey(e) {
