@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.2
+
+- Fixed: `clickOutsideDeactivates` no longer triggers deactivation when you click *inside* the trap.
+
 ## 2.0.1
 
 - Fix bug when activating multiple focus traps.
