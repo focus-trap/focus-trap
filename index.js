@@ -93,7 +93,7 @@ function focusTrap(element, userOptions) {
   }
 
   function removeListeners() {
-    if (!active || !listeningFocusTrap) return;
+    if (!active || listeningFocusTrap !== trap) return;
 
     document.removeEventListener('focus', checkFocus, true);
     document.removeEventListener('click', checkClick, true);
