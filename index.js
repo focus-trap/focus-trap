@@ -106,22 +106,25 @@ function focusTrap(element, userOptions) {
     return trap;
   }
 
-  function firstFocusNode() {
-    var node;
-
-    if (!config.initialFocus) {
-      node = tabbableNodes[0];
-      if (!node) {
-        throw new Error('You can\'t have a focus-trap without at least one focusable element');
-      }
-      return node;
-    }
-
-    node = (typeof config.initialFocus === 'string')
-      ? document.querySelector(config.initialFocus)
-      : config.initialFocus;
+  function getNodeForOption(key) {
+    var node = config[key];
     if (!node) {
-      throw new Error('`initialFocus` refers to no known node');
+      return null;
+    }
+    if (typeof node === 'string') {
+      node = document.querySelector(node);
+      if (!node) {
+        throw new Error('`'+key+'` refers to no known node');
+      }
+    }
+    return node;
+  }
+
+  function firstFocusNode() {
+    var node = getNodeForOption('initialFocus') || tabbableNodes[0] || getNodeForOption('fallbackFocus');
+
+    if (!node) {
+      throw new Error('You can\'t have a focus-trap without at least one focusable element');
     }
 
     return node;
