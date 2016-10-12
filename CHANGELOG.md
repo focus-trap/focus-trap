@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+- Added: `fallbackFocus` option.
+
 ## 2.0.2
 
 - Fixed: `clickOutsideDeactivates` no longer triggers deactivation when you click *inside* the trap.
