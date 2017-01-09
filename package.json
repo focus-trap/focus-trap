@@ -31,9 +31,9 @@
     "tabbable": "^1.0.3"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
+    "browserify": "^13.3.0",
     "budo": "^9.4.1",
-    "eslint": "^1.10.3"
+    "eslint": "^3.13.1"
   },
   "files": [
     "index.js"
