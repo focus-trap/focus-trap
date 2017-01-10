@@ -1,5 +1,9 @@
 # Changelog
 
+## Head
+
+- Added/fixed, depending on your perspective: If focus is already inside the focus trap when it is activated, leave focus where it is instead of forcing it to the first tabbable node or `initialFocus`.
+
 ## 2.1.0
 
 - Added: `fallbackFocus` option.

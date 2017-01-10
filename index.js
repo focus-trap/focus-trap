@@ -121,7 +121,14 @@ function focusTrap(element, userOptions) {
   }
 
   function firstFocusNode() {
-    var node = getNodeForOption('initialFocus') || tabbableNodes[0] || getNodeForOption('fallbackFocus');
+    var node;
+    if (getNodeForOption('initialFocus') !== null) {
+      node = getNodeForOption('initialFocus');
+    } else if (container.contains(document.activeElement)) {
+      node = document.activeElement;
+    } else {
+      node = tabbableNodes[0] || getNodeForOption('fallbackFocus');
+    }
 
     if (!node) {
       throw new Error('You can\'t have a focus-trap without at least one focusable element');
