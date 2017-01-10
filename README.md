@@ -112,17 +112,17 @@ var createFocusTrap = require('../../');
 
 var containerOne = document.getElementById('demo-one');
 var focusTrapOne = createFocusTrap('#demo-one', {
-  onDeactivate: function() {
+  onDeactivate: function () {
     containerOne.className = 'trap';
   },
 });
 
-document.getElementById('activate-one').addEventListener('click', function() {
+document.getElementById('activate-one').addEventListener('click', function () {
   focusTrapOne.activate();
   containerOne.className = 'trap is-active';
 });
 
-document.getElementById('deactivate-one').addEventListener('click', function() {
+document.getElementById('deactivate-one').addEventListener('click', function () {
   focusTrapOne.deactivate();
 });
 ```

@@ -12,10 +12,10 @@ function focusTrap(element, userOptions) {
     : element;
 
   var config = userOptions || {};
-  config.returnFocusOnDeactivate = (userOptions && userOptions.returnFocusOnDeactivate != undefined)
+  config.returnFocusOnDeactivate = (userOptions && userOptions.returnFocusOnDeactivate !== undefined)
     ? userOptions.returnFocusOnDeactivate
     : true;
-  config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates != undefined)
+  config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates !== undefined)
     ? userOptions.escapeDeactivates
     : true;
 
@@ -48,7 +48,7 @@ function focusTrap(element, userOptions) {
 
   function deactivate(deactivateOptions) {
     var defaultedDeactivateOptions = {
-      returnFocus: (deactivateOptions && deactivateOptions.returnFocus != undefined)
+      returnFocus: (deactivateOptions && deactivateOptions.returnFocus !== undefined)
         ? deactivateOptions.returnFocus
         : config.returnFocusOnDeactivate,
       onDeactivate: (deactivateOptions && deactivateOptions.onDeactivate !== undefined)
@@ -63,7 +63,7 @@ function focusTrap(element, userOptions) {
     }
 
     if (defaultedDeactivateOptions.returnFocus) {
-      setTimeout(function() {
+      setTimeout(function () {
         tryFocus(nodeFocusedBeforeActivation);
       }, 0);
     }
@@ -114,7 +114,7 @@ function focusTrap(element, userOptions) {
     if (typeof node === 'string') {
       node = document.querySelector(node);
       if (!node) {
-        throw new Error('`'+key+'` refers to no known node');
+        throw new Error('`' + key + '` refers to no known node');
       }
     }
     return node;
