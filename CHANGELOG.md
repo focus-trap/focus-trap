@@ -1,6 +1,6 @@
 # Changelog
 
-## Head
+## 2.2.0
 
 - Added/fixed, depending on your perspective: If focus is already inside the focus trap when it is activated, leave focus where it is instead of forcing it to the first tabbable node or `initialFocus`.
 

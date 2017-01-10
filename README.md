@@ -66,6 +66,14 @@ Returns a new focus trap on `element`.
 
 Activates the focus trap, adding various event listeners to the document.
 
+If focus is already within it the trap, it remains unaffected. Otherwise, focus-trap will try to focus the following nodes, in order:
+
+- `createOptions.initialFocus`
+- The first tabbable node in the trap
+- `createOptions.fallbackFocus`
+
+If none of the above exist, an error will be thrown. You cannot have a focus trap that lacks focus.
+
 Returns the `focusTrap`.
 
 ### focusTrap.deactivate([deactivateOptions])
@@ -96,6 +104,8 @@ This is useful in various cases, one of which is when you want one focus trap wi
 ### focusTrap.unpause()
 
 Unpause an active focus trap. (See `pause()`, above.)
+
+Focus is forced into the trap just as described for `focusTrap.activate()`.
 
 If the focus trap has not been activated or has not been paused, nothing happens.
 
