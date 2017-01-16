@@ -106,15 +106,22 @@ function focusTrap(element, userOptions) {
     return trap;
   }
 
-  function getNodeForOption(key) {
-    var node = config[key];
-    if (!node) {
+  function getNodeForOption(optionName) {
+    var optionValue = config[optionName];
+    var node = null;
+    if (!optionValue) {
       return null;
     }
-    if (typeof node === 'string') {
+    if (typeof optionValue === 'string') {
       node = document.querySelector(node);
       if (!node) {
-        throw new Error('`' + key + '` refers to no known node');
+        throw new Error('`' + optionName + '` refers to no known node');
+      }
+    }
+    if (typeof optionValue === 'function') {
+      node = optionValue();
+      if (!node) {
+        throw new Error('`' + optionName + '` did not return a node');
       }
     }
     return node;

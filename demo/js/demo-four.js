@@ -9,7 +9,9 @@ var focusTrapfour = createFocusTrap('#demo-four', {
   onDeactivate: function () {
     containerFour.className = 'trap';
   },
-  initialFocus: '#demo-four',
+  initialFocus: function () {
+    return document.getElementById('demo-four');
+  },
 });
 
 document.getElementById('activate-four').addEventListener('click', function () {
