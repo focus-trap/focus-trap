@@ -1,6 +1,6 @@
 # Changelog
 
-## Head
+## 2.3.0
 
 - Added: `initialFocus` and `fallbackFocus` options can take functions that return DOM nodes.
 - Fixed: `pause` and `unpause` cannot accidentally add extra event listeners.
