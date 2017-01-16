@@ -12,9 +12,7 @@ body {
   padding: 10px;
 }
 
-input:focus,
-a:focus,
-button:focus {
+*:focus {
   outline: 5px solid lightblue;
 }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "eslint .",
     "demo-bundle": "browserify demo/js/index.js -o demo/demo-bundle.js",
-    "start": "budo demo/js/index.js:demo-bundle.js --dir demo",
+    "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live",
     "test": "npm run lint"
   },
   "repository": {

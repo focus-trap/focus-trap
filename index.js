@@ -6,6 +6,7 @@ function focusTrap(element, userOptions) {
   var tabbableNodes = [];
   var nodeFocusedBeforeActivation = null;
   var active = false;
+  var paused = false;
 
   var container = (typeof element === 'string')
     ? document.querySelector(element)
@@ -22,13 +23,15 @@ function focusTrap(element, userOptions) {
   var trap = {
     activate: activate,
     deactivate: deactivate,
-    pause: removeListeners,
-    unpause: addListeners,
+    pause: pause,
+    unpause: unpause,
   };
 
   return trap;
 
   function activate(activateOptions) {
+    if (active) return;
+
     var defaultedActivateOptions = {
       onActivate: (activateOptions && activateOptions.onActivate !== undefined)
         ? activateOptions.onActivate
@@ -36,6 +39,7 @@ function focusTrap(element, userOptions) {
     };
 
     active = true;
+    paused = false;
     nodeFocusedBeforeActivation = document.activeElement;
 
     if (defaultedActivateOptions.onActivate) {
@@ -47,6 +51,8 @@ function focusTrap(element, userOptions) {
   }
 
   function deactivate(deactivateOptions) {
+    if (!active) return;
+
     var defaultedDeactivateOptions = {
       returnFocus: (deactivateOptions && deactivateOptions.returnFocus !== undefined)
         ? deactivateOptions.returnFocus
@@ -69,7 +75,20 @@ function focusTrap(element, userOptions) {
     }
 
     active = false;
+    paused = false;
     return this;
+  }
+
+  function pause() {
+    if (paused || !active) return;
+    paused = true;
+    removeListeners();
+  }
+
+  function unpause() {
+    if (!paused || !active) return;
+    paused = false;
+    addListeners();
   }
 
   function addListeners() {
@@ -108,12 +127,12 @@ function focusTrap(element, userOptions) {
 
   function getNodeForOption(optionName) {
     var optionValue = config[optionName];
-    var node = null;
+    var node = optionValue;
     if (!optionValue) {
       return null;
     }
     if (typeof optionValue === 'string') {
-      node = document.querySelector(node);
+      node = document.querySelector(optionValue);
       if (!node) {
         throw new Error('`' + optionName + '` refers to no known node');
       }
