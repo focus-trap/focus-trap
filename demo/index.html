@@ -11,7 +11,7 @@
 
 </head>
 <body>
-  <h1 tabindex="0">focus-trap demo</h1>
+  <h1 tabindex="0">focus-trap demo2</h1>
 
   <p>
     <span style="font-size:2em;vertical-align:middle;">☜</span>
@@ -238,6 +238,30 @@
     <p>
       <button id="demo-seven-hide-focusable" style="display:none;">
         hide focusable button
+      </button>
+    </p>
+  </div>
+
+  <h2 id="demo-eight-heading">demo eight</h2>
+  <p>
+    When you write, trap is activating automatically, without changing selection.
+  </p>
+  <p>
+    Also, in this demo the Escape key does not deactivate the focus trap. You must click the button.
+  </p>
+  <div id="demo-eight" class="trap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <p>
+      <label htmlFor="focused-input8" class="inline-label">
+        Initially focused input
+      </label>
+      <input id="focused-input8" />
+    </p>
+    <p>
+      <button id="deactivate-eight">
+        deactivate trap 8
       </button>
     </p>
   </div>
