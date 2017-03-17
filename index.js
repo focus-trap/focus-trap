@@ -226,6 +226,8 @@ function isEscapeEvent(e) {
 
 function tryFocus(node) {
   if (!node || !node.focus) return;
+  if (node === document.activeElement)  return;
+
   node.focus();
   if (node.tagName.toLowerCase() === 'input') {
     node.select();
