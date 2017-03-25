@@ -1,5 +1,9 @@
 # Changelog
 
+## Head
+
+- Fixed: activation does not re-focus already-focused node.
+
 ## 2.3.0
 
 - Added: `initialFocus` and `fallbackFocus` options can take functions that return DOM nodes.
