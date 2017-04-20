@@ -19,6 +19,9 @@ function focusTrap(element, userOptions) {
   config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates !== undefined)
     ? userOptions.escapeDeactivates
     : true;
+  config.trapCallback = (userOptions && userOptions.trapCallback !== undefined)
+    ? userOptions.trapCallback
+    : function () {};
 
   var trap = {
     activate: activate,
@@ -176,6 +179,7 @@ function focusTrap(element, userOptions) {
     if (container.contains(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    config.trapCallback(e);
   }
 
   function checkFocus(e) {
@@ -184,11 +188,13 @@ function focusTrap(element, userOptions) {
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
     if (typeof e.target.blur === 'function') e.target.blur();
+    config.trapCallback(e);
   }
 
   function checkKey(e) {
     if (e.key === 'Tab' || e.keyCode === 9) {
       handleTab(e);
+      config.trapCallback(e);
     }
 
     if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
