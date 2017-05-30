@@ -167,6 +167,7 @@ function focusTrap(element, userOptions) {
   // so that it precedes the focus event
   function checkPointerDown(e) {
     if (config.clickOutsideDeactivates && !container.contains(e.target)) {
+      e.preventDefault();
       deactivate({ returnFocus: false });
     }
   }
