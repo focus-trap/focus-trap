@@ -188,7 +188,6 @@ function focusTrap(element, userOptions) {
     
     if (tabEvent) {
       handleTab(tabEvent);
-      tabEvent = null;
     }
   }
 
