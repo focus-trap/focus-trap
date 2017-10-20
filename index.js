@@ -6,7 +6,8 @@ function focusTrap(element, userOptions) {
   var tabbableNodes = [];
   var nodeFocusedBeforeActivation = null;
   var active = false;
-  var paused = false;
+  var paused = false;  
+  var tabEvent = null;
 
   var container = (typeof element === 'string')
     ? document.querySelector(element)
@@ -184,11 +185,16 @@ function focusTrap(element, userOptions) {
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
     if (typeof e.target.blur === 'function') e.target.blur();
+    
+    if (tabEvent) {
+      handleTab(tabEvent);
+      tabEvent = null;
+    }
   }
 
   function checkKey(e) {
     if (e.key === 'Tab' || e.keyCode === 9) {
-      handleTab(e);
+      tabEvent = e;
     }
 
     if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
@@ -197,22 +203,15 @@ function focusTrap(element, userOptions) {
   }
 
   function handleTab(e) {
-    e.preventDefault();
     updateTabbableNodes();
-    var currentFocusIndex = tabbableNodes.indexOf(e.target);
     var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
     var firstTabbableNode = tabbableNodes[0];
 
     if (e.shiftKey) {
-      if (e.target === firstTabbableNode || tabbableNodes.indexOf(e.target) === -1) {
-        return tryFocus(lastTabbableNode);
-      }
-      return tryFocus(tabbableNodes[currentFocusIndex - 1]);
+      return tryFocus(lastTabbableNode);
     }
 
-    if (e.target === lastTabbableNode) return tryFocus(firstTabbableNode);
-
-    tryFocus(tabbableNodes[currentFocusIndex + 1]);
+    tryFocus(firstTabbableNode);
   }
 
   function updateTabbableNodes() {
