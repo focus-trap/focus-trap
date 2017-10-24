@@ -266,6 +266,45 @@
     </p>
   </div>
 
+  <h2 id="demo-nine-heading">demo nine</h2>
+  <p>
+    Initial focus on a element with a tabindex of -1 and no focus outline;
+    so when you "tab" you will get to the next or previous element according to the browser.
+    While tabbing through, the focus does not return to the initial focused element.
+  </p>
+  <p>
+    <button id="activate-nine">
+      activate trap 9
+    </button>
+  </p>
+  <div id="demo-nine" class="trap">
+    <p>
+      <button>
+        nothing
+      </button>
+    </p>
+    <p>
+      <button tabindex="1">
+        tabindex=1
+      </button>
+    </p>
+    <p>
+      <button>
+        nothing
+      </button>
+    </p>
+    <p>
+      <button id="initial-nine" tabindex="-1">
+        Initial (tabindex="-1")
+      </button>
+    </p>
+    <p>
+      <button id="deactivate-nine">
+        deactivate trap 9
+      </button>
+    </p>
+  </div>
+
   <p>
     <span style="font-size:2em;vertical-align:middle;">☜</span>
     <a href="https://github.com/davidtheclark/focus-trap" style="vertical-align:middle;">Return to the repository</a>

@@ -4,9 +4,11 @@ var listeningFocusTrap = null;
 
 function focusTrap(element, userOptions) {
   var tabbableNodes = [];
+  var firstTabbableNode = null;
+  var lastTabbableNode = null;
   var nodeFocusedBeforeActivation = null;
   var active = false;
-  var paused = false;  
+  var paused = false;
   var tabEvent = null;
 
   var container = (typeof element === 'string')
@@ -185,15 +187,15 @@ function focusTrap(element, userOptions) {
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
     if (typeof e.target.blur === 'function') e.target.blur();
-    
+
     if (tabEvent) {
-      handleTab(tabEvent);
+      readjustFocus(tabEvent);
     }
   }
 
   function checkKey(e) {
     if (e.key === 'Tab' || e.keyCode === 9) {
-      tabEvent = e;
+      handleTab(e);
     }
 
     if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
@@ -203,18 +205,36 @@ function focusTrap(element, userOptions) {
 
   function handleTab(e) {
     updateTabbableNodes();
-    var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
-    var firstTabbableNode = tabbableNodes[0];
 
-    if (e.shiftKey) {
-      return tryFocus(lastTabbableNode);
+    if (e.target.hasAttribute('tabindex') && e.target.getAttribute('tabindex') === '-1') {
+      return tabEvent = e;
     }
 
-    tryFocus(firstTabbableNode);
+    e.preventDefault();
+    var currentFocusIndex = tabbableNodes.indexOf(e.target);
+
+    if (e.shiftKey) {
+      if (e.target === firstTabbableNode || tabbableNodes.indexOf(e.target) === -1) {
+        return tryFocus(lastTabbableNode);
+      }
+      return tryFocus(tabbableNodes[currentFocusIndex - 1]);
+    }
+
+    if (e.target === lastTabbableNode) return tryFocus(firstTabbableNode);
+
+    tryFocus(tabbableNodes[currentFocusIndex + 1]);
   }
 
   function updateTabbableNodes() {
     tabbableNodes = tabbable(container);
+    firstTabbableNode = tabbableNodes[0];
+    lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
+  }
+
+  function readjustFocus(e) {
+    if (e.shiftKey) return tryFocus(lastTabbableNode);
+
+    tryFocus(firstTabbableNode);
   }
 }
 
