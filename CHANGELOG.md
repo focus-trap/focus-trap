@@ -1,8 +1,9 @@
 # Changelog
 
-## Head
+## 2.3.1
 
-- Fixed: activation does not re-focus already-focused node.
+- Fixed: Activation does not re-focus already-focused node.
+- Fixed: Tabbing works as expected when initially focused Node has a negative `tabindex` and is in the middle of other tabbable elements.
 
 ## 2.3.0
 

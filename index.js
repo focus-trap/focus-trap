@@ -206,7 +206,7 @@ function focusTrap(element, userOptions) {
   function handleTab(e) {
     updateTabbableNodes();
 
-    if (e.target.hasAttribute('tabindex') && e.target.getAttribute('tabindex') === '-1') {
+    if (e.target.hasAttribute('tabindex') && Number(e.target.getAttribute('tabindex')) < 0) {
       return tabEvent = e;
     }
 
