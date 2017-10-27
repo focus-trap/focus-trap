@@ -4,9 +4,12 @@ var listeningFocusTrap = null;
 
 function focusTrap(element, userOptions) {
   var tabbableNodes = [];
+  var firstTabbableNode = null;
+  var lastTabbableNode = null;
   var nodeFocusedBeforeActivation = null;
   var active = false;
   var paused = false;
+  var tabEvent = null;
 
   var container = (typeof element === 'string')
     ? document.querySelector(element)
@@ -184,6 +187,10 @@ function focusTrap(element, userOptions) {
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
     if (typeof e.target.blur === 'function') e.target.blur();
+
+    if (tabEvent) {
+      readjustFocus(tabEvent);
+    }
   }
 
   function checkKey(e) {
@@ -197,11 +204,14 @@ function focusTrap(element, userOptions) {
   }
 
   function handleTab(e) {
-    e.preventDefault();
     updateTabbableNodes();
+
+    if (e.target.hasAttribute('tabindex') && e.target.getAttribute('tabindex') === '-1') {
+      return tabEvent = e;
+    }
+
+    e.preventDefault();
     var currentFocusIndex = tabbableNodes.indexOf(e.target);
-    var lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
-    var firstTabbableNode = tabbableNodes[0];
 
     if (e.shiftKey) {
       if (e.target === firstTabbableNode || tabbableNodes.indexOf(e.target) === -1) {
@@ -217,6 +227,14 @@ function focusTrap(element, userOptions) {
 
   function updateTabbableNodes() {
     tabbableNodes = tabbable(container);
+    firstTabbableNode = tabbableNodes[0];
+    lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
+  }
+
+  function readjustFocus(e) {
+    if (e.shiftKey) return tryFocus(lastTabbableNode);
+
+    tryFocus(firstTabbableNode);
   }
 }
 

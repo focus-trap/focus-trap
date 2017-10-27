@@ -29,6 +29,7 @@ body {
   margin-right: 0.5em;
 }
 
-#demo-four {
+#demo-four,
+#initial-nine {
   outline: 0;
 }
