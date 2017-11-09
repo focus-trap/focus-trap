@@ -170,7 +170,6 @@ function focusTrap(element, userOptions) {
   // so that it precedes the focus event
   function checkPointerDown(e) {
     var composedPath = e.composedPath();
-    var target = composedPath[0];
     if (config.clickOutsideDeactivates && composedPath.indexOf(container) === -1) {
       deactivate({ returnFocus: false });
     }
@@ -179,7 +178,6 @@ function focusTrap(element, userOptions) {
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
     var composedPath = e.composedPath();
-    var target = composedPath[0];
     if (composedPath.indexOf(container) >= 0) return;
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -218,7 +216,7 @@ function focusTrap(element, userOptions) {
       return tabEvent = e;
     }
 
-    e.preventDefault();    
+    e.preventDefault();
     var currentFocusIndex = tabbableNodes.indexOf(target);
 
     if (e.shiftKey) {
