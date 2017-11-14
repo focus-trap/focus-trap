@@ -31,6 +31,7 @@
     "tabbable": "^1.0.3"
   },
   "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^1.0.18",
     "browserify": "^13.3.0",
     "budo": "^9.4.1",
     "eslint": "^3.13.1"

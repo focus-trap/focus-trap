@@ -304,12 +304,69 @@
       </button>
     </p>
   </div>
+  
+  <h2 id="demo-ten-heading">demo ten</h2>
+  <p>
+    This focus trap uses a native web component with shadow DOM, as well as slots. Initially the focus is set to a button
+    with a tabindex of -1, but then the focus trap will cycle through elements by preserving specified tabindex order, then
+    go through elements within the shadow DOM while mixing in slotted elements that live in the light DOM.
+  </p>
+  <p>
+    <button id="activate-ten">
+      activate trap 10
+    </button>
+  </p>
+  <div id="demo-ten" class="trap">
+    <p>
+      <button>
+        light dom
+      </button>
+    </p>
+    <p>
+      <button tabindex="1">
+        light dom tabindex=1
+      </button>
+    </p>
+    <p>
+      <focus-trap-test-component id="basic-web-component-ten"></focus-trap-test-component>
+    </p>
+    <p>
+      <focus-trap-test-component id="slotted-web-component-ten">
+        <button>
+          slotted button
+        </button>
+      </focus-trap-test-component>
+    </p>
+    <p>
+      <focus-trap-test-component id="slotted-web-component-ten">
+        <button tabindex="2">
+          slotted button tabindex="2"
+        </button>
+      </focus-trap-test-component>
+    </p>
+    <p>
+      <button id="initial-ten" tabindex="-1">
+        Initial (tabindex="-1")
+      </button>
+    </p>
+    <p>
+      <button id="deactivate-ten">
+        deactivate trap 10
+      </button>
+    </p>
+  </div>
 
   <p>
     <span style="font-size:2em;vertical-align:middle;">☜</span>
     <a href="https://github.com/davidtheclark/focus-trap" style="vertical-align:middle;">Return to the repository</a>
   </p>
 
+  <!-- The custom elements es5 adapter is only needed in browsers that natively support custom elements, but transpiled to es5... -->
+  <script>if (!window.customElements) { document.write('<!--'); }</script>
+  <script src="js/polyfills/custom-elements-es5-adapter.js"></script>
+  <!--! do not remove -->
+
+  <script src="js/polyfills/webcomponents-lite.js"></script>
   <script src="demo-bundle.js"></script>
 </body>
 </html>
