@@ -259,7 +259,21 @@ function tryFocus(node) {
 }
 
 function getFocusedElement() {
-  return document.activeElement.shadowRoot ? document.activeElement.shadowRoot.activeElement : document.activeElement;
+  var activeElement = document.activeElement;
+  
+  if (!activeElement || activeElement === document.body) {
+    return;
+  }
+
+  var getShadowActiveElement = function(element) {
+    if (element.shadowRoot && element.shadowRoot.activeElement) {
+      element = getShadowActiveElement(element.shadowRoot.activeElement);
+    }
+
+    return element;
+  };
+
+  return getShadowActiveElement(activeElement);
 }
 
 function getEventPath(evt) {  
