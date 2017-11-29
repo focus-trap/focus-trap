@@ -169,7 +169,7 @@ function focusTrap(element, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event
   function checkPointerDown(e) {
-    var composedPath = e.composedPath();
+    var composedPath = getEventPath(e);
     if (config.clickOutsideDeactivates && composedPath.indexOf(container) === -1) {
       deactivate({ returnFocus: false });
     }
@@ -177,14 +177,14 @@ function focusTrap(element, userOptions) {
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    var composedPath = e.composedPath();
+    var composedPath = getEventPath(e);
     if (composedPath.indexOf(container) >= 0) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   function checkFocus(e) {
-    var composedPath = e.composedPath();
+    var composedPath = getEventPath(e);
     var target = composedPath[0];
     if (composedPath.indexOf(container) >= 0) return;
     e.preventDefault();
@@ -210,7 +210,7 @@ function focusTrap(element, userOptions) {
   function handleTab(e) {
     updateTabbableNodes();
 
-    var target = e.composedPath()[0];
+    var target = getEventPath(e)[0];
 
     if (target.hasAttribute('tabindex') && Number(target.getAttribute('tabindex')) < 0) {
       return tabEvent = e;
@@ -260,6 +260,39 @@ function tryFocus(node) {
 
 function getFocusedElement() {
   return document.activeElement.shadowRoot ? document.activeElement.shadowRoot.activeElement : document.activeElement;
+}
+
+function getEventPath(evt) {  
+  return evt.path || (evt.composedPath && evt.composedPath()) || composedPath(evt.target);
+}
+
+/**
+ * Equivalent to path/composedPath if not supported natively.
+ * Note: Slots and shadow roots are detected, but aren't needed as they are virtually invisible anyway...
+ */
+function composedPath(el) {
+  var path = [];
+
+  while (el) {
+    if (el.shadowRoot) {
+      if (el.shadowRoot.activeElement) {
+        path.push(el.shadowRoot.activeElement);
+      }
+      path.push(el.shadowRoot);
+    }
+
+    path.push(el);
+
+    if (el.tagName === 'HTML') {
+      path.push(document);
+      path.push(window);
+      break;
+    }
+
+    el = el.parentElement;
+  }
+
+  return path;
 }
 
 module.exports = focusTrap;
