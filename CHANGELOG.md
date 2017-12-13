@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.4.1
+## 2.4.2
 
 - Added: TypeScript declaration file.
 
