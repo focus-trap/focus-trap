@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.0
+
+- Added: TypeScript declaration file.
+
 ## 2.3.1
 
 - Fixed: Activation does not re-focus already-focused node.
