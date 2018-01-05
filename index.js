@@ -22,6 +22,9 @@ function focusTrap(element, userOptions) {
   config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates !== undefined)
     ? userOptions.escapeDeactivates
     : true;
+  config.includeOutsideElement = (userOptions && userOptions.includeOutsideElement !== undefined)
+    ? userOptions.includeOutsideElement
+    : defaultIncludeOutsideElement;
 
   var trap = {
     activate: activate,
@@ -169,20 +172,20 @@ function focusTrap(element, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event
   function checkPointerDown(e) {
-    if (config.clickOutsideDeactivates && !container.contains(e.target)) {
+    if (config.clickOutsideDeactivates && !isInsideContainer(e.target)) {
       deactivate({ returnFocus: false });
     }
   }
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    if (container.contains(e.target)) return;
+    if (isInsideContainer(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   function checkFocus(e) {
-    if (container.contains(e.target)) return;
+    if (isInsideContainer(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
@@ -236,6 +239,10 @@ function focusTrap(element, userOptions) {
 
     tryFocus(firstTabbableNode);
   }
+
+  function isInsideContainer(element) {
+    return container.contains(element) || config.includeOutsideElement(element);
+  }
 }
 
 function isEscapeEvent(e) {
@@ -250,6 +257,10 @@ function tryFocus(node) {
   if (node.tagName.toLowerCase() === 'input') {
     node.select();
   }
+}
+
+function defaultIncludeOutsideElement() {
+  return false;
 }
 
 module.exports = focusTrap;
