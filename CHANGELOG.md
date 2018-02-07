@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.3
+
+- Fixed: TypeScript signature for `activate` function.
+
 ## 2.4.2
 
 - Added: TypeScript declaration file.
