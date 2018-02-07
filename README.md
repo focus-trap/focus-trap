@@ -62,7 +62,7 @@ Returns a new focus trap on `element`.
 - **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing.
 - **returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
 
-### focusTrap.activate()
+### focusTrap.activate([activateOptions])
 
 Activates the focus trap, adding various event listeners to the document.
 
@@ -75,6 +75,12 @@ If focus is already within it the trap, it remains unaffected. Otherwise, focus-
 If none of the above exist, an error will be thrown. You cannot have a focus trap that lacks focus.
 
 Returns the `focusTrap`.
+
+`activateOptions`:
+
+These options are used to override the focus trap's default behavior for this particular activation.
+
+- **onActivate** {function | null | false}: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 
 ### focusTrap.deactivate([deactivateOptions])
 
