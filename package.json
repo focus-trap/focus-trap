@@ -44,6 +44,7 @@
     "uglify-js": "^3.3.22"
   },
   "files": [
+    "dist",
     "index.js",
     "index.d.ts"
   ]
