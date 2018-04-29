@@ -2,7 +2,7 @@
   "name": "focus-trap",
   "version": "2.4.3",
   "description": "Trap focus within a DOM node.",
-  "main": "dist/focustrap.min.js",
+  "main": "dist/focustrap.js",
   "types": "index.d.ts",
   "scripts": {
     "lint": "eslint .",
@@ -13,7 +13,7 @@
     "build": "npm run build-dev && npm run minify",
     "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live",
     "test": "npm run lint",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
