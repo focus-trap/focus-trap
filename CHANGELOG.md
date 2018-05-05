@@ -1,6 +1,6 @@
 # Changelog
 
-## HEAD
+## 2.4.4
 
 - Publish UMD build so people can download it from `unpkg.com`.
 
