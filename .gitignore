@@ -1,5 +1,4 @@
 node_modules
 *.log
 **/*-bundle.js
-dist/*
-!dist/.gitkeep
+dist

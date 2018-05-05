@@ -1926,6 +1926,13 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+make-dir-cli@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/make-dir-cli/-/make-dir-cli-1.0.0.tgz#1c770e5c731106c51c11095b02beaa6c9749dc59"
+  dependencies:
+    make-dir "^1.0.0"
+    meow "^3.7.0"
+
 make-dir@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-1.2.0.tgz#6d6a49eead4aae296c53bbf3a1a008bd6c89469b"
@@ -1946,7 +1953,7 @@ media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
 
-meow@^3.3.0, meow@^3.6.0:
+meow@^3.3.0, meow@^3.6.0, meow@^3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/meow/-/meow-3.7.0.tgz#72cb668b425228290abbfa856892587308a801fb"
   dependencies:

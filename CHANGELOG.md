@@ -1,5 +1,9 @@
 # Changelog
 
+## HEAD
+
+- Publish UMD build so people can download it from `unpkg.com`.
+
 ## 2.4.3
 
 - Fixed: TypeScript signature for `activate` function.
