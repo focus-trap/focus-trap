@@ -34,6 +34,8 @@ For more advanced usage (e.g. focus traps within focus traps), you can also paus
 npm install focus-trap
 ```
 
+You can also use a UMD version published to `unpkg.com` as `dist/focus-trap.js` and `dist/focus-trap.min.js`.
+
 ## Browser Support
 
 IE9+
