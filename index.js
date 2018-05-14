@@ -43,7 +43,7 @@ function focusTrap(element, userOptions) {
 
     active = true;
     paused = false;
-    nodeFocusedBeforeActivation = document.activeElement;
+    nodeFocusedBeforeActivation = getFocusedElement();
 
     if (defaultedActivateOptions.onActivate) {
       defaultedActivateOptions.onActivate();
@@ -153,8 +153,8 @@ function focusTrap(element, userOptions) {
     var node;
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
-    } else if (container.contains(document.activeElement)) {
-      node = document.activeElement;
+    } else if (container.contains(getFocusedElement())) {
+      node = getFocusedElement();
     } else {
       node = tabbableNodes[0] || getNodeForOption('fallbackFocus');
     }
@@ -169,24 +169,28 @@ function focusTrap(element, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event
   function checkPointerDown(e) {
-    if (config.clickOutsideDeactivates && !container.contains(e.target)) {
+    var composedPath = getEventPath(e);
+    if (config.clickOutsideDeactivates && composedPath.indexOf(container) === -1) {
       deactivate({ returnFocus: false });
     }
   }
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    if (container.contains(e.target)) return;
+    var composedPath = getEventPath(e);
+    if (composedPath.indexOf(container) >= 0) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   function checkFocus(e) {
-    if (container.contains(e.target)) return;
+    var composedPath = getEventPath(e);
+    var target = composedPath[0];
+    if (composedPath.indexOf(container) >= 0) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
-    if (typeof e.target.blur === 'function') e.target.blur();
+    if (typeof target.blur === 'function') target.blur();
 
     if (tabEvent) {
       readjustFocus(tabEvent);
@@ -206,21 +210,23 @@ function focusTrap(element, userOptions) {
   function handleTab(e) {
     updateTabbableNodes();
 
-    if (e.target.hasAttribute('tabindex') && Number(e.target.getAttribute('tabindex')) < 0) {
+    var target = getEventPath(e)[0];
+
+    if (target.hasAttribute('tabindex') && Number(target.getAttribute('tabindex')) < 0) {
       return tabEvent = e;
     }
 
     e.preventDefault();
-    var currentFocusIndex = tabbableNodes.indexOf(e.target);
+    var currentFocusIndex = tabbableNodes.indexOf(target);
 
     if (e.shiftKey) {
-      if (e.target === firstTabbableNode || tabbableNodes.indexOf(e.target) === -1) {
+      if (target === firstTabbableNode || tabbableNodes.indexOf(target) === -1) {
         return tryFocus(lastTabbableNode);
       }
       return tryFocus(tabbableNodes[currentFocusIndex - 1]);
     }
 
-    if (e.target === lastTabbableNode) return tryFocus(firstTabbableNode);
+    if (target === lastTabbableNode) return tryFocus(firstTabbableNode);
 
     tryFocus(tabbableNodes[currentFocusIndex + 1]);
   }
@@ -244,12 +250,63 @@ function isEscapeEvent(e) {
 
 function tryFocus(node) {
   if (!node || !node.focus) return;
-  if (node === document.activeElement)  return;
+  if (node === getFocusedElement())  return;
 
   node.focus();
   if (node.tagName.toLowerCase() === 'input') {
     node.select();
   }
+}
+
+function getFocusedElement() {
+  var activeElement = document.activeElement;
+  
+  if (!activeElement || activeElement === document.body) {
+    return;
+  }
+
+  var getShadowActiveElement = function(element) {
+    if (element.shadowRoot && element.shadowRoot.activeElement) {
+      element = getShadowActiveElement(element.shadowRoot.activeElement);
+    }
+
+    return element;
+  };
+
+  return getShadowActiveElement(activeElement);
+}
+
+function getEventPath(evt) {  
+  return evt.path || (evt.composedPath && evt.composedPath()) || composedPath(evt.target);
+}
+
+/**
+ * Equivalent to path/composedPath if not supported natively.
+ * Note: Slots and shadow roots are detected, but aren't needed as they are virtually invisible anyway...
+ */
+function composedPath(el) {
+  var path = [];
+
+  while (el) {
+    if (el.shadowRoot) {
+      if (el.shadowRoot.activeElement) {
+        path.push(el.shadowRoot.activeElement);
+      }
+      path.push(el.shadowRoot);
+    }
+
+    path.push(el);
+
+    if (el.tagName === 'HTML') {
+      path.push(document);
+      path.push(window);
+      break;
+    }
+
+    el = el.parentElement;
+  }
+
+  return path;
 }
 
 module.exports = focusTrap;
