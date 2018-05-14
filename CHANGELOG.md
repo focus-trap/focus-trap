@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.5
+
+- Fix `"main"` field in `package.json`.
+
 ## 2.4.4
 
 - Publish UMD build so people can download it from `unpkg.com`.
