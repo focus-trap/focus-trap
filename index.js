@@ -104,7 +104,10 @@ function focusTrap(element, userOptions) {
     listeningFocusTrap = trap;
 
     updateTabbableNodes();
-    tryFocus(firstFocusNode());
+    // Ensure that the focused element doesn't capture the event that caused the focus trap activation
+    setTimeout(function () {
+      tryFocus(firstFocusNode());
+    }, 0);
     document.addEventListener('focus', checkFocus, true);
     document.addEventListener('click', checkClick, true);
     document.addEventListener('mousedown', checkPointerDown, true);
