@@ -22,6 +22,14 @@ function focusTrap(element, userOptions) {
   config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates !== undefined)
     ? userOptions.escapeDeactivates
     : true;
+  config.isOutsideElementFocusable = (userOptions && userOptions.isOutsideElementFocusable !== undefined)
+      ? userOptions.isOutsideElementFocusable
+      : function () {
+        return false;
+      };
+  config.includedContainers = (userOptions && userOptions.includedContainers !== undefined)
+      ? userOptions.includedContainers
+      : [];
 
   var trap = {
     activate: activate,
@@ -176,13 +184,13 @@ function focusTrap(element, userOptions) {
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    if (container.contains(e.target)) return;
+    if (isElementFocusable(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   function checkFocus(e) {
-    if (container.contains(e.target)) return;
+    if (isElementFocusable(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
@@ -191,6 +199,10 @@ function focusTrap(element, userOptions) {
     if (tabEvent) {
       readjustFocus(tabEvent);
     }
+  }
+
+  function isElementFocusable(element){
+    return container.contains(element) || config.isOutsideElementFocusable(element);
   }
 
   function checkKey(e) {
@@ -226,7 +238,8 @@ function focusTrap(element, userOptions) {
   }
 
   function updateTabbableNodes() {
-    tabbableNodes = tabbable(container);
+    var documentTabbableNodes = tabbable(document.querySelector('body'));
+    tabbableNodes = documentTabbableNodes.filter(isElementFocusable);
     firstTabbableNode = tabbableNodes[0];
     lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
   }
