@@ -23,6 +23,12 @@ function focusTrap(element, userOptions) {
     ? userOptions.escapeDeactivates
     : true;
 
+  config.isOutsideElementClickable = (userOptions && userOptions.isOutsideElementClickable !== undefined)
+    ? userOptions.isOutsideElementClickable
+    : function () {
+      return false;
+    };
+
   var trap = {
     activate: activate,
     deactivate: deactivate,
@@ -176,6 +182,7 @@ function focusTrap(element, userOptions) {
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
+    if (config.isOutsideElementClickable(e.target)) return;
     if (container.contains(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
