@@ -22,14 +22,12 @@ function focusTrap(element, userOptions) {
   config.escapeDeactivates = (userOptions && userOptions.escapeDeactivates !== undefined)
     ? userOptions.escapeDeactivates
     : true;
-  config.isOutsideElementFocusable = (userOptions && userOptions.isOutsideElementFocusable !== undefined)
-      ? userOptions.isOutsideElementFocusable
-      : function () {
-        return false;
-      };
-  config.includedContainers = (userOptions && userOptions.includedContainers !== undefined)
-      ? userOptions.includedContainers
-      : [];
+
+  config.isOutsideElementClickable = (userOptions && userOptions.isOutsideElementClickable !== undefined)
+    ? userOptions.isOutsideElementClickable
+    : function () {
+      return false;
+    };
 
   var trap = {
     activate: activate,
@@ -184,13 +182,14 @@ function focusTrap(element, userOptions) {
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    if (isElementFocusable(e.target)) return;
+    if (config.isOutsideElementClickable(e.target)) return;
+    if (container.contains(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
   }
 
   function checkFocus(e) {
-    if (isElementFocusable(e.target)) return;
+    if (container.contains(e.target)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
     // Checking for a blur method here resolves a Firefox issue (#15)
@@ -199,10 +198,6 @@ function focusTrap(element, userOptions) {
     if (tabEvent) {
       readjustFocus(tabEvent);
     }
-  }
-
-  function isElementFocusable(element){
-    return container.contains(element) || config.isOutsideElementFocusable(element);
   }
 
   function checkKey(e) {
@@ -238,8 +233,7 @@ function focusTrap(element, userOptions) {
   }
 
   function updateTabbableNodes() {
-    var documentTabbableNodes = tabbable(document.querySelector('body'));
-    tabbableNodes = documentTabbableNodes.filter(isElementFocusable);
+    tabbableNodes = tabbable(container);
     firstTabbableNode = tabbableNodes[0];
     lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
   }

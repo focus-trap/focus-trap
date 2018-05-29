@@ -4,7 +4,7 @@ var containerExclude = document.getElementById('demo-includenode-container');
 var includedElements = document.querySelectorAll('.included-element');
 
 var focusTrapExclude = createFocusTrap(containerExclude, {
-  isOutsideElementFocusable: function (element) {
+  isOutsideElementClickable: function (element) {
     return Array.prototype.slice.call(includedElements).indexOf(element) !== -1;
   },
   onActivate: function () {
