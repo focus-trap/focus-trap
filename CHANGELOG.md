@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.6
+
+- Add slight delay before moving focus to the first element in the trap.
+  This should prevent an occasional bug caused when the first element in the trap will close the trap if it picks up on the event that triggered the trap's opening.
+
 ## 2.4.5
 
 - Fix `"main"` field in `package.json`.
