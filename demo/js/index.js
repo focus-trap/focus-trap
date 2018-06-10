@@ -7,3 +7,4 @@ require('./demo-six');
 require('./demo-seven');
 require('./demo-eight');
 require('./demo-nine');
+require('./demo-delay');
