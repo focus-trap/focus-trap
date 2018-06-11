@@ -54,6 +54,17 @@ declare module "focus-trap" {
      * deactivate the focus trap and allow the click event to do its thing.
      */
     clickOutsideDeactivates?: boolean;
+
+    /**
+     * Default: Function returning `false` A Function called when focus-trap detects interaction outside trapped
+     * container (mousedown, click, touchstart). `true` result will treat this element as if it was inside trapped
+     * container. This option may be useful for pickers components where part of UI is attached directly under `<body>`
+     * element, because focus-trap prevents interaction outside trapped container by default.
+     *
+     * WARNING: click/mousedown/touchstart events must be prevented and stopped in your code to prevent losing focus
+     * from trapped container.
+     */
+    includeOutsideElement?: (element:HTMLElement) => boolean;
   }
 
   type ActivateOptions = Pick<Options, "onActivate">;
