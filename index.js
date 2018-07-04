@@ -15,6 +15,8 @@ function focusTrap(element, userOptions) {
     ? document.querySelector(element)
     : element;
 
+  container.setAttribute('tabindex', -1);
+
   var config = userOptions || {};
   config.returnFocusOnDeactivate = (userOptions && userOptions.returnFocusOnDeactivate !== undefined)
     ? userOptions.returnFocusOnDeactivate
@@ -159,7 +161,7 @@ function focusTrap(element, userOptions) {
     } else if (container.contains(document.activeElement)) {
       node = document.activeElement;
     } else {
-      node = tabbableNodes[0] || getNodeForOption('fallbackFocus');
+      node = container;
     }
 
     if (!node) {
