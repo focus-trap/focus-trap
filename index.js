@@ -165,7 +165,7 @@ function focusTrap(element, userOptions) {
     }
 
     if (!node) {
-      throw new Error('You can\'t have a focus-trap without at least one focusable element');
+      throw new Error('focus-trap failed to focus on an element');
     }
 
     return node;
