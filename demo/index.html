@@ -215,29 +215,24 @@
 
   <h2 id="demo-seven-heading">demo seven</h2>
   <p>
-    In this focus trap, the single focusable button is hidden.
-    If you activate the trap in this state, focus is sent to the container as usual.
-    If, however, you make the focusable button visible, it will receive focus when you activate the trap.
+    In this focus trap, the single focusable button is hidden until the user waits 5 seconds for it "load".
+    No actual loading is involved, it is just a count down timer.
+  </p>
+  <p>
+    This is a good demonstration of when it might make sense to apply a focus-trap to an element that has no
+    focusable elements inside of it.
   </p>
   <p>
     <button id="activate-seven">
       activate trap 7
     </button>
   </p>
-  <div id="demo-seven" class="trap" tabindex="-1">
-    <p>
-      <button id="deactivate-seven" tabindex="-1">
+  <div id="demo-seven" class="trap">
+    <p id="demo-seven-intro">Activate trap 7 to start loading the deactivate button.</p>
+    <p id="demo-seven-loader" style="display: none">Loading deactivate button in <span id="demo-seven-counter">5</span> seconds</p>
+    <p id="demo-seven-revealer" style="display: none">
+      <button id="deactivate-seven">
         deactivate trap 7
-      </button>
-    </p>
-    <p>
-      <button id="demo-seven-show-focusable" tabindex="-1">
-        show focusable button
-      </button>
-    </p>
-    <p>
-      <button id="demo-seven-hide-focusable" style="display:none;">
-        hide focusable button
       </button>
     </p>
   </div>
