@@ -211,6 +211,11 @@ function focusTrap(element, userOptions) {
   function handleTab(e) {
     updateTabbableNodes();
 
+    if (tabbableNodes.length === 0) {
+      e.preventDefault();
+      return tabEvent = e;
+    }
+
     if (e.target.hasAttribute('tabindex') && Number(e.target.getAttribute('tabindex')) < 0) {
       return tabEvent = e;
     }
