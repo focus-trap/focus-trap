@@ -1,6 +1,6 @@
 var createFocusTrap = require('../../');
 
-//prevent leakage to global scope
+// Prevent leakage to global scope
 (function (){
   var $container = document.getElementById('demo-seven');
   var $intro = document.getElementById('demo-seven-intro');
@@ -43,13 +43,13 @@ var createFocusTrap = require('../../');
     }
   }
 
-  function startTimer (callback) {
+  function startTimer(callback) {
     timer = window.setInterval(function(){
       callback.call(this);
     }, 1000);
   }
 
-  function stopTimer (){
+  function stopTimer(){
     clearInterval(timer);
   }
 
@@ -66,27 +66,27 @@ var createFocusTrap = require('../../');
     currentNumber = number;
   }
 
-  function showIntro (){
+  function showIntro(){
     $intro.style.display = 'block';
   }
 
-  function hideIntro (){
+  function hideIntro(){
     $intro.style.display = 'none';
   }
 
-  function showRevealer (){
+  function showRevealer(){
     $revealer.style.display = 'block';
   }
 
-  function hideRevealer (){
+  function hideRevealer(){
     $revealer.style.display = 'none';
   }
 
-  function showLoader (){
+  function showLoader(){
     $loader.style.display = 'block';
   }
 
-  function hideLoader (){
+  function hideLoader(){
     $loader.style.display = 'none';
   }
 
@@ -94,4 +94,4 @@ var createFocusTrap = require('../../');
     setCounter(--currentNumber);
   }
 
-})()
+})();
