@@ -46,7 +46,7 @@ And its only dependency, tabbable, uses [a couple of IE9+ functions](https://git
 
 ## Usage
 
-### focusTrap = createFocusTrap(element[, createOptions]);
+### focusTrap = createFocusTrap( element[, createOptions] );
 
 Returns a new focus trap on `element`.
 
@@ -58,25 +58,21 @@ Returns a new focus trap on `element`.
 
 - **onActivate** {function}: A function that will be called when the focus trap activates.
 - **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
-- **initialFocus** {element|string|function}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
-- **fallbackFocus** {element|string|function}: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or  a function that returns a DOM node.
+- **initialFocus** {element|string|function}: By default, when a focus trap is activated the focus trap container element will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node. Be careful though as shifting focus away from the focus trap container can lead to significant accessibility issues for screen reader users.
 - **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
 - **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing.
 - **returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
 
-### focusTrap.activate([activateOptions])
+### focusTrap.activate([ activateOptions ])
 
 Activates the focus trap, adding various event listeners to the document.
 
 If focus is already within it the trap, it remains unaffected. Otherwise, focus-trap will try to focus the following nodes, in order:
 
 - `createOptions.initialFocus`
-- The first tabbable node in the trap
-- `createOptions.fallbackFocus`
+- The trap container element
 
-If none of the above exist, an error will be thrown. You cannot have a focus trap that lacks focus.
-
-Returns the `focusTrap`.
+`focusTrap.activate()` will return the active `focusTrap` so chaining is possible.
 
 `activateOptions`:
 
@@ -84,11 +80,11 @@ These options are used to override the focus trap's default behavior for this pa
 
 - **onActivate** {function | null | false}: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 
-### focusTrap.deactivate([deactivateOptions])
+### focusTrap.deactivate([ deactivateOptions ])
 
 Deactivates the focus trap.
 
-Returns the `focusTrap`.
+`focusTrap.deactivate()` will return the deactivated `focusTrap` so chaining is possible.
 
 `deactivateOptions`:
 
@@ -103,7 +99,7 @@ Pause an active focus trap's event listening without deactivating the trap.
 
 If the focus trap has not been activated, nothing happens.
 
-Returns the `focusTrap`.
+`focusTrap.pause()` will return the paused `focusTrap` so chaining is possible.
 
 Any `onDeactivate` callback will not be called, and focus will not return to the element that was focused before the trap's activation. But the trap's behavior will be paused.
 
@@ -117,7 +113,7 @@ Focus is forced into the trap just as described for `focusTrap.activate()`.
 
 If the focus trap has not been activated or has not been paused, nothing happens.
 
-Returns the `focusTrap`.
+`focusTrap.unpause()` will return the unpaused `focusTrap` so chaining is possible.
 
 ## Examples
 
@@ -152,3 +148,13 @@ document.getElementById('deactivate-one').addEventListener('click', function () 
 ## Development
 
 Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests didn't make sense. (If you disagree and can help out, please PR!) So the demo is also the test: run it in browsers and see how it works, checking the documented requirements.
+
+This project uses [yarn](https://yarnpkg.com/lang/en/) for package management and the test environment is powered [Node](https://nodejs.org/en/).
+
+Once both are installed, you can boot up a local copy of the demo site by first running `yarn install` to retrieve the necessary packages from npm, then run this each time you want to boot up a development server:
+
+```
+npm run start
+```
+
+Your command line interface will provide you with a url for testing in.

@@ -16,6 +16,10 @@ document.getElementById('activate-five').addEventListener('click', function () {
   focusTrapFive.activate();
 });
 
+document.getElementById('deactivate-five').addEventListener('click', function () {
+  focusTrapFive.deactivate();
+});
+
 document.getElementById('demo-five-show-more').addEventListener('click', function () {
   moreFive.style.display = 'block';
 });

@@ -15,6 +15,8 @@ function focusTrap(element, userOptions) {
     ? document.querySelector(element)
     : element;
 
+  container.setAttribute('tabindex', -1);
+
   var config = userOptions || {};
   config.returnFocusOnDeactivate = (userOptions && userOptions.returnFocusOnDeactivate !== undefined)
     ? userOptions.returnFocusOnDeactivate
@@ -159,11 +161,11 @@ function focusTrap(element, userOptions) {
     } else if (container.contains(document.activeElement)) {
       node = document.activeElement;
     } else {
-      node = tabbableNodes[0] || getNodeForOption('fallbackFocus');
+      node = container;
     }
 
     if (!node) {
-      throw new Error('You can\'t have a focus-trap without at least one focusable element');
+      throw new Error('focus-trap failed to focus on an element');
     }
 
     return node;
@@ -208,6 +210,11 @@ function focusTrap(element, userOptions) {
 
   function handleTab(e) {
     updateTabbableNodes();
+
+    if (tabbableNodes.length === 0) {
+      e.preventDefault();
+      return tabEvent = e;
+    }
 
     if (e.target.hasAttribute('tabindex') && Number(e.target.getAttribute('tabindex')) < 0) {
       return tabEvent = e;
