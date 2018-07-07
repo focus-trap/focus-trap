@@ -44,7 +44,7 @@ var createFocusTrap = require('../../');
   }
 
   function startTimer(callback) {
-    timer = window.setInterval(function(){
+    timer = window.setInterval(function (){
       callback.call(this);
     }, 1000);
   }
