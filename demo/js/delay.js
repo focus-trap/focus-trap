@@ -1,8 +1,8 @@
 var createFocusTrap = require('../../');
 
-var containerNine = document.getElementById('demo-delay');
+var container = document.getElementById('delay');
 
-var focusTrapNine = createFocusTrap(containerNine);
+var focusTrap = createFocusTrap(container);
 
 document.getElementById('activate-delay').addEventListener('keydown', showContainer);
 document.getElementById('close-button-delay').addEventListener('click', hideContainer);
@@ -10,11 +10,11 @@ document.getElementById('close-button-delay').addEventListener('click', hideCont
 function showContainer(e) {
   if (e.keyCode !== 13) return;
 
-  containerNine.style.opacity = '1';
-  focusTrapNine.activate();
+  container.style.opacity = '1';
+  focusTrap.activate();
 }
 
 function hideContainer() {
-  containerNine.style.opacity = '0.2';
-  focusTrapNine.deactivate();
+  container.style.opacity = '0.2';
+  focusTrap.deactivate();
 }
