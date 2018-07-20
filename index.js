@@ -173,7 +173,10 @@ function focusTrap(element, userOptions) {
   // so that it precedes the focus event
   function checkPointerDown(e) {
     if (config.clickOutsideDeactivates && !container.contains(e.target)) {
-      deactivate({ returnFocus: false });
+      deactivate({
+        // Only return focus if outside element is not focusable.
+        returnFocus: config.returnFocusOnDeactivate && tabbable(e.target, { includeContainer: true }).length === 0
+      });
     }
   }
 
