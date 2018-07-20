@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.7
+
+- If the `clickOutsideDeactivates` and `returnFocusOnDeactivate` options are `true`, return the focus only if the outside element is not focusable.
+
 ## 2.4.6
 
 - Add slight delay before moving focus to the first element in the trap.
