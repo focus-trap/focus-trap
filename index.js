@@ -25,7 +25,7 @@ function focusTrap(element, userOptions) {
     lastFocusedNode: null,
     active: false,
     paused: false,
-    pointerDown: false
+    pointerDown: false,
   };
 
   var trap = {
@@ -212,13 +212,15 @@ function focusTrap(element, userOptions) {
     if (!state.lastFocusedNode) return;
 
     if (node.compareDocumentPosition(state.lastFocusedNode) & Node.DOCUMENT_POSITION_FOLLOWING) {
-      e.preventDefault();
-      tryFocus(state.lastTabbableNode);
+      setTimeout(function () {
+        tryFocus(state.lastTabbableNode);
+      }, 0);
       return;
     }
     if (node.compareDocumentPosition(state.lastFocusedNode) & Node.DOCUMENT_POSITION_PRECEDING) {
-      e.preventDefault();
-      tryFocus(state.firstTabbableNode);
+      setTimeout(function () {
+        tryFocus(state.firstTabbableNode);
+      }, 0);
       return;
     }
   }

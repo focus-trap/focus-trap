@@ -245,7 +245,7 @@
 
   <h2 id="radio-heading">radio set</h2>
   <p>
-    A default focus trap that contains a radio set. You should be able to change the radio set with the arrow keys, but Tab should only focus the active radio.
+    A default focus trap that contains a radio set. You should be able to change the radio set with the arrow keys, but Tab should only focus the active radio. (Notice that you need to have a focusable element before and after the radios for things to work as expected.)
   </p>
   <p>
     <button id="activate-radio">
@@ -253,6 +253,11 @@
     </button>
   </p>
   <div id="radio" class="trap">
+      <p>
+        <button>
+          nothing
+        </button>
+      </p>
     <fieldset>
       <legend>Radio set</legend>
       <div>
@@ -272,7 +277,7 @@
 
   <h2 id="iframe-heading">iframe</h2>
   <p>
-    A default focus trap that contains an iframe. You should be able to tab into and out of the iframe. Notice that you need to have a focusable element before and after the iframe for things to work as expected.
+    A default focus trap that contains an iframe. You should be able to tab into and out of the iframe. (Notice that you need to have a focusable element before and after the iframe for things to work as expected.)
   </p>
   <p>
     <button id="activate-iframe">
