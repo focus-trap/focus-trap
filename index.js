@@ -60,21 +60,20 @@ function focusTrap(element, userOptions) {
   function deactivate(deactivateOptions) {
     if (!state.active) return;
 
-    var returnFocus = (deactivateOptions && deactivateOptions.returnFocus !== undefined)
-        ? deactivateOptions.returnFocus
-        : config.returnFocusOnDeactivate;
-    var onDeactivate = (deactivateOptions && deactivateOptions.onDeactivate !== undefined)
-        ? deactivateOptions.onDeactivate
-        : config.onDeactivate;
-
     removeListeners();
     state.active = false;
     state.paused = false;
 
+    var onDeactivate = (deactivateOptions && deactivateOptions.onDeactivate !== undefined)
+      ? deactivateOptions.onDeactivate
+      : config.onDeactivate;
     if (onDeactivate) {
       onDeactivate();
     }
 
+    var returnFocus = (deactivateOptions && deactivateOptions.returnFocus !== undefined)
+      ? deactivateOptions.returnFocus
+      : config.returnFocusOnDeactivate;
     if (returnFocus) {
       setTimeout(function () {
         tryFocus(state.nodeFocusedBeforeActivation);
@@ -188,6 +187,7 @@ function focusTrap(element, userOptions) {
     }
   }
 
+  // In case focus escapes the trap for some strange reason, pull it back in.
   function checkFocus(e) {
     if (container.contains(e.target)) return;
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
@@ -207,6 +207,10 @@ function focusTrap(element, userOptions) {
     }
   }
 
+  // Hijack Tab events on the first and last focusable nodes of the trap,
+  // in order to prevent focus from escaping. If it escapes for even a
+  // moment it can end up scrolling the page and causing confusion so we
+  // kind of need to capture the action at the keydown phase.
   function checkTab(e) {
     updateTabbableNodes();
     if (e.shiftKey && e.target === state.firstTabbableNode) {
