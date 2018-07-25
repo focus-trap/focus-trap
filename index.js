@@ -81,7 +81,7 @@ function focusTrap(element, userOptions) {
       }, 0);
     }
 
-    return this;
+    return trap;
   }
 
   function pause() {
@@ -111,7 +111,7 @@ function focusTrap(element, userOptions) {
     setTimeout(function () {
       tryFocus(getInitialFocusNode());
     }, 0);
-    document.addEventListener('focusout', checkFocusout, true);
+    document.addEventListener('focus', checkFocus, true);
     document.addEventListener('mousedown', checkPointerDown, true);
     document.addEventListener('touchstart', checkPointerDown, true);
     document.addEventListener('click', checkClick, true);
@@ -123,7 +123,7 @@ function focusTrap(element, userOptions) {
   function removeListeners() {
     if (!state.active || listeningFocusTrap !== trap) return;
 
-    document.removeEventListener('focusout', checkFocusout, true);
+    document.removeEventListener('focus', checkFocus, true);
     document.removeEventListener('mousedown', checkPointerDown, true);
     document.removeEventListener('touchstart', checkPointerDown, true);
     document.removeEventListener('click', checkClick, true);
@@ -188,46 +188,36 @@ function focusTrap(element, userOptions) {
     }
   }
 
-  function checkFocusout(e) {
-    if (state.pointerDown || !state.active) return;
-
-    var node = e.relatedTarget;
-    updateTabbableNodes();
-
-    if (node === null) {
-      e.preventDefault();
-      if (state.lastFocusedNode === state.firstTabbableNode) {
-        tryFocus(state.lastTabbableNode);
-      } else {
-        tryFocus(state.firstTabbableNode);
-      }
-      return;
-    }
-
-    if (container.contains(node)) {
-      state.lastFocusedNode = node;
-      return;
-    }
-
-    if (!state.lastFocusedNode) return;
-
-    if (node.compareDocumentPosition(state.lastFocusedNode) & Node.DOCUMENT_POSITION_FOLLOWING) {
-      setTimeout(function () {
-        tryFocus(state.lastTabbableNode);
-      }, 0);
-      return;
-    }
-    if (node.compareDocumentPosition(state.lastFocusedNode) & Node.DOCUMENT_POSITION_PRECEDING) {
-      setTimeout(function () {
-        tryFocus(state.firstTabbableNode);
-      }, 0);
-      return;
-    }
+  function checkFocus(e) {
+    if (container.contains(e.target)) return;
+    // In Firefox when you Tab out of an iframe the Document is briefly focused.
+    if (e.target instanceof Document) return;
+    tryFocus(state.firstTabbableNode);
   }
 
   function checkKey(e) {
     if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
+      e.preventDefault();
       deactivate();
+      return;
+    }
+    if (isTabEvent(e)) {
+      checkTab(e);
+      return;
+    }
+  }
+
+  function checkTab(e) {
+    updateTabbableNodes();
+    if (e.shiftKey && e.target === state.firstTabbableNode) {
+      e.preventDefault();
+      tryFocus(state.lastTabbableNode);
+      return;
+    }
+    if (!e.shiftKey && e.target === state.lastTabbableNode) {
+      e.preventDefault();
+      tryFocus(state.firstTabbableNode);
+      return;
     }
   }
 
@@ -240,8 +230,8 @@ function focusTrap(element, userOptions) {
 
   function updateTabbableNodes() {
     var tabbableNodes = tabbable(container);
-    state.firstTabbableNode = tabbableNodes[0];
-    state.lastTabbableNode = tabbableNodes[tabbableNodes.length - 1];
+    state.firstTabbableNode = tabbableNodes[0] || getInitialFocusNode();
+    state.lastTabbableNode = tabbableNodes[tabbableNodes.length - 1] || getInitialFocusNode();
   }
 
   function tryFocus(node) {
@@ -253,7 +243,7 @@ function focusTrap(element, userOptions) {
 
     node.focus();
     state.lastFocusedNode = node;
-    if (node.tagName.toLowerCase() === 'input') {
+    if (node.tagName && node.tagName.toLowerCase() === 'input') {
       node.select();
     }
   }
@@ -261,6 +251,10 @@ function focusTrap(element, userOptions) {
 
 function isEscapeEvent(e) {
   return e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27;
+}
+
+function isTabEvent(e) {
+  return e.key === 'Tab' || e.keyCode === 9;
 }
 
 function applyDefault(obj, key, defaultValue) {
