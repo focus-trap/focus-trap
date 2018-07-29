@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^3.0.0",
+    "tabbable": "^3.1.0",
     "xtend": "^4.0.1"
   },
   "devDependencies": {
