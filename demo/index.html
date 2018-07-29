@@ -19,50 +19,43 @@
   </p>
 
   <p>
-    In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus: you won't be able to do anything outside of the focus trap.
+    In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus!
   </p>
 
   <p>
-    When a trap is active, you can deactivate it by pushing its deactivate button or pushing the Escape key.
+    When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, hitting <kbd>Escape</kbd>.
   </p>
 
+  <h2 id="default-heading">default behavior</h2>
   <p>
-    <em>(Note that tab order is a little wonky on this page because of demo three.)</em>
-  </p>
-
-  <h2 id="demo-one-heading">demo one</h2>
-  <p>
-    Default behavior: When this focus trap activates, the first element in its tab order receives focus.
-  </p>
-  <p>
-    <button id="activate-one">
-      activate trap 1
+    <button id="activate-default">
+      activate trap
     </button>
   </p>
-  <div id="demo-one" class="trap">
+  <div id="default" class="trap">
     <p>
       Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
     </p>
     <p>
-      <button id="deactivate-one">
-        deactivate trap 1
+      <button id="deactivate-default">
+        deactivate trap
       </button>
     </p>
   </div>
 
-  <h2 id="demo-two-heading">demo two</h2>
+  <h2 id="iene-heading">initial element, no escape</h2>
   <p>
     When this focus trap activates, focus jumps to a specific, manually specified element.
   </p>
   <p>
-    Also, in this demo the Escape key does not deactivate the focus trap. You must click the button.
+    Also, in this demo the <kbd>Escape</kbd> key does not deactivate the focus trap. You must click the button.
   </p>
   <p>
-    <button id="activate-two">
-      activate trap 2
+    <button id="activate-iene">
+      activate trap
     </button>
   </p>
-  <div id="demo-two" class="trap">
+  <div id="iene" class="trap">
     <p>
       Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
     </p>
@@ -73,61 +66,26 @@
       <input id="focused-input" />
     </p>
     <p>
-      <button id="deactivate-two">
-        deactivate trap 2
+      <button id="deactivate-iene">
+        deactivate trap
       </button>
     </p>
   </div>
 
-  <h2 id="demo-three-heading">demo three</h2>
+  <h2 id="ifc-heading">initially focused container</h2>
   <p>
-    When this focus trap activates, the first element in its tab order receives focus,
-    but because of positive tabindex attributes the tab order is not the same as the source order.
+    Initial focus is on the containing element, which has <code>tabindex="-1"</code> and no focus outline;
+    so when you tab through the trap focus does not return to the container.
   </p>
   <p>
-    Also, clicking outside of this trap deactivates it and does not prevent the click's intended action.
+    Also, clicking on an outside element automatically deactivates this trap.
   </p>
   <p>
-    <button id="activate-three">
-      activate trap 3
+    <button id="activate-ifc">
+      activate trap
     </button>
   </p>
-  <div id="demo-three" class="trap">
-    <p>
-      <button tabIndex="3">
-        tabindex=3
-      </button>
-    </p>
-    <p>
-      <button tabIndex="2">
-        tabindex=2
-      </button>
-    </p>
-    <p>
-      <button tabIndex="4">tabindex 4</button>
-    </p>
-    <p>
-      <button>no tabindex</button>
-    </p>
-    <p>
-      <button id="deactivate-three" tabIndex="1">
-        deactivate trap 3 (tabindex=1)
-      </button>
-    </p>
-  </div>
-
-  <h2 id="demo-four-heading">demo four</h2>
-  <p>
-    Initial focus on a containing element with a tabindex of -1 and no focus outline;
-    so when you "tab" you are within the trap, but by tabbing through focus does
-    not return to the container.
-  </p>
-  <p>
-    <button id="activate-four">
-      activate trap 4
-    </button>
-  </p>
-  <div id="demo-four" class="trap" tabindex="-1">
+  <div id="ifc" class="trap" tabindex="-1">
     <p>
       <button>
         first
@@ -139,117 +97,113 @@
       </button>
     </p>
     <p>
-      <button id="deactivate-four">
-        deactivate trap 4
+      <button id="deactivate-ifc">
+        deactivate trap
       </button>
     </p>
   </div>
 
-  <h2 id="demo-five-heading">demo five</h2>
+  <h2 id="ht-heading">hidden treasures</h2>
   <p>
-    Focusable nodes are initially hidden and then revealed within the trap.
+    Focusable nodes are initially hidden and then revealed within the trap. Use <kbd>Escape</kbd> to exit.
   </p>
   <p>
-    <button id="activate-five">
-      activate trap 5
+    <button id="activate-ht">
+      activate trap
     </button>
   </p>
-  <div id="demo-five" class="trap" tabindex="-1">
+  <div id="ht" class="trap" tabindex="-1">
     <p>
       <button>
         nothing
       </button>
     </p>
     <p>
-      <button id="demo-five-show-more">
+      <button id="ht-show-more">
         click to show more
       </button>
     </p>
-    <div id="demo-five-more" style="display:none;">
+    <div id="ht-more" style="display:none;">
       <p>
         <button>
           nothing again
         </button>
       </p>
       <p>
-        <button id="demo-five-show-less">
+        <button id="ht-show-less">
           click to show less
         </button>
       </p>
     </div>
   </div>
 
-  <h2 id="demo-six-heading">demo six</h2>
+  <h2 id="nested-heading">nested</h2>
   <p>
-    Nested focus traps
+    Nested focus traps.
   </p>
   <p>
-    <button id="activate-six">
-      activate trap 6
+    <button id="activate-nested">
+      activate trap
     </button>
   </p>
-  <div id="demo-six" class="trap" tabindex="-1" style="display:none;">
+  <div id="nested" class="trap" tabindex="-1" style="display:none;">
     <p>
-      <button id="deactivate-six">
+      <button id="deactivate-nested">
         deactive outer trap
       </button>
     </p>
     <p>
-      <button id="demo-six-activate-nested">
+      <button id="nested-activate-nested">
         active inner trap
       </button>
     </p>
-    <div id="demo-six-nested" style="display:none;padding:5px 10px;background:pink;">
+    <div id="nested-nested" style="display:none;padding:5px 10px;background:pink;">
       <p>
         <button>
           nothing
         </button>
       </p>
       <p>
-        <button id="demo-six-deactivate-nested">
+        <button id="nested-deactivate-nested">
           deactivate and close inner trap
         </button>
       </p>
     </div>
   </div>
 
-  <h2 id="demo-seven-heading">demo seven</h2>
+  <h2 id="tif-heading">tricky initial focus</h2>
   <p>
-    In this focus trap, the single focusable button is hidden.
-    If you activate the trap in this state, the "fallbackFocus" option is used to focus the container.
-    If, however, you make the focusable button visible, it will receive focus when you activate the trap.
+    In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).
+    If you activate the trap in this state, the <code>fallbackFocus</code> option is used to focus the container.
+    If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
   </p>
   <p>
-    <button id="activate-seven">
-      activate trap 7
+    <button id="activate-tif">
+      activate trap
     </button>
   </p>
-  <div id="demo-seven" class="trap" tabindex="-1">
+  <div id="tif" class="trap" tabindex="-1">
     <p>
-      <button id="deactivate-seven" tabindex="-1">
-        deactivate trap 7
+      <button id="deactivate-tif" tabindex="-1">
+        deactivate trap
       </button>
     </p>
     <p>
-      <button id="demo-seven-show-focusable" tabindex="-1">
+      <button id="tif-show-focusable" tabindex="-1">
         show focusable button
       </button>
     </p>
     <p>
-      <button id="demo-seven-hide-focusable" style="display:none;">
+      <button id="tif-hide-focusable" style="display:none;">
         hide focusable button
       </button>
     </p>
   </div>
 
-  <h2 id="demo-eight-heading">demo eight</h2>
+  <h2 id="input-activation-heading">input activation</h2>
   <p>
-    Any change to the input content triggers automatic activation of the focus trap, without changing selection.
-  </p>
-  <p>
-    Also, in this demo the Escape key does not deactivate the focus trap. You must click the button.
-  </p>
-  <div id="demo-eight" class="trap">
+    Any change to the input content triggers automatic activation of the focus trap, without changing selection within the input.
+  </p>  <div id="input-activation" class="trap">
     <p>
       Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
     </p>
@@ -260,54 +214,15 @@
       <input id="focused-input8" />
     </p>
     <p>
-      <button id="deactivate-eight">
-        deactivate trap 8
+      <button id="deactivate-input-activation">
+        deactivate trap
       </button>
     </p>
   </div>
 
-  <h2 id="demo-nine-heading">demo nine</h2>
+  <h2 id="delay-heading">delay</h2>
   <p>
-    Initial focus on a element with a tabindex of -1 and no focus outline;
-    so when you "tab" you will get to the next or previous element according to the browser.
-    While tabbing through, the focus does not return to the initial focused element.
-  </p>
-  <p>
-    <button id="activate-nine">
-      activate trap 9
-    </button>
-  </p>
-  <div id="demo-nine" class="trap">
-    <p>
-      <button>
-        nothing
-      </button>
-    </p>
-    <p>
-      <button tabindex="1">
-        tabindex=1
-      </button>
-    </p>
-    <p>
-      <button>
-        nothing
-      </button>
-    </p>
-    <p>
-      <button id="initial-nine" tabindex="-1">
-        Initial (tabindex="-1")
-      </button>
-    </p>
-    <p>
-      <button id="deactivate-nine">
-        deactivate trap 9
-      </button>
-    </p>
-  </div>
-
-  <h2 id="demo-delay-heading">demo delay</h2>
-  <p>
-    focus-trap ensure that the autofocus is delayed to prevent the focused element to capture the event that originated the activation of the focus trap.
+    focus-trap ensure that the placement of focus within the trap is slightly delayed, so the focused element does not capture the event that originated the activation of the focus trap. For example, the same <kbd>Enter</kbd> keystroke won't open <em>and</em> close this trap.
   </p>
   <p>
     <button id="activate-delay">
@@ -315,10 +230,60 @@
     </button>
   </p>
 
-  <div id="demo-delay" class="trap" style="opacity: 0.2;">
+  <div id="delay" class="trap" style="opacity: 0.2;">
     <p>
       <button id="close-button-delay">
         Hide
+      </button>
+    </p>
+  </div>
+
+  <h2 id="radio-heading">radio group</h2>
+  <p>
+    A default focus trap that contains a radio group. You should be able to change the radio group with the arrow keys, but <kbd>Tab</kbd> should only focus the active radio. (Notice that you need a checked radio in the group for things to work as expected.)
+  </p>
+  <p>
+    <button id="activate-radio">
+      activate trap
+    </button>
+  </p>
+  <div id="radio" class="trap">
+    <fieldset>
+      <legend>Radio group</legend>
+      <div>
+        <input type="radio" name="radio-set" id="radio-a" value="radio-a"> <label for="radio-a">a</label>
+      </div><div>
+        <input type="radio" name="radio-set" id="radio-b" value="radio-b" checked> <label for="radio-b">b</label>
+      </div><div>
+        <input type="radio" name="radio-set" id="radio-c" value="radio-c"> <label for="radio-c">c</label>
+      </div>
+    </fieldset>
+    <p>
+      <button id="deactivate-radio">
+        deactivate trap
+      </button>
+    </p>
+  </div>
+
+  <h2 id="iframe-heading">iframe</h2>
+  <p>
+    This focus trap contains an iframe. You should be able to tab into and out of the iframe. But you need to have a focusable element before and after the iframe for things to work as expected.
+  </p>
+  <p>
+    <button id="activate-iframe">
+      activate trap
+    </button>
+  </p>
+  <div id="iframe" class="trap">
+    <p>
+      <button>
+        nothing
+      </button>
+    </p>
+    <iframe src="./iframe-content.html"></iframe>
+    <p>
+      <button id="deactivate-iframe">
+        deactivate trap
       </button>
     </p>
   </div>

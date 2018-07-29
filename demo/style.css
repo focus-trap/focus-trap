@@ -33,3 +33,9 @@ body {
 #initial-nine {
   outline: 0;
 }
+
+code, kbd {
+  background: #eee;
+  font-size: 90%;
+  padding: 0 2px;
+}
