@@ -1,6 +1,6 @@
 var createFocusTrap = require('../../');
 
-var container = document.getElementById('input-activation');
+var container = document.getElementById('iene');
 
 var focusTrap = createFocusTrap(container, {
   onActivate: function() {
@@ -8,15 +8,17 @@ var focusTrap = createFocusTrap(container, {
   },
   onDeactivate: function() {
     container.className = 'trap';
-  }
+  },
+  initialFocus: '#focused-input',
+  escapeDeactivates: false
 });
 
-document.getElementById('focused-input8').addEventListener('input', function() {
+document.getElementById('activate-iene').addEventListener('click', function() {
   focusTrap.activate();
 });
 
 document
-  .getElementById('deactivate-input-activation')
+  .getElementById('deactivate-iene')
   .addEventListener('click', function() {
     focusTrap.deactivate();
   });

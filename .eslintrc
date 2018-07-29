@@ -1,35 +1,6 @@
 {
   "env": {
-    "node": true,
+    "commonjs": true,
     "browser": true
-  },
-  "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true,
-    }
-  },
-  "rules": {
-    "array-bracket-spacing": ["error", "never"],
-    "brace-style": ["error", "1tbs"],
-    "comma-dangle": ["error", "always-multiline"],
-    "comma-spacing": ["error", { "before": false, "after": true }],
-    "computed-property-spacing": ["error", "never"],
-    "curly": ["error", "multi-line"],
-    "eol-last": "error",
-    "eqeqeq": ["error", "smart"],
-    "indent": ["error", 2, { "SwitchCase": 1 }],
-    "no-extend-native": "error",
-    "no-mixed-spaces-and-tabs": "error",
-    "no-spaced-func": "error",
-    "no-trailing-spaces": "error",
-    "no-unused-vars": "error",
-    "no-use-before-define": ["error", "nofunc"],
-    "object-curly-spacing": ["error", "always"],
-    "quotes": ["error", "single", "avoid-escape"],
-    "semi": ["error", "always"],
-    "space-before-function-paren": ["error", {"anonymous": "always", "named": "never"}],
-    "space-infix-ops": "error",
-    "spaced-comment": ["error", "always"],
-    "keyword-spacing": ["error", { "before": true, "after": true }]
   }
 }

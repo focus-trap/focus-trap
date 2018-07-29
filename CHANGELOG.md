@@ -1,5 +1,9 @@
 # Changelog
 
+## HEAD
+
+- Update Tabbable to detect more elements and be more careful with radio buttons (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
+
 ## 2.4.6
 
 - Add slight delay before moving focus to the first element in the trap.

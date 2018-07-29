@@ -1,5 +1,5 @@
 require('./default');
-require('./initial-element-no-focus');
+require('./initial-element-no-escape');
 require('./initially-focused-container');
 require('./hidden-treasures');
 require('./nested');

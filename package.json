@@ -5,6 +5,8 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "precommit": "lint-staged",
+    "format": "prettier --write '**/*.{js,json}'",
     "lint": "eslint .",
     "demo-bundle": "browserify demo/js/index.js -o demo/demo-bundle.js",
     "clean": "del-cli dist && make-dir dist",
@@ -34,14 +36,18 @@
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^1.0.3"
+    "tabbable": "^3.0.0",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
     "budo": "^9.4.1",
     "del-cli": "^1.1.0",
     "eslint": "^3.13.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
     "make-dir-cli": "^1.0.0",
+    "prettier": "^1.14.0",
     "uglify-js": "^3.3.22"
   },
   "files": [
