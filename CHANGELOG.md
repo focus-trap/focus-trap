@@ -1,8 +1,9 @@
 # Changelog
 
-## HEAD
+## 3.0.0
 
-- Update Tabbable to detect more elements and be more careful with radio buttons (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
+- **Breaking (kind of):** Update Tabbable to detect more elements and be more careful with radio buttons (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
+- **Breaking (kind of):** If `clickOutsideDeactivates` and `returnFocusOnDeactivate` are both `true`, focus will be returned to the pre-trap element only if the clicked element is not focusable.
 
 ## 2.4.6
 
