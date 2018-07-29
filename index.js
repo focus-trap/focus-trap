@@ -4,8 +4,9 @@ var xtend = require('xtend');
 var listeningFocusTrap = null;
 
 function focusTrap(element, userOptions) {
+  var doc = document;
   var container =
-    typeof element === 'string' ? document.querySelector(element) : element;
+    typeof element === 'string' ? doc.querySelector(element) : element;
 
   var config = xtend(
     {
@@ -40,7 +41,7 @@ function focusTrap(element, userOptions) {
 
     state.active = true;
     state.paused = false;
-    state.nodeFocusedBeforeActivation = document.activeElement;
+    state.nodeFocusedBeforeActivation = doc.activeElement;
 
     var onActivate =
       activateOptions && activateOptions.onActivate
@@ -110,11 +111,11 @@ function focusTrap(element, userOptions) {
     delay(function() {
       tryFocus(getInitialFocusNode());
     });
-    document.addEventListener('focusin', checkFocusIn, true);
-    document.addEventListener('mousedown', checkPointerDown, true);
-    document.addEventListener('touchstart', checkPointerDown, true);
-    document.addEventListener('click', checkClick, true);
-    document.addEventListener('keydown', checkKey, true);
+    doc.addEventListener('focusin', checkFocusIn, true);
+    doc.addEventListener('mousedown', checkPointerDown, true);
+    doc.addEventListener('touchstart', checkPointerDown, true);
+    doc.addEventListener('click', checkClick, true);
+    doc.addEventListener('keydown', checkKey, true);
 
     return trap;
   }
@@ -122,11 +123,11 @@ function focusTrap(element, userOptions) {
   function removeListeners() {
     if (!state.active || listeningFocusTrap !== trap) return;
 
-    document.removeEventListener('focusin', checkFocusIn, true);
-    document.removeEventListener('mousedown', checkPointerDown, true);
-    document.removeEventListener('touchstart', checkPointerDown, true);
-    document.removeEventListener('click', checkClick, true);
-    document.removeEventListener('keydown', checkKey, true);
+    doc.removeEventListener('focusin', checkFocusIn, true);
+    doc.removeEventListener('mousedown', checkPointerDown, true);
+    doc.removeEventListener('touchstart', checkPointerDown, true);
+    doc.removeEventListener('click', checkClick, true);
+    doc.removeEventListener('keydown', checkKey, true);
 
     listeningFocusTrap = null;
 
@@ -140,7 +141,7 @@ function focusTrap(element, userOptions) {
       return null;
     }
     if (typeof optionValue === 'string') {
-      node = document.querySelector(optionValue);
+      node = doc.querySelector(optionValue);
       if (!node) {
         throw new Error('`' + optionName + '` refers to no known node');
       }
@@ -158,8 +159,8 @@ function focusTrap(element, userOptions) {
     var node;
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
-    } else if (container.contains(document.activeElement)) {
-      node = document.activeElement;
+    } else if (container.contains(doc.activeElement)) {
+      node = doc.activeElement;
     } else {
       node = state.firstTabbableNode || getNodeForOption('fallbackFocus');
     }
@@ -178,7 +179,9 @@ function focusTrap(element, userOptions) {
   function checkPointerDown(e) {
     if (container.contains(e.target)) return;
     if (config.clickOutsideDeactivates) {
-      deactivate({ returnFocus: false });
+      deactivate({
+        returnFocus: !tabbable.isFocusable(e.target)
+      });
     } else {
       e.preventDefault();
     }
@@ -239,7 +242,7 @@ function focusTrap(element, userOptions) {
   }
 
   function tryFocus(node) {
-    if (node === document.activeElement) return;
+    if (node === doc.activeElement) return;
     if (!node || !node.focus) {
       tryFocus(getInitialFocusNode());
       return;
