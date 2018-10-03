@@ -4,7 +4,7 @@ Trap focus within a DOM node.
 
 There may come a time when you find it important to trap focus within a DOM node — so that when a user hits `Tab` or `Shift+Tab` or clicks around, she can't escape a certain cycle of focusable elements.
 
-You will definitely face this challenge when you are try to build **accessible modals**.
+You will definitely face this challenge when you are trying to build **accessible modals**.
 
 This module is a little, modular **vanilla JS** solution to that problem.
 
@@ -157,7 +157,7 @@ The focus trap will work best if the *first* and *last* focusable elements in yo
 
 Tabbing will work as expected with trickier, less predictable elements — like iframes, shadow trees, audio and video elements, etc. — as long as they are *between* more predictable elements (that is, if they are not the first or last tabbable element in the trap).
 
-This limitation is ultimately rooted in browser inconsistencies and inadequacies, but it comes to focus-trap through its dependency [Tababble](https://github.com/davidtheclark/tabbable). You can read about more details [in the Tabbable documentation](https://github.com/davidtheclark/tabbable#more-details).
+This limitation is ultimately rooted in browser inconsistencies and inadequacies, but it comes to focus-trap through its dependency [Tabbable](https://github.com/davidtheclark/tabbable). You can read about more details [in the Tabbable documentation](https://github.com/davidtheclark/tabbable#more-details).
 
 ### Your trap should include a tabbable element or a focusable container
 
