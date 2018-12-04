@@ -55,7 +55,7 @@ function focusTrap(element, userOptions) {
     return trap;
   }
 
-  function deactivate(deactivateOptions) {
+  function deactivate(deactivateOptions, event) {
     if (!state.active) return;
 
     removeListeners();
@@ -67,7 +67,7 @@ function focusTrap(element, userOptions) {
         ? deactivateOptions.onDeactivate
         : config.onDeactivate;
     if (onDeactivate) {
-      onDeactivate();
+      onDeactivate(event);
     }
 
     var returnFocus =
@@ -179,9 +179,12 @@ function focusTrap(element, userOptions) {
   function checkPointerDown(e) {
     if (container.contains(e.target)) return;
     if (config.clickOutsideDeactivates) {
-      deactivate({
-        returnFocus: !tabbable.isFocusable(e.target)
-      });
+      deactivate(
+        {
+          returnFocus: !tabbable.isFocusable(e.target)
+        },
+        e
+      );
     } else {
       e.preventDefault();
     }
@@ -200,7 +203,7 @@ function focusTrap(element, userOptions) {
   function checkKey(e) {
     if (config.escapeDeactivates !== false && isEscapeEvent(e)) {
       e.preventDefault();
-      deactivate();
+      deactivate(null, e);
       return;
     }
     if (isTabEvent(e)) {
