@@ -171,6 +171,35 @@
     </div>
   </div>
 
+  <h2 id="sibling-heading">sibling traps</h2>
+  <p>
+    Sibling focus traps. When the second trap is deactivated, focus returns to the first trap.
+  </p>
+  <div id="sibling-first" class="trap" tabindex="-1">
+    <p>
+      <button id="activate-first-sibling">
+        activate first trap
+      </button>
+    </p>
+    <p>
+      <button id="deactivate-first-sibling">
+        deactivate first trap
+      </button>
+    </p>
+    <p>
+      <button id="activate-second-sibling">
+        activate second trap
+      </button>
+    </p>
+  </div>
+  <div id="sibling-second" class="trap" tabindex="-1" style="display: none;">
+    <p>
+      <button id="deactivate-second-sibling">
+        deactivate second trap
+      </button>
+    </p>
+  </div>
+
   <h2 id="tif-heading">tricky initial focus</h2>
   <p>
     In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).

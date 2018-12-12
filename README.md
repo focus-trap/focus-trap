@@ -149,7 +149,7 @@ document.getElementById('deactivate-one').addEventListener('click', function () 
 
 ### One at a time
 
-*Only one focus trap can be listening at a time.* So if you want two focus traps active at a time, one of them has to be paused.
+*Only one focus trap can be listening at a time.* If a second focus trap is activated the first will automatically pause. The first trap is unpaused and again traps focus when the second is deactivated. 
 
 ### Use predictable elements for the first and last tabbable elements in your trap
 

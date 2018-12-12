@@ -3,6 +3,7 @@ require('./initial-element-no-escape');
 require('./initially-focused-container');
 require('./hidden-treasures');
 require('./nested');
+require('./sibling');
 require('./tricky-initial-focus');
 require('./input-activation');
 require('./delay');
