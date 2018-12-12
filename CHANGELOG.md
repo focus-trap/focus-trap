@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0
+
+- **Breaking (kind of):** Focus trap now manages a queue of traps, so when a trap is paused because another trap activates, it will be unpaused when that other trap deactivates. If Trap A was automatically *paused* because Trap B activated (existing behavior), when Trap B is deactivated Trap A will be automatically *unpaused* (new behavior).
+
 ## 3.0.0
 
 - **Breaking (kind of):** Update Tabbable to detect more elements and be more careful with radio buttons (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
