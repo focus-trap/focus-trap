@@ -1,6 +1,6 @@
 {
   "name": "focus-trap",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Trap focus within a DOM node.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^3.1.1",
+    "tabbable": "^3.1.2",
     "xtend": "^4.0.1"
   },
   "devDependencies": {

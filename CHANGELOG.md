@@ -1,8 +1,10 @@
 # Changelog
 
-## 4.0.1
+## 4.0.2
 
 - Fix reference to root element that caused errors within Shadow DOM.
+
+(Release 4.0.1 was a mistake, containing no changes.)
 
 ## 4.0.0
 
