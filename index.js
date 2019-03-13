@@ -143,10 +143,22 @@ function focusTrap(element, userOptions) {
       tryFocus(getInitialFocusNode());
     });
     doc.addEventListener('focusin', checkFocusIn, true);
-    doc.addEventListener('mousedown', checkPointerDown, true);
-    doc.addEventListener('touchstart', checkPointerDown, true);
-    doc.addEventListener('click', checkClick, true);
-    doc.addEventListener('keydown', checkKey, true);
+    doc.addEventListener('mousedown', checkPointerDown, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('touchstart', checkPointerDown, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('click', checkClick, {
+      capture: true,
+      passive: false
+    });
+    doc.addEventListener('keydown', checkKey, {
+      capture: true,
+      passive: false
+    });
 
     return trap;
   }
