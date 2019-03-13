@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.0
+
+- Update Tabbable to improve performance (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
+- **Breaking (kind of):** if the `onActivate` callback changes the list of tabbable nodes and the `initialFocus` option is not used, the initial focus will still go to the first element present before the callback.
+- Improve performance of activating a trap.
+
 ## 4.0.2
 
 - Fix reference to root element that caused errors within Shadow DOM.
