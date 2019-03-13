@@ -126,6 +126,7 @@ function focusTrap(element, userOptions) {
   function unpause() {
     if (!state.paused || !state.active) return;
     state.paused = false;
+    updateTabbableNodes();
     addListeners();
   }
 
@@ -134,8 +135,6 @@ function focusTrap(element, userOptions) {
 
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trap);
-
-    updateTabbableNodes();
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
