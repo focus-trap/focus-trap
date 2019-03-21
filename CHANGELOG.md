@@ -5,6 +5,7 @@
 - Update Tabbable to improve performance (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
 - **Breaking (kind of):** if the `onActivate` callback changes the list of tabbable nodes and the `initialFocus` option is not used, the initial focus will still go to the first element present before the callback.
 - Improve performance of activating a trap.
+- Register document-level event listeners as active (`passive: false`).
 
 ## 4.0.2
 
