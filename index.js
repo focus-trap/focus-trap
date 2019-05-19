@@ -1,6 +1,8 @@
 var tabbable = require('tabbable');
 var xtend = require('xtend');
 
+var activeFocusDelay;
+
 var activeFocusTraps = (function() {
   var trapQueue = [];
   return {
@@ -90,6 +92,8 @@ function focusTrap(element, userOptions) {
   function deactivate(deactivateOptions) {
     if (!state.active) return;
 
+    clearTimeout(activeFocusDelay);
+
     removeListeners();
     state.active = false;
     state.paused = false;
@@ -138,9 +142,10 @@ function focusTrap(element, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    delay(function() {
+    activeFocusDelay = delay(function() {
       tryFocus(getInitialFocusNode());
     });
+
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {
       capture: true,
