@@ -1,5 +1,11 @@
 # focus-trap
 
+---
+
+**SEEKING CO-MAINTAINERS!** Continued development of this project is going to require the work of one or more dedicated co-maintainers (or forkers). If you're interested, please comment in [this issue](https://github.com/davidtheclark/focus-trap/issues/85).
+
+---
+
 Trap focus within a DOM node.
 
 There may come a time when you find it important to trap focus within a DOM node — so that when a user hits `Tab` or `Shift+Tab` or clicks around, she can't escape a certain cycle of focusable elements.
