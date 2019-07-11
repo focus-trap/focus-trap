@@ -9,3 +9,4 @@ require('./input-activation');
 require('./delay');
 require('./radio');
 require('./iframe');
+require('./allowoutsideclick');

@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+- Add `allowOutsideClick` option that allows you to pass a click event through, even when `clickOutsideDeactivates` is `false`
+
 ## 5.0.0
 
 - Update Tabbable to improve performance (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
