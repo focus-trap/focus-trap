@@ -227,9 +227,15 @@ function focusTrap(element, userOptions) {
       deactivate({
         returnFocus: !tabbable.isFocusable(e.target)
       });
-    } else {
-      e.preventDefault();
+      return;
     }
+    // This is needed for mobile devices.
+    // (If we'll only let `click` events through,
+    // then on mobile they will be blocked anyways if `touchstart` is blocked.)
+    if (config.allowOutsideClick && config.allowOutsideClick(e)) {
+      return;
+    }
+    e.preventDefault();
   }
 
   // In case focus escapes the trap for some strange reason, pull it back in.
@@ -275,6 +281,9 @@ function focusTrap(element, userOptions) {
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
     if (container.contains(e.target)) return;
+    if (config.allowOutsideClick && config.allowOutsideClick(e)) {
+      return;
+    }
     e.preventDefault();
     e.stopImmediatePropagation();
   }

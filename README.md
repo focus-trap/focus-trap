@@ -69,6 +69,7 @@ Returns a new focus trap on `element`.
 - **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
 - **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing.
 - **returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
+- **allowOutsideClick** {function}: If set and returns `true`, a click outside the focus trap will not be prevented, even when `clickOutsideDeactivates` is `false`.
 
 ### focusTrap.activate([activateOptions])
 
