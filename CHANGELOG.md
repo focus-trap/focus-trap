@@ -1,8 +1,8 @@
 # Changelog
 
-## 5.0.1
+## 5.0.2
 
-- Add `allowOutsideClick` option that allows you to pass a click event through, even when `clickOutsideDeactivates` is `false`
+- Add `allowOutsideClick` option that allows you to pass a click event through, even when `clickOutsideDeactivates` is `false`.
 
 ## 5.0.0
 
