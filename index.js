@@ -75,7 +75,7 @@ function focusTrap(element, userOptions) {
 
     state.active = true;
     state.paused = false;
-    state.nodeFocusedBeforeActivation = doc.activeElement;
+    state.nodeFocusedBeforeActivation = getReturnFocusNode(doc.activeElement);
 
     var onActivate =
       activateOptions && activateOptions.onActivate
@@ -219,6 +219,23 @@ function focusTrap(element, userOptions) {
     return node;
   }
 
+  function getReturnFocusNode(previousActiveElement) {
+    var node;
+    if (getNodeForOption('setReturnFocus') !== null) {
+      node = getNodeForOption('setReturnFocus');
+    } else {
+      node = previousActiveElement;
+    }
+
+    if (!node) {
+      throw new Error(
+        "You can't have a focus-trap without at least one focusable element"
+      );
+    }
+
+    return node;
+  }
+
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event.
   function checkPointerDown(e) {
@@ -301,7 +318,6 @@ function focusTrap(element, userOptions) {
       tryFocus(getInitialFocusNode());
       return;
     }
-
     node.focus();
     state.mostRecentlyFocusedNode = node;
     if (isSelectableInput(node)) {

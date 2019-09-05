@@ -10,3 +10,4 @@ require('./delay');
 require('./radio');
 require('./iframe');
 require('./allowoutsideclick');
+require('./set-return-focus');

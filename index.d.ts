@@ -42,6 +42,12 @@ declare module "focus-trap" {
     returnFocusOnDeactivate?: boolean;
 
     /**
+     * By default, focus trap on deactivation will return to the element
+     * that was focused before activation.
+    */
+    setReturnFocus?: FocusTarget;
+
+    /**
      * Default: `true`. If `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
      * to force the user to make a decision instead of allowing an easy
