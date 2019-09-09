@@ -212,7 +212,7 @@ function focusTrap(element, userOptions) {
 
     if (!node) {
       throw new Error(
-        "You can't have a focus-trap without at least one focusable element"
+        'Your focus-trap needs to have at least one focusable element'
       );
     }
 
@@ -220,16 +220,15 @@ function focusTrap(element, userOptions) {
   }
 
   function getReturnFocusNode(previousActiveElement) {
-    var node;
-    if (getNodeForOption('setReturnFocus') !== null) {
-      node = getNodeForOption('setReturnFocus');
-    } else {
+    var node = getNodeForOption('setReturnFocus');
+
+    if (!node) {
       node = previousActiveElement;
     }
 
-    if (!node) {
+    if (!node || !previousActiveElement) {
       throw new Error(
-        "You can't have a focus-trap without at least one focusable element"
+        'Your focus-trap needs to have at least one focusable element'
       );
     }
 
