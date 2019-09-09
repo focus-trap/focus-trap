@@ -75,7 +75,7 @@ function focusTrap(element, userOptions) {
 
     state.active = true;
     state.paused = false;
-    state.nodeFocusedBeforeActivation = getReturnFocusNode(doc.activeElement);
+    state.nodeFocusedBeforeActivation = doc.activeElement;
 
     var onActivate =
       activateOptions && activateOptions.onActivate
@@ -114,7 +114,7 @@ function focusTrap(element, userOptions) {
         : config.returnFocusOnDeactivate;
     if (returnFocus) {
       delay(function() {
-        tryFocus(state.nodeFocusedBeforeActivation);
+        tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
       });
     }
 
@@ -221,18 +221,7 @@ function focusTrap(element, userOptions) {
 
   function getReturnFocusNode(previousActiveElement) {
     var node = getNodeForOption('setReturnFocus');
-
-    if (!node) {
-      node = previousActiveElement;
-    }
-
-    if (!node || !previousActiveElement) {
-      throw new Error(
-        'Your focus-trap needs to have at least one focusable element'
-      );
-    }
-
-    return node;
+    return node ? node : previousActiveElement;
   }
 
   // This needs to be done on mousedown and touchstart instead of click
