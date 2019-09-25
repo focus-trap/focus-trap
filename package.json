@@ -3,16 +3,18 @@
   "version": "5.0.2",
   "description": "Trap focus within a DOM node.",
   "main": "index.js",
+  "module": "dist/focus-trap.esm.js",
+  "browser": "dist/focus-trap.min.js",
   "types": "index.d.ts",
   "scripts": {
     "precommit": "lint-staged",
     "format": "prettier --write '**/*.{js,json}'",
     "lint": "eslint .",
-    "demo-bundle": "browserify demo/js/index.js -o demo/demo-bundle.js",
+    "demo-bundle": "rollup --environment 'BUILD:4' -c",
     "clean": "del-cli dist && make-dir dist",
-    "build-dev": "npm run clean && browserify index.js -s focusTrap > dist/focus-trap.js",
-    "minify": "uglifyjs dist/focus-trap.js > dist/focus-trap.min.js",
-    "build": "npm run build-dev && npm run minify",
+    "build-dev": "npm run clean && rollup --environment 'BUILD:1' -c",
+    "minify": "rollup --environment 'BUILD:2' -c",
+    "build": "npm run clean && rollup --environment 'BUILD:3' -c",
     "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live",
     "test": "npm run lint",
     "prepublishOnly": "npm run build"
@@ -40,7 +42,6 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "browserify": "^13.3.0",
     "budo": "^9.4.1",
     "del-cli": "^1.1.0",
     "eslint": "^3.13.1",
@@ -48,7 +49,10 @@
     "lint-staged": "^7.2.0",
     "make-dir-cli": "^1.0.0",
     "prettier": "^1.14.0",
-    "uglify-js": "^3.3.22"
+    "rollup": "^1.21.4",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.2"
   },
   "files": [
     "dist",
