@@ -114,7 +114,7 @@ function focusTrap(element, userOptions) {
         : config.returnFocusOnDeactivate;
     if (returnFocus) {
       delay(function() {
-        tryFocus(state.nodeFocusedBeforeActivation);
+        tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
       });
     }
 
@@ -212,11 +212,16 @@ function focusTrap(element, userOptions) {
 
     if (!node) {
       throw new Error(
-        "You can't have a focus-trap without at least one focusable element"
+        'Your focus-trap needs to have at least one focusable element'
       );
     }
 
     return node;
+  }
+
+  function getReturnFocusNode(previousActiveElement) {
+    var node = getNodeForOption('setReturnFocus');
+    return node ? node : previousActiveElement;
   }
 
   // This needs to be done on mousedown and touchstart instead of click
@@ -301,7 +306,6 @@ function focusTrap(element, userOptions) {
       tryFocus(getInitialFocusNode());
       return;
     }
-
     node.focus();
     state.mostRecentlyFocusedNode = node;
     if (isSelectableInput(node)) {
