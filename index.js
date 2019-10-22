@@ -44,6 +44,7 @@ function focusTrap(element, userOptions) {
 
   var config = xtend(
     {
+      focusOnActivate: true,
       returnFocusOnDeactivate: true,
       escapeDeactivates: true
     },
@@ -85,7 +86,7 @@ function focusTrap(element, userOptions) {
       onActivate();
     }
 
-    addListeners();
+    addListeners(config.focusOnActivate);
     return trap;
   }
 
@@ -131,10 +132,10 @@ function focusTrap(element, userOptions) {
     if (!state.paused || !state.active) return;
     state.paused = false;
     updateTabbableNodes();
-    addListeners();
+    addListeners(true);
   }
 
-  function addListeners() {
+  function addListeners(shouldFocus) {
     if (!state.active) return;
 
     // There can be only one listening focus trap at a time
@@ -142,9 +143,11 @@ function focusTrap(element, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    activeFocusDelay = delay(function() {
-      tryFocus(getInitialFocusNode());
-    });
+    if (shouldFocus) {
+      activeFocusDelay = delay(function() {
+        tryFocus(getInitialFocusNode());
+      });
+    }
 
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {
