@@ -301,6 +301,7 @@ function focusTrap(element, userOptions) {
   }
 
   function tryFocus(node) {
+    if (!state.active) return;
     if (node === doc.activeElement) return;
     if (!node || !node.focus) {
       tryFocus(getInitialFocusNode());
