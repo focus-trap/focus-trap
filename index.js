@@ -306,7 +306,7 @@ function focusTrap(element, userOptions) {
       tryFocus(getInitialFocusNode());
       return;
     }
-    node.focus();
+    node.focus({preventScroll: userOptions.preventScroll});
     state.mostRecentlyFocusedNode = node;
     if (isSelectableInput(node)) {
       node.select();
