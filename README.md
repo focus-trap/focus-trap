@@ -71,6 +71,7 @@ Returns a new focus trap on `element`.
 - **returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
 - **setReturnFocus** {element|string|function}: By default, focus trap on deactivation will return to the element that was focused before activation. With this option you can specify another element to programmatically receive focus after deactivation. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
 - **allowOutsideClick** {function}: If set and returns `true`, a click outside the focus trap will not be prevented, even when `clickOutsideDeactivates` is `false`.
+- **preventScroll** {boolean}: By default, focus() will scroll to the element if not in viewport. It can produce unattented effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen. 
 
 ### focusTrap.activate([activateOptions])
 
