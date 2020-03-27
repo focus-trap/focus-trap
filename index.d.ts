@@ -1,4 +1,4 @@
-declare module "focus-trap" {
+declare module 'focus-trap' {
   /**
    * A DOM node, a selector string (which will be passed to
    * `document.querySelector()` to find the DOM node), or a function that
@@ -11,19 +11,16 @@ declare module "focus-trap" {
      * A function that will be called when the focus trap activates.
      */
     onActivate?: () => void;
-
     /**
      * A function that will be called when the focus trap deactivates.
      */
     onDeactivate?: () => void;
-
     /**
      * By default, when a focus trap is activated the first element in the
      * focus trap's tab order will receive focus. With this option you can
      * specify a different element to receive that initial focus.
      */
     initialFocus?: FocusTarget;
-
     /**
      * By default, an error will be thrown if the focus trap contains no
      * elements in its tab order. With this option you can specify a
@@ -34,19 +31,16 @@ declare module "focus-trap" {
      * `tabindex` so it can be programmatically focused.*
      */
     fallbackFocus?: FocusTarget;
-
     /**
      * Default: `true`. If `false`, when the trap is deactivated,
      * focus will *not* return to the element that had focus before activation.
      */
     returnFocusOnDeactivate?: boolean;
-
     /**
      * By default, focus trap on deactivation will return to the element
      * that was focused before activation.
-    */
+     */
     setReturnFocus?: FocusTarget;
-
     /**
      * Default: `true`. If `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
@@ -54,19 +48,28 @@ declare module "focus-trap" {
      * way out.
      */
     escapeDeactivates?: boolean;
-
     /**
      * Default: `false`. If `true`, a click outside the focus trap will
      * deactivate the focus trap and allow the click event to do its thing.
      */
     clickOutsideDeactivates?: boolean;
-
+    /**
+     * If set and returns `true`,
+     * a click outside the focus trap will not be prevented,
+     * even when `clickOutsideDeactivates` is `false`.
+     */
     allowOutsideClick?: (event: MouseEvent) => boolean;
+    /**
+     * By default, focus() will scroll to the element if not in viewport.
+     * It can produce unattented effects like scrolling back to the top of a modal.
+     * If set to `true`, no scroll will happen.
+     */
+    preventScroll?: boolean;
   }
 
-  type ActivateOptions = Pick<Options, "onActivate">;
+  type ActivateOptions = Pick<Options, 'onActivate'>;
 
-  interface DeactivateOptions extends Pick<Options, "onDeactivate"> {
+  interface DeactivateOptions extends Pick<Options, 'onDeactivate'> {
     returnFocus?: boolean;
   }
 
