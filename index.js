@@ -237,7 +237,12 @@ function focusTrap(element, userOptions) {
     // This is needed for mobile devices.
     // (If we'll only let `click` events through,
     // then on mobile they will be blocked anyways if `touchstart` is blocked.)
-    if (config.allowOutsideClick && config.allowOutsideClick(e)) {
+    if (
+      config.allowOutsideClick &&
+      (typeof config.allowOutsideClick === 'boolean'
+        ? config.allowOutsideClick
+        : config.allowOutsideClick(e))
+    ) {
       return;
     }
     e.preventDefault();
@@ -286,7 +291,12 @@ function focusTrap(element, userOptions) {
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
     if (container.contains(e.target)) return;
-    if (config.allowOutsideClick && config.allowOutsideClick(e)) {
+    if (
+      config.allowOutsideClick &&
+      (typeof config.allowOutsideClick === 'boolean'
+        ? config.allowOutsideClick
+        : config.allowOutsideClick(e))
+    ) {
       return;
     }
     e.preventDefault();
@@ -306,7 +316,7 @@ function focusTrap(element, userOptions) {
       tryFocus(getInitialFocusNode());
       return;
     }
-    node.focus({preventScroll: userOptions.preventScroll});
+    node.focus({ preventScroll: userOptions.preventScroll });
     state.mostRecentlyFocusedNode = node;
     if (isSelectableInput(node)) {
       node.select();

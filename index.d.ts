@@ -54,14 +54,14 @@ declare module 'focus-trap' {
      */
     clickOutsideDeactivates?: boolean;
     /**
-     * If set and returns `true`,
+     * If set and is or returns `true`,
      * a click outside the focus trap will not be prevented,
      * even when `clickOutsideDeactivates` is `false`.
      */
-    allowOutsideClick?: (event: MouseEvent) => boolean;
+    allowOutsideClick?: boolean | (event: MouseEvent) => boolean;
     /**
      * By default, focus() will scroll to the element if not in viewport.
-     * It can produce unattented effects like scrolling back to the top of a modal.
+     * It can produce unintended effects like scrolling back to the top of a modal.
      * If set to `true`, no scroll will happen.
      */
     preventScroll?: boolean;
