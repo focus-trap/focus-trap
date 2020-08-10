@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASED
+
+- Add boolean value support for `allowOutsideClick` option
+
 ## 5.1.0
 
 - Add `setReturnFocus` option that allows you to set which element receives focus when the trap closes.
