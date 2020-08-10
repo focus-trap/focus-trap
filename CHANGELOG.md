@@ -1,5 +1,9 @@
 # Changelog
 
+## UNRELEASED
+
+- New `preventScroll` feature to *prevent* scrolling to the element getting focus if not in the viewport.
+
 ## 5.1.0
 
 - Add `setReturnFocus` option that allows you to set which element receives focus when the trap closes.
