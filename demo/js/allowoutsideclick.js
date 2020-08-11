@@ -3,20 +3,21 @@ var createFocusTrap = require('../../');
 var container = document.getElementById('allowoutsideclick');
 var trigger = document.getElementById('activate-allowoutsideclick');
 var active = false;
+var allowOutsideClick = true;
 
-var focusTrap = createFocusTrap('#allowoutsideclick', {
-  allowOutsideClick: function(event) {
-    if (event.target === trigger) {
-      return true;
+function initialize() {
+  return createFocusTrap('#allowoutsideclick', {
+    allowOutsideClick: allowOutsideClick,
+    onActivate: function() {
+      container.className = 'trap is-active';
+    },
+    onDeactivate: function() {
+      container.className = 'trap';
     }
-  },
-  onActivate: function() {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function() {
-    container.className = 'trap';
-  }
-});
+  });
+}
+
+var focusTrap = initialize();
 
 function activate() {
   focusTrap.activate();
@@ -42,4 +43,19 @@ document
   .getElementById('deactivate-allowoutsideclick')
   .addEventListener('click', function() {
     deactivate();
+  });
+
+document
+  .getElementById('select-allowoutsideclick')
+  .addEventListener('change', function(event) {
+    allowOutsideClick = {
+      boolean: true,
+      function: function(e) {
+        if (e.target === trigger) {
+          return true;
+        }
+      }
+    }[event.target.value];
+
+    focusTrap = initialize();
   });
