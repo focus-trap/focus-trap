@@ -2,20 +2,19 @@
   "name": "focus-trap",
   "version": "5.1.0",
   "description": "Trap focus within a DOM node.",
-  "main": "index.js",
+  "main": "dist/focus-trap.js",
   "types": "index.d.ts",
   "scripts": {
-    "precommit": "lint-staged",
-    "format": "prettier --write '**/*.{js,json}'",
+    "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
+    "format-check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
     "lint": "eslint .",
-    "demo-bundle": "browserify demo/js/index.js -o demo/demo-bundle.js",
     "clean": "del-cli dist && make-dir dist",
-    "build-dev": "npm run clean && browserify index.js -s focusTrap > dist/focus-trap.js",
-    "minify": "uglifyjs dist/focus-trap.js > dist/focus-trap.min.js",
-    "build": "npm run build-dev && npm run minify",
-    "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live",
-    "test": "npm run lint",
-    "prepublishOnly": "npm run build"
+    "build": "yarn clean && webpack",
+    "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live -- -t babelify",
+    "test-types": "tsc index.d.ts",
+    "test-unit": "echo \"No unit tests to run!\"",
+    "test": "yarn format-check && yarn lint && yarn test-unit && yarn test-types",
+    "prepublishOnly": "yarn build"
   },
   "repository": {
     "type": "git",
@@ -30,29 +29,53 @@
     "modal"
   ],
   "author": "David Clark",
+  "contributors": [
+    {
+      "name": "David Clark",
+      "url": "http://davidtheclark.com/"
+    },
+    {
+      "name": "Stefan Cameron",
+      "url": "https://stefancameron.com/"
+    },
+    {
+      "name": "Marais Rossouw",
+      "url": "https://marais.io/"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/davidtheclark/focus-trap/issues"
   },
   "homepage": "https://github.com/davidtheclark/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^4.0.0",
-    "xtend": "^4.0.1"
+    "tabbable": "^4.0.0"
   },
   "devDependencies": {
-    "browserify": "^13.3.0",
-    "budo": "^9.4.1",
+    "@babel/cli": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.2",
+    "@changesets/cli": "^2.9.1",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "babelify": "^10.0.0",
+    "budo": "^11.6.3",
     "del-cli": "^1.1.0",
-    "eslint": "^3.13.1",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.2.0",
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^6.11.0",
     "make-dir-cli": "^1.0.0",
-    "prettier": "^1.14.0",
-    "uglify-js": "^3.3.22"
+    "prettier": "^2.0.5",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "files": [
-    "dist",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
     "index.js",
-    "index.d.ts"
+    "index.d.ts",
+    "dist/"
   ]
 }

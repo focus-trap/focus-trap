@@ -4,13 +4,13 @@ var container = document.getElementById('sibling-first');
 var second = document.getElementById('sibling-second');
 
 var firstFocusTrap = createFocusTrap('#sibling-first', {
-  onDeactivate: function() {
+  onDeactivate: function () {
     container.className = 'trap';
   }
 });
 
 var secondFocusTrap = createFocusTrap('#sibling-second', {
-  onDeactivate: function() {
+  onDeactivate: function () {
     second.style.display = 'none';
     second.className = 'trap';
   }
@@ -18,20 +18,20 @@ var secondFocusTrap = createFocusTrap('#sibling-second', {
 
 document
   .getElementById('activate-first-sibling')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     container.className = 'trap is-active';
     firstFocusTrap.activate();
   });
 
 document
   .getElementById('deactivate-first-sibling')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     firstFocusTrap.deactivate();
   });
 
 document
   .getElementById('activate-second-sibling')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     second.style.display = 'block';
     second.className = 'trap is-active';
     secondFocusTrap.activate();
@@ -39,6 +39,6 @@ document
 
 document
   .getElementById('deactivate-second-sibling')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     secondFocusTrap.deactivate();
   });

@@ -1,12 +1,11 @@
 var tabbable = require('tabbable');
-var xtend = require('xtend');
 
 var activeFocusDelay;
 
-var activeFocusTraps = (function() {
+var activeFocusTraps = (function () {
   var trapQueue = [];
   return {
-    activateTrap: function(trap) {
+    activateTrap: function (trap) {
       if (trapQueue.length > 0) {
         var activeTrap = trapQueue[trapQueue.length - 1];
         if (activeTrap !== trap) {
@@ -24,7 +23,7 @@ var activeFocusTraps = (function() {
       }
     },
 
-    deactivateTrap: function(trap) {
+    deactivateTrap: function (trap) {
       var trapIndex = trapQueue.indexOf(trap);
       if (trapIndex !== -1) {
         trapQueue.splice(trapIndex, 1);
@@ -42,13 +41,11 @@ function focusTrap(element, userOptions) {
   var container =
     typeof element === 'string' ? doc.querySelector(element) : element;
 
-  var config = xtend(
-    {
-      returnFocusOnDeactivate: true,
-      escapeDeactivates: true
-    },
-    userOptions
-  );
+  var config = {
+    returnFocusOnDeactivate: true,
+    escapeDeactivates: true,
+    ...userOptions
+  };
 
   var state = {
     firstTabbableNode: null,
@@ -113,7 +110,7 @@ function focusTrap(element, userOptions) {
         ? deactivateOptions.returnFocus
         : config.returnFocusOnDeactivate;
     if (returnFocus) {
-      delay(function() {
+      delay(function () {
         tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
       });
     }
@@ -142,7 +139,7 @@ function focusTrap(element, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    activeFocusDelay = delay(function() {
+    activeFocusDelay = delay(function () {
       tryFocus(getInitialFocusNode());
     });
 
@@ -316,7 +313,7 @@ function focusTrap(element, userOptions) {
       tryFocus(getInitialFocusNode());
       return;
     }
-    node.focus({ preventScroll: userOptions.preventScroll });
+    node.focus({ preventScroll: !!config.preventScroll });
     state.mostRecentlyFocusedNode = node;
     if (isSelectableInput(node)) {
       node.select();

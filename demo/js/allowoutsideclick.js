@@ -8,10 +8,11 @@ var allowOutsideClick = true;
 function initialize() {
   return createFocusTrap('#allowoutsideclick', {
     allowOutsideClick: allowOutsideClick,
-    onActivate: function() {
+    escapeDeactivates: false,
+    onActivate: function () {
       container.className = 'trap is-active';
     },
-    onDeactivate: function() {
+    onDeactivate: function () {
       container.className = 'trap';
     }
   });
@@ -31,7 +32,7 @@ function deactivate() {
   trigger.innerText = 'activate trap';
 }
 
-trigger.addEventListener('click', function() {
+trigger.addEventListener('click', function () {
   if (active) {
     deactivate();
   } else {
@@ -41,16 +42,16 @@ trigger.addEventListener('click', function() {
 
 document
   .getElementById('deactivate-allowoutsideclick')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     deactivate();
   });
 
 document
   .getElementById('select-allowoutsideclick')
-  .addEventListener('change', function(event) {
+  .addEventListener('change', function (event) {
     allowOutsideClick = {
       boolean: true,
-      function: function(e) {
+      function: function (e) {
         if (e.target === trigger) {
           return true;
         }

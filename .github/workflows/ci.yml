@@ -1,0 +1,48 @@
+name: CI
+
+on: push
+
+jobs:
+  test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    strategy:
+      matrix:
+        node: [12, 14]
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup environment
+        id: setups
+        run: |-
+          echo "::set-output name=yarn_cache::$(yarn cache dir)"
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+
+      - name: Yarn cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.setups.outputs.yarn_cache }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-node-${{ matrix.node }}
+
+      - name: Install packages
+        run: yarn --frozen-lockfile
+
+      - name: Lint
+        run: |-
+          yarn format-check;
+          yarn lint;
+
+      - name: Test
+        run: |-
+          yarn test-unit;
+          yarn test-types;
+
+      - name: Build # Tests to see if a build can succeed
+        run: yarn build

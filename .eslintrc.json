@@ -1,0 +1,28 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "impliedStrict": true
+    },
+    "ecmaVersion": 6,
+    "sourceType": "script"
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier" // ALWAYS LAST: disable style rules that conflict with prettier
+  ],
+  "env": {
+    "es6": true,
+    "commonjs": true,
+    "browser": true
+  },
+  "rules": {
+    "no-warning-comments": [
+      "error",
+      {
+        "terms": ["DEBUG", "FIXME", "HACK"],
+        "location": "start"
+      }
+    ]
+  }
+}
