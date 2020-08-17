@@ -3,10 +3,10 @@ var createFocusTrap = require('../../');
 var container = document.getElementById('setreturnfocus');
 
 var focusTrap = createFocusTrap('#setreturnfocus', {
-  onActivate: function() {
+  onActivate: function () {
     container.className = 'trap is-active';
   },
-  onDeactivate: function() {
+  onDeactivate: function () {
     container.className = 'trap';
   },
   setReturnFocus: '#overwritten-element'
@@ -14,12 +14,12 @@ var focusTrap = createFocusTrap('#setreturnfocus', {
 
 document
   .getElementById('activate-setreturnfocus')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     focusTrap.activate();
   });
 
 document
   .getElementById('deactivate-setreturnfocus')
-  .addEventListener('click', function() {
+  .addEventListener('click', function () {
     focusTrap.deactivate();
   });

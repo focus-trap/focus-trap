@@ -1,4 +1,4 @@
-# focus-trap
+# focus-trap [![CI](https://github.com/focus-trap/focus-trap/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/focus-trap/focus-trap/actions?query=workflow:CI+branch:master)
 
 ---
 
