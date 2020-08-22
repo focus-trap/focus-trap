@@ -18,9 +18,7 @@ const config = {
   mode: 'development',
   devtool: 'source-map',
   optimization: {
-    // always minimize using the TerserPlugin, which we'll specifically
-    //  configure NOT to mangle and only strip comments, in dev builds
-    //  (see `build.optimization.minimizer` below)
+    // always minimize using the TerserPlugin
     // NOTE: minimization is not the same as mangling; minimization, in Webpack,
     //  is basically tree-shaking (something we want to use to eliminate dead
     //  code), while mangling takes minimization even further by reducing
