@@ -45,9 +45,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/davidtheclark/focus-trap/issues"
+    "url": "https://github.com/focus-trap/focus-trap/issues"
   },
-  "homepage": "https://github.com/davidtheclark/focus-trap#readme",
+  "homepage": "https://github.com/focus-trap/focus-trap#readme",
   "dependencies": {
     "tabbable": "^4.0.0"
   },
