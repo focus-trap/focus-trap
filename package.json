@@ -63,7 +63,7 @@
     "del-cli": "^1.1.0",
     "eslint": "^7.3.0",
     "eslint-config-prettier": "^6.11.0",
-    "make-dir-cli": "^1.0.0",
+    "make-dir-cli": "^2.0.0",
     "prettier": "^2.0.5",
     "typescript": "^3.9.7",
     "webpack": "^4.44.1",
