@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      time: '00:00'
+      timezone: 'America/Chicago' # 12am Central Time
+    commit-message:
+      prefix: '[DEPENDABOT]'
+    labels:
+      - 'dependencies'
+      - 'dependabot'
+    open-pull-requests-limit: 10
+    reviewers:
+      - 'stefcameron'
+    versioning-strategy: 'increase'
