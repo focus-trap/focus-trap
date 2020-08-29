@@ -9,7 +9,7 @@ var focusTrap = createFocusTrap('#setreturnfocus', {
   onDeactivate: function () {
     container.className = 'trap';
   },
-  setReturnFocus: '#overwritten-element'
+  setReturnFocus: '#overwritten-element',
 });
 
 document

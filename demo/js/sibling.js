@@ -6,14 +6,14 @@ var second = document.getElementById('sibling-second');
 var firstFocusTrap = createFocusTrap('#sibling-first', {
   onDeactivate: function () {
     container.className = 'trap';
-  }
+  },
 });
 
 var secondFocusTrap = createFocusTrap('#sibling-second', {
   onDeactivate: function () {
     second.style.display = 'none';
     second.className = 'trap';
-  }
+  },
 });
 
 document

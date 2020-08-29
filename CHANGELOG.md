@@ -4,6 +4,7 @@
 
 - Add boolean value support for `allowOutsideClick` option
 - New `preventScroll` feature to *prevent* scrolling to the element getting focus if not in the viewport.
+- Changed code formatting to use dangling commas where ES5 supports them.
 
 ## 5.1.0
 

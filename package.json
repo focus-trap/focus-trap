@@ -7,7 +7,7 @@
   "scripts": {
     "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
     "format-check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
-    "lint": "eslint .",
+    "lint": "eslint \"*.js\" \"demo/**/*.js\"",
     "clean": "del-cli dist && make-dir dist",
     "build": "yarn clean && webpack",
     "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live -- -t babelify",

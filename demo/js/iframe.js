@@ -8,7 +8,7 @@ var focusTrap = createFocusTrap('#iframe', {
   },
   onDeactivate: function () {
     container.className = 'trap';
-  }
+  },
 });
 
 document

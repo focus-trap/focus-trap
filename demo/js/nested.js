@@ -6,14 +6,14 @@ var nested = document.getElementById('nested-nested');
 var primaryFocusTrap = createFocusTrap('#nested', {
   onDeactivate: function () {
     container.style.display = 'none';
-  }
+  },
 });
 
 var nestedFocusTrap = createFocusTrap('#nested-nested', {
   onDeactivate: function () {
     nested.style.display = 'none';
     primaryFocusTrap.unpause();
-  }
+  },
 });
 
 document

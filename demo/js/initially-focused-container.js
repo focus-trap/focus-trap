@@ -12,7 +12,7 @@ var focusTrap = createFocusTrap('#ifc', {
   initialFocus: function () {
     return document.getElementById('ifc');
   },
-  clickOutsideDeactivates: true
+  clickOutsideDeactivates: true,
 });
 
 document.getElementById('activate-ifc').addEventListener('click', function () {

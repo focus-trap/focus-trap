@@ -25,7 +25,7 @@ const config = {
     //  variable names and static values to their shortest representation
     //  possible while maintaining critical names
     // @see https://webpack.js.org/guides/tree-shaking/
-    minimize: true
+    minimize: true,
   },
   module: {
     rules: [
@@ -34,28 +34,28 @@ const config = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: babelConfig
-        }
-      }
-    ]
+          options: babelConfig,
+        },
+      },
+    ],
   },
   plugins: [
     new BannerPlugin({
       banner: getBanner(),
-      raw: true
-    })
+      raw: true,
+    }),
   ],
   watchOptions: {
     // @see https://webpack.js.org/configuration/watch/
-    ignored: ['node_modules/**', 'dist/**', '**/*.spec.js', '**/*.test.js']
-  }
+    ignored: ['node_modules/**', 'dist/**', '**/*.spec.js', '**/*.test.js'],
+  },
 };
 
 const outputConfig = {
   path: path.resolve('./dist'),
   libraryTarget: 'umd',
   library: 'focusTrap',
-  filename: null // specify in specialized build config
+  filename: null, // specify in specialized build config
 };
 
 module.exports = [
@@ -65,8 +65,8 @@ module.exports = [
     name: 'dev',
     output: {
       ...outputConfig,
-      filename: `${pkg.name}.js`
-    }
+      filename: `${pkg.name}.js`,
+    },
   },
   // Prod build
   {
@@ -76,7 +76,7 @@ module.exports = [
     devtool: false, // no source map
     output: {
       ...outputConfig,
-      filename: `${pkg.name}.min.js`
-    }
-  }
+      filename: `${pkg.name}.min.js`,
+    },
+  },
 ];

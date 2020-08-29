@@ -8,7 +8,7 @@ var focusTrap = createFocusTrap('#default', {
   },
   onDeactivate: function () {
     container.className = 'trap';
-  }
+  },
 });
 
 document

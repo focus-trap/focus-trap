@@ -8,7 +8,7 @@ var focusTrap = createFocusTrap('#radio', {
   },
   onDeactivate: function () {
     container.className = 'trap';
-  }
+  },
 });
 
 document

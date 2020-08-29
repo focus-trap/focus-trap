@@ -10,7 +10,7 @@ var focusTrap = createFocusTrap(container, {
     container.className = 'trap';
   },
   initialFocus: '#focused-input',
-  escapeDeactivates: false
+  escapeDeactivates: false,
 });
 
 document.getElementById('activate-iene').addEventListener('click', function () {

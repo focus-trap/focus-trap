@@ -32,7 +32,7 @@ var activeFocusTraps = (function () {
       if (trapQueue.length > 0) {
         trapQueue[trapQueue.length - 1].unpause();
       }
-    }
+    },
   };
 })();
 
@@ -44,7 +44,7 @@ function focusTrap(element, userOptions) {
   var config = {
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
-    ...userOptions
+    ...userOptions,
   };
 
   var state = {
@@ -53,14 +53,14 @@ function focusTrap(element, userOptions) {
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
-    paused: false
+    paused: false,
   };
 
   var trap = {
     activate: activate,
     deactivate: deactivate,
     pause: pause,
-    unpause: unpause
+    unpause: unpause,
   };
 
   return trap;
@@ -146,19 +146,19 @@ function focusTrap(element, userOptions) {
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {
       capture: true,
-      passive: false
+      passive: false,
     });
     doc.addEventListener('touchstart', checkPointerDown, {
       capture: true,
-      passive: false
+      passive: false,
     });
     doc.addEventListener('click', checkClick, {
       capture: true,
-      passive: false
+      passive: false,
     });
     doc.addEventListener('keydown', checkKey, {
       capture: true,
-      passive: false
+      passive: false,
     });
 
     return trap;
@@ -227,7 +227,7 @@ function focusTrap(element, userOptions) {
     if (container.contains(e.target)) return;
     if (config.clickOutsideDeactivates) {
       deactivate({
-        returnFocus: !tabbable.isFocusable(e.target)
+        returnFocus: !tabbable.isFocusable(e.target),
       });
       return;
     }

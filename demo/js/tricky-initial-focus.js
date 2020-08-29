@@ -10,7 +10,7 @@ var focusTrap = createFocusTrap(container, {
   },
   onDeactivate: function () {
     container.className = 'trap';
-  }
+  },
 });
 
 document.getElementById('activate-tif').addEventListener('click', function () {

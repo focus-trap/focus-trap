@@ -14,7 +14,7 @@ function initialize() {
     },
     onDeactivate: function () {
       container.className = 'trap';
-    }
+    },
   });
 }
 
@@ -55,7 +55,7 @@ document
         if (e.target === trigger) {
           return true;
         }
-      }
+      },
     }[event.target.value];
 
     focusTrap = initialize();
