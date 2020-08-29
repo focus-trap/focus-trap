@@ -61,7 +61,7 @@
     "babelify": "^10.0.0",
     "budo": "^11.6.3",
     "del-cli": "^1.1.0",
-    "eslint": "^7.3.0",
+    "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "make-dir-cli": "^1.0.0",
     "prettier": "^2.0.5",
