@@ -4,6 +4,15 @@
   "description": "Trap focus within a DOM node.",
   "main": "dist/focus-trap.js",
   "types": "index.d.ts",
+  "files": [
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "index.js",
+    "index.d.ts",
+    "dist"
+  ],
   "scripts": {
     "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
     "format-check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
@@ -14,7 +23,8 @@
     "test-types": "tsc index.d.ts",
     "test-unit": "echo \"No unit tests to run!\"",
     "test": "yarn format-check && yarn lint && yarn test-unit && yarn test-types",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "release": "yarn build && changeset publish"
   },
   "repository": {
     "type": "git",
@@ -68,14 +78,5 @@
     "typescript": "^4.0.2",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
-  },
-  "files": [
-    "package.json",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE",
-    "index.js",
-    "index.d.ts",
-    "dist/"
-  ]
+  }
 }
