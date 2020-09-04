@@ -2,8 +2,8 @@
   "name": "focus-trap",
   "version": "6.0.0",
   "description": "Trap focus within a DOM node.",
-  "main": "dist/focus-trap.min.js",
-  "module": "dist/focus-trap.esm.min.js",
+  "main": "dist/focus-trap.js",
+  "module": "dist/focus-trap.esm.js",
   "types": "index.d.ts",
   "sideEffects": false,
   "files": [
