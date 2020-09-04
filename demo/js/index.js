@@ -9,5 +9,6 @@ require('./input-activation');
 require('./delay');
 require('./radio');
 require('./iframe');
-require('./allowoutsideclick');
+require('./allow-outside-click');
+require('./click-outside-deactivates');
 require('./set-return-focus');

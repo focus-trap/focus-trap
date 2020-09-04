@@ -19,7 +19,7 @@
     "lint": "eslint \"*.js\" \"demo/**/*.js\"",
     "clean": "del-cli dist && make-dir dist",
     "build": "yarn clean && webpack",
-    "start": "budo demo/js/index.js:demo-bundle.js --dir demo --live -- -t babelify",
+    "start": "yarn build && budo demo/js/index.js:demo-bundle.js --dir demo --live -- -t babelify",
     "test-types": "tsc index.d.ts",
     "test-unit": "echo \"No unit tests to run!\"",
     "test": "yarn format-check && yarn lint && yarn test-unit && yarn test-types",
@@ -28,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davidtheclark/focus-trap.git"
+    "url": "git+https://github.com/focus-trap/focus-trap.git"
   },
   "keywords": [
     "focus",
@@ -47,10 +47,6 @@
     {
       "name": "Stefan Cameron",
       "url": "https://stefancameron.com/"
-    },
-    {
-      "name": "Marais Rossouw",
-      "url": "https://marais.io/"
     }
   ],
   "license": "MIT",
@@ -59,7 +55,7 @@
   },
   "homepage": "https://github.com/focus-trap/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^4.0.0"
+    "tabbable": "^5.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.5",
