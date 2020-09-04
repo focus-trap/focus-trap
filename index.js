@@ -1,4 +1,4 @@
-const { tabbable, isFocusable } = require('tabbable');
+import { tabbable, isFocusable } from 'tabbable';
 
 var activeFocusDelay;
 
@@ -341,4 +341,4 @@ function delay(fn) {
   return setTimeout(fn, 0);
 }
 
-module.exports = focusTrap;
+export { focusTrap };

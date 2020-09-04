@@ -24,5 +24,13 @@
         "location": "start"
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["index.js", "rollup.config.js"],
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    }
+  ]
 }

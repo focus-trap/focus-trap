@@ -6,6 +6,15 @@
 - New `preventScroll` feature to *prevent* scrolling to the element getting focus if not in the viewport.
 - Changed code formatting to use dangling commas where ES5 supports them.
 - **BREAKING**: Updated [tabbable](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#500) dependency to the new 5.0.0 release which contains breaking changes to its `isTabbableRadio()` internal function.
+- Help with tree shaking by having `package.json` state `sideEffects: false` to mark this module as having no side effects as a result of merely importing it.
+- **BREAKING**: This `package.json`'s "main" no longer points to `./index.js` in the package (although it still points to a CJS module, so it's possible this actually doesn't break anything). It now has:
+    - "main": `dist/focus-trap.min.js` (the CJS bundle)
+    - "module": `dist/focus-trap.esm.min.js` (the **new ESM bundle**)
+    - the UMD is `dist/focus-trap.umd.min.js` if needed (convenient for loading directly in an older browser that doesn't support ESM)
+    - **NOTE:** The CJS build no longer provides a default export. Use `const { focusTrap } = require('focus-trap');` to get the function.
+    - **NOTE:** The ESM build does not provide a default export. Use `import { focusTrap } from 'focus-trap';` to import the module.
+- **New ESM Build**: Included in `dist/focus-trap.esm.*`.
+- New UMD Build: Included in `dist/focus-trap.umd.*`.
 
 ## 5.1.0
 
