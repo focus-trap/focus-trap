@@ -36,7 +36,7 @@ var activeFocusTraps = (function () {
   };
 })();
 
-function focusTrap(element, userOptions) {
+function createFocusTrap(element, userOptions) {
   var doc = document;
   var container =
     typeof element === 'string' ? doc.querySelector(element) : element;
@@ -341,4 +341,4 @@ function delay(fn) {
   return setTimeout(fn, 0);
 }
 
-export { focusTrap };
+export { createFocusTrap };
