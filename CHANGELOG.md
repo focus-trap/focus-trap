@@ -11,8 +11,8 @@
     - "main": `dist/focus-trap.min.js` (the CJS bundle)
     - "module": `dist/focus-trap.esm.min.js` (the **new ESM bundle**)
     - the UMD is `dist/focus-trap.umd.min.js` if needed (convenient for loading directly in an older browser that doesn't support ESM)
-    - **NOTE:** The CJS build no longer provides a default export. Use `const { focusTrap } = require('focus-trap');` to get the function.
-    - **NOTE:** The ESM build does not provide a default export. Use `import { focusTrap } from 'focus-trap';` to import the module.
+    - **NOTE:** The CJS build no longer provides a function as a default export. Use `const { createFocusTrap } = require('focus-trap');` to get the function from before.
+    - **NOTE:** The ESM build does not provide a default export. Use `import { createFocusTrap } from 'focus-trap';` to import the module.
 - **New ESM Build**: Included in `dist/focus-trap.esm.*`.
 - New UMD Build: Included in `dist/focus-trap.umd.*`.
 

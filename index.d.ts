@@ -5,7 +5,7 @@ declare module 'focus-trap' {
    * returns a DOM node.
    */
   export type FocusTarget = HTMLElement | string | { (): HTMLElement };
-  
+
   type MouseEventToBoolean = (event: MouseEvent) => boolean
 
   export interface Options {
@@ -89,7 +89,7 @@ declare module 'focus-trap' {
    *  The element to be the focus trap, or a selector that will be used to
    *  find the element.
    */
-  export default function focusTrap(
+  export function createFocusTrap(
     element: HTMLElement | string,
     userOptions?: Options
   ): FocusTrap;

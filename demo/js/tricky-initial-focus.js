@@ -1,4 +1,4 @@
-var { focusTrap: createFocusTrap } = require('../../dist/focus-trap');
+var { createFocusTrap } = require('../../dist/focus-trap');
 
 var container = document.getElementById('tif');
 var focusable = document.getElementById('tif-hide-focusable');
