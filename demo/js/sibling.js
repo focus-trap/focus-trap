@@ -1,4 +1,4 @@
-var createFocusTrap = require('../../');
+var { focusTrap: createFocusTrap } = require('../../dist/focus-trap');
 
 var container = document.getElementById('sibling-first');
 var second = document.getElementById('sibling-second');

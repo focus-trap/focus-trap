@@ -1,4 +1,4 @@
-var createFocusTrap = require('../../');
+var { focusTrap: createFocusTrap } = require('../../dist/focus-trap');
 
 var container = document.getElementById('ht');
 var more = document.getElementById('ht-more');

@@ -135,7 +135,7 @@ Read code in `demo/` and [see how it works](http://davidtheclark.github.io/focus
 Here's what happens in `demo-one.js`:
 
 ```js
-var createFocusTrap = require('../../');
+var { focusTrap: createFocusTrap } = require('../../dist/focus-trap');
 
 var containerOne = document.getElementById('demo-one');
 var focusTrapOne = createFocusTrap('#demo-one', {
