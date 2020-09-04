@@ -1,18 +1,24 @@
 # Changelog
 
+## 6.0.1
+
+### Patch Changes
+
+- 694e2fa: Package main/module entries no longer point to minified bundles.
+
 ## 6.0.0
 
 - Add boolean value support for `allowOutsideClick` option.
-- New `preventScroll` feature to *prevent* scrolling to the element getting focus if not in the viewport.
+- New `preventScroll` feature to _prevent_ scrolling to the element getting focus if not in the viewport.
 - Changed code formatting to use dangling commas where ES5 supports them.
 - **BREAKING**: Updated [tabbable](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#500) dependency to the new 5.0.0 release which contains breaking changes to its `isTabbableRadio()` internal function.
 - Help with tree shaking by having `package.json` state `sideEffects: false` to mark this module as having no side effects as a result of merely importing it.
 - **BREAKING**: This `package.json`'s "main" no longer points to `./index.js` in the package (although it still points to a CJS module, so it's possible this actually doesn't break anything). It now has:
-    - "main": `dist/focus-trap.min.js` (the CJS bundle)
-    - "module": `dist/focus-trap.esm.min.js` (the **new ESM bundle**)
-    - the UMD is `dist/focus-trap.umd.min.js` if needed (convenient for loading directly in an older browser that doesn't support ESM)
-    - **NOTE:** The CJS build no longer provides a function as a default export. Use `const { createFocusTrap } = require('focus-trap');` to get the function from before.
-    - **NOTE:** The ESM build does not provide a default export. Use `import { createFocusTrap } from 'focus-trap';` to import the module.
+  - "main": `dist/focus-trap.min.js` (the CJS bundle)
+  - "module": `dist/focus-trap.esm.min.js` (the **new ESM bundle**)
+  - the UMD is `dist/focus-trap.umd.min.js` if needed (convenient for loading directly in an older browser that doesn't support ESM)
+  - **NOTE:** The CJS build no longer provides a function as a default export. Use `const { createFocusTrap } = require('focus-trap');` to get the function from before.
+  - **NOTE:** The ESM build does not provide a default export. Use `import { createFocusTrap } from 'focus-trap';` to import the module.
 - **New ESM Build**: Included in `dist/focus-trap.esm.*`.
 - New UMD Build: Included in `dist/focus-trap.umd.*`.
 
@@ -39,7 +45,7 @@
 
 ## 4.0.0
 
-- **Breaking (kind of):** Focus trap now manages a queue of traps, so when a trap is paused because another trap activates, it will be unpaused when that other trap deactivates. If Trap A was automatically *paused* because Trap B activated (existing behavior), when Trap B is deactivated Trap A will be automatically *unpaused* (new behavior).
+- **Breaking (kind of):** Focus trap now manages a queue of traps, so when a trap is paused because another trap activates, it will be unpaused when that other trap deactivates. If Trap A was automatically _paused_ because Trap B activated (existing behavior), when Trap B is deactivated Trap A will be automatically _unpaused_ (new behavior).
 
 ## 3.0.0
 
@@ -48,8 +54,7 @@
 
 ## 2.4.6
 
-- Add slight delay before moving focus to the first element in the trap.
-  This should prevent an occasional bug caused when the first element in the trap will close the trap if it picks up on the event that triggered the trap's opening.
+- Add slight delay before moving focus to the first element in the trap. This should prevent an occasional bug caused when the first element in the trap will close the trap if it picks up on the event that triggered the trap's opening.
 
 ## 2.4.5
 
@@ -87,7 +92,7 @@
 
 ## 2.0.2
 
-- Fixed: `clickOutsideDeactivates` no longer triggers deactivation when you click *inside* the trap.
+- Fixed: `clickOutsideDeactivates` no longer triggers deactivation when you click _inside_ the trap.
 
 ## 2.0.1
 
