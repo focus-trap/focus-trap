@@ -1,4 +1,4 @@
-var tabbable = require('tabbable');
+const { tabbable, isFocusable } = require('tabbable');
 
 var activeFocusDelay;
 
@@ -227,7 +227,7 @@ function focusTrap(element, userOptions) {
     if (container.contains(e.target)) return;
     if (config.clickOutsideDeactivates) {
       deactivate({
-        returnFocus: !tabbable.isFocusable(e.target),
+        returnFocus: !isFocusable(e.target),
       });
       return;
     }

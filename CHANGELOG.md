@@ -2,9 +2,10 @@
 
 ## UNRELEASED
 
-- Add boolean value support for `allowOutsideClick` option
+- Add boolean value support for `allowOutsideClick` option.
 - New `preventScroll` feature to *prevent* scrolling to the element getting focus if not in the viewport.
 - Changed code formatting to use dangling commas where ES5 supports them.
+- **BREAKING**: Updated [tabbable](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#500) dependency to the new 5.0.0 release which contains breaking changes to its `isTabbableRadio()` internal function.
 
 ## 5.1.0
 
