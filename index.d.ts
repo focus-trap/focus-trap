@@ -53,12 +53,17 @@ declare module 'focus-trap' {
     /**
      * Default: `false`. If `true`, a click outside the focus trap will
      * deactivate the focus trap and allow the click event to do its thing.
+     * This option **takes precedence** over `allowOutsideClick` when it's set
+     * to `true`.
      */
     clickOutsideDeactivates?: boolean;
     /**
-     * If set and is or returns `true`,
-     * a click outside the focus trap will not be prevented,
-     * even when `clickOutsideDeactivates` is `false`.
+     * If set and is or returns `true`, a click outside the focus trap will not
+     * be prevented, even when `clickOutsideDeactivates` is `false`. When
+     * `clickOutsideDeactivates` is `true`, this option is **ignored** (i.e.
+     * if it's a function, it will not be called). Use this option to control
+     * if (and even which) clicks are allowed outside the trap in conjunction
+     * with `clickOutsideDeactivates: false`.
      */
     allowOutsideClick?: boolean | MouseEventToBoolean;
     /**
