@@ -2,7 +2,7 @@
 
 ---
 
-**SEEKING CO-MAINTAINERS!** Continued development of this project is going to require the work of one or more dedicated co-maintainers (or forkers). If you're interested, please comment in [this issue](https://github.com/davidtheclark/focus-trap/issues/85).
+**SEEKING CO-MAINTAINERS!** Continued development of this project is going to require the work of one or more dedicated co-maintainers (or forkers). If you're interested, please comment in [this issue](https://github.com/focus-trap/focus-trap/issues/85).
 
 ---
 
@@ -192,4 +192,4 @@ If you find yourself in this situation, you should give you container `tabindex=
 
 ## Development
 
-Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests didn't make sense. (If you disagree and can help out, please PR!) So the demo is also the test: run it in browsers and see how it works, checking the documented requirements.
+Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests don't make sense. After all, JSDom does not fully support focus events. Since the demo was developed to also be the test, we use Cypress to automate running through all demos in the demo page.
