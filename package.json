@@ -16,8 +16,8 @@
     "dist"
   ],
   "scripts": {
-    "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
-    "format-check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*}.+(js|yml)\"",
+    "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
+    "format-check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "lint": "eslint \"*.js\" \"demo/**/*.js\"",
     "clean": "rm -rf ./dist",
     "compile-esm": "BUILD_ENV=esm rollup -c",
@@ -25,10 +25,12 @@
     "compile-umd": "BUILD_ENV=umd rollup -c",
     "compile": "yarn compile-esm && yarn compile-cjs && yarn compile-umd",
     "build": "yarn clean && yarn compile",
-    "start": "yarn build && budo demo/js/index.js:demo-bundle.js --dir demo --live -- -t babelify",
+    "start": "yarn compile-cjs && budo demo/js/index.js:demo-bundle.js --dir demo --live -- -t babelify",
     "test-types": "tsc index.d.ts",
     "test-unit": "echo \"No unit tests to run!\"",
-    "test": "yarn format-check && yarn lint && yarn test-unit && yarn test-types",
+    "test-cypress": "start-server-and-test start 9966 'cypress open'",
+    "test-cypress-ci": "start-server-and-test start 9966 'cypress run --browser $CYPRESS_BROWSER --headless'",
+    "test": "yarn format-check && yarn lint && yarn test-unit && yarn test-types && CYPRESS_BROWSER=chrome yarn test-cypress-ci",
     "prepublishOnly": "yarn build",
     "release": "yarn build && changeset publish"
   },
@@ -71,16 +73,21 @@
     "@rollup/plugin-babel": "^5.2.0",
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
+    "@testing-library/cypress": "^6.0.1",
+    "@types/jquery": "^3.5.1",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babelify": "^10.0.0",
     "budo": "^11.6.4",
+    "cypress": "^5.1.0",
+    "cypress-plugin-tab": "^1.0.5",
     "eslint": "^7.8.1",
     "eslint-config-prettier": "^6.11.0",
     "prettier": "^2.1.1",
     "rollup": "^2.26.9",
     "rollup-plugin-sourcemaps": "^0.6.2",
     "rollup-plugin-terser": "^7.0.1",
+    "start-server-and-test": "^1.11.3",
     "typescript": "^4.0.2"
   }
 }
