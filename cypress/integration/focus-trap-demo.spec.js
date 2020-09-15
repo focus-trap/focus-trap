@@ -154,7 +154,34 @@ describe('focus-trap', () => {
   });
 
   describe('demo: ifc', () => {
-    // TODO
+    beforeEach(() => {
+      cy.get('#demo-ifc').as('testRoot');
+    })
+
+    it(`specify element to be focused(even with attribute tabindex="-1") after focus trap activation`, () => {
+      // activate trap
+      cy.get('@testRoot').findByRole('button', { name: 'activate trap' }).click();
+
+      // instead of next tab-order element being focused, element specified should be focused
+      cy.get('@testRoot')
+        .get('#ifc')
+        .as('focusedEl')
+        .should('be.focused');
+
+      // active trap does not return focus back to 'tabindex="-1"' containing element, and keep focus inside of that containing element
+      cy.get('@testRoot')
+        .findByRole('button', {name: 'first'})
+        .as('firstTabbableElInTrap')
+        .tab()
+        .tab()
+        .tab();
+
+      cy.get('@firstTabbableElInTrap').should('be.focused');
+
+      // click on outside element deactivates this trap
+      cy.findByRole('heading', { name: 'focus-trap demo' }).click();
+      cy.get('@firstTabbableElInTrap').should('be.not.focused');
+    });
   });
 
   describe('demo: ht', () => {
