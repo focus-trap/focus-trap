@@ -175,7 +175,6 @@ describe('focus-trap', () => {
         .tab()
         .tab()
         .tab();
-
       cy.get('@firstTabbableElInTrap').should('be.focused');
 
       // click on outside element deactivates this trap
@@ -185,7 +184,35 @@ describe('focus-trap', () => {
   });
 
   describe('demo: ht', () => {
-    // TODO
+    beforeEach(() => {
+      cy.get('#demo-ht').as('testRoot');
+    });
+
+    it('focusing on only visually available(display is not "none" and visibility is not "hidden") elements', () => {
+      // activate trap
+      cy.get('@testRoot').findByRole('button', { name: 'activate trap' }).click();
+
+      // only visually available elements can be tabbed thru
+      cy.focused()
+        .as('firstTabbableElInTrap')
+        .tab()
+        .tab();
+      cy.get('@firstTabbableElInTrap').should('be.focused');
+
+      // Show some more elements within trap and they should be tabbable
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'click to show more' })
+        .click();
+      cy.tab();
+      cy.findByRole('button', { name: 'nothing again' })
+        .should('be.focused');
+      cy.tab();
+      cy.findByRole('button', { name: 'click to show less' })
+        .should('be.focused')
+        .as('focusedElInTrap');
+
+      verifyCrucialFocusTrapOnClicking('@focusedElInTrap');
+    });
   });
 
   describe('demo: nested', () => {
