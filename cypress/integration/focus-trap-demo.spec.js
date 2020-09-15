@@ -1,6 +1,18 @@
 describe('focus-trap', () => {
   beforeEach(() => cy.visit('index.html'));
 
+  function verifyCrucialFocusTrapOnClicking(focusedElAlias) {
+    // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+    cy.findAllByRole('link', { name: 'Return to the repository' })
+      .first()
+      .click();
+    cy.get(focusedElAlias).should('be.focused');
+
+    // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+    cy.findByRole('heading', { name: 'focus-trap demo' }).click();
+    cy.get(focusedElAlias).should('be.focused');
+  }
+
   describe('demo: default', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
       cy.get('#demo-default').as('testRoot');
@@ -94,7 +106,51 @@ describe('focus-trap', () => {
   });
 
   describe('demo: iene', () => {
-    // TODO
+    beforeEach(() => {
+      cy.get('#demo-iene').as('testRoot');
+    })
+
+    it('On trap activation, focus on manually specified input element', () => {
+      // activate trap
+      cy.get('@testRoot').findByRole('button', { name: 'activate trap' }).click();
+
+      // instead of next tab-order element being focused, element specified should be focused
+      cy.get('@testRoot')
+        .findByRole('textbox', { name: 'Initially focused input' })
+        .as('focusedEl')
+        .should('be.focused');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@focusedEl');
+    });
+
+    it('Escape key does not deactivate trap. Instead, click on "deactivate trap" to deactivate trap', () => {
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // trying deactivate trap by ESC
+      cy.get('@testRoot')
+        .findByRole('textbox', { name: 'Initially focused input' })
+        .as('trapChild')
+        .focus()
+        .type('{esc}');
+
+      // ESC does not deactivate the trap
+      cy.get('@trapChild').should('exist').should('be.focused');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@trapChild');
+
+      // click on deactivate trap button to deactivate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap' })
+        .click();
+      cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should('be.focused');
+    });
+
   });
 
   describe('demo: ifc', () => {
