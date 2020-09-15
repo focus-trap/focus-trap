@@ -108,11 +108,13 @@ describe('focus-trap', () => {
   describe('demo: iene', () => {
     beforeEach(() => {
       cy.get('#demo-iene').as('testRoot');
-    })
+    });
 
     it('On trap activation, focus on manually specified input element', () => {
       // activate trap
-      cy.get('@testRoot').findByRole('button', { name: 'activate trap' }).click();
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .click();
 
       // instead of next tab-order element being focused, element specified should be focused
       cy.get('@testRoot')
@@ -150,27 +152,25 @@ describe('focus-trap', () => {
         .click();
       cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should('be.focused');
     });
-
   });
 
   describe('demo: ifc', () => {
     beforeEach(() => {
       cy.get('#demo-ifc').as('testRoot');
-    })
+    });
 
     it(`specify element to be focused(even with attribute tabindex="-1") after focus trap activation`, () => {
       // activate trap
-      cy.get('@testRoot').findByRole('button', { name: 'activate trap' }).click();
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .click();
 
       // instead of next tab-order element being focused, element specified should be focused
-      cy.get('@testRoot')
-        .get('#ifc')
-        .as('focusedEl')
-        .should('be.focused');
+      cy.get('@testRoot').get('#ifc').as('focusedEl').should('be.focused');
 
       // active trap does not return focus back to 'tabindex="-1"' containing element, and keep focus inside of that containing element
       cy.get('@testRoot')
-        .findByRole('button', {name: 'first'})
+        .findByRole('button', { name: 'first' })
         .as('firstTabbableElInTrap')
         .tab()
         .tab()
@@ -190,13 +190,12 @@ describe('focus-trap', () => {
 
     it('focusing on only visually available(display is not "none" and visibility is not "hidden") elements', () => {
       // activate trap
-      cy.get('@testRoot').findByRole('button', { name: 'activate trap' }).click();
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .click();
 
       // only visually available elements can be tabbed thru
-      cy.focused()
-        .as('firstTabbableElInTrap')
-        .tab()
-        .tab();
+      cy.focused().as('firstTabbableElInTrap').tab().tab();
       cy.get('@firstTabbableElInTrap').should('be.focused');
 
       // Show some more elements within trap and they should be tabbable
@@ -204,8 +203,7 @@ describe('focus-trap', () => {
         .findByRole('button', { name: 'click to show more' })
         .click();
       cy.tab();
-      cy.findByRole('button', { name: 'nothing again' })
-        .should('be.focused');
+      cy.findByRole('button', { name: 'nothing again' }).should('be.focused');
       cy.tab();
       cy.findByRole('button', { name: 'click to show less' })
         .should('be.focused')
