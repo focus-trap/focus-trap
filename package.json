@@ -31,7 +31,7 @@
     "test-cypress": "start-server-and-test start 9966 'cypress open'",
     "test-cypress-ci": "start-server-and-test start 9966 'cypress run --browser $CYPRESS_BROWSER --headless'",
     "test": "yarn format-check && yarn lint && yarn test-unit && yarn test-types && CYPRESS_BROWSER=chrome yarn test-cypress-ci",
-    "prepublishOnly": "yarn build",
+    "prepare": "yarn build",
     "release": "yarn build && changeset publish"
   },
   "repository": {
