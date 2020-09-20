@@ -68,3 +68,5 @@ dist/
 # OS files
 .DS_Store
 .Thumbs
+
+cypress/videos
