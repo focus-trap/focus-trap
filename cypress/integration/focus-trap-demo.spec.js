@@ -1,6 +1,18 @@
 describe('focus-trap', () => {
   beforeEach(() => cy.visit('index.html'));
 
+  function verifyCrucialFocusTrapOnClicking(focusedElAlias) {
+    // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+    cy.findAllByRole('link', { name: 'Return to the repository' })
+      .first()
+      .click();
+    cy.get(focusedElAlias).should('be.focused');
+
+    // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+    cy.findByRole('heading', { name: 'focus-trap demo' }).click();
+    cy.get(focusedElAlias).should('be.focused');
+  }
+
   describe('demo: default', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
       cy.get('#demo-default').as('testRoot');
@@ -94,15 +106,111 @@ describe('focus-trap', () => {
   });
 
   describe('demo: iene', () => {
-    // TODO
+    beforeEach(() => {
+      cy.get('#demo-iene').as('testRoot');
+    });
+
+    it('On trap activation, focus on manually specified input element', () => {
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .click();
+
+      // instead of next tab-order element being focused, element specified should be focused
+      cy.get('@testRoot')
+        .findByRole('textbox', { name: 'Initially focused input' })
+        .as('focusedEl')
+        .should('be.focused');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@focusedEl');
+    });
+
+    it('Escape key does not deactivate trap. Instead, click on "deactivate trap" to deactivate trap', () => {
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // trying deactivate trap by ESC
+      cy.get('@testRoot')
+        .findByRole('textbox', { name: 'Initially focused input' })
+        .as('trapChild')
+        .focus()
+        .type('{esc}');
+
+      // ESC does not deactivate the trap
+      cy.get('@trapChild').should('exist').should('be.focused');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@trapChild');
+
+      // click on deactivate trap button to deactivate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap' })
+        .click();
+      cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should('be.focused');
+    });
   });
 
   describe('demo: ifc', () => {
-    // TODO
+    beforeEach(() => {
+      cy.get('#demo-ifc').as('testRoot');
+    });
+
+    it(`specify element to be focused(even with attribute tabindex="-1") after focus trap activation`, () => {
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .click();
+
+      // instead of next tab-order element being focused, element specified should be focused
+      cy.get('@testRoot').get('#ifc').as('focusedEl').should('be.focused');
+
+      // active trap does not return focus back to 'tabindex="-1"' containing element, and keep focus inside of that containing element
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'first' })
+        .as('firstTabbableElInTrap')
+        .tab()
+        .tab()
+        .tab();
+      cy.get('@firstTabbableElInTrap').should('be.focused');
+
+      // click on outside element deactivates this trap
+      cy.findByRole('heading', { name: 'focus-trap demo' }).click();
+      cy.get('@firstTabbableElInTrap').should('be.not.focused');
+    });
   });
 
   describe('demo: ht', () => {
-    // TODO
+    beforeEach(() => {
+      cy.get('#demo-ht').as('testRoot');
+    });
+
+    it('focusing on only visually available(display is not "none" and visibility is not "hidden") elements', () => {
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .click();
+
+      // only visually available elements can be tabbed thru
+      cy.focused().as('firstTabbableElInTrap').tab().tab();
+      cy.get('@firstTabbableElInTrap').should('be.focused');
+
+      // Show some more elements within trap and they should be tabbable
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'click to show more' })
+        .click();
+      cy.tab();
+      cy.findByRole('button', { name: 'nothing again' }).should('be.focused');
+      cy.tab();
+      cy.findByRole('button', { name: 'click to show less' })
+        .should('be.focused')
+        .as('focusedElInTrap');
+
+      verifyCrucialFocusTrapOnClicking('@focusedElInTrap');
+    });
   });
 
   describe('demo: nested', () => {
