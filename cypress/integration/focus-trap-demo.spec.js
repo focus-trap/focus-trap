@@ -230,7 +230,35 @@ describe('focus-trap', () => {
   });
 
   describe('demo: delay', () => {
-    // TODO
+    it('activates the focus trap when delayInitialFocus is set to true', () => {
+      cy.get('#delay').should(($div) => {
+        expect($div[0].style.opacity).to.equal('0.2');
+      });
+      cy.get('#activate-delay').type('{enter}');
+      cy.get('#delay').should('have.class', 'trap is-active');
+      cy.get('#delay').should(($div) => {
+        expect($div[0].style.opacity).to.equal('1');
+      });
+      cy.get('#close-button-delay').as('focusedEl').should('have.focus');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@focusedEl');
+    });
+
+    it('activates the focus trap when delayInitialFocus is set to false', () => {
+      cy.get('#no-delay').should(($div) => {
+        expect($div[0].style.opacity).to.equal('0.2');
+      });
+      cy.get('#activate-no-delay').type('{enter}');
+      cy.get('#no-delay').should('have.class', 'trap is-active');
+      cy.get('#no-delay').should(($div) => {
+        expect($div[0].style.opacity).to.equal('1');
+      });
+      cy.get('#close-button-no-delay').as('focusedEl').should('have.focus');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@focusedEl');
+    });
   });
 
   describe('demo: radio', () => {
