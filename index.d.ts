@@ -72,6 +72,12 @@ declare module 'focus-trap' {
      * If set to `true`, no scroll will happen.
      */
     preventScroll?: boolean;
+    /**
+     * Default: `true`. Delays the autofocus when the focus trap is activated.
+     * This prevents elements within the focusable element from capturing
+     * the event that triggered the focus trap activation.
+     */
+    delayInitialFocus?: boolean;
   }
 
   type ActivateOptions = Pick<Options, 'onActivate'>;

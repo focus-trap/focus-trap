@@ -44,6 +44,7 @@ function createFocusTrap(element, userOptions) {
   var config = {
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
+    delayInitialFocus: true,
     ...userOptions,
   };
 
@@ -139,9 +140,11 @@ function createFocusTrap(element, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    activeFocusDelay = delay(function () {
-      tryFocus(getInitialFocusNode());
-    });
+    activeFocusDelay = config.delayInitialFocus
+      ? delay(function () {
+          tryFocus(getInitialFocusNode());
+        })
+      : tryFocus(getInitialFocusNode());
 
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {

@@ -78,7 +78,8 @@ Returns a new focus trap on `element`.
 - **allowOutsideClick** {boolean|(e: MouseEvent) => boolean}: If set and is or returns `true`, a click outside the focus trap will not be prevented, even when `clickOutsideDeactivates` is `false`. When `clickOutsideDeactivates` is `true`, this option is **ignored** (i.e. if it's a function, it will not be called). Use this option to control if (and even which) clicks are allowed outside the trap in conjunction with `clickOutsideDeactivates: false`.
 - **returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
 - **setReturnFocus** {element|string|function}: By default, focus trap on deactivation will return to the element that was focused before activation. With this option you can specify another element to programmatically receive focus after deactivation. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
-- **preventScroll** {boolean}: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen. 
+- **preventScroll** {boolean}: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
+- **delayInitialFocus** {boolean}: Default: `true`. Delays the autofocus when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 
 ### focusTrap.activate([activateOptions])
 
