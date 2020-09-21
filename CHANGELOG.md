@@ -1,5 +1,16 @@
 # Changelog
 
+## 6.1.0
+
+### Minor Changes
+
+- 5174ce1: Add delayInitialFocus option
+
+### Patch Changes
+
+- 53b906b: Change `prepublishOnly` script to `prepare` script so that it also runs if someone installs the package directly from the git repo (e.g. from your work in which you fixed a bug or added a feature you're waiting to get merged to master and published to NPM).
+- 31bb28e: Update tabbable dependency to 5.1.0. The most significant update for focus-trap is a bug fix related to fixed-position containers.
+
 ## 6.0.1
 
 ### Patch Changes
