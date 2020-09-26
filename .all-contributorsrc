@@ -1,8 +1,29 @@
 {
-  "files": ["README.md"],
+  "projectName": "focus-trap",
+  "projectOwner": "stefcameron",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
   "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "davidtheclark",
+      "name": "David Clark",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/628431?v=4",
+      "profile": "http://davidtheclark.com/",
+      "contributions": [
+        "code",
+        "bug",
+        "infra",
+        "test",
+        "doc"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
-  "contributorsSortAlphabetically": true,
-  "skipCi": "true",
-  "contributors": []
+  "contributorsSortAlphabetically": true
 }
