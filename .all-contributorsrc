@@ -35,6 +35,15 @@
         "test",
         "doc"
       ]
+    },
+    {
+      "login": "liunate",
+      "name": "Nate Liu",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/38996291?v=4",
+      "profile": "https://github.com/liunate",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
