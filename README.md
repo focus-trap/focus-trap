@@ -1,5 +1,5 @@
 # focus-trap [![CI](https://github.com/focus-trap/focus-trap/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/focus-trap/focus-trap/actions?query=workflow:CI+branch:master) [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ---
@@ -212,6 +212,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
     <td align="center"><a href="https://github.com/michael-ar"><img src="https://avatars3.githubusercontent.com/u/18557997?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Michael Reynolds</b></sub></a><br /><a href="https://github.com/stefcameron/focus-trap/issues?q=author%3Amichael-ar" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/liunate"><img src="https://avatars2.githubusercontent.com/u/38996291?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nate Liu</b></sub></a><br /><a href="https://github.com/stefcameron/focus-trap/commits?author=liunate" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/sadick254"><img src="https://avatars2.githubusercontent.com/u/5238135?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sadick</b></sub></a><br /><a href="https://github.com/stefcameron/focus-trap/commits?author=sadick254" title="Code">💻</a> <a href="https://github.com/stefcameron/focus-trap/commits?author=sadick254" title="Tests">⚠️</a> <a href="https://github.com/stefcameron/focus-trap/commits?author=sadick254" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://seanmcp.com/"><img src="https://avatars1.githubusercontent.com/u/6360367?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sean McPherson</b></sub></a><br /><a href="https://github.com/stefcameron/focus-trap/commits?author=SeanMcP" title="Code">💻</a> <a href="https://github.com/stefcameron/focus-trap/commits?author=SeanMcP" title="Documentation">📖</a></td>
     <td align="center"><a href="https://stefancameron.com/"><img src="https://avatars3.githubusercontent.com/u/2855350?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Stefan Cameron</b></sub></a><br /><a href="https://github.com/stefcameron/focus-trap/commits?author=stefcameron" title="Code">💻</a> <a href="https://github.com/stefcameron/focus-trap/issues?q=author%3Astefcameron" title="Bug reports">🐛</a> <a href="#infra-stefcameron" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/stefcameron/focus-trap/commits?author=stefcameron" title="Tests">⚠️</a> <a href="https://github.com/stefcameron/focus-trap/commits?author=stefcameron" title="Documentation">📖</a></td>
   </tr>
 </table>

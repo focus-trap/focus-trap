@@ -64,6 +64,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "SeanMcP",
+      "name": "Sean McPherson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6360367?v=4",
+      "profile": "https://seanmcp.com/",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
