@@ -194,3 +194,7 @@ If you find yourself in this situation, you should give you container `tabindex=
 ## Development
 
 Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests don't make sense. After all, JSDom does not fully support focus events. Since the demo was developed to also be the test, we use Cypress to automate running through all demos in the demo page.
+
+# Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md].
