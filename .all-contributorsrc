@@ -44,6 +44,17 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "sadick254",
+      "name": "Sadick",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5238135?v=4",
+      "profile": "https://github.com/sadick254",
+      "contributions": [
+        "code",
+        "test",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
