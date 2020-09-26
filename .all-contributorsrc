@@ -55,6 +55,15 @@
         "test",
         "doc"
       ]
+    },
+    {
+      "login": "michael-ar",
+      "name": "Michael Reynolds",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/18557997?v=4",
+      "profile": "https://github.com/michael-ar",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
