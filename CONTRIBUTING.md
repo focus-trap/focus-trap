@@ -36,6 +36,8 @@ If your changes don't affect the source or typings, then a changeset is not need
 
 We want to recognize **all** contributions. To that end, we use the [All Contributors Bot](https://allcontributors.org/docs/en/bot/usage) to automate adding all types of contributions to our [README](README.md).
 
-Please feel free to use the bot on your own issue or PR to add yourself as a contributor, or remind one of the maintainers to do so.
+You can also use the [All Contributors CLI](https://allcontributors.org/docs/en/cli/usage) instead of the bot: `yarn all-contributors add <USERNAME> <KEY>[,<KEY>...]` (where `KEY` is an [emoji key](https://allcontributors.org/docs/en/emoji-key) contribution term). Then run `yarn all-contributors generate` to update the README.
 
-No contribution is too small not to be included. We appreciate your help!
+Please feel free to use the bot on your own issue or PR to add yourself as a contributor (or use the CLI), or remind one of the maintainers to do so.
+
+> ✨ No contribution is too small not to be included. We appreciate your help!

@@ -68,6 +68,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@testing-library/cypress": "^7.0.1",
     "@types/jquery": "^3.5.1",
+    "all-contributors-cli": "^6.17.4",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "babelify": "^10.0.0",
