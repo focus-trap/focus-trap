@@ -46,17 +46,10 @@
     "keyboard",
     "modal"
   ],
-  "author": "David Clark",
-  "contributors": [
-    {
-      "name": "David Clark",
-      "url": "http://davidtheclark.com/"
-    },
-    {
-      "name": "Stefan Cameron",
-      "url": "https://stefancameron.com/"
-    }
-  ],
+  "author": {
+    "name": "David Clark",
+    "url": "http://davidtheclark.com/"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/focus-trap/focus-trap/issues"
