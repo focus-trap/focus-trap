@@ -285,7 +285,6 @@
     </div>
   </div>
 
-
   <div id="demo-no-delay">
     <h2 id="delay-heading-explicit">No delay</h2>
     <p>
@@ -398,12 +397,29 @@
       This focus trap can be closed simply by <strong>clicking anywhere outside</strong>, and the click outside will also go through and do what it was intentionally dispatched to do (like toggling the checkbox). ESC is <strong>disabled</strong> for this trap.
     </p>
     <p>
+      The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused element when the trap was activated (the "activate trap" button) or not -- IIF what you click on outside the trap is <strong>not</strong> focusable:
+    </p>
+    <ul>
+      <li>If this option is <code>true</code> (the default behavior) but you click on a focusable node outside the trap (like the checkbox), the click will go through, the checkbox will be toggled, and focus will remain on the checkbox.</li>
+      <li>If <code>true</code> but you click on something <strong>not</strong> focusable (like the page/document), then focus will return to the "activate trap" button (since that was the last-focused node before the trap was activate).</li>
+      <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document).</li>
+    </ul>
+    <p>
       <button id="activate-clickoutsidedeactivates">
         activate trap
       </button>
       <label>
-        Toggling me deactivates (but doesn't know about the trap):
-        <input type="checkbox" />
+        Set <code>returnFocusOnDeactivate</code> as:
+        <select id="select-returnfocusondeactivate-clickoutsidedeactivates">
+          <option value="true">true</option><!-- default -->
+          <option value="false">false</option>
+        </select>
+      </label>
+    </p>
+    <p>
+      <label>
+        Toggling me causes auto-deactivation of the trap:
+        <input type="checkbox" id="checkbox-clickoutsidedeactivates" />
       </label>
     </p>
     <div id="clickoutsidedeactivates" class="trap">
