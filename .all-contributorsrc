@@ -22,6 +22,19 @@
         "test",
         "doc"
       ]
+    },
+    {
+      "login": "stefcameron",
+      "name": "Stefan Cameron",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2855350?v=4",
+      "profile": "https://stefancameron.com/",
+      "contributions": [
+        "code",
+        "bug",
+        "infra",
+        "test",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
