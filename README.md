@@ -197,4 +197,4 @@ Because of the nature of the functionality, involving keyboard and click and (es
 
 # Contributing
 
-See [CONTRIBUTING](CONTRIBUTING.md].
+See [CONTRIBUTING](CONTRIBUTING.md).
