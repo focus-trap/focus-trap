@@ -214,7 +214,47 @@ describe('focus-trap', () => {
   });
 
   describe('demo: nested', () => {
-    // TODO
+    it('focus is trapped in the innermost trap of nested traps', () => {
+      cy.get('#demo-nested').as('testRoot');
+
+      // activate outer trap and element in outer trap should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .click();
+
+      cy.findByRole('button', { name: 'deactivate outer trap' })
+        .as('firstTabbableElInOuterTrap')
+        .should('be.focused');
+
+      verifyCrucialFocusTrapOnClicking('@firstTabbableElInOuterTrap');
+
+      // activate inner trap and element in inner trap should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate inner trap' })
+        .as('lastlyFocusedElInOuterTrap')
+        .click();
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'nothing' })
+        .should('be.focused')
+        .as('focusedElInInnerTrap');
+
+      verifyCrucialFocusTrapOnClicking('@focusedElInInnerTrap');
+
+      // only element in the innermost active trap can be focused
+      cy.get('@firstTabbableElInOuterTrap').click().should('not.be.focused');
+
+      // deactivate inner trap and outer trap element can be focused again
+      cy.findByRole('button', {
+        name: 'deactivate and close inner trap',
+      }).click();
+      cy.get('@lastlyFocusedElInOuterTrap').should('be.focused');
+
+      // deactivate outer trap and element outside of trap can be focused again
+      cy.get('@firstTabbableElInOuterTrap').click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
+    });
   });
 
   describe('demo: sibling', () => {
