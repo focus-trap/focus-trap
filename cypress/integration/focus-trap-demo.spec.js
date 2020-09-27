@@ -262,7 +262,38 @@ describe('focus-trap', () => {
   });
 
   describe('demo: tif', () => {
-    // TODO
+    it(`when trap is activated, if there is not any tabbable element in the trap, focus-trap will try to focus the element specified by option "fallbackFocus"`, () => {
+      cy.get('#demo-tif').as('testRoot');
+
+      // activate trap(no tabbable element inside) and the container element(which is the fallback element specified) should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('activate')
+        .click();
+      cy.get('@testRoot')
+        .get('#tif')
+        .should('be.focused');
+      verifyCrucialFocusTrapOnClicking('#tif');
+
+
+      // deactivate trap
+      cy.get('@testRoot')
+        .findByRole('button', {name: 'deactivate trap'})
+        .click();
+
+      // activate trap(tabbable element inside) and the first tabbable element should be focused;
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'show focusable button'})
+        .click();
+      cy.get('@activate')
+        .click();
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'hide focusable button' })
+        .as('firstTabbableElInOuterTrap')
+        .should('be.focused');
+      verifyCrucialFocusTrapOnClicking('@firstTabbableElInOuterTrap');
+
+    });
   });
 
   describe('demo: input', () => {
