@@ -270,34 +270,40 @@ describe('focus-trap', () => {
         .findByRole('button', { name: 'activate trap' })
         .as('activate')
         .click();
-      cy.get('@testRoot')
-        .get('#tif')
-        .should('be.focused');
+      cy.get('@testRoot').get('#tif').should('be.focused');
       verifyCrucialFocusTrapOnClicking('#tif');
-
 
       // deactivate trap
       cy.get('@testRoot')
-        .findByRole('button', {name: 'deactivate trap'})
+        .findByRole('button', { name: 'deactivate trap' })
         .click();
 
       // activate trap(tabbable element inside) and the first tabbable element should be focused;
       cy.get('@testRoot')
-        .findByRole('button', { name: 'show focusable button'})
+        .findByRole('button', { name: 'show focusable button' })
         .click();
-      cy.get('@activate')
-        .click();
+      cy.get('@activate').click();
       cy.get('@testRoot')
         .findByRole('button', { name: 'hide focusable button' })
         .as('firstTabbableElInOuterTrap')
         .should('be.focused');
       verifyCrucialFocusTrapOnClicking('@firstTabbableElInOuterTrap');
-
     });
   });
 
   describe('demo: input', () => {
-    // TODO
+    it(`if current focused element is already in the trap, focus activation does not change its selection range"`, () => {
+      cy.get('#demo-tif').as('testRoot');
+
+      // trap is activated after input change and input selection range is not changed
+      cy.get('@testRoot').get('#focused-input8').as('inputElInTrap').type('1');
+      verifyCrucialFocusTrapOnClicking('@inputElInTrap');
+
+      cy.get('@inputElInTrap').then(([input]) => {
+        expect(input.selectionStart).to.equal('1'.length);
+        expect(input.selectionEnd).to.equal('1'.length);
+      });
+    });
   });
 
   describe('demo: delay', () => {
