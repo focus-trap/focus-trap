@@ -1,6 +1,6 @@
 {
   "projectName": "focus-trap",
-  "projectOwner": "stefcameron",
+  "projectOwner": "focus-trap",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -86,8 +86,18 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "Slapbox",
+      "name": "Slapbox",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6835891?v=4",
+      "profile": "https://recollectr.io",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
-  "contributorsSortAlphabetically": true
+  "contributorsSortAlphabetically": true,
+  "skipCi": true
 }
