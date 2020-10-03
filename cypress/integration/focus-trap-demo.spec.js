@@ -274,7 +274,119 @@ describe('focus-trap', () => {
   });
 
   describe('demo: clickoutsidedeactivates', () => {
-    // TODO
+    const activateTrap = function () {
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+    };
+
+    const checkTrap = function () {
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'nothing')
+        .should('be.focused')
+        .tab();
+
+      // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+    };
+
+    it('traps focus, deactivates on outside click on checkbox and checkbox focused, returnFocusOnDeactivate=true', () => {
+      cy.get('#demo-clickoutsidedeactivates').as('testRoot');
+
+      // set returnFocusOnDeactivate=TRUE
+      cy.get('#select-returnfocusondeactivate-clickoutsidedeactivates').select(
+        'true'
+      );
+
+      activateTrap();
+      checkTrap();
+
+      // deactivate trap by toggling FOCUSABLE checkbox
+      cy.get('#checkbox-clickoutsidedeactivates').click();
+      cy.get('#checkbox-clickoutsidedeactivates').should('be.checked');
+
+      // implies trap no longer active since checkbox is outside trap
+      cy.get('#checkbox-clickoutsidedeactivates').should('be.focused');
+
+      cy.get('@lastElementInTrap').should('not.be.focused');
+    });
+
+    it('traps focus, deactivates on outside click on document and "activate trap" button focused', () => {
+      cy.get('#demo-clickoutsidedeactivates').as('testRoot');
+
+      // set returnFocusOnDeactivate=TRUE
+      cy.get('#select-returnfocusondeactivate-clickoutsidedeactivates').select(
+        'true'
+      );
+
+      activateTrap();
+      checkTrap();
+
+      // deactivate trap by clicking NON-focusable element
+      cy.get('#clickoutsidedeactivates-heading').click();
+      cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should('be.focused');
+
+      cy.get('@lastElementInTrap').should('not.be.focused');
+    });
+
+    it('traps focus, deactivates on outside click on checkbox and checkbox focused, returnFocusOnDeactivate=false', () => {
+      cy.get('#demo-clickoutsidedeactivates').as('testRoot');
+
+      // set returnFocusOnDeactivate=FALSE
+      cy.get('#select-returnfocusondeactivate-clickoutsidedeactivates').select(
+        'false'
+      );
+
+      activateTrap();
+      checkTrap();
+
+      // deactivate trap by toggling FOCUSABLE checkbox
+      cy.get('#checkbox-clickoutsidedeactivates').click();
+      cy.get('#checkbox-clickoutsidedeactivates').should('be.checked');
+
+      // implies trap no longer active since checkbox is outside trap
+      cy.get('#checkbox-clickoutsidedeactivates').should('be.focused');
+
+      cy.get('@lastElementInTrap').should('not.be.focused');
+    });
+
+    it('traps focus, deactivates on outside click on document, and nothing is focused', () => {
+      cy.get('#demo-clickoutsidedeactivates').as('testRoot');
+
+      // set returnFocusOnDeactivate=FALSE
+      cy.get('#select-returnfocusondeactivate-clickoutsidedeactivates').select(
+        'false'
+      );
+
+      activateTrap();
+      checkTrap();
+
+      // deactivate trap by clicking NON-focusable element
+      cy.get('#clickoutsidedeactivates-heading').click();
+
+      cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should(
+        'not.be.focused'
+      );
+      cy.get('@lastElementInTrap').should('not.be.focused');
+      cy.get('*:focus').should('not.exist'); // nothing has focus
+    });
   });
 
   describe('demo: setreturnfocus', () => {

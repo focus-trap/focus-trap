@@ -227,13 +227,30 @@ function createFocusTrap(element, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event.
   function checkPointerDown(e) {
-    if (container.contains(e.target)) return;
+    if (container.contains(e.target)) {
+      // allow the click since it ocurred inside the trap
+      return;
+    }
+
     if (config.clickOutsideDeactivates) {
+      // immediately deactivate the trap
       deactivate({
-        returnFocus: !isFocusable(e.target),
+        // if, on deactivation, we should return focus to the node originally-focused
+        //  when the trap was activated (or the configured `setReturnFocus` node),
+        //  then assume it's also OK to return focus to the outside node that was
+        //  just clicked, causing deactivation, as long as that node is focusable;
+        //  if it isn't focusable, then return focus to the original node focused
+        //  on activation (or the configured `setReturnFocus` node)
+        // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
+        //  which will result in the outside click setting focus to the node
+        //  that was clicked, whether it's focusable or not; by setting
+        //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
+        //  on activation (or the configured `setReturnFocus` node)
+        returnFocus: config.returnFocusOnDeactivate && !isFocusable(e.target),
       });
       return;
     }
+
     // This is needed for mobile devices.
     // (If we'll only let `click` events through,
     // then on mobile they will be blocked anyways if `touchstart` is blocked.)
@@ -243,8 +260,11 @@ function createFocusTrap(element, userOptions) {
         ? config.allowOutsideClick
         : config.allowOutsideClick(e))
     ) {
+      // allow the click outside the trap to take place
       return;
     }
+
+    // otherwise, prevent the click
     e.preventDefault();
   }
 
