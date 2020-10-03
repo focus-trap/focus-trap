@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.1.1
+
+### Patch Changes
+
+- fe2b0ad: Fixed #103: `returnFocusOnDeactivate` is now respected on auto-deactivation with `clickOutsideDeactivates=true`.
+
 ## 6.1.0
 
 ### Minor Changes
