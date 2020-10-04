@@ -114,6 +114,7 @@ describe('focus-trap', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElBeforeTrapIsActivated')
         .click();
 
       // instead of next tab-order element being focused, element specified should be focused
@@ -124,6 +125,12 @@ describe('focus-trap', () => {
 
       // crucial focus-trap feature: mouse click is trapped
       verifyCrucialFocusTrapOnClicking('@focusedEl');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap' })
+        .click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
     });
 
     it('Escape key does not deactivate trap. Instead, click on "deactivate trap" to deactivate trap', () => {
@@ -192,6 +199,7 @@ describe('focus-trap', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElBeforeTrapIsActivated')
         .click();
 
       // only visually available elements can be tabbed thru
@@ -210,6 +218,12 @@ describe('focus-trap', () => {
         .as('focusedElInTrap');
 
       verifyCrucialFocusTrapOnClicking('@focusedElInTrap');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.focused()
+        .type('{esc}')
+        .get('@lastlyFocusedElBeforeTrapIsActivated')
+        .should('be.focused');
     });
   });
 
@@ -269,14 +283,17 @@ describe('focus-trap', () => {
       cy.get('@testRoot')
         .findByRole('button', { name: 'activate trap' })
         .as('activate')
+        .as('lastlyFocusedElBeforeTrapIsActivated')
         .click();
       cy.get('@testRoot').get('#tif').should('be.focused');
       verifyCrucialFocusTrapOnClicking('#tif');
 
-      // deactivate trap
+      // deactivate trap and element outside of trap can be focused again
       cy.get('@testRoot')
         .findByRole('button', { name: 'deactivate trap' })
+        .as('deactivate')
         .click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
 
       // activate trap(tabbable element inside) and the first tabbable element should be focused;
       cy.get('@testRoot')
@@ -288,6 +305,10 @@ describe('focus-trap', () => {
         .as('firstTabbableElInOuterTrap')
         .should('be.focused');
       verifyCrucialFocusTrapOnClicking('@firstTabbableElInOuterTrap');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@deactivate').click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
     });
   });
 
@@ -296,13 +317,23 @@ describe('focus-trap', () => {
       cy.get('#demo-tif').as('testRoot');
 
       // trap is activated after input change and input selection range is not changed
-      cy.get('@testRoot').get('#focused-input8').as('inputElInTrap').type('1');
+      cy.get('@testRoot')
+        .get('#focused-input8')
+        .as('inputElInTrap')
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .type('1');
       verifyCrucialFocusTrapOnClicking('@inputElInTrap');
 
       cy.get('@inputElInTrap').then(([input]) => {
         expect(input.selectionStart).to.equal('1'.length);
         expect(input.selectionEnd).to.equal('1'.length);
       });
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap' })
+        .click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
     });
   });
 
@@ -311,30 +342,44 @@ describe('focus-trap', () => {
       cy.get('#delay').should(($div) => {
         expect($div[0].style.opacity).to.equal('0.2');
       });
-      cy.get('#activate-delay').type('{enter}');
+      cy.get('#activate-delay')
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .type('{enter}');
       cy.get('#delay').should('have.class', 'trap is-active');
       cy.get('#delay').should(($div) => {
         expect($div[0].style.opacity).to.equal('1');
       });
-      cy.get('#close-button-delay').as('focusedEl').should('have.focus');
+      cy.get('#close-button-delay').as('hideButtonInTrap').should('have.focus');
 
       // crucial focus-trap feature: mouse click is trapped
-      verifyCrucialFocusTrapOnClicking('@focusedEl');
+      verifyCrucialFocusTrapOnClicking('@hideButtonInTrap');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@hideButtonInTrap').click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
     });
 
     it('activates the focus trap when delayInitialFocus is set to false', () => {
       cy.get('#no-delay').should(($div) => {
         expect($div[0].style.opacity).to.equal('0.2');
       });
-      cy.get('#activate-no-delay').type('{enter}');
+      cy.get('#activate-no-delay')
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .type('{enter}');
       cy.get('#no-delay').should('have.class', 'trap is-active');
       cy.get('#no-delay').should(($div) => {
         expect($div[0].style.opacity).to.equal('1');
       });
-      cy.get('#close-button-no-delay').as('focusedEl').should('have.focus');
+      cy.get('#close-button-no-delay')
+        .as('hideButtonInTrap')
+        .should('have.focus');
 
       // crucial focus-trap feature: mouse click is trapped
-      verifyCrucialFocusTrapOnClicking('@focusedEl');
+      verifyCrucialFocusTrapOnClicking('@hideButtonInTrap');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@hideButtonInTrap').click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
     });
   });
 
