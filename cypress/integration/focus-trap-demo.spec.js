@@ -314,7 +314,7 @@ describe('focus-trap', () => {
 
   describe('demo: input', () => {
     it(`if current focused element is already in the trap, focus activation does not change its selection range"`, () => {
-      cy.get('#demo-tif').as('testRoot');
+      cy.get('#demo-input-activation').as('testRoot');
 
       // trap is activated after input change and input selection range is not changed
       cy.get('@testRoot')
