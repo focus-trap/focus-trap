@@ -1,16 +1,20 @@
 describe('focus-trap', () => {
   beforeEach(() => cy.visit('index.html'));
 
-  function verifyCrucialFocusTrapOnClicking(focusedElAlias) {
+  /**
+   * Verify focus trap is **trapping** focus by clicking outside element
+   * @param focusedElSelectorOrAliasInTrap Element in trap that should have focus when outside element is clicked
+   */
+  function verifyCrucialFocusTrapOnClicking(focusedElSelectorOrAliasInTrap) {
     // trap is active(keep focus in trap by blocking clicks on outside focusable element)
     cy.findAllByRole('link', { name: 'Return to the repository' })
       .first()
       .click();
-    cy.get(focusedElAlias).should('be.focused');
+    cy.get(focusedElSelectorOrAliasInTrap).should('be.focused');
 
     // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
     cy.findByRole('heading', { name: 'focus-trap demo' }).click();
-    cy.get(focusedElAlias).should('be.focused');
+    cy.get(focusedElSelectorOrAliasInTrap).should('be.focused');
   }
 
   describe('demo: default', () => {
