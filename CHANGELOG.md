@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.1.2
+
+### Patch Changes
+
+- 00674dd: Fix #172: Transpile non-minified bundles so they are compatible with IE11.
+- 679009b: Update tabbable dependency to 5.1.1 to get transpiled non-minified bundles.
+
 ## 6.1.1
 
 ### Patch Changes
