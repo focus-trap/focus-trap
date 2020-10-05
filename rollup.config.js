@@ -72,6 +72,7 @@ const cjs = [
   },
   {
     ...commonConfig,
+    external: ['tabbable'],
     output: {
       file: `dist/${libName}.min.js`,
       format: 'cjs',
@@ -95,6 +96,7 @@ const esm = [
   },
   {
     ...commonConfig,
+    external: ['tabbable'],
     output: {
       file: `dist/${libName}.esm.min.js`,
       format: 'esm',
@@ -123,12 +125,16 @@ const umd = [
   },
   {
     ...commonConfig,
+    external: ['tabbable'],
     output: {
       file: `dist/${libName}.umd.min.js`,
       format: 'umd',
       noConflict: true,
       name: 'focusTrap',
       ...commonOutput,
+      globals: {
+        tabbable: 'tabbable',
+      },
     },
     plugins: [...commonPlugins, terser(terserOptions)],
   },
