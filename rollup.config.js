@@ -68,6 +68,7 @@ const cjs = [
       format: 'cjs',
       ...commonOutput,
     },
+    plugins: commonPlugins,
   },
   {
     ...commonConfig,
@@ -90,6 +91,7 @@ const esm = [
       format: 'esm',
       ...commonOutput,
     },
+    plugins: commonPlugins,
   },
   {
     ...commonConfig,
@@ -117,6 +119,7 @@ const umd = [
         tabbable: 'tabbable',
       },
     },
+    plugins: commonPlugins,
   },
   {
     ...commonConfig,
