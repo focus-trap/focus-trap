@@ -17,6 +17,7 @@ module.exports = {
           // @see https://babeljs.io/docs/en/babel-preset-env#targets
           '@babel/preset-env',
           {
+            modules: false, // preserve ES modules
             targets: {
               esmodules: true,
             },
