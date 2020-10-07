@@ -1,7 +1,7 @@
 # focus-trap [![CI](https://github.com/focus-trap/focus-trap/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/focus-trap/focus-trap/actions?query=workflow:CI+branch:master) [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Trap focus within a DOM node.
@@ -217,6 +217,7 @@ In alphabetical order:
   <tr>
     <td align="center"><a href="https://recollectr.io"><img src="https://avatars2.githubusercontent.com/u/6835891?v=4" width="100px;" alt=""/><br /><sub><b>Slapbox</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/issues?q=author%3ASlapbox" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/bparish628"><img src="https://avatars1.githubusercontent.com/u/8492971?v=4" width="100px;" alt=""/><br /><sub><b>Benjamin Parish</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/issues?q=author%3Abparish628" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://scottblinch.me/"><img src="https://avatars2.githubusercontent.com/u/4682114?v=4" width="100px;" alt=""/><br /><sub><b>Scott Blinch</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/commits?author=scottblinch" title="Documentation">📖</a></td>
   </tr>
 </table>
 
