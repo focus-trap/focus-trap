@@ -28,7 +28,7 @@ When the focus trap is deactivated, this is what should happen:
 - Focus is passed to *whichever element had focus when the trap was activated* (e.g. the button that opened the modal or menu).
 - Tabbing and clicking behave normally everywhere.
 
-[Check out the demos.](http://davidtheclark.github.io/focus-trap/demo/)
+[Check out the demos.](http://focus-trap.github.io/focus-trap/demo/)
 
 For more advanced usage (e.g. focus traps within focus traps), you can also pause a focus trap's behavior without deactivating it entirely, then unpause at will.
 
