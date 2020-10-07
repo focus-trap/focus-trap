@@ -48,10 +48,6 @@ Why?
 Because this module uses [`EventTarget.addEventListener()`](document.createElement('button')).
 And its only dependency, tabbable, uses [a couple of IE9+ functions](https://github.com/davidtheclark/tabbable#browser-support).
 
-> __NOTE:__ The package contains 3 entries/bundles for bundlers like Webpack and Rollup: CJS (`main`), UMD (`browser`), and ESM (`module`). Our CJS and UMD bundles are transpiled down to basic ES5 and will support IE 9+. Our ESM bundle, however, targets ESM browsers, which means it does not support IE at all because IE never supported ESM.
->
-> Both Webpack and Rollup can use the `browser` target above `module` and `main`, when specified. Webpack does this [by default](https://webpack.js.org/configuration/resolve/#resolvemainfields). Rollup, however, needs to be [configured](https://github.com/rollup/plugins/tree/master/packages/node-resolve#mainfields).
-
 ## Usage
 
 ### createFocusTrap(element[, createOptions])
