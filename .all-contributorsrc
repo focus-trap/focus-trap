@@ -104,6 +104,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "scottblinch",
+      "name": "Scott Blinch",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4682114?v=4",
+      "profile": "https://scottblinch.me/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
