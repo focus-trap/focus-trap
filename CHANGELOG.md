@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.1.3
+
+### Patch Changes
+
+- 6a39217: Close the gap with #172 and bump `tabbable` to 5.1.2 which has a similar fix.
+- 756c79d: Fix #172 (again): Transpile ESM bundle down to the same browser target used for the CJS and UMD bundles. ESM is just the module system, not the browser target.
+
 ## 6.1.2
 
 ### Patch Changes
