@@ -59,7 +59,7 @@
     "tabbable": "^5.1.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
+    "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.11.5",
     "@changesets/cli": "^2.11.0",
