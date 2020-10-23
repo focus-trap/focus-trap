@@ -9,8 +9,8 @@
   },
   "extends": [
     "eslint:recommended",
-    "prettier", // ALWAYS LAST: disable style rules that conflict with prettier
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "prettier" // ALWAYS LAST: disable style rules that conflict with prettier
   ],
   "env": {
     "es6": true,
