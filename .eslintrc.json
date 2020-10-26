@@ -24,11 +24,28 @@
         "terms": ["DEBUG", "FIXME", "HACK"],
         "location": "start"
       }
+    ],
+
+    //// stylistic issues
+
+    // NONE: Prettier will take care of these by reformatting the code on commit,
+    //  save a few exceptions.
+
+    // Prettier will format using single quotes per ESLint default settings, but
+    //  when interpolation isn't used, it won't care, so this rule will catch those
+    //  cases and require single quotes instead of backticks/template strings
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": false
+      }
     ]
   },
   "overrides": [
     {
-      "files": ["index.js", "rollup.config.js"],
+      "files": ["index.js", "rollup.config.js", "cypress/support/index.js"],
       "parserOptions": {
         "sourceType": "module"
       }
