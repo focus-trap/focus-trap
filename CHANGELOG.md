@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.1.4
+
+### Patch Changes
+
+- 38b6b98: Update tabbable to [5.1.3](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#513) to get bug fixes related to detail and summary elements.
+
 ## 6.1.3
 
 ### Patch Changes
