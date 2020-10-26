@@ -562,7 +562,7 @@ describe('focus-trap', () => {
         );
       });
 
-      it('click on outside element should work while keeping focus trapped inside of trap(createOptions.allowOutsideClick: function(returns true)', () => {
+      it('click on outside element should work while keeping focus trapped inside of trap(createOptions.allowOutsideClick = () => true)', () => {
         cy.get('#demo-allowoutsideclick').as('testRoot');
         cy.get('@testRoot')
           .findByRole('combobox', { name: 'Set allowOutsideClick as:' })
