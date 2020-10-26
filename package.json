@@ -18,7 +18,7 @@
   "scripts": {
     "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format-check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
-    "lint": "eslint \"*.js\" \"demo/**/*.js\"",
+    "lint": "eslint \"*.js\" \"demo/**/*.js\" \"cypress/**/*.js\"",
     "clean": "rm -rf ./dist",
     "compile-esm": "BUILD_ENV=esm BABEL_ENV=esm rollup -c",
     "compile-cjs": "BUILD_ENV=cjs BABEL_ENV=es5 rollup -c",

@@ -22,7 +22,7 @@ describe('focus-trap', () => {
    * @param cyWrapper Cypress object of outside focused element yielded from `cy.get/contains/findByRole...etc`
    */
   function verifyFocusIsNotTrapped(cyWrapper) {
-    const outsideFocusedElAlias = `outsideFocusedEl`;
+    const outsideFocusedElAlias = 'outsideFocusedEl';
     cyWrapper.as(outsideFocusedElAlias).should('be.focused');
     // focus can be transitioned freely when trap is unmounted
     let previousFocusedEl;
@@ -177,7 +177,7 @@ describe('focus-trap', () => {
       cy.get('#demo-ifc').as('testRoot');
     });
 
-    it(`specify element to be focused(even with attribute tabindex="-1") after focus trap activation`, () => {
+    it('specify element to be focused(even with attribute tabindex="-1") after focus trap activation', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: 'activate trap' })
@@ -322,7 +322,7 @@ describe('focus-trap', () => {
   });
 
   describe('demo: tif', () => {
-    it(`when trap is activated, if there is not any tabbable element in the trap, focus-trap will try to focus the element specified by option "fallbackFocus"`, () => {
+    it('when trap is activated, if there is not any tabbable element in the trap, focus-trap will try to focus the element specified by option "fallbackFocus"', () => {
       cy.get('#demo-tif').as('testRoot');
 
       // activate trap(no tabbable element inside) and the container element(which is the fallback element specified) should be focused
@@ -359,7 +359,7 @@ describe('focus-trap', () => {
   });
 
   describe('demo: input', () => {
-    it(`if current focused element is already in the trap, focus activation does not change its selection range"`, () => {
+    it('if current focused element is already in the trap, focus activation does not change its selection range"', () => {
       cy.get('#demo-input-activation').as('testRoot');
 
       // trap is activated after input change and input selection range is not changed
