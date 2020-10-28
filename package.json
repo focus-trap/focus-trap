@@ -76,7 +76,7 @@
     "cypress": "^5.4.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^7.12.1",
-    "eslint-config-prettier": "^6.13.0",
+    "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-cypress": "^2.11.2",
     "prettier": "^2.1.2",
     "rollup": "^2.32.0",
