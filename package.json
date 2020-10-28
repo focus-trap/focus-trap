@@ -73,7 +73,7 @@
     "babel-loader": "^8.1.0",
     "babelify": "^10.0.0",
     "budo": "^11.6.4",
-    "cypress": "^5.4.0",
+    "cypress": "^5.5.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^7.12.1",
     "eslint-config-prettier": "^6.15.0",
