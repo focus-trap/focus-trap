@@ -67,7 +67,7 @@
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@testing-library/cypress": "^7.0.1",
-    "@types/jquery": "^3.5.3",
+    "@types/jquery": "^3.5.4",
     "all-contributors-cli": "^6.19.0",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
