@@ -13,3 +13,4 @@ require('./allow-outside-click');
 require('./click-outside-deactivates');
 require('./set-return-focus');
 require('./no-delay');
+require('./multiple-elements');

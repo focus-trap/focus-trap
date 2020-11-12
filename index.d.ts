@@ -101,7 +101,7 @@ declare module 'focus-trap' {
    *  find the element.
    */
   export function createFocusTrap(
-    element: HTMLElement | string,
+    element: HTMLElement | string | Array<HTMLElement | string>,
     userOptions?: Options
   ): FocusTrap;
 }

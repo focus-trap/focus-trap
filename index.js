@@ -36,10 +36,8 @@ var activeFocusTraps = (function () {
   };
 })();
 
-function createFocusTrap(element, userOptions) {
+function createFocusTrap(elements, userOptions) {
   var doc = document;
-  var container =
-    typeof element === 'string' ? doc.querySelector(element) : element;
 
   var config = {
     returnFocusOnDeactivate: true,
@@ -49,8 +47,8 @@ function createFocusTrap(element, userOptions) {
   };
 
   var state = {
-    firstTabbableNode: null,
-    lastTabbableNode: null,
+    containers: [],
+    tabbableGroups: [],
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -62,9 +60,24 @@ function createFocusTrap(element, userOptions) {
     deactivate: deactivate,
     pause: pause,
     unpause: unpause,
+    updateContainerElements: updateContainerElements,
   };
 
+  updateContainerElements(elements);
+
   return trap;
+
+  function updateContainerElements(elements) {
+    var elementsAsArray = [].concat(elements).filter(Boolean);
+
+    state.containers = elementsAsArray.map((element) =>
+      typeof element === 'string' ? doc.querySelector(element) : element
+    );
+
+    if (state.active) {
+      updateTabbableNodes();
+    }
+  }
 
   function activate(activateOptions) {
     if (state.active) return;
@@ -204,10 +217,13 @@ function createFocusTrap(element, userOptions) {
     var node;
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
-    } else if (container.contains(doc.activeElement)) {
+    } else if (containersContain(doc.activeElement)) {
       node = doc.activeElement;
     } else {
-      node = state.firstTabbableNode || getNodeForOption('fallbackFocus');
+      var firstTabbableGroup = state.tabbableGroups[0];
+      var firstTabbableNode =
+        firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
+      node = firstTabbableNode || getNodeForOption('fallbackFocus');
     }
 
     if (!node) {
@@ -227,7 +243,7 @@ function createFocusTrap(element, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event.
   function checkPointerDown(e) {
-    if (container.contains(e.target)) {
+    if (containersContain(e.target)) {
       // allow the click since it ocurred inside the trap
       return;
     }
@@ -271,7 +287,7 @@ function createFocusTrap(element, userOptions) {
   // In case focus escapes the trap for some strange reason, pull it back in.
   function checkFocusIn(e) {
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
-    if (container.contains(e.target) || e.target instanceof Document) {
+    if (containersContain(e.target) || e.target instanceof Document) {
       return;
     }
     e.stopImmediatePropagation();
@@ -296,21 +312,64 @@ function createFocusTrap(element, userOptions) {
   // kind of need to capture the action at the keydown phase.
   function checkTab(e) {
     updateTabbableNodes();
-    if (e.shiftKey && e.target === state.firstTabbableNode) {
-      e.preventDefault();
-      tryFocus(state.lastTabbableNode);
-      return;
+    const isShift = e.shiftKey;
+
+    if (isShift) {
+      const startOfGroupIndex = state.tabbableGroups.findIndex(
+        ({ firstTabbableNode }) => e.target === firstTabbableNode
+      );
+
+      const isStartOfAGroup = startOfGroupIndex !== -1;
+      if (isStartOfAGroup) {
+        e.preventDefault();
+
+        const isFirstGroup = startOfGroupIndex === 0;
+        const lastGroupIndex = state.tabbableGroups.length - 1;
+        const previousGroupIndex = startOfGroupIndex - 1;
+        const destinationGroupIndex = isFirstGroup
+          ? lastGroupIndex
+          : previousGroupIndex;
+
+        const destinationGroup = state.tabbableGroups[destinationGroupIndex];
+        const destinationNode =
+          destinationGroup && destinationGroup.lastTabbableNode;
+
+        tryFocus(destinationNode);
+
+        return;
+      }
     }
-    if (!e.shiftKey && e.target === state.lastTabbableNode) {
-      e.preventDefault();
-      tryFocus(state.firstTabbableNode);
-      return;
+    if (!isShift) {
+      const lastOfGroupIndex = state.tabbableGroups.findIndex(
+        ({ lastTabbableNode }) => e.target === lastTabbableNode
+      );
+
+      const isLastOfAGroup = lastOfGroupIndex !== -1;
+      if (isLastOfAGroup) {
+        e.preventDefault();
+
+        const isLastGroup =
+          lastOfGroupIndex === state.tabbableGroups.length - 1;
+        const firstGroupIndex = 0;
+        const nextGroupIndex = lastOfGroupIndex + 1;
+        const destinationGroupIndex = isLastGroup
+          ? firstGroupIndex
+          : nextGroupIndex;
+
+        const destinationGroup = state.tabbableGroups[destinationGroupIndex];
+        const destinationNode =
+          destinationGroup && destinationGroup.firstTabbableNode;
+
+        tryFocus(destinationNode);
+
+        return;
+      }
     }
   }
 
   function checkClick(e) {
     if (config.clickOutsideDeactivates) return;
-    if (container.contains(e.target)) return;
+    if (containersContain(e.target)) return;
     if (
       config.allowOutsideClick &&
       (typeof config.allowOutsideClick === 'boolean'
@@ -324,10 +383,14 @@ function createFocusTrap(element, userOptions) {
   }
 
   function updateTabbableNodes() {
-    var tabbableNodes = tabbable(container);
-    state.firstTabbableNode = tabbableNodes[0] || getInitialFocusNode();
-    state.lastTabbableNode =
-      tabbableNodes[tabbableNodes.length - 1] || getInitialFocusNode();
+    state.tabbableGroups = state.containers.map((container) => {
+      var tabbableNodes = tabbable(container);
+
+      return {
+        firstTabbableNode: tabbableNodes[0],
+        lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
+      };
+    });
   }
 
   function tryFocus(node) {
@@ -341,6 +404,10 @@ function createFocusTrap(element, userOptions) {
     if (isSelectableInput(node)) {
       node.select();
     }
+  }
+
+  function containersContain(element) {
+    return state.containers.some((container) => container.contains(element));
   }
 }
 

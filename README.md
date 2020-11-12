@@ -63,7 +63,8 @@ Returns a new focus trap on `element`.
 
 `element` can be
 - a DOM node (the focus trap itself) or
-- a selector string (which will be pass to `document.querySelector()` to find the DOM node).
+- a selector string (which will be pass to `document.querySelector()` to find the DOM node) or
+- an array of DOM nodes or selector strings (where the order determines where the focus will go after the last tabbable element of a DOM node/selector is reached).
 
 `createOptions`:
 

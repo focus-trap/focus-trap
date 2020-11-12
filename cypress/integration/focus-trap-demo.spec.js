@@ -711,4 +711,69 @@ describe('focus-trap', () => {
       verifyFocusIsNotTrapped(cy.get('@outsideFocusedEl'));
     });
   });
+
+  describe('demo: multiple elements passed in', () => {
+    it('can accept multiple elements passed in, and keep the focus within the elements', () => {
+      cy.get('#demo-multipleelements').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'See')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'how')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'works')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'with')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'works')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'how')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'See')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'with')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'works')
+        .should('be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap' })
+        .click();
+    });
+  });
 });
