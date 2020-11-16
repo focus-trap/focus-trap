@@ -137,16 +137,20 @@ function createFocusTrap(elements, userOptions) {
   }
 
   function pause() {
-    if (state.paused || !state.active) return;
+    if (state.paused || !state.active) return trap;
     state.paused = true;
     removeListeners();
+
+    return trap;
   }
 
   function unpause() {
-    if (!state.paused || !state.active) return;
+    if (!state.paused || !state.active) return trap;
     state.paused = false;
     updateTabbableNodes();
     addListeners();
+
+    return trap;
   }
 
   function addListeners() {
