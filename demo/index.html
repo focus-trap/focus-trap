@@ -166,7 +166,7 @@
           activate inner trap
         </button>
       </p>
-      <div id="nested-nested" style="display:none;padding:5px 10px;background:pink;">
+      <div id="nested-nested" style="display:none;padding:5px 10px;">
         <p>
           <button>
             nothing
@@ -203,7 +203,7 @@
         </button>
       </p>
     </div>
-    <div id="sibling-second" class="trap" tabindex="-1" style="display: none; background: pink;">
+    <div id="sibling-second" class="trap is-active-nested" tabindex="-1" style="display: none;">
       <p>
         <button id="deactivate-second-sibling">
           deactivate second trap
@@ -462,7 +462,8 @@
   <div id="demo-multipleelements">
     <h2 id="multipleelements-heading">multiple elements</h2>
     <p>
-      You can pass multiple elements, and the focus will be kept within those element boundaries.
+      You can pass multiple elements, and the focus will be kept within those element
+      boundaries (darker color). Clicking outside deactivates.
     </p>
     <p>
       <button id="activate-multipleelements">
@@ -492,13 +493,15 @@
   <div id="demo-multipleelements-multipletraps">
     <h2 id="multipleelements-multipletraps-heading">multiple traps with multiple elements</h2>
     <p>
-      You can have multiple traps with multiple elements.
+      You can have multiple traps with multiple elements. Each trap's elements are in a
+      darker color when their associated trap is active. Clicking outside on the activate
+      and deactivate trap buttons is allowed.
     </p>
     <p>
       <button id="activate-multipleelements-multipletraps-1" class="enable-outside">
         activate trap 1
       </button>
-      <button id="activate-multipleelements-multipletraps-2"  class="enable-outside">
+      <button id="activate-multipleelements-multipletraps-2" class="enable-outside">
         activate trap 2
       </button>
     </p>
@@ -518,7 +521,7 @@
         Here is the <a href="#">last</a> trap <a href="#">area</a>.
       </p>
       <p>
-        <button id="deactivate-multipleelements-multipletraps-1"  class="enable-outside">
+        <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside">
           deactivate trap 1
         </button>
         <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside">
