@@ -113,6 +113,18 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "cgood92",
+      "name": "Clint Goodman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5473697?v=4",
+      "profile": "https://clintgoodman.com",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
