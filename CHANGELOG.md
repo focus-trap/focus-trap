@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.2.0
+
+### Minor Changes
+
+- 2267d17: Adding support for multiple elements to be passed in #217
+
 ## 6.1.4
 
 ### Patch Changes
