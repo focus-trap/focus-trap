@@ -87,11 +87,11 @@ declare module 'focus-trap' {
   }
 
   export interface FocusTrap {
-    activate(activateOptions?: ActivateOptions): void;
-    deactivate(deactivateOptions?: DeactivateOptions): void;
-    pause(): void;
-    unpause(): void;
-    updateContainerElements(containerElements: HTMLElement | string | Array<HTMLElement | string>): void;
+    activate(activateOptions?: ActivateOptions): FocusTrap;
+    deactivate(deactivateOptions?: DeactivateOptions): FocusTrap;
+    pause(): FocusTrap;
+    unpause(): FocusTrap;
+    updateContainerElements(containerElements: HTMLElement | string | Array<HTMLElement | string>): FocusTrap;
   }
 
   /**
