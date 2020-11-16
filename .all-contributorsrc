@@ -125,6 +125,15 @@
         "example",
         "test"
       ]
+    },
+    {
+      "login": "zioth",
+      "name": "Zioth",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/945603?v=4",
+      "profile": "https://github.com/zioth",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
