@@ -91,6 +91,7 @@ declare module 'focus-trap' {
     deactivate(deactivateOptions?: DeactivateOptions): void;
     pause(): void;
     unpause(): void;
+    updateContainerElements(containerElements: HTMLElement | string | Array<HTMLElement | string>): void;
   }
 
   /**

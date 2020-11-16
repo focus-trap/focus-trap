@@ -63,7 +63,7 @@ Returns a new focus trap on `element`.
 
 `element` can be
 - a DOM node (the focus trap itself) or
-- a selector string (which will be pass to `document.querySelector()` to find the DOM node) or
+- a selector string (which will be passed to `document.querySelector()` to find the DOM node) or
 - an array of DOM nodes or selector strings (where the order determines where the focus will go after the last tabbable element of a DOM node/selector is reached).
 
 `createOptions`:
@@ -132,6 +132,16 @@ Unpause an active focus trap. (See `pause()`, above.)
 Focus is forced into the trap just as described for `focusTrap.activate()`.
 
 If the focus trap has not been activated or has not been paused, nothing happens.
+
+Returns the `focusTrap`.
+
+### focusTrap.updateContainerElements()
+
+Update the element(s) that are used as containers for the focus trap.
+
+When you call the function `createFocusTrap`, you pass in an element (or selector), or an array of elements (or selectors) to keep the focus within.  This method simply allows you to update which elements to keep the focus within.
+
+A use case for this is found in focus-trap-react, where React `ref`'s may not be initialized yet, but when they are you want to have them be a container element.
 
 Returns the `focusTrap`.
 

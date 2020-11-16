@@ -47,7 +47,9 @@ function createFocusTrap(elements, userOptions) {
   };
 
   var state = {
+    // @type {Array<HTMLElement>}
     containers: [],
+    // @type {{ firstTabbableNode: HTMLElement, lastTabbableNode: HTMLElement }}
     tabbableGroups: [],
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
@@ -67,8 +69,8 @@ function createFocusTrap(elements, userOptions) {
 
   return trap;
 
-  function updateContainerElements(elements) {
-    var elementsAsArray = [].concat(elements).filter(Boolean);
+  function updateContainerElements(containerElements) {
+    var elementsAsArray = [].concat(containerElements).filter(Boolean);
 
     state.containers = elementsAsArray.map((element) =>
       typeof element === 'string' ? doc.querySelector(element) : element
@@ -77,6 +79,8 @@ function createFocusTrap(elements, userOptions) {
     if (state.active) {
       updateTabbableNodes();
     }
+
+    return trap;
   }
 
   function activate(activateOptions) {
@@ -312,58 +316,43 @@ function createFocusTrap(elements, userOptions) {
   // kind of need to capture the action at the keydown phase.
   function checkTab(e) {
     updateTabbableNodes();
-    const isShift = e.shiftKey;
 
-    if (isShift) {
+    let destinationNode = null;
+
+    if (e.shiftKey) {
       const startOfGroupIndex = state.tabbableGroups.findIndex(
         ({ firstTabbableNode }) => e.target === firstTabbableNode
       );
 
-      const isStartOfAGroup = startOfGroupIndex !== -1;
-      if (isStartOfAGroup) {
-        e.preventDefault();
-
-        const isFirstGroup = startOfGroupIndex === 0;
-        const lastGroupIndex = state.tabbableGroups.length - 1;
-        const previousGroupIndex = startOfGroupIndex - 1;
-        const destinationGroupIndex = isFirstGroup
-          ? lastGroupIndex
-          : previousGroupIndex;
+      if (startOfGroupIndex >= 0) {
+        const destinationGroupIndex =
+          startOfGroupIndex === 0
+            ? state.tabbableGroups.length - 1
+            : startOfGroupIndex - 1;
 
         const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-        const destinationNode =
-          destinationGroup && destinationGroup.lastTabbableNode;
-
-        tryFocus(destinationNode);
-
-        return;
+        destinationNode = destinationGroup.lastTabbableNode;
       }
-    }
-    if (!isShift) {
+    } else {
       const lastOfGroupIndex = state.tabbableGroups.findIndex(
         ({ lastTabbableNode }) => e.target === lastTabbableNode
       );
 
-      const isLastOfAGroup = lastOfGroupIndex !== -1;
-      if (isLastOfAGroup) {
-        e.preventDefault();
-
-        const isLastGroup =
-          lastOfGroupIndex === state.tabbableGroups.length - 1;
-        const firstGroupIndex = 0;
-        const nextGroupIndex = lastOfGroupIndex + 1;
-        const destinationGroupIndex = isLastGroup
-          ? firstGroupIndex
-          : nextGroupIndex;
+      if (lastOfGroupIndex >= 0) {
+        const destinationGroupIndex =
+          lastOfGroupIndex === state.tabbableGroups.length - 1
+            ? 0
+            : lastOfGroupIndex + 1;
 
         const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-        const destinationNode =
-          destinationGroup && destinationGroup.firstTabbableNode;
-
-        tryFocus(destinationNode);
-
-        return;
+        destinationNode = destinationGroup.firstTabbableNode;
       }
+    }
+
+    if (destinationNode) {
+      e.preventDefault();
+
+      tryFocus(destinationNode);
     }
   }
 

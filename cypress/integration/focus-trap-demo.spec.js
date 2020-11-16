@@ -774,6 +774,85 @@ describe('focus-trap', () => {
       cy.get('@testRoot')
         .findByRole('button', { name: 'deactivate trap' })
         .click();
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.findByRole('heading', { name: 'focus-trap demo' })
+        .as('outsideEl')
+        .click();
+      verifyFocusIsNotTrapped(cy.get('@outsideEl'));
+    });
+  });
+
+  describe('demo: multiple traps with multiple elements', () => {
+    it('multiple traps with multiple elements works', () => {
+      cy.get('#demo-multipleelements-multipletraps').as('testRoot');
+
+      // activate trap 1
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap 1' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // Focus should be in trap 1
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'See')
+        .should('be.focused');
+
+      // activate focus trap 2.  This should pause trap 1
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap 2' })
+        .click();
+
+      // Focus should be in trap 2
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'something' })
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'last')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'area')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'something')
+        .should('be.focused');
+
+      // stop focus trap 2
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap 2' })
+        .click();
+
+      // focus should resume back to trap 1
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'See' })
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'how')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'works')
+        .should('be.focused');
+
+      // focus can be transitioned freely when both traps are deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap 1' })
+        .as('lastButtonClicked')
+        .click();
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.findByRole('heading', { name: 'focus-trap demo' })
+        .as('outsideEl')
+        .click();
+      verifyFocusIsNotTrapped(cy.get('@outsideEl'));
     });
   });
 });
