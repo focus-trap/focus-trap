@@ -33,7 +33,7 @@ document
   .getElementById('activate-second-sibling')
   .addEventListener('click', function () {
     second.style.display = 'block';
-    second.className = 'trap is-active';
+    second.className = 'trap is-active-nested';
     secondFocusTrap.activate();
   });
 

@@ -87,10 +87,11 @@ declare module 'focus-trap' {
   }
 
   export interface FocusTrap {
-    activate(activateOptions?: ActivateOptions): void;
-    deactivate(deactivateOptions?: DeactivateOptions): void;
-    pause(): void;
-    unpause(): void;
+    activate(activateOptions?: ActivateOptions): FocusTrap;
+    deactivate(deactivateOptions?: DeactivateOptions): FocusTrap;
+    pause(): FocusTrap;
+    unpause(): FocusTrap;
+    updateContainerElements(containerElements: HTMLElement | string | Array<HTMLElement | string>): FocusTrap;
   }
 
   /**
@@ -101,7 +102,7 @@ declare module 'focus-trap' {
    *  find the element.
    */
   export function createFocusTrap(
-    element: HTMLElement | string,
+    element: HTMLElement | string | Array<HTMLElement | string>,
     userOptions?: Options
   ): FocusTrap;
 }

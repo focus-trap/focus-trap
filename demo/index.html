@@ -166,7 +166,7 @@
           activate inner trap
         </button>
       </p>
-      <div id="nested-nested" style="display:none;padding:5px 10px;background:pink;">
+      <div id="nested-nested" style="display:none;padding:5px 10px;">
         <p>
           <button>
             nothing
@@ -203,7 +203,7 @@
         </button>
       </p>
     </div>
-    <div id="sibling-second" class="trap" tabindex="-1" style="display: none; background: pink;">
+    <div id="sibling-second" class="trap is-active-nested" tabindex="-1" style="display: none;">
       <p>
         <button id="deactivate-second-sibling">
           deactivate second trap
@@ -454,6 +454,78 @@
       <p>
         <button id="deactivate-setreturnfocus">
           deactivate trap
+        </button>
+      </p>
+    </div>
+  </div>
+
+  <div id="demo-multipleelements">
+    <h2 id="multipleelements-heading">multiple elements</h2>
+    <p>
+      You can pass multiple elements, and the focus will be kept within those element
+      boundaries (darker color). Clicking outside deactivates.
+    </p>
+    <p>
+      <button id="activate-multipleelements">
+        activate trap
+      </button>
+    </p>
+    <div id="multipleelements" class="trap">
+      <p id="multipleelements-1">
+        Here is a focus trap <a href="#">with</a> <a href="#">some</a>
+        <a href="#">focusable</a> parts.
+      </p>
+      <p id="multipleelements-2">
+        Here is <a href="#">something</a>.
+      </p>
+      <p id="multipleelements-3">
+        Here is a another focus trap element. <a href="#">See</a> <a href="#">how</a>
+        it <a href="#">works</a>.
+      </p>
+      <p>
+        <button id="deactivate-multipleelements">
+          deactivate trap
+        </button>
+      </p>
+    </div>
+  </div>
+
+  <div id="demo-multipleelements-multipletraps">
+    <h2 id="multipleelements-multipletraps-heading">multiple traps with multiple elements</h2>
+    <p>
+      You can have multiple traps with multiple elements. Each trap's elements are in a
+      darker color when their associated trap is active. Clicking outside on the activate
+      and deactivate trap buttons is allowed.
+    </p>
+    <p>
+      <button id="activate-multipleelements-multipletraps-1" class="enable-outside">
+        activate trap 1
+      </button>
+      <button id="activate-multipleelements-multipletraps-2" class="enable-outside">
+        activate trap 2
+      </button>
+    </p>
+    <div id="multipleelements-multipletraps" class="trap">
+      <p id="multipleelements-multipletraps-1">
+        Here is a focus trap <a href="#">with</a> <a href="#">some</a>
+        <a href="#">focusable</a> parts.
+      </p>
+      <p id="multipleelements-multipletraps-2">
+        Here is <a href="#">something</a>.
+      </p>
+      <p id="multipleelements-multipletraps-3">
+        Here is a another focus trap element. <a href="#">See</a> <a href="#">how</a>
+        it <a href="#">works</a>.
+      </p>
+      <p id="multipleelements-multipletraps-4">
+        Here is the <a href="#">last</a> trap <a href="#">area</a>.
+      </p>
+      <p>
+        <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside">
+          deactivate trap 1
+        </button>
+        <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside">
+          deactivate trap 2
         </button>
       </p>
     </div>

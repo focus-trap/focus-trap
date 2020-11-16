@@ -21,8 +21,12 @@ body {
   padding: 1em 2em;
 }
 
-.trap.is-active {
+.is-active {
   background: #FEE9FF;
+}
+
+.is-active-nested {
+  background: pink;
 }
 
 .inline-label {
