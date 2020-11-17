@@ -1,19 +1,19 @@
 import { tabbable, isFocusable } from 'tabbable';
 
-var activeFocusDelay;
+let activeFocusDelay;
 
-var activeFocusTraps = (function () {
-  var trapQueue = [];
+const activeFocusTraps = (function () {
+  const trapQueue = [];
   return {
     activateTrap: function (trap) {
       if (trapQueue.length > 0) {
-        var activeTrap = trapQueue[trapQueue.length - 1];
+        const activeTrap = trapQueue[trapQueue.length - 1];
         if (activeTrap !== trap) {
           activeTrap.pause();
         }
       }
 
-      var trapIndex = trapQueue.indexOf(trap);
+      const trapIndex = trapQueue.indexOf(trap);
       if (trapIndex === -1) {
         trapQueue.push(trap);
       } else {
@@ -24,7 +24,7 @@ var activeFocusTraps = (function () {
     },
 
     deactivateTrap: function (trap) {
-      var trapIndex = trapQueue.indexOf(trap);
+      const trapIndex = trapQueue.indexOf(trap);
       if (trapIndex !== -1) {
         trapQueue.splice(trapIndex, 1);
       }
@@ -37,16 +37,16 @@ var activeFocusTraps = (function () {
 })();
 
 function createFocusTrap(elements, userOptions) {
-  var doc = document;
+  const doc = document;
 
-  var config = {
+  const config = {
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
     ...userOptions,
   };
 
-  var state = {
+  const state = {
     // @type {Array<HTMLElement>}
     containers: [],
     // @type {{ firstTabbableNode: HTMLElement, lastTabbableNode: HTMLElement }}
@@ -57,12 +57,12 @@ function createFocusTrap(elements, userOptions) {
     paused: false,
   };
 
-  var trap = {
-    activate: activate,
-    deactivate: deactivate,
-    pause: pause,
-    unpause: unpause,
-    updateContainerElements: updateContainerElements,
+  const trap = {
+    activate,
+    deactivate,
+    pause,
+    unpause,
+    updateContainerElements,
   };
 
   updateContainerElements(elements);
@@ -70,7 +70,7 @@ function createFocusTrap(elements, userOptions) {
   return trap;
 
   function updateContainerElements(containerElements) {
-    var elementsAsArray = [].concat(containerElements).filter(Boolean);
+    const elementsAsArray = [].concat(containerElements).filter(Boolean);
 
     state.containers = elementsAsArray.map((element) =>
       typeof element === 'string' ? doc.querySelector(element) : element
@@ -92,7 +92,7 @@ function createFocusTrap(elements, userOptions) {
     state.paused = false;
     state.nodeFocusedBeforeActivation = doc.activeElement;
 
-    var onActivate =
+    const onActivate =
       activateOptions && activateOptions.onActivate
         ? activateOptions.onActivate
         : config.onActivate;
@@ -115,7 +115,7 @@ function createFocusTrap(elements, userOptions) {
 
     activeFocusTraps.deactivateTrap(trap);
 
-    var onDeactivate =
+    const onDeactivate =
       deactivateOptions && deactivateOptions.onDeactivate !== undefined
         ? deactivateOptions.onDeactivate
         : config.onDeactivate;
@@ -123,7 +123,7 @@ function createFocusTrap(elements, userOptions) {
       onDeactivate();
     }
 
-    var returnFocus =
+    const returnFocus =
       deactivateOptions && deactivateOptions.returnFocus !== undefined
         ? deactivateOptions.returnFocus
         : config.returnFocusOnDeactivate;
@@ -138,6 +138,7 @@ function createFocusTrap(elements, userOptions) {
 
   function pause() {
     if (state.paused || !state.active) return trap;
+
     state.paused = true;
     removeListeners();
 
@@ -146,6 +147,7 @@ function createFocusTrap(elements, userOptions) {
 
   function unpause() {
     if (!state.paused || !state.active) return trap;
+
     state.paused = false;
     updateTabbableNodes();
     addListeners();
@@ -201,35 +203,40 @@ function createFocusTrap(elements, userOptions) {
   }
 
   function getNodeForOption(optionName) {
-    var optionValue = config[optionName];
-    var node = optionValue;
+    const optionValue = config[optionName];
     if (!optionValue) {
       return null;
     }
+
+    let node = optionValue;
+
     if (typeof optionValue === 'string') {
       node = doc.querySelector(optionValue);
       if (!node) {
-        throw new Error('`' + optionName + '` refers to no known node');
+        throw new Error(`\`${optionName}\` refers to no known node`);
       }
     }
+
     if (typeof optionValue === 'function') {
       node = optionValue();
       if (!node) {
-        throw new Error('`' + optionName + '` did not return a node');
+        throw new Error(`\`${optionName}\` did not return a node`);
       }
     }
+
     return node;
   }
 
   function getInitialFocusNode() {
-    var node;
+    let node;
+
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
     } else if (containersContain(doc.activeElement)) {
       node = doc.activeElement;
     } else {
-      var firstTabbableGroup = state.tabbableGroups[0];
-      var firstTabbableNode =
+      const firstTabbableGroup = state.tabbableGroups[0];
+      const firstTabbableNode =
         firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
       node = firstTabbableNode || getNodeForOption('fallbackFocus');
     }
@@ -244,7 +251,8 @@ function createFocusTrap(elements, userOptions) {
   }
 
   function getReturnFocusNode(previousActiveElement) {
-    var node = getNodeForOption('setReturnFocus');
+    const node = getNodeForOption('setReturnFocus');
+
     return node ? node : previousActiveElement;
   }
 
@@ -308,6 +316,7 @@ function createFocusTrap(elements, userOptions) {
       deactivate();
       return;
     }
+
     if (isTabEvent(e)) {
       checkTab(e);
       return;
@@ -377,7 +386,7 @@ function createFocusTrap(elements, userOptions) {
 
   function updateTabbableNodes() {
     state.tabbableGroups = state.containers.map((container) => {
-      var tabbableNodes = tabbable(container);
+      const tabbableNodes = tabbable(container);
 
       return {
         firstTabbableNode: tabbableNodes[0],
@@ -392,8 +401,10 @@ function createFocusTrap(elements, userOptions) {
       tryFocus(getInitialFocusNode());
       return;
     }
+
     node.focus({ preventScroll: !!config.preventScroll });
     state.mostRecentlyFocusedNode = node;
+
     if (isSelectableInput(node)) {
       node.select();
     }

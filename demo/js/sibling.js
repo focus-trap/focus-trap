@@ -1,15 +1,13 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('sibling-first');
-var second = document.getElementById('sibling-second');
+const container = document.getElementById('sibling-first');
+const second = document.getElementById('sibling-second');
 
-var firstFocusTrap = createFocusTrap('#sibling-first', {
-  onDeactivate: function () {
-    container.className = 'trap';
-  },
+const firstFocusTrap = createFocusTrap('#sibling-first', {
+  onDeactivate: () => (container.className = 'trap'),
 });
 
-var secondFocusTrap = createFocusTrap('#sibling-second', {
+const secondFocusTrap = createFocusTrap('#sibling-second', {
   onDeactivate: function () {
     second.style.display = 'none';
     second.className = 'trap';
@@ -25,9 +23,7 @@ document
 
 document
   .getElementById('deactivate-first-sibling')
-  .addEventListener('click', function () {
-    firstFocusTrap.deactivate();
-  });
+  .addEventListener('click', firstFocusTrap.deactivate);
 
 document
   .getElementById('activate-second-sibling')
@@ -39,6 +35,4 @@ document
 
 document
   .getElementById('deactivate-second-sibling')
-  .addEventListener('click', function () {
-    secondFocusTrap.deactivate();
-  });
+  .addEventListener('click', secondFocusTrap.deactivate);

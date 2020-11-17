@@ -1,36 +1,26 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('tif');
-var focusable = document.getElementById('tif-hide-focusable');
+const container = document.getElementById('tif');
+const focusable = document.getElementById('tif-hide-focusable');
 
-var focusTrap = createFocusTrap(container, {
+const focusTrap = createFocusTrap(container, {
   fallbackFocus: container,
-  onActivate: function () {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function () {
-    container.className = 'trap';
-  },
+  onActivate: () => (container.className = 'trap is-active'),
+  onDeactivate: () => (container.className = 'trap'),
 });
 
-document.getElementById('activate-tif').addEventListener('click', function () {
-  focusTrap.activate();
-});
+document
+  .getElementById('activate-tif')
+  .addEventListener('click', focusTrap.activate);
 
 document
   .getElementById('deactivate-tif')
-  .addEventListener('click', function () {
-    focusTrap.deactivate();
-  });
+  .addEventListener('click', focusTrap.deactivate);
 
 document
   .getElementById('tif-show-focusable')
-  .addEventListener('click', function () {
-    focusable.style.display = 'block';
-  });
+  .addEventListener('click', () => (focusable.style.display = 'block'));
 
 document
   .getElementById('tif-hide-focusable')
-  .addEventListener('click', function () {
-    focusable.style.display = 'none';
-  });
+  .addEventListener('click', () => (focusable.style.display = 'none'));

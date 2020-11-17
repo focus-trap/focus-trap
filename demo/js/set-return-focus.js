@@ -1,25 +1,17 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('setreturnfocus');
+const container = document.getElementById('setreturnfocus');
 
-var focusTrap = createFocusTrap('#setreturnfocus', {
-  onActivate: function () {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function () {
-    container.className = 'trap';
-  },
+const focusTrap = createFocusTrap('#setreturnfocus', {
+  onActivate: () => (container.className = 'trap is-active'),
+  onDeactivate: () => (container.className = 'trap'),
   setReturnFocus: '#overwritten-element',
 });
 
 document
   .getElementById('activate-setreturnfocus')
-  .addEventListener('click', function () {
-    focusTrap.activate();
-  });
+  .addEventListener('click', focusTrap.activate);
 
 document
   .getElementById('deactivate-setreturnfocus')
-  .addEventListener('click', function () {
-    focusTrap.deactivate();
-  });
+  .addEventListener('click', focusTrap.deactivate);
