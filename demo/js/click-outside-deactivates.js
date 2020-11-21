@@ -20,12 +20,12 @@ const initialize = function () {
   });
 };
 
+let focusTrap = initialize();
+
 const activate = function () {
   active = true;
   focusTrap.activate();
 };
-
-let focusTrap = initialize();
 
 trigger.addEventListener('click', function () {
   if (!active) {

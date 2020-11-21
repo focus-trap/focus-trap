@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-env node */
 
 import babel from '@rollup/plugin-babel';

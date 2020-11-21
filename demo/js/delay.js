@@ -13,19 +13,19 @@ const focusTrap = createFocusTrap(container, {
   },
 });
 
+const showContainer = function (e) {
+  if (e.keyCode === 13) {
+    focusTrap.activate();
+  }
+};
+
+const hideContainer = function () {
+  focusTrap.deactivate();
+};
+
 document
   .getElementById('activate-delay')
   .addEventListener('keydown', showContainer);
 document
   .getElementById('close-button-delay')
   .addEventListener('click', hideContainer);
-
-function showContainer(e) {
-  if (e.keyCode === 13) {
-    focusTrap.activate();
-  }
-}
-
-function hideContainer() {
-  focusTrap.deactivate();
-}
