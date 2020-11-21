@@ -10,6 +10,7 @@
     "package.json",
     "README.md",
     "CHANGELOG.md",
+    "SECURITY.md",
     "LICENSE",
     "index.js",
     "index.d.ts",
