@@ -1,20 +1,16 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('ht');
-var more = document.getElementById('ht-more');
+const container = document.getElementById('ht');
+const more = document.getElementById('ht-more');
 
-var focusTrap = createFocusTrap(container, {
-  onActivate: function () {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function () {
-    container.className = 'trap';
-  },
+const focusTrap = createFocusTrap(container, {
+  onActivate: () => (container.className = 'trap is-active'),
+  onDeactivate: () => (container.className = 'trap'),
 });
 
-document.getElementById('activate-ht').addEventListener('click', function () {
-  focusTrap.activate();
-});
+document
+  .getElementById('activate-ht')
+  .addEventListener('click', focusTrap.activate);
 
 document.getElementById('ht-show-more').addEventListener('click', function () {
   more.style.display = 'block';

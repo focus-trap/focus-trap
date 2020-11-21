@@ -1,15 +1,13 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('nested');
-var nested = document.getElementById('nested-nested');
+const container = document.getElementById('nested');
+const nested = document.getElementById('nested-nested');
 
-var primaryFocusTrap = createFocusTrap('#nested', {
-  onDeactivate: function () {
-    container.style.display = 'none';
-  },
+const primaryFocusTrap = createFocusTrap('#nested', {
+  onDeactivate: () => (container.style.display = 'none'),
 });
 
-var nestedFocusTrap = createFocusTrap('#nested-nested', {
+const nestedFocusTrap = createFocusTrap('#nested-nested', {
   onDeactivate: function () {
     nested.style.display = 'none';
     primaryFocusTrap.unpause();
@@ -25,20 +23,15 @@ document
 
 document
   .getElementById('deactivate-nested')
-  .addEventListener('click', function () {
-    primaryFocusTrap.deactivate();
-  });
+  .addEventListener('click', primaryFocusTrap.deactivate);
 
 document
   .getElementById('nested-activate-nested')
   .addEventListener('click', function () {
     nested.style.display = 'block';
-    // primaryFocusTrap.pause();
     nestedFocusTrap.activate();
   });
 
 document
   .getElementById('nested-deactivate-nested')
-  .addEventListener('click', function () {
-    nestedFocusTrap.deactivate();
-  });
+  .addEventListener('click', nestedFocusTrap.deactivate);

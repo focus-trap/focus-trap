@@ -1,9 +1,9 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('multipleelements');
-var selectors = ['#multipleelements-1', '#multipleelements-3'];
+const container = document.getElementById('multipleelements');
+const selectors = ['#multipleelements-1', '#multipleelements-3'];
 
-var focusTrap = createFocusTrap(selectors, {
+const focusTrap = createFocusTrap(selectors, {
   clickOutsideDeactivates: true,
   onActivate: function () {
     container.className = 'trap is-active';

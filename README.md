@@ -152,11 +152,11 @@ Read code in `demo/` and [see how it works](http://davidtheclark.github.io/focus
 Here's what happens in `default.js` (the "default behavior" demo):
 
 ```js
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('default');
+const container = document.getElementById('default');
 
-var focusTrap = createFocusTrap('#default', {
+const focusTrap = createFocusTrap('#default', {
   onActivate: function () {
     container.className = 'trap is-active';
   },

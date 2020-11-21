@@ -1,8 +1,8 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('no-delay');
+const container = document.getElementById('no-delay');
 
-var focusTrap = createFocusTrap(container, {
+const focusTrap = createFocusTrap(container, {
   delayInitialFocus: false,
   onActivate() {
     container.style.opacity = '1';

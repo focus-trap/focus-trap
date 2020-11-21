@@ -32,17 +32,21 @@ const trap1Selectors = [
 const focusTrap1 = createFocusTrap(trap1Selectors, {
   onActivate() {
     onActivateTrap();
+
     if (isTrap2Active) {
       setActive(trap2Selectors, false);
     }
+
     setActive(trap1Selectors);
     isTrap1Active = true;
   },
   onDeactivate() {
     setActive(trap1Selectors, false);
+
     if (isTrap2Active) {
       setActive(trap2Selectors);
     }
+
     isTrap1Active = false;
     onDeactivateTrap();
   },
@@ -53,20 +57,25 @@ const trap2Selectors = [
   '#multipleelements-multipletraps-2',
   '#multipleelements-multipletraps-4',
 ];
+
 const focusTrap2 = createFocusTrap(trap2Selectors, {
   onActivate() {
     onActivateTrap();
+
     if (isTrap1Active) {
       setActive(trap1Selectors, false);
     }
+
     setActive(trap2Selectors);
     isTrap2Active = true;
   },
   onDeactivate() {
     setActive(trap2Selectors, false);
+
     if (isTrap1Active) {
       setActive(trap1Selectors);
     }
+
     isTrap2Active = false;
     onDeactivateTrap();
   },

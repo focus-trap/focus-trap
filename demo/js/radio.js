@@ -1,24 +1,16 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('radio');
+const container = document.getElementById('radio');
 
-var focusTrap = createFocusTrap('#radio', {
-  onActivate: function () {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function () {
-    container.className = 'trap';
-  },
+const focusTrap = createFocusTrap('#radio', {
+  onActivate: () => (container.className = 'trap is-active'),
+  onDeactivate: () => (container.className = 'trap'),
 });
 
 document
   .getElementById('activate-radio')
-  .addEventListener('click', function () {
-    focusTrap.activate();
-  });
+  .addEventListener('click', focusTrap.activate);
 
 document
   .getElementById('deactivate-radio')
-  .addEventListener('click', function () {
-    focusTrap.deactivate();
-  });
+  .addEventListener('click', focusTrap.deactivate);

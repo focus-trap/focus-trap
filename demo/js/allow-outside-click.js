@@ -1,9 +1,9 @@
-var { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('allowoutsideclick');
-var trigger = document.getElementById('activate-allowoutsideclick');
-var active = false;
-var allowOutsideClick = true;
+const container = document.getElementById('allowoutsideclick');
+const trigger = document.getElementById('activate-allowoutsideclick');
+let active = false;
+let allowOutsideClick = true;
 
 function initialize() {
   return createFocusTrap('#allowoutsideclick', {
@@ -18,7 +18,7 @@ function initialize() {
   });
 }
 
-var focusTrap = initialize();
+let focusTrap = initialize();
 
 function activate() {
   focusTrap.activate();
@@ -42,9 +42,7 @@ trigger.addEventListener('click', function () {
 
 document
   .getElementById('deactivate-allowoutsideclick')
-  .addEventListener('click', function () {
-    deactivate();
-  });
+  .addEventListener('click', deactivate);
 
 document
   .getElementById('select-allowoutsideclick')
