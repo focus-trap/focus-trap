@@ -10,7 +10,7 @@ The most recently published version is the only supported version. If there's a 
 
 __Example Scenario__
 
-Let's say we publish 9.0.0 and a security issue is found in 8.1.3, and it's still in 9.0.0, then we will fix it in 9.0.1 or 9.1.0 (or possibly 7.0.0 if it requires breaking backward compatibility for some reason -- this should be rare), but we will not also publish 8.1.4 or 8.2.1 to fix it.
+Let's say we publish 9.0.0 and a security issue is found in 8.1.3, and it's still in 9.0.0, then we will fix it in 9.0.1 or 9.1.0 (or possibly 10.0.0 if it requires breaking backward compatibility for some reason -- this should be rare), but we will not also publish 8.1.4 or 8.2.1 to fix it.
 
 There could also be a scenario where we're in a pre-release on a new major and a security issue is discovered in the current 8.1.3 release. In that case, we would try to fix it in the current non-pre-release, and bring that forward into the pre-release, but that's as far back as we would go (though we don't consider that going back because the latest release isn't a "full" release, it's still in pre-release stage, so we don't expect everyone to want to adopt a pre-release to get security fix).
 
