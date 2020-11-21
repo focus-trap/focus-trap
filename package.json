@@ -17,6 +17,7 @@
     "dist"
   ],
   "scripts": {
+    "demo-bundle": "browserify demo/js/index.js -o demo/demo-bundle.js",
     "format": "prettier --write \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:check": "prettier --check \"{*,src/**/*,test/**/*,demo/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "lint": "eslint \"*.js\" \"demo/**/*.js\" \"cypress/**/*.js\"",
@@ -73,6 +74,7 @@
     "babel-eslint": "^10.1.0",
     "babel-loader": "^8.2.1",
     "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
     "budo": "^11.6.4",
     "cypress": "^5.6.0",
     "cypress-plugin-tab": "^1.0.5",

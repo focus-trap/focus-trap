@@ -41,3 +41,23 @@ You can also use the [All Contributors CLI](https://allcontributors.org/docs/en/
 Please feel free to use the bot on your own issue or PR to add yourself as a contributor (or use the CLI), or remind one of the maintainers to do so.
 
 > ✨ No contribution is too small not to be included. We appreciate your help!
+
+## Updating the demo
+
+This would mean making a PR into the `gh-pages` branch. Keep in mind that the code may be much older than `master`.
+
+For a __maintainer__ to update the demo, however, these steps can be followed:
+
+```bash
+$ git push -f origin HEAD:gh-pages # push all the latest to the branch
+$ git checkout gh-pages
+
+# remove the exclusion for the ./demo/demo-bundle.js file
+#  in ./.gitignore
+
+$ yarn demo-bundle # this will generate ./demo/demo-bundle.js
+
+$ git add .
+$ git commit -m "Updating demo to latest"
+$ git push
+```
