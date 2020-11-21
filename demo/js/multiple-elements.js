@@ -29,6 +29,5 @@ document
 document
   .getElementById('deactivate-multipleelements')
   .addEventListener('click', function () {
-    console.log('deactivated');
     focusTrap.deactivate();
   });

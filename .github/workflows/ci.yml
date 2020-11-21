@@ -40,13 +40,13 @@ jobs:
 
       - name: Lint
         run: |-
-          yarn format-check;
+          yarn format:check;
           yarn lint;
 
       - name: Test
         run: |-
-          yarn test-unit;
-          yarn test-types;
+          yarn test:unit;
+          yarn test:types;
 
       - name: Build # Tests to see if a build can succeed
         run: yarn build
@@ -69,4 +69,4 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Run tests 🧪
-        run: yarn test-cypress-ci
+        run: yarn test:cypress-ci

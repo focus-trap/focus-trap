@@ -29,6 +29,12 @@ const trap1Selectors = [
   '#multipleelements-multipletraps-1',
   '#multipleelements-multipletraps-3',
 ];
+
+const trap2Selectors = [
+  '#multipleelements-multipletraps-2',
+  '#multipleelements-multipletraps-4',
+];
+
 const focusTrap1 = createFocusTrap(trap1Selectors, {
   onActivate() {
     onActivateTrap();
@@ -52,11 +58,6 @@ const focusTrap1 = createFocusTrap(trap1Selectors, {
   },
   allowOutsideClick,
 });
-
-const trap2Selectors = [
-  '#multipleelements-multipletraps-2',
-  '#multipleelements-multipletraps-4',
-];
 
 const focusTrap2 = createFocusTrap(trap2Selectors, {
   onActivate() {
@@ -85,27 +86,23 @@ const focusTrap2 = createFocusTrap(trap2Selectors, {
 document
   .getElementById('activate-multipleelements-multipletraps-1')
   .addEventListener('click', function () {
-    console.log('activating trap 1');
     focusTrap1.activate();
   });
 
 document
   .getElementById('deactivate-multipleelements-multipletraps-1')
   .addEventListener('click', function () {
-    console.log('de-activating trap 1');
     focusTrap1.deactivate();
   });
 
 document
   .getElementById('activate-multipleelements-multipletraps-2')
   .addEventListener('click', function () {
-    console.log('activating trap 2');
     focusTrap2.activate();
   });
 
 document
   .getElementById('deactivate-multipleelements-multipletraps-2')
   .addEventListener('click', function () {
-    console.log('de-activating trap 2');
     focusTrap2.deactivate();
   });

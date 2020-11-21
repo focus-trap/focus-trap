@@ -14,20 +14,20 @@ const focusTrap = createFocusTrap(container, {
   },
 });
 
+const showContainer = function (e) {
+  if (e.keyCode === 13) {
+    e.preventDefault();
+    focusTrap.activate();
+  }
+};
+
+const hideContainer = function () {
+  focusTrap.deactivate();
+};
+
 document
   .getElementById('activate-no-delay')
   .addEventListener('keydown', showContainer);
 document
   .getElementById('close-button-no-delay')
   .addEventListener('click', hideContainer);
-
-function showContainer(e) {
-  if (e.keyCode === 13) {
-    e.preventDefault();
-    focusTrap.activate();
-  }
-}
-
-function hideContainer() {
-  focusTrap.deactivate();
-}
