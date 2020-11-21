@@ -12,13 +12,13 @@ You will definitely face this challenge when you are trying to build **accessibl
 
 This module is a little, modular **vanilla JS** solution to that problem.
 
-Use it in your higher-level components. For example, if you are using React check out [focus-trap-react](https://github.com/davidtheclark/focus-trap-react), a light wrapper around this library. If you are not a React user, consider creating light wrappers in your framework-of-choice.
+Use it in your higher-level components. For example, if you are using React check out [focus-trap-react](https://github.com/focus-trap/focus-trap-react), a light wrapper around this library. If you are not a React user, consider creating light wrappers in your framework-of-choice.
 
 ## What it does
 
 When a focus trap is activated, this is what should happen:
 
-- Some element within the focus trap receives focus. By default, this will be the first element in the focus trap's tab order (as determined by [tabbable](https://github.com/davidtheclark/tabbable)). Alternately, you can specify an element that should receive this initial focus.
+- Some element within the focus trap receives focus. By default, this will be the first element in the focus trap's tab order (as determined by [tabbable](https://github.com/focus-trap/tabbable)). Alternately, you can specify an element that should receive this initial focus.
 - The `Tab` and `Shift+Tab` keys will cycle through the focus trap's tabbable elements *but will not leave the focus trap*.
 - Clicks within the focus trap behave normally; but clicks *outside* the focus trap are blocked.
 - The `Escape` key will deactivate the focus trap.
@@ -46,7 +46,7 @@ IE9+
 
 Why?
 Because this module uses [`EventTarget.addEventListener()`](document.createElement('button')).
-And its only dependency, tabbable, uses [a couple of IE9+ functions](https://github.com/davidtheclark/tabbable#browser-support).
+And its only dependency, tabbable, uses [a couple of IE9+ functions](https://github.com/focus-trap/tabbable#browser-support).
 
 ## Usage
 
@@ -147,7 +147,7 @@ Returns the `focusTrap`.
 
 ## Examples
 
-Read code in `demo/` and [see how it works](http://davidtheclark.github.io/focus-trap/demo/).
+Read code in `demo/` and [see how it works](http://focus-trap.github.io/focus-trap/demo/).
 
 Here's what happens in `default.js` (the "default behavior" demo):
 
@@ -192,7 +192,7 @@ The focus trap will work best if the *first* and *last* focusable elements in yo
 
 Tabbing will work as expected with trickier, less predictable elements — like iframes, shadow trees, audio and video elements, etc. — as long as they are *between* more predictable elements (that is, if they are not the first or last tabbable element in the trap).
 
-This limitation is ultimately rooted in browser inconsistencies and inadequacies, but it comes to focus-trap through its dependency [Tabbable](https://github.com/davidtheclark/tabbable). You can read about more details [in the Tabbable documentation](https://github.com/davidtheclark/tabbable#more-details).
+This limitation is ultimately rooted in browser inconsistencies and inadequacies, but it comes to focus-trap through its dependency [Tabbable](https://github.com/focus-trap/tabbable). You can read about more details [in the Tabbable documentation](https://github.com/focus-trap/tabbable#more-details).
 
 ### Your trap should include a tabbable element or a focusable container
 
