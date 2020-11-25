@@ -5,7 +5,9 @@
 ### Patch Changes
 
 - f0c2aff: Bump tabbable to [5.1.4](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#514) for bug fix.
-- 2ba512b: Refactored code to use function declarations instead of hoisted functions (this should have no bearing on functionality in the build output included in `./dist`, and fixed bugs where `trap.activate()` and `trap.deactivate()` would not always return the trap (now they do in all circumstances).
+- 2ba512b:
+  - Refactored code to use function declarations instead of hoisted functions (this should have no bearing on functionality in the build output included in `./dist`
+  - fixed bugs where `trap.activate()` and `trap.deactivate()` would not always return the trap (now they do in all circumstances).
 - d26d2e1: Refactoring to use const/let, and simplify a few lines. This does NOT impact the build output published in `./dist`, however, and hence does not impact browser support.
 
 ## 6.2.0
