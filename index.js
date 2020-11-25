@@ -69,8 +69,16 @@ const createFocusTrap = function (elements, userOptions) {
   const state = {
     // @type {Array<HTMLElement>}
     containers: [],
-    // @type {{ firstTabbableNode: HTMLElement, lastTabbableNode: HTMLElement }}
+
+    // list of objects identifying the first and last tabbable nodes in all containers/groups in
+    //  the trap
+    // NOTE: it's possible that a group has no tabbable nodes if nodes get removed while the trap
+    //  is active, but the trap should never get to a state where there isn't at least one group
+    //  with at least one tabbable node in it (that would lead to an error condition that would
+    //  result in an error being thrown)
+    // @type {Array<{ firstTabbableNode: HTMLElement|null, lastTabbableNode: HTMLElement|null }>}
     tabbableGroups: [],
+
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -132,14 +140,30 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const updateTabbableNodes = function () {
-    state.tabbableGroups = state.containers.map((container) => {
-      const tabbableNodes = tabbable(container);
+    state.tabbableGroups = state.containers
+      .map((container) => {
+        const tabbableNodes = tabbable(container);
 
-      return {
-        firstTabbableNode: tabbableNodes[0],
-        lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
-      };
-    });
+        if (tabbableNodes.length > 0) {
+          return {
+            firstTabbableNode: tabbableNodes[0],
+            lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
+          };
+        }
+
+        return undefined;
+      })
+      .filter((group) => !!group); // remove groups with no tabbable nodes
+
+    // throw if no groups have tabbable nodes and we don't have a fallback focus node either
+    if (
+      state.tabbableGroups.length <= 0 &&
+      !getNodeForOption('fallbackFocus')
+    ) {
+      throw new Error(
+        'Your focus-trap must have at least one container with at least one tabbable node in it at all times'
+      );
+    }
   };
 
   const tryFocus = function (node) {
@@ -213,10 +237,14 @@ const createFocusTrap = function (elements, userOptions) {
   const checkFocusIn = function (e) {
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
     if (containersContain(e.target) || e.target instanceof Document) {
-      return;
+      if (containersContain(e.target)) {
+        state.mostRecentlyFocusedNode = e.target;
+      }
+    } else {
+      // escaped! pull it back in to where it just left
+      e.stopImmediatePropagation();
+      tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
     }
-    e.stopImmediatePropagation();
-    tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
   };
 
   // Hijack Tab events on the first and last focusable nodes of the trap,
@@ -228,39 +256,42 @@ const createFocusTrap = function (elements, userOptions) {
 
     let destinationNode = null;
 
-    if (e.shiftKey) {
-      const startOfGroupIndex = state.tabbableGroups.findIndex(
-        ({ firstTabbableNode }) => e.target === firstTabbableNode
-      );
+    if (state.tabbableGroups.length > 0) {
+      if (e.shiftKey) {
+        const startOfGroupIndex = state.tabbableGroups.findIndex(
+          ({ firstTabbableNode }) => e.target === firstTabbableNode
+        );
 
-      if (startOfGroupIndex >= 0) {
-        const destinationGroupIndex =
-          startOfGroupIndex === 0
-            ? state.tabbableGroups.length - 1
-            : startOfGroupIndex - 1;
+        if (startOfGroupIndex >= 0) {
+          const destinationGroupIndex =
+            startOfGroupIndex === 0
+              ? state.tabbableGroups.length - 1
+              : startOfGroupIndex - 1;
 
-        const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-        destinationNode = destinationGroup.lastTabbableNode;
+          const destinationGroup = state.tabbableGroups[destinationGroupIndex];
+          destinationNode = destinationGroup.lastTabbableNode;
+        }
+      } else {
+        const lastOfGroupIndex = state.tabbableGroups.findIndex(
+          ({ lastTabbableNode }) => e.target === lastTabbableNode
+        );
+
+        if (lastOfGroupIndex >= 0) {
+          const destinationGroupIndex =
+            lastOfGroupIndex === state.tabbableGroups.length - 1
+              ? 0
+              : lastOfGroupIndex + 1;
+
+          const destinationGroup = state.tabbableGroups[destinationGroupIndex];
+          destinationNode = destinationGroup.firstTabbableNode;
+        }
       }
     } else {
-      const lastOfGroupIndex = state.tabbableGroups.findIndex(
-        ({ lastTabbableNode }) => e.target === lastTabbableNode
-      );
-
-      if (lastOfGroupIndex >= 0) {
-        const destinationGroupIndex =
-          lastOfGroupIndex === state.tabbableGroups.length - 1
-            ? 0
-            : lastOfGroupIndex + 1;
-
-        const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-        destinationNode = destinationGroup.firstTabbableNode;
-      }
+      destinationNode = getNodeForOption('fallbackFocus');
     }
 
     if (destinationNode) {
       e.preventDefault();
-
       tryFocus(destinationNode);
     }
   };
@@ -282,9 +313,11 @@ const createFocusTrap = function (elements, userOptions) {
     if (config.clickOutsideDeactivates) {
       return;
     }
+
     if (containersContain(e.target)) {
       return;
     }
+
     if (
       config.allowOutsideClick &&
       (typeof config.allowOutsideClick === 'boolean'
@@ -293,6 +326,7 @@ const createFocusTrap = function (elements, userOptions) {
     ) {
       return;
     }
+
     e.preventDefault();
     e.stopImmediatePropagation();
   };
