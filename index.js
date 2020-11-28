@@ -235,9 +235,10 @@ const createFocusTrap = function (elements, userOptions) {
 
   // In case focus escapes the trap for some strange reason, pull it back in.
   const checkFocusIn = function (e) {
+    const targetContained = containersContain(e.target);
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
-    if (containersContain(e.target) || e.target instanceof Document) {
-      if (containersContain(e.target)) {
+    if (targetContained || e.target instanceof Document) {
+      if (targetContained) {
         state.mostRecentlyFocusedNode = e.target;
       }
     } else {
