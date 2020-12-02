@@ -728,7 +728,7 @@ describe('focus-trap', () => {
         .as('firstElementInTrap')
         .should('be.focused');
 
-      // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
       cy.get('@firstElementInTrap')
         .tab()
         .should('have.text', 'some')
@@ -774,8 +774,160 @@ describe('focus-trap', () => {
       cy.get('@testRoot')
         .findByRole('button', { name: 'deactivate trap' })
         .click();
+      cy.findByRole('heading', { name: 'focus-trap demo' })
+        .as('outsideEl')
+        .click();
+      verifyFocusIsNotTrapped(cy.get('@outsideEl'));
+    });
+
+    it('can adjust to some containers no longer containing any tabbable nodes', () => {
+      cy.get('#demo-multipleelements-delete').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'Gets removed' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'Remove button')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'Some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'other')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'Gets removed')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'other')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Some')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Remove button')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Gets removed')
+        .should('be.focused');
+
+      // now remove the button in the first container while it has focus (though
+      //  the click here will cause it to lose focus, which is normal)
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'Remove button' })
+        .as('removeButton')
+        .click();
+
+      cy.get('@firstElementInTrap').should('not.exist'); // removed from the DOM
+
+      cy.get('@removeButton')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'Some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'other')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'Remove button')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'other')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Some')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Remove button')
+        .should('be.focused');
 
       // focus can be transitioned freely when trap is deactivated
+      cy.get('@removeButton').type('{esc}'); // NOTE: for some reason, clicking the button doesn't work in Cypress only; works with manual testing
+      cy.findByRole('heading', { name: 'focus-trap demo' })
+        .as('outsideEl')
+        .click();
+      verifyFocusIsNotTrapped(cy.get('@outsideEl'));
+    });
+
+    it('can adjust to all containers no longer containing any tabbable nodes provided there is a fallback focus node', () => {
+      cy.get('#demo-multipleelements-delete-all').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'activate trap' })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'deactivate trap' })
+        .as('deactivateTrap');
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'Remove all button' })
+        .as('removeButton');
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'Gets removed' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'Remove all button')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'Gets removed')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Remove all button')
+        .should('be.focused')
+        .tab({ shift: true })
+        .should('have.text', 'Gets removed')
+        .should('be.focused');
+
+      // now remove the button in the first container while it has focus (though
+      //  the click here will cause it to lose focus, which is normal), and also
+      //  remove the button used to remove the other button
+      cy.get('@removeButton').click();
+
+      cy.get('@firstElementInTrap').should('not.exist'); // removed from the DOM
+      cy.get('@removeButton').should('not.exist'); // removed from the DOM
+
+      // in 'real life', nothing seems to have focus at this point, and pressing the
+      //  tab key causes the browser to set focus to the 'deactivate' button, but
+      //  `cy.tab()`, `cy.get('body').tab()` and a few other things don't work
+      //  for some reason; in any case, the fact we can programmatically set focus
+      //  to the deactivate button still comes down to the fact that it's the
+      //  fallback focus node
+      cy.get('@deactivateTrap').focus();
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@deactivateTrap').click();
       cy.findByRole('heading', { name: 'focus-trap demo' })
         .as('outsideEl')
         .click();

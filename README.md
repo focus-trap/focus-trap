@@ -59,19 +59,21 @@ const { createFocusTrap } = require('focus-trap'); // CJS
 focusTrap = createFocusTrap(element[, createOptions]);
 ```
 
-Returns a new focus trap on `element`.
+Returns a new focus trap on `element` (one or more "containers" of tabbable nodes that, together, form the total set of nodes that can be visited, with clicks or the tab key, within the trap).
 
 `element` can be
-- a DOM node (the focus trap itself) or
-- a selector string (which will be passed to `document.querySelector()` to find the DOM node) or
+- a DOM node (the focus trap itself);
+- a selector string (which will be passed to `document.querySelector()` to find the DOM node); or
 - an array of DOM nodes or selector strings (where the order determines where the focus will go after the last tabbable element of a DOM node/selector is reached).
+
+> A focus trap must have at least one container with at least one tabbable/focusable node in it to be considered valid. While nodes can be added/removed at runtime, with the trap adjusting to added/removed tabbable nodes, __an error will be thrown__ if the trap ever gets into a state where it determines none of its containers have any tabbable nodes in them _and_ the `fallbackFocus` option does not resolve to an alternate node where focus can go.
 
 `createOptions`:
 
 - **onActivate** {function}: A function that will be called when the focus trap activates.
 - **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
 - **initialFocus** {element|string|function}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
-- **fallbackFocus** {element|string|function}: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or  a function that returns a DOM node.
+- **fallbackFocus** {element|string|function}: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
 - **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
 - **clickOutsideDeactivates** {boolean}: Default: `false`. If `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing. This option **takes precedence** over `allowOutsideClick` when it's set to `true`.
 - **allowOutsideClick** {boolean|(e: MouseEvent) => boolean}: If set and is or returns `true`, a click outside the focus trap will not be prevented, even when `clickOutsideDeactivates` is `false`. When `clickOutsideDeactivates` is `true`, this option is **ignored** (i.e. if it's a function, it will not be called). Use this option to control if (and even which) clicks are allowed outside the trap in conjunction with `clickOutsideDeactivates: false`.
