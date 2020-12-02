@@ -1,13 +1,19 @@
 # Changelog
 
+## 6.2.2
+
+### Patch Changes
+
+- fd3f2d1: Fix a bug where a multi-container trap would cease to work if all tabbable nodes were removed from one of the containers (fixes #223). As a result, an error is now thrown if the trap is left in a state where none of its containers contain any tabbable nodes (unless a `fallbackFocus` node has been configured in the trap's options). Also, the most-recently-focused node is more reliably tracked now, should focus somehow escape the trap and be brought back in by the trap, resulting in the truly most-recently-focused node to regain focus if that ever happens.
+
 ## 6.2.1
 
 ### Patch Changes
 
 - f0c2aff: Bump tabbable to [5.1.4](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#514) for bug fix.
 - 2ba512b:
-    - Refactored code to use function declarations instead of hoisted functions (this should have no bearing on functionality in the build output included in `./dist`.
-    - Fixed bugs where `trap.activate()` and `trap.deactivate()` would not always return the trap (now they do in all circumstances).
+  - Refactored code to use function declarations instead of hoisted functions (this should have no bearing on functionality in the build output included in `./dist`.
+  - Fixed bugs where `trap.activate()` and `trap.deactivate()` would not always return the trap (now they do in all circumstances).
 - d26d2e1: Refactoring to use const/let, and simplify a few lines. This does NOT impact the build output published in `./dist`, however, and hence does not impact browser support.
 
 ## 6.2.0
