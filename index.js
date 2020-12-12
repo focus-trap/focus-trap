@@ -56,6 +56,23 @@ const delay = function (fn) {
   return setTimeout(fn, 0);
 };
 
+// Array.find/findIndex() are not supported on IE; this replicates enough
+//  of Array.findIndex() for our needs
+const findIndex = function (arr, fn) {
+  let idx = -1;
+
+  arr.every(function (value, i) {
+    if (fn(value)) {
+      idx = i;
+      return false; // break
+    }
+
+    return true; // next
+  });
+
+  return idx;
+};
+
 const createFocusTrap = function (elements, userOptions) {
   const doc = document;
 
@@ -259,7 +276,8 @@ const createFocusTrap = function (elements, userOptions) {
 
     if (state.tabbableGroups.length > 0) {
       if (e.shiftKey) {
-        const startOfGroupIndex = state.tabbableGroups.findIndex(
+        const startOfGroupIndex = findIndex(
+          state.tabbableGroups,
           ({ firstTabbableNode }) => e.target === firstTabbableNode
         );
 
@@ -273,7 +291,8 @@ const createFocusTrap = function (elements, userOptions) {
           destinationNode = destinationGroup.lastTabbableNode;
         }
       } else {
-        const lastOfGroupIndex = state.tabbableGroups.findIndex(
+        const lastOfGroupIndex = findIndex(
+          state.tabbableGroups,
           ({ lastTabbableNode }) => e.target === lastTabbableNode
         );
 
