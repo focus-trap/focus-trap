@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.2.3
+
+### Patch Changes
+
+- 036a72e: Fix crash in IE due to use of `Array.findIndex()` not supported in that browser (#257)
+
 ## 6.2.2
 
 ### Patch Changes
