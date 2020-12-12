@@ -1,7 +1,7 @@
 # focus-trap [![CI](https://github.com/focus-trap/focus-trap/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/focus-trap/focus-trap/actions?query=workflow:CI+branch:master) [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Trap focus within a DOM node.
@@ -233,6 +233,7 @@ In alphabetical order:
     <td align="center"><a href="https://scottblinch.me/"><img src="https://avatars2.githubusercontent.com/u/4682114?v=4" width="100px;" alt=""/><br /><sub><b>Scott Blinch</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/commits?author=scottblinch" title="Documentation">📖</a></td>
     <td align="center"><a href="https://clintgoodman.com"><img src="https://avatars3.githubusercontent.com/u/5473697?v=4" width="100px;" alt=""/><br /><sub><b>Clint Goodman</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/commits?author=cgood92" title="Code">💻</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=cgood92" title="Documentation">📖</a> <a href="#example-cgood92" title="Examples">💡</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=cgood92" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/zioth"><img src="https://avatars3.githubusercontent.com/u/945603?v=4" width="100px;" alt=""/><br /><sub><b>Zioth</b></sub></a><br /><a href="#ideas-zioth" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/focus-trap/focus-trap/issues?q=author%3Azioth" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/randypuro"><img src="https://avatars2.githubusercontent.com/u/2579?v=4" width="100px;" alt=""/><br /><sub><b>Randy Puro</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/issues?q=author%3Arandypuro" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

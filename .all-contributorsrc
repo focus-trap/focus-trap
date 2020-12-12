@@ -135,6 +135,15 @@
         "ideas",
         "bug"
       ]
+    },
+    {
+      "login": "randypuro",
+      "name": "Randy Puro",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2579?v=4",
+      "profile": "https://github.com/randypuro",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
