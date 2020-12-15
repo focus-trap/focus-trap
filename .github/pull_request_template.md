@@ -1,25 +1,26 @@
+<!--
 Thank you for your contribution! 🎉
 
-Here are a few checks to help us make this the _best PR ever_ depending on the nature of your changes.
+Please be sure to go over the PR CHECKLIST below before posting your PR to make sure we all think of "everything". :)
+-->
 
-🥦 Please __replace these lines above with your PR message__, and remove the section below that doesn't apply:
+...ADD PR DETAILS HERE...
 
-###  Features and Bug Fixes
+<details>
+<summary>PR Checklist</summary>
+<br/>
 
-- [ ] Issue being fixed is referenced.
-- [ ] Test coverage added/updated.
-- [ ] Typings added/updated.
-- [ ] README updated (API changes, instructions, etc.).
-- [ ] Changes to dependencies explained.
-- [ ] Changeset added (run `yarn changeset` locally to add one, follow prompts).
+__Please leave this checklist in your PR.__
 
-👉 If any of these don't apply, please ~cross them out~.
+- Source changes maintain stated browser compatibility.
+- Issue being fixed is referenced.
+- Unit test coverage added/updated.
+- E2E test coverage added/updated.
+- Prop-types added/updated.
+- Typings added/updated.
+- README updated (API changes, instructions, etc.).
+- Changes to dependencies explained.
+- Changeset added (run `yarn changeset` locally to add one, and follow the prompts).
+  - EXCEPTION: A Changeset is not required if the change does not affect any of the source files that produce the package bundle. For example, tooling changes, test updates, or a new dev-only dependency to run tests more efficiently should not have a Changeset since it will not affect package consumers.
 
-### Tooling
-
-- [ ] Issue being fixed is referenced.
-- [ ] Changes to dependencies explained.
-- [ ] README instructions updated.
-- [ ] A Changeset is __not__ added.
-
-👉 If any of these don't apply, please ~cross them out~.
+</details>
