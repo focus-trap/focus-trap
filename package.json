@@ -68,7 +68,7 @@
     "@rollup/plugin-babel": "^5.2.2",
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.1",
-    "@testing-library/cypress": "^7.0.2",
+    "@testing-library/cypress": "^7.0.3",
     "@types/jquery": "^3.5.5",
     "all-contributors-cli": "^6.19.0",
     "babel-eslint": "^10.1.0",
