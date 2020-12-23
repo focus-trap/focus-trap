@@ -78,7 +78,7 @@
     "budo": "^11.6.4",
     "cypress": "^6.1.0",
     "cypress-plugin-tab": "^1.0.5",
-    "eslint": "^7.15.0",
+    "eslint": "^7.16.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-cypress": "^2.11.2",
     "prettier": "^2.2.1",
