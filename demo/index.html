@@ -5,600 +5,596 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>focus-trap demo</title>
-
   <link rel="stylesheet" href="style.css">
   <meta name="description" content="A demo of focus-trap">
-
 </head>
 <body>
-  <h1 tabindex="0">focus-trap demo</h1>
-
-  <p>
-    <span style="font-size:2em;vertical-align:middle;">☜</span>
-    <a id="return-to-repo" href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
-  </p>
-
-  <p>
-    In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus!
-  </p>
-
-  <p>
-    When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, hitting <kbd>Escape</kbd>.
-  </p>
-
-  <div id="demo-default">
-    <h2 id="default-heading">default behavior</h2>
+  <main>
+    <h1 tabindex="0">focus-trap demo</h1>
     <p>
-      <button id="activate-default">
-        activate trap
-      </button>
+      <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
+      <a id="return-to-repo" href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
     </p>
-    <div id="default" class="trap">
+    <p>
+      In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus!
+    </p>
+    <p>
+      When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, hitting <kbd>Escape</kbd>.
+    </p>
+
+    <div id="demo-default">
+      <h2 id="default-heading">default behavior</h2>
       <p>
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
-      </p>
-      <p>
-        <button id="deactivate-default">
-          deactivate trap
+        <button id="activate-default" aria-label="activate trap for 'defaults' demo">
+          activate trap
         </button>
       </p>
-    </div>
-  </div>
-
-  <div id="demo-iene">
-    <h2 id="iene-heading">initial element, no escape</h2>
-    <p>
-      When this focus trap activates, focus jumps to a specific, manually specified element.
-    </p>
-    <p>
-      Also, in this demo the <kbd>Escape</kbd> key does not deactivate the focus trap. You must click the button.
-    </p>
-    <p>
-      <button id="activate-iene">
-        activate trap
-      </button>
-    </p>
-    <div id="iene" class="trap">
-      <p>
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
-      </p>
-      <p>
-        <label for="focused-input" class="inline-label">
-          Initially focused input
-        </label>
-        <input id="focused-input" />
-      </p>
-      <p>
-        <button id="deactivate-iene">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-ifc">
-    <h2 id="ifc-heading">initially focused container</h2>
-    <p>
-      When this focus trap activates, initial focus is on the containing element (which has <code>tabindex="-1"</code> and is therefore not tabbable).
-      When you tab through the trap, focus does not return to the containing element.
-    </p>
-    <p>
-      Also, clicking on an outside element automatically deactivates this trap.
-    </p>
-    <p>
-      <button id="activate-ifc">
-        activate trap
-      </button>
-    </p>
-    <div id="ifc" class="trap" tabindex="-1">
-      <p>
-        <button>
-          first
-        </button>
-      </p>
-      <p>
-        <button>
-          second
-        </button>
-      </p>
-      <p>
-        <button id="deactivate-ifc">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-ht">
-    <h2 id="ht-heading">hidden treasures</h2>
-    <p>
-      Focusable nodes are initially hidden and then revealed within the trap. Use <kbd>Escape</kbd> to exit.
-    </p>
-    <p>
-      <button id="activate-ht">
-        activate trap
-      </button>
-    </p>
-    <div id="ht" class="trap" tabindex="-1">
-      <p>
-        <button>
-          nothing
-        </button>
-      </p>
-      <p>
-        <button id="ht-show-more">
-          click to show more
-        </button>
-      </p>
-      <div id="ht-more" style="display:none;">
+      <div id="default" class="trap">
         <p>
-          <button>
-            nothing again
-          </button>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
-          <button id="ht-show-less">
-            click to show less
+          <button id="deactivate-default" aria-label="deactivate trap for 'defaults' demo">
+            deactivate trap
           </button>
         </p>
       </div>
     </div>
-  </div>
 
-  <div id="demo-nested">
-    <h2 id="nested-heading">nested</h2>
-    <p>
-      Nested focus traps.
-    </p>
-    <p>
-      <button id="activate-nested">
-        activate trap
-      </button>
-    </p>
-    <div id="nested" class="trap is-active" tabindex="-1" style="display:none;">
+    <div id="demo-iene">
+      <h2 id="iene-heading">initial element, no escape</h2>
       <p>
-        <button id="deactivate-nested">
-          deactivate outer trap
-        </button>
+        When this focus trap activates, focus jumps to a specific, manually specified element.
       </p>
       <p>
-        <button id="nested-activate-nested">
-          activate inner trap
+        Also, in this demo the <kbd>Escape</kbd> key does not deactivate the focus trap. You must click the button.
+      </p>
+      <p>
+        <button id="activate-iene" aria-label="activate trap for 'initial element, no escape' demo">
+          activate trap
         </button>
       </p>
-      <div id="nested-nested" style="display:none;padding:5px 10px;">
+      <div id="iene" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <label for="focused-input" class="inline-label">
+            Initially focused input
+          </label>
+          <input id="focused-input" />
+        </p>
+        <p>
+          <button id="deactivate-iene" aria-label="deactivate trap for 'initial element, no escape' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-ifc">
+      <h2 id="ifc-heading">initially focused container</h2>
+      <p>
+        When this focus trap activates, initial focus is on the containing element (which has <code>tabindex="-1"</code> and is therefore not tabbable).
+        When you tab through the trap, focus does not return to the containing element.
+      </p>
+      <p>
+        Also, clicking on an outside element automatically deactivates this trap.
+      </p>
+      <p>
+        <button id="activate-ifc" aria-label="activate trap for 'initially focused container' demo">
+          activate trap
+        </button>
+      </p>
+      <div id="ifc" class="trap" tabindex="-1">
+        <p>
+          <button>
+            first
+          </button>
+        </p>
+        <p>
+          <button>
+            second
+          </button>
+        </p>
+        <p>
+          <button id="deactivate-ifc" aria-label="deactivate trap for 'initially focused container' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-ht">
+      <h2 id="ht-heading">hidden treasures</h2>
+      <p>
+        Focusable nodes are initially hidden and then revealed within the trap. Use <kbd>Escape</kbd> to exit.
+      </p>
+      <p>
+        <button id="activate-ht" aria-label="activate trap for 'hidden treasures' demo">
+          activate trap
+        </button>
+      </p>
+      <div id="ht" class="trap" tabindex="-1">
         <p>
           <button>
             nothing
           </button>
         </p>
         <p>
-          <button id="nested-deactivate-nested">
-            deactivate and close inner trap
+          <button id="ht-show-more">
+            click to show more
+          </button>
+        </p>
+        <div id="ht-more" style="display:none;">
+          <p>
+            <button>
+              nothing again
+            </button>
+          </p>
+          <p>
+            <button id="ht-show-less">
+              click to show less
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="demo-nested">
+      <h2 id="nested-heading">nested</h2>
+      <p>
+        Nested focus traps.
+      </p>
+      <p>
+        <button id="activate-nested" aria-label="activate trap for 'nested' demo">
+          activate trap
+        </button>
+      </p>
+      <div id="nested" class="trap is-active" tabindex="-1" style="display:none;">
+        <p>
+          <button id="deactivate-nested" aria-label="deactivate outer trap for 'nested' demo">
+            deactivate outer trap
+          </button>
+        </p>
+        <p>
+          <button id="nested-activate-nested" aria-label="activate inner trap for 'nested' demo">
+            activate inner trap
+          </button>
+        </p>
+        <div id="nested-nested" style="display:none;padding:5px 10px;">
+          <p>
+            <button>
+              nothing
+            </button>
+          </p>
+          <p>
+            <button id="nested-deactivate-nested" aria-label="deactivate and close inner trap for 'nested' demo">
+              deactivate and close inner trap
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="demo-sibling">
+      <h2 id="sibling-heading">sibling traps</h2>
+      <p>
+        Sibling focus traps. When the second trap is deactivated, focus returns to the first trap.
+      </p>
+      <div id="sibling-first" class="trap" tabindex="-1">
+        <p>
+          <button id="activate-first-sibling" aria-label="activate first trap for 'sibling traps' demo">
+            activate first trap
+          </button>
+        </p>
+        <p>
+          <button id="deactivate-first-sibling" aria-label="deactivate first trap for 'sibling traps' demo">
+            deactivate first trap
+          </button>
+        </p>
+        <p>
+          <button id="activate-second-sibling" aria-label="activate second trap for 'sibling traps' demo">
+            activate second trap
+          </button>
+        </p>
+      </div>
+      <div id="sibling-second" class="trap is-active-nested" tabindex="-1" style="display: none;">
+        <p>
+          <button id="deactivate-second-sibling" aria-label="deactivate second trap for 'sibling traps' demo">
+            deactivate second trap
           </button>
         </p>
       </div>
     </div>
-  </div>
 
-  <div id="demo-sibling">
-    <h2 id="sibling-heading">sibling traps</h2>
-    <p>
-      Sibling focus traps. When the second trap is deactivated, focus returns to the first trap.
-    </p>
-    <div id="sibling-first" class="trap" tabindex="-1">
+    <div id="demo-tif">
+      <h2 id="tif-heading">tricky initial focus</h2>
       <p>
-        <button id="activate-first-sibling">
-          activate first trap
-        </button>
+        In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).
+        If you activate the trap in this state, the <code>fallbackFocus</code> option is used to focus the container.
+        If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
       </p>
       <p>
-        <button id="deactivate-first-sibling">
-          deactivate first trap
+        <button id="activate-tif" aria-label="activate trap for 'tricky initial focus' demo">
+          activate trap
         </button>
       </p>
-      <p>
-        <button id="activate-second-sibling">
-          activate second trap
-        </button>
-      </p>
+      <div id="tif" class="trap" tabindex="-1">
+        <p>
+          <button id="deactivate-tif" tabindex="-1" aria-label="deactivate trap for 'tricky initial focus' demo">
+            deactivate trap
+          </button>
+        </p>
+        <p>
+          <button id="tif-show-focusable" tabindex="-1">
+            show focusable button
+          </button>
+        </p>
+        <p>
+          <button id="tif-hide-focusable" style="display:none;">
+            hide focusable button
+          </button>
+        </p>
+      </div>
     </div>
-    <div id="sibling-second" class="trap is-active-nested" tabindex="-1" style="display: none;">
-      <p>
-        <button id="deactivate-second-sibling">
-          deactivate second trap
-        </button>
-      </p>
-    </div>
-  </div>
 
-  <div id="demo-tif">
-    <h2 id="tif-heading">tricky initial focus</h2>
-    <p>
-      In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).
-      If you activate the trap in this state, the <code>fallbackFocus</code> option is used to focus the container.
-      If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
-    </p>
-    <p>
-      <button id="activate-tif">
-        activate trap
-      </button>
-    </p>
-    <div id="tif" class="trap" tabindex="-1">
+    <div id="demo-input-activation">
+      <h2 id="input-activation-heading">input activation</h2>
       <p>
-        <button id="deactivate-tif" tabindex="-1">
-          deactivate trap
-        </button>
+        Any change to the input content triggers automatic activation of the focus trap, without changing selection within the input.
       </p>
-      <p>
-        <button id="tif-show-focusable" tabindex="-1">
-          show focusable button
-        </button>
-      </p>
-      <p>
-        <button id="tif-hide-focusable" style="display:none;">
-          hide focusable button
-        </button>
-      </p>
+      <div id="input-activation" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <label for="focused-input8" class="inline-label">
+            Initially focused input
+          </label>
+          <input id="focused-input8" />
+        </p>
+        <p>
+          <button id="deactivate-input-activation" aria-label="deactivate trap for 'input activation' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
     </div>
-  </div>
 
-  <div id="demo-input-activation">
-    <h2 id="input-activation-heading">input activation</h2>
-    <p>
-      Any change to the input content triggers automatic activation of the focus trap, without changing selection within the input.
-    </p>
-    <div id="input-activation" class="trap">
+    <div id="demo-delay">
+      <h2 id="delay-heading">delay</h2>
       <p>
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        focus-trap ensure that the placement of focus within the trap is slightly delayed, so the focused element does not capture the event that originated the activation of the focus trap. For example, the same <kbd>Enter</kbd> keystroke won't open <em>and</em> close this trap.
       </p>
       <p>
-        <label for="focused-input8" class="inline-label">
-          Initially focused input
+        <button id="activate-delay">
+          Reveal by pressing Enter
+        </button>
+      </p>
+
+      <div id="delay" class="trap" style="opacity: 0.2;">
+        <p>
+          <button id="close-button-delay">
+            Hide
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-no-delay">
+      <h2 id="delay-heading-explicit">No delay</h2>
+      <p>
+        focus-trap ensure that the placement of focus within the trap is not delayed, so the focused element captures the event that originated the activation of the focus trap.
+      </p>
+      <p>
+        <button id="activate-no-delay">
+          Reveal by pressing Enter
+        </button>
+      </p>
+
+      <div id="no-delay" class="trap" style="opacity: 0.2;">
+        <p>
+          <button id="close-button-no-delay">
+            Hide
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-radio">
+      <h2 id="radio-heading">radio group</h2>
+      <p>
+        A default focus trap that contains a radio group. You should be able to change the radio group with the arrow keys, but <kbd>Tab</kbd> should only focus the active radio. (Notice that you need a checked radio in the group for things to work as expected.)
+      </p>
+      <p>
+        <button id="activate-radio" aria-label="activate trap for 'radio group' demo">
+          activate trap
+        </button>
+      </p>
+      <div id="radio" class="trap">
+        <fieldset>
+          <legend>Radio group</legend>
+          <div>
+            <input type="radio" name="radio-set" id="radio-a" value="radio-a"> <label for="radio-a">a</label>
+          </div><div>
+            <input type="radio" name="radio-set" id="radio-b" value="radio-b" checked> <label for="radio-b">b</label>
+          </div><div>
+            <input type="radio" name="radio-set" id="radio-c" value="radio-c"> <label for="radio-c">c</label>
+          </div>
+        </fieldset>
+        <p>
+          <button id="deactivate-radio" aria-label="deactivate trap for 'radio group' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-iframe">
+      <h2 id="iframe-heading">iframe</h2>
+      <p>
+        This focus trap contains an iframe. You should be able to tab into and out of the iframe. But you need to have a focusable element before and after the iframe for things to work as expected.
+      </p>
+      <p>
+        <button id="activate-iframe" aria-label="activate trap for 'iframe' demo">
+          activate trap
+        </button>
+      </p>
+      <div id="iframe" class="trap">
+        <p>
+          <button>
+            nothing
+          </button>
+        </p>
+        <iframe src="./iframe-content.html"></iframe>
+        <p>
+          <button id="deactivate-iframe" aria-label="deactivate trap for 'iframe' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-allowoutsideclick">
+      <h2 id="allowoutsideclick-heading">allowOutsideClick option</h2>
+      <p>
+        This focus trap can be closed also by clicking a button outside of the trap <strong>that is able to control the trap</strong> (which is the "activate trap" button in this example). ESC is <strong>disabled</strong> for this trap.
+      </p>
+      <p>
+        NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take place on the "activate trap" button, whose click event handler will programmatically deactivate the trap.
+      </p>
+      <p>
+        <button id="activate-allowoutsideclick" aria-label="activate trap for 'allow outside click option' demo">
+          activate trap
+        </button>
+        <label>
+          Set <code>allowOutsideClick</code> as:
+          <select id="select-allowoutsideclick">
+            <option value="boolean">Boolean</option>
+            <option value="function">Function</option>
+          </select>
         </label>
-        <input id="focused-input8" />
+      </p>
+      <div id="allowoutsideclick" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="deactivate-allowoutsideclick" aria-label="deactivate trap for 'allow outside click option' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-clickoutsidedeactivates">
+      <h2 id="clickoutsidedeactivates-heading">clickOutsideDeactivates option</h2>
+      <p>
+        This focus trap can be closed simply by <strong>clicking anywhere outside</strong>, and the click outside will also go through and do what it was intentionally dispatched to do (like toggling the checkbox). ESC is <strong>disabled</strong> for this trap.
       </p>
       <p>
-        <button id="deactivate-input-activation">
-          deactivate trap
-        </button>
+        The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused element when the trap was activated (the "activate trap" button) or not -- IIF what you click on outside the trap is <strong>not</strong> focusable:
       </p>
-    </div>
-  </div>
-
-  <div id="demo-delay">
-    <h2 id="delay-heading">delay</h2>
-    <p>
-      focus-trap ensure that the placement of focus within the trap is slightly delayed, so the focused element does not capture the event that originated the activation of the focus trap. For example, the same <kbd>Enter</kbd> keystroke won't open <em>and</em> close this trap.
-    </p>
-    <p>
-      <button id="activate-delay">
-        Reveal by pressing Enter
-      </button>
-    </p>
-
-    <div id="delay" class="trap" style="opacity: 0.2;">
+      <ul>
+        <li>If this option is <code>true</code> (the default behavior) but you click on a focusable node outside the trap (like the checkbox), the click will go through, the checkbox will be toggled, and focus will remain on the checkbox.</li>
+        <li>If <code>true</code> but you click on something <strong>not</strong> focusable (like the page/document), then focus will return to the "activate trap" button (since that was the last-focused node before the trap was activate).</li>
+        <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document).</li>
+      </ul>
       <p>
-        <button id="close-button-delay">
-          Hide
+        <button id="activate-clickoutsidedeactivates" aria-label="activate trap for 'click outside deactivates option' demo">
+          activate trap
         </button>
+        <label>
+          Set <code>returnFocusOnDeactivate</code> as:
+          <select id="select-returnfocusondeactivate-clickoutsidedeactivates">
+            <option value="true">true</option><!-- default -->
+            <option value="false">false</option>
+          </select>
+        </label>
       </p>
-    </div>
-  </div>
-
-  <div id="demo-no-delay">
-    <h2 id="delay-heading-explicit">No delay</h2>
-    <p>
-      focus-trap ensure that the placement of focus within the trap is not delayed, so the focused element captures the event that originated the activation of the focus trap.
-    </p>
-    <p>
-      <button id="activate-no-delay">
-        Reveal by pressing Enter
-      </button>
-    </p>
-
-    <div id="no-delay" class="trap" style="opacity: 0.2;">
       <p>
-        <button id="close-button-no-delay">
-          Hide
+        <label>
+          Toggling me causes auto-deactivation of the trap:
+          <input type="checkbox" id="checkbox-clickoutsidedeactivates" />
+        </label>
+      </p>
+      <div id="clickoutsidedeactivates" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button>
+            nothing
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-setreturnfocus">
+      <h2 id="setreturnfocus-heading">setReturnFocus option</h2>
+      <p>
+        With setReturnFocus it is possible to overwrite the returnFocusElement.
+      </p>
+      <p>
+        <button id="activate-setreturnfocus" aria-label="activate trap for 'set return focus option' demo">
+          activate trap
+        </button>
+        <button id="overwritten-element">Element to return</button>
+      </p>
+      <div id="setreturnfocus" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a>
+          <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="deactivate-setreturnfocus" aria-label="deactivate trap for 'set return focus option' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+    </div>
+
+    <div id="demo-multipleelements">
+      <h2 id="multipleelements-heading">multiple elements</h2>
+      <p>
+        You can pass multiple elements, and the focus will be kept within those element
+        boundaries (darker color). Clicking outside deactivates.
+      </p>
+      <p>
+        <button id="activate-multipleelements" aria-label="activate trap for 'multiple elements' demo">
+          activate trap
         </button>
       </p>
+      <div id="multipleelements" class="trap">
+        <p id="multipleelements-1">
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a>
+          <a href="#">focusable</a> parts.
+        </p>
+        <p id="multipleelements-2">
+          Here is <a href="#">something</a>.
+        </p>
+        <p id="multipleelements-3">
+          Here is a another focus trap element. <a href="#">See</a> <a href="#">how</a>
+          it <a href="#">works</a>.
+        </p>
+        <p>
+          <button id="deactivate-multipleelements" aria-label="deactivate trap for 'multiple elements' demo">
+            deactivate trap
+          </button>
+        </p>
+      </div>
     </div>
-  </div>
 
-  <div id="demo-radio">
-    <h2 id="radio-heading">radio group</h2>
-    <p>
-      A default focus trap that contains a radio group. You should be able to change the radio group with the arrow keys, but <kbd>Tab</kbd> should only focus the active radio. (Notice that you need a checked radio in the group for things to work as expected.)
-    </p>
-    <p>
-      <button id="activate-radio">
-        activate trap
-      </button>
-    </p>
-    <div id="radio" class="trap">
-      <fieldset>
-        <legend>Radio group</legend>
-        <div>
-          <input type="radio" name="radio-set" id="radio-a" value="radio-a"> <label for="radio-a">a</label>
-        </div><div>
-          <input type="radio" name="radio-set" id="radio-b" value="radio-b" checked> <label for="radio-b">b</label>
-        </div><div>
-          <input type="radio" name="radio-set" id="radio-c" value="radio-c"> <label for="radio-c">c</label>
+    <div id="demo-multipleelements-delete">
+      <h2 id="multipleelements-delete-heading">multiple elements with delete</h2>
+      <p>
+        Pass multiple elements. Update the tabbable nodes in any of those elements
+        on the fly, ensuring there's always at least one container with at least
+        one tabbable node in it at all times.
+      </p>
+      <p>
+        <button id="activate-multipleelements-delete" aria-label="activate trap for 'multiple elements with delete' demo">
+          activate trap
+        </button>
+      </p>
+      <div id="multipleelements-delete" class="trap">
+        <div id="multipleelements-delete-1">
+          <p style="margin-top: 0">Container 1</p>
+          <button id="multipleelements-delete-removed-node">Gets removed</button>
         </div>
-      </fieldset>
-      <p>
-        <button id="deactivate-radio">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-iframe">
-    <h2 id="iframe-heading">iframe</h2>
-    <p>
-      This focus trap contains an iframe. You should be able to tab into and out of the iframe. But you need to have a focusable element before and after the iframe for things to work as expected.
-    </p>
-    <p>
-      <button id="activate-iframe">
-        activate trap
-      </button>
-    </p>
-    <div id="iframe" class="trap">
-      <p>
-        <button>
-          nothing
-        </button>
-      </p>
-      <iframe src="./iframe-content.html"></iframe>
-      <p>
-        <button id="deactivate-iframe">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-allowoutsideclick">
-    <h2 id="allowoutsideclick-heading">allowOutsideClick option</h2>
-    <p>
-      This focus trap can be closed also by clicking a button outside of the trap <strong>that is able to control the trap</strong> (which is the "activate trap" button in this example). ESC is <strong>disabled</strong> for this trap.
-    </p>
-    <p>
-      NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take place on the "activate trap" button, whose click event handler will programmatically deactivate the trap.
-    </p>
-    <p>
-      <button id="activate-allowoutsideclick">
-        activate trap
-      </button>
-      <label>
-        Set <code>allowOutsideClick</code> as:
-        <select id="select-allowoutsideclick">
-          <option value="boolean">Boolean</option>
-          <option value="function">Function</option>
-        </select>
-      </label>
-    </p>
-    <div id="allowoutsideclick" class="trap">
-      <p>
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
-      </p>
-      <p>
-        <button id="deactivate-allowoutsideclick">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-clickoutsidedeactivates">
-    <h2 id="clickoutsidedeactivates-heading">clickOutsideDeactivates option</h2>
-    <p>
-      This focus trap can be closed simply by <strong>clicking anywhere outside</strong>, and the click outside will also go through and do what it was intentionally dispatched to do (like toggling the checkbox). ESC is <strong>disabled</strong> for this trap.
-    </p>
-    <p>
-      The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused element when the trap was activated (the "activate trap" button) or not -- IIF what you click on outside the trap is <strong>not</strong> focusable:
-    </p>
-    <ul>
-      <li>If this option is <code>true</code> (the default behavior) but you click on a focusable node outside the trap (like the checkbox), the click will go through, the checkbox will be toggled, and focus will remain on the checkbox.</li>
-      <li>If <code>true</code> but you click on something <strong>not</strong> focusable (like the page/document), then focus will return to the "activate trap" button (since that was the last-focused node before the trap was activate).</li>
-      <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document).</li>
-    </ul>
-    <p>
-      <button id="activate-clickoutsidedeactivates">
-        activate trap
-      </button>
-      <label>
-        Set <code>returnFocusOnDeactivate</code> as:
-        <select id="select-returnfocusondeactivate-clickoutsidedeactivates">
-          <option value="true">true</option><!-- default -->
-          <option value="false">false</option>
-        </select>
-      </label>
-    </p>
-    <p>
-      <label>
-        Toggling me causes auto-deactivation of the trap:
-        <input type="checkbox" id="checkbox-clickoutsidedeactivates" />
-      </label>
-    </p>
-    <div id="clickoutsidedeactivates" class="trap">
-      <p>
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
-      </p>
-      <p>
-        <button>
-          nothing
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-setreturnfocus">
-    <h2 id="setreturnfocus-heading">setReturnFocus option</h2>
-    <p>
-      With setReturnFocus it is possible to overwrite the returnFocusElement.
-    </p>
-    <p>
-      <button id="activate-setreturnfocus">
-        activate trap
-      </button>
-      <button id="overwritten-element">Element to return</button>
-    </p>
-    <div id="setreturnfocus" class="trap">
-      <p>
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a>
-        <a href="#">focusable</a> parts.
-      </p>
-      <p>
-        <button id="deactivate-setreturnfocus">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-multipleelements">
-    <h2 id="multipleelements-heading">multiple elements</h2>
-    <p>
-      You can pass multiple elements, and the focus will be kept within those element
-      boundaries (darker color). Clicking outside deactivates.
-    </p>
-    <p>
-      <button id="activate-multipleelements">
-        activate trap
-      </button>
-    </p>
-    <div id="multipleelements" class="trap">
-      <p id="multipleelements-1">
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a>
-        <a href="#">focusable</a> parts.
-      </p>
-      <p id="multipleelements-2">
-        Here is <a href="#">something</a>.
-      </p>
-      <p id="multipleelements-3">
-        Here is a another focus trap element. <a href="#">See</a> <a href="#">how</a>
-        it <a href="#">works</a>.
-      </p>
-      <p>
-        <button id="deactivate-multipleelements">
-          deactivate trap
-        </button>
-      </p>
-    </div>
-  </div>
-
-  <div id="demo-multipleelements-delete">
-    <h2 id="multipleelements-delete-heading">multiple elements with delete</h2>
-    <p>
-      Pass multiple elements. Update the tabbable nodes in any of those elements
-      on the fly, ensuring there's always at least one container with at least
-      one tabbable node in it at all times.
-    </p>
-    <p>
-      <button id="activate-multipleelements-delete">
-        activate trap
-      </button>
-    </p>
-    <div id="multipleelements-delete" class="trap">
-      <div id="multipleelements-delete-1">
-        <p style="margin-top: 0">Container 1</p>
-        <button id="multipleelements-delete-removed-node">Gets removed</button>
-      </div>
-      <div id="multipleelements-delete-2">
-        <p>Container 2</p>
-        <button id="multipleelements-delete-remove">Remove button</button>
-        <a href="#">Some</a>
-        <a href="#">other</a>
-        <a href="#">focusable</a> parts.
-      </div>
-      <div>
-        <p>Not in trap (clicks allowed)</p>
-        <button id="deactivate-multipleelements-delete">
-          deactivate trap
-        </button>
+        <div id="multipleelements-delete-2">
+          <p>Container 2</p>
+          <button id="multipleelements-delete-remove">Remove button</button>
+          <a href="#">Some</a>
+          <a href="#">other</a>
+          <a href="#">focusable</a> parts.
+        </div>
+        <div>
+          <p>Not in trap (clicks allowed)</p>
+          <button id="deactivate-multipleelements-delete" aria-label="deactivate trap for 'multiple elements with delete' demo">
+            deactivate trap
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div id="demo-multipleelements-delete-all">
-    <h2 id="multipleelements-delete-all-heading">multiple elements with delete ALL</h2>
-    <p>
-      Pass multiple elements. With the <strong>fallbackFocus</strong> option configured
-      to the "deactivate trap" button, remove ALL nodes in all trap containers to have
-      the focus <em>fall back</em> to the "deactivate" button on the next tab key press.
-    </p>
-    <p>
-      <button id="activate-multipleelements-delete-all">
-        activate trap
-      </button>
-    </p>
-    <div id="multipleelements-delete-all" class="trap">
-      <div id="multipleelements-delete-all-1">
-        <p style="margin-top: 0">Container 1</p>
-        <button id="multipleelements-delete-all-removed-node">Gets removed</button>
-      </div>
-      <div id="multipleelements-delete-all-2">
-        <p>Container 2</p>
-        <button id="multipleelements-delete-all-remove">Remove all button</button>
-      </div>
-      <div>
-        <p>Not in trap (fallback; clicks allowed)</p>
-        <button id="deactivate-multipleelements-delete-all">
-          deactivate trap
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="demo-multipleelements-multipletraps">
-    <h2 id="multipleelements-multipletraps-heading">multiple traps with multiple elements</h2>
-    <p>
-      You can have multiple traps with multiple elements. Each trap's elements are in a
-      darker color when their associated trap is active. Clicking outside on the activate
-      and deactivate trap buttons is allowed.
-    </p>
-    <p>
-      <button id="activate-multipleelements-multipletraps-1" class="enable-outside">
-        activate trap 1
-      </button>
-      <button id="activate-multipleelements-multipletraps-2" class="enable-outside">
-        activate trap 2
-      </button>
-    </p>
-    <div id="multipleelements-multipletraps" class="trap">
-      <p id="multipleelements-multipletraps-1" style="margin-top: 0">
-        Here is a focus trap <a href="#">with</a> <a href="#">some</a>
-        <a href="#">focusable</a> parts.
-      </p>
-      <p id="multipleelements-multipletraps-2">
-        Here is <a href="#">something</a>.
-      </p>
-      <p id="multipleelements-multipletraps-3">
-        Here is a another focus trap element. <a href="#">See</a> <a href="#">how</a>
-        it <a href="#">works</a>.
-      </p>
-      <p id="multipleelements-multipletraps-4">
-        Here is the <a href="#">last</a> trap <a href="#">area</a>.
+    <div id="demo-multipleelements-delete-all">
+      <h2 id="multipleelements-delete-all-heading">multiple elements with delete ALL</h2>
+      <p>
+        Pass multiple elements. With the <strong>fallbackFocus</strong> option configured
+        to the "deactivate trap" button, remove ALL nodes in all trap containers to have
+        the focus <em>fall back</em> to the "deactivate" button on the next tab key press.
       </p>
       <p>
-        <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside">
-          deactivate trap 1
-        </button>
-        <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside">
-          deactivate trap 2
+        <button id="activate-multipleelements-delete-all" aria-label="activate trap for 'multiple elements with delete all' demo">
+          activate trap
         </button>
       </p>
+      <div id="multipleelements-delete-all" class="trap">
+        <div id="multipleelements-delete-all-1">
+          <p style="margin-top: 0">Container 1</p>
+          <button id="multipleelements-delete-all-removed-node">Gets removed</button>
+        </div>
+        <div id="multipleelements-delete-all-2">
+          <p>Container 2</p>
+          <button id="multipleelements-delete-all-remove">Remove all button</button>
+        </div>
+        <div>
+          <p>Not in trap (fallback; clicks allowed)</p>
+          <button id="deactivate-multipleelements-delete-all" aria-label="deactivate trap for 'multiple elements with delete all' demo">
+            deactivate trap
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <p>
-    <span style="font-size:2em;vertical-align:middle;">☜</span>
-    <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
-  </p>
+    <div id="demo-multipleelements-multipletraps">
+      <h2 id="multipleelements-multipletraps-heading">multiple traps with multiple elements</h2>
+      <p>
+        You can have multiple traps with multiple elements. Each trap's elements are in a
+        darker color when their associated trap is active. Clicking outside on the activate
+        and deactivate trap buttons is allowed.
+      </p>
+      <p>
+        <button id="activate-multipleelements-multipletraps-1" class="enable-outside" aria-label="activate trap 1 for 'multiple traps with multiple elements' demo">
+          activate trap 1
+        </button>
+        <button id="activate-multipleelements-multipletraps-2" class="enable-outside" aria-label="activate trap 2 for 'multiple traps with multiple elements' demo">
+          activate trap 2
+        </button>
+      </p>
+      <div id="multipleelements-multipletraps" class="trap">
+        <p id="multipleelements-multipletraps-1" style="margin-top: 0">
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a>
+          <a href="#">focusable</a> parts.
+        </p>
+        <p id="multipleelements-multipletraps-2">
+          Here is <a href="#">something</a>.
+        </p>
+        <p id="multipleelements-multipletraps-3">
+          Here is a another focus trap element. <a href="#">See</a> <a href="#">how</a>
+          it <a href="#">works</a>.
+        </p>
+        <p id="multipleelements-multipletraps-4">
+          Here is the <a href="#">last</a> trap <a href="#">area</a>.
+        </p>
+        <p>
+          <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside" aria-label="deactivate trap 1 for 'multiple traps with multiple elements' demo">
+            deactivate trap 1
+          </button>
+          <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside" aria-label="deactivate trap 2 for 'multiple traps with multiple elements' demo">
+            deactivate trap 2
+          </button>
+        </p>
+      </div>
+    </div>
 
+    <p>
+      <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
+      <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
+    </p>
+  </main>
   <script src="demo-bundle.js"></script>
 </body>
 </html>
