@@ -151,7 +151,9 @@
       "avatar_url": "https://avatars0.githubusercontent.com/u/13806458?v=4",
       "profile": "http://tylerhawkins.info/201R/",
       "contributions": [
-        "tool"
+        "tool",
+        "test",
+        "doc"
       ]
     }
   ],
