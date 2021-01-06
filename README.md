@@ -38,7 +38,18 @@ For more advanced usage (e.g. focus traps within focus traps), you can also paus
 npm install focus-trap
 ```
 
-You can also use a UMD version published to `unpkg.com` as `dist/focus-trap.js` and `dist/focus-trap.min.js`.
+### UMD
+
+You can also use a UMD version published to `unpkg.com` as `dist/focus-trap.umd.js` and `dist/focus-trap.umd.min.js`.
+
+> NOTE: The UMD build does not bundle the `tabbable` dependency. Therefore you will have to also include that one, and include it _before_ `focus-trap`.
+
+```html
+<head>
+  <script src="https://unpkg.com/tabbable/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/focus-trap/dist/focus-trap.umd.js"></script>
+</head>
+```
 
 ## Browser Support
 
@@ -53,10 +64,11 @@ And its only dependency, tabbable, uses [a couple of IE9+ functions](https://git
 ### createFocusTrap(element[, createOptions])
 
 ```javascript
-import { createFocusTrap } from 'focus-trap'; // ESM
-const { createFocusTrap } = require('focus-trap'); // CJS
+import * as focusTrap from 'focus-trap'; // ESM
+const focusTrap = require('focus-trap'); // CJS
+// UMD: `focusTrap` is defined as a global on `window`
 
-focusTrap = createFocusTrap(element[, createOptions]);
+trap = focusTrap.createFocusTrap(element[, createOptions]);
 ```
 
 Returns a new focus trap on `element` (one or more "containers" of tabbable nodes that, together, form the total set of nodes that can be visited, with clicks or the tab key, within the trap).
@@ -82,7 +94,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 - **preventScroll** {boolean}: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
 - **delayInitialFocus** {boolean}: Default: `true`. Delays the autofocus when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 
-### focusTrap.activate([activateOptions])
+### trap.activate([activateOptions])
 
 Activates the focus trap, adding various event listeners to the document.
 
@@ -94,7 +106,7 @@ If focus is already within it the trap, it remains unaffected. Otherwise, focus-
 
 If none of the above exist, an error will be thrown. You cannot have a focus trap that lacks focus.
 
-Returns the `focusTrap`.
+Returns the `trap`.
 
 `activateOptions`:
 
@@ -102,11 +114,11 @@ These options are used to override the focus trap's default behavior for this pa
 
 - **onActivate** {function | null | false}: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 
-### focusTrap.deactivate([deactivateOptions])
+### trap.deactivate([deactivateOptions])
 
 Deactivates the focus trap.
 
-Returns the `focusTrap`.
+Returns the `trap`.
 
 `deactivateOptions`:
 
@@ -115,19 +127,19 @@ These options are used to override the focus trap's default behavior for this pa
 - **returnFocus** {boolean}: Default: whatever you chose for `createOptions.returnFocusOnDeactivate`.
 - **onDeactivate** {function | null | false}: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
 
-### focusTrap.pause()
+### trap.pause()
 
 Pause an active focus trap's event listening without deactivating the trap.
 
 If the focus trap has not been activated, nothing happens.
 
-Returns the `focusTrap`.
+Returns the `trap`.
 
 Any `onDeactivate` callback will not be called, and focus will not return to the element that was focused before the trap's activation. But the trap's behavior will be paused.
 
 This is useful in various cases, one of which is when you want one focus trap within another. `demo-six` exemplifies how you can implement this.
 
-### focusTrap.unpause()
+### trap.unpause()
 
 Unpause an active focus trap. (See `pause()`, above.)
 
@@ -135,9 +147,9 @@ Focus is forced into the trap just as described for `focusTrap.activate()`.
 
 If the focus trap has not been activated or has not been paused, nothing happens.
 
-Returns the `focusTrap`.
+Returns the `trap`.
 
-### focusTrap.updateContainerElements()
+### trap.updateContainerElements()
 
 Update the element(s) that are used as containers for the focus trap.
 
@@ -145,7 +157,7 @@ When you call the function `createFocusTrap`, you pass in an element (or selecto
 
 A use case for this is found in focus-trap-react, where React `ref`'s may not be initialized yet, but when they are you want to have them be a container element.
 
-Returns the `focusTrap`.
+Returns the `trap`.
 
 ## Examples
 
