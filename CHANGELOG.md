@@ -1,5 +1,16 @@
 # Changelog
 
+## 6.3.0
+
+### Minor Changes
+
+- a882d62: `clickOutsideDeactivates` can now also be a function that returns a `boolean`, similar to `allowOutsideClick`. The function receives the `MouseEvent` that triggered the click.
+
+### Patch Changes
+
+- 4d67dee: Fix a focus escape when pressing TAB after hiding element with focus (#281)
+- ca32014: Bump tabbable from 5.1.4 to 5.1.5
+
 ## 6.2.3
 
 ### Patch Changes
