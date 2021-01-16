@@ -207,11 +207,12 @@ describe('focus-trap', () => {
   });
 
   describe('demo: ht', () => {
+    // hidden treasures
     beforeEach(() => {
       cy.get('#demo-ht').as('testRoot');
     });
 
-    it('focusing on only visually available(display is not "none" and visibility is not "hidden") elements', () => {
+    it('focusing on only visually available (display is not "none" and visibility is not "hidden") elements', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: /^activate trap/ })
@@ -234,6 +235,11 @@ describe('focus-trap', () => {
         .as('focusedElInTrap');
 
       verifyCrucialFocusTrapOnClicking('@focusedElInTrap');
+
+      cy.get('@focusedElInTrap').focus();
+      cy.focused().type('{enter}'); // buttons 3 and 4 will disappear, leaving body focused
+      cy.tab(); // forward TAB should then focus first element in first tabbable group
+      cy.get('@firstTabbableElInTrap').should('be.focused');
 
       // focus can be transitioned freely when trap is deactivated
       cy.focused().type('{esc}');

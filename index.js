@@ -104,7 +104,7 @@ const createFocusTrap = function (elements, userOptions) {
     //  is active, but the trap should never get to a state where there isn't at least one group
     //  with at least one tabbable node in it (that would lead to an error condition that would
     //  result in an error being thrown)
-    // @type {Array<{ firstTabbableNode: HTMLElement|null, lastTabbableNode: HTMLElement|null }>}
+    // @type {Array<{ container: HTMLElement, firstTabbableNode: HTMLElement|null, lastTabbableNode: HTMLElement|null }>}
     tabbableGroups: [],
 
     nodeFocusedBeforeActivation: null,
@@ -174,6 +174,7 @@ const createFocusTrap = function (elements, userOptions) {
 
         if (tabbableNodes.length > 0) {
           return {
+            container,
             firstTabbableNode: tabbableNodes[0],
             lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
           };
@@ -281,7 +282,25 @@ const createFocusTrap = function (elements, userOptions) {
     let destinationNode = null;
 
     if (state.tabbableGroups.length > 0) {
-      if (e.shiftKey) {
+      // make sure the target is actually contained in a group
+      const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
+        container.contains(e.target)
+      );
+
+      if (containerIndex < 0) {
+        // target not found in any group: quite possible focus has escaped the trap,
+        //  so bring it back in to...
+        if (e.shiftKey) {
+          // ...the last node in the last group
+          destinationNode =
+            state.tabbableGroups[state.tabbableGroups.length - 1]
+              .lastTabbableNode;
+        } else {
+          // ...the first node in the first group
+          destinationNode = state.tabbableGroups[0].firstTabbableNode;
+        }
+      } else if (e.shiftKey) {
+        // REVERSE
         const startOfGroupIndex = findIndex(
           state.tabbableGroups,
           ({ firstTabbableNode }) => e.target === firstTabbableNode
@@ -297,6 +316,7 @@ const createFocusTrap = function (elements, userOptions) {
           destinationNode = destinationGroup.lastTabbableNode;
         }
       } else {
+        // FORWARD
         const lastOfGroupIndex = findIndex(
           state.tabbableGroups,
           ({ lastTabbableNode }) => e.target === lastTabbableNode
