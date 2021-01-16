@@ -16,7 +16,6 @@ __Please leave this checklist in your PR.__
 - Issue being fixed is referenced.
 - Unit test coverage added/updated.
 - E2E test coverage added/updated.
-- Prop-types added/updated.
 - Typings added/updated.
 - README updated (API changes, instructions, etc.).
 - Changes to dependencies explained.
