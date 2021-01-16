@@ -564,6 +564,8 @@ describe('focus-trap', () => {
 
       it('click on outside element should work while keeping focus trapped inside of trap(createOptions.allowOutsideClick = () => true)', () => {
         cy.get('#demo-allowoutsideclick').as('testRoot');
+
+        // set allowClickOutside as a function
         cy.get('@testRoot')
           .findByRole('combobox', { name: 'Set allowOutsideClick as:' })
           .select('function');
@@ -581,8 +583,37 @@ describe('focus-trap', () => {
     });
 
     describe('demo: clickoutsidedeactivates', () => {
-      it('traps focus, deactivates on outside click on checkbox and checkbox focused, returnFocusOnDeactivate=true', () => {
+      it('traps focus, deactivates on outside click on checkbox and checkbox focused, clickOutsideDeactivates=Boolean, returnFocusOnDeactivate=true', () => {
         cy.get('#demo-clickoutsidedeactivates').as('testRoot');
+
+        // set returnFocusOnDeactivate=TRUE
+        cy.get(
+          '#select-returnfocusondeactivate-clickoutsidedeactivates'
+        ).select('true');
+
+        activateTrap();
+        checkTrap('nothing');
+
+        // deactivate trap by toggling FOCUSABLE checkbox
+        cy.get('#checkbox-clickoutsidedeactivates').click();
+        cy.get('#checkbox-clickoutsidedeactivates').should('be.checked');
+
+        // implies trap no longer active since checkbox is outside trap
+        cy.get('#checkbox-clickoutsidedeactivates').should('be.focused');
+
+        cy.get('@lastElementInTrap').should('not.be.focused');
+
+        // focus can be transitioned freely when trap is deactivated
+        verifyFocusIsNotTrapped(cy.get('#checkbox-clickoutsidedeactivates'));
+      });
+
+      it('traps focus, deactivates on outside click on checkbox and checkbox focused, clickOutsideDeactivates=Function, returnFocusOnDeactivate=true', () => {
+        cy.get('#demo-clickoutsidedeactivates').as('testRoot');
+
+        // set clickOutsideDeactivates as a function
+        cy.get('@testRoot')
+          .findByRole('combobox', { name: 'Set clickOutsideDeactivates as:' })
+          .select('function');
 
         // set returnFocusOnDeactivate=TRUE
         cy.get(

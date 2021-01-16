@@ -365,9 +365,6 @@
         NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take place on the "activate trap" button, whose click event handler will programmatically deactivate the trap.
       </p>
       <p>
-        <button id="activate-allowoutsideclick" aria-label="activate trap for 'allow outside click option' demo">
-          activate trap
-        </button>
         <label>
           Set <code>allowOutsideClick</code> as:
           <select id="select-allowoutsideclick">
@@ -375,6 +372,11 @@
             <option value="function">Function</option>
           </select>
         </label>
+      </p>
+      <p>
+        <button id="activate-allowoutsideclick" aria-label="activate trap for 'allow outside click option' demo">
+          activate trap
+        </button>
       </p>
       <div id="allowoutsideclick" class="trap">
         <p>
@@ -402,9 +404,15 @@
         <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document).</li>
       </ul>
       <p>
-        <button id="activate-clickoutsidedeactivates" aria-label="activate trap for 'click outside deactivates option' demo">
-          activate trap
-        </button>
+        <label>
+          Set <code>clickOutsideDeactivates</code> as:
+          <select id="select-clickoutsidedeactivates">
+            <option value="boolean">Boolean</option>
+            <option value="function">Function</option>
+          </select>
+        </label>
+      </p>
+      <p>
         <label>
           Set <code>returnFocusOnDeactivate</code> as:
           <select id="select-returnfocusondeactivate-clickoutsidedeactivates">
@@ -412,6 +420,11 @@
             <option value="false">false</option>
           </select>
         </label>
+      </p>
+      <p>
+        <button id="activate-clickoutsidedeactivates" aria-label="activate trap for 'click outside deactivates option' demo">
+          activate trap
+        </button>
       </p>
       <p>
         <label>

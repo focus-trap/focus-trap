@@ -73,6 +73,17 @@ const findIndex = function (arr, fn) {
   return idx;
 };
 
+/**
+ * Get an option's value when it could be a plain value, or a handler that provides
+ *  the value.
+ * @param {*} value Option's value to check.
+ * @param {...*} [params] Any parameters to pass to the handler, if `value` is a function.
+ * @returns {*} The `value`, or the handler's returned value.
+ */
+const valueOrHandler = function (value, ...params) {
+  return typeof value === 'function' ? value(...params) : value;
+};
+
 const createFocusTrap = function (elements, userOptions) {
   const doc = document;
 
@@ -214,7 +225,7 @@ const createFocusTrap = function (elements, userOptions) {
       return;
     }
 
-    if (config.clickOutsideDeactivates) {
+    if (valueOrHandler(config.clickOutsideDeactivates, e)) {
       // immediately deactivate the trap
       trap.deactivate({
         // if, on deactivation, we should return focus to the node originally-focused
@@ -236,12 +247,7 @@ const createFocusTrap = function (elements, userOptions) {
     // This is needed for mobile devices.
     // (If we'll only let `click` events through,
     // then on mobile they will be blocked anyways if `touchstart` is blocked.)
-    if (
-      config.allowOutsideClick &&
-      (typeof config.allowOutsideClick === 'boolean'
-        ? config.allowOutsideClick
-        : config.allowOutsideClick(e))
-    ) {
+    if (valueOrHandler(config.allowOutsideClick, e)) {
       // allow the click outside the trap to take place
       return;
     }
@@ -330,7 +336,7 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const checkClick = function (e) {
-    if (config.clickOutsideDeactivates) {
+    if (valueOrHandler(config.clickOutsideDeactivates, e)) {
       return;
     }
 
@@ -338,12 +344,7 @@ const createFocusTrap = function (elements, userOptions) {
       return;
     }
 
-    if (
-      config.allowOutsideClick &&
-      (typeof config.allowOutsideClick === 'boolean'
-        ? config.allowOutsideClick
-        : config.allowOutsideClick(e))
-    ) {
+    if (valueOrHandler(config.allowOutsideClick, e)) {
       return;
     }
 

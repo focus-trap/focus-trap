@@ -2,13 +2,22 @@ const { createFocusTrap } = require('../../dist/focus-trap');
 
 const container = document.getElementById('clickoutsidedeactivates');
 const trigger = document.getElementById('activate-clickoutsidedeactivates');
+const select = document.getElementById('select-clickoutsidedeactivates');
+const checkbox = document.getElementById('checkbox-clickoutsidedeactivates');
+
 let active = false;
+let clickOutsideDeactivates = true;
 let returnFocusOnDeactivate = true;
+
+const notice = document.createElement('span');
+notice.appendChild(
+  document.createTextNode('-> Must click on checkbox to deactivate')
+);
 
 const initialize = function () {
   return createFocusTrap('#clickoutsidedeactivates', {
     returnFocusOnDeactivate,
-    clickOutsideDeactivates: true,
+    clickOutsideDeactivates,
     escapeDeactivates: false,
     onActivate: function () {
       container.className = 'trap is-active';
@@ -39,3 +48,21 @@ document
     returnFocusOnDeactivate = event.target.value === 'true';
     focusTrap = initialize();
   });
+
+select.addEventListener('change', function (event) {
+  clickOutsideDeactivates = {
+    boolean: true, // deactivate when click on anything
+    function: function (e) {
+      // only deactivate when click on checkbox
+      return e.target === checkbox;
+    },
+  }[event.target.value];
+
+  if (event.target.value === 'function') {
+    select.parentNode.append(notice);
+  } else {
+    select.parentNode.removeChild(notice);
+  }
+
+  focusTrap = initialize();
+});
