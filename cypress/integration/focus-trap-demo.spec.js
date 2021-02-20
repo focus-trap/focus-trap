@@ -1044,4 +1044,65 @@ describe('focus-trap', () => {
       verifyFocusIsNotTrapped(cy.get('@outsideEl'));
     });
   });
+
+  describe('demo: text focus radio bug', () => {
+    // @ref https://stackoverflow.com/a/2838358
+    const selectElementText = function (el, win, doc) {
+      let sel, range;
+      if (win.getSelection && doc.createRange) {
+        sel = win.getSelection();
+        range = doc.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } else if (doc.body.createTextRange) {
+        range = doc.body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+      }
+    };
+
+    it('radio button in trap inside focusable container with selected text can be selected', () => {
+      cy.get('#demo-textfocusradiobug').as('testRoot');
+
+      // set selection in document content PRIOR to activating the trap
+      cy.window().then((win) => {
+        cy.document().then((doc) => {
+          selectElementText(
+            doc.getElementById('content-textfocusradiobug'),
+            win,
+            doc
+          );
+        });
+      });
+
+      // activate trap and 1st element in focus should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .click();
+      cy.get('@testRoot')
+        .findByRole('radio', { name: 'Huey' })
+        .should('be.focused');
+
+      // now try to check the next radio button, which should work
+
+      // Cypress limitation to radio group value change: keyboard arrow keys can't change value
+      // so forcibly change the value by `check` command
+      cy.get('@testRoot')
+        .findByRole('radio', { name: 'Dewey' })
+        .as('Dewey')
+        .check()
+        .should('be.checked');
+      cy.get('@Dewey').should('be.focused');
+
+      verifyCrucialFocusTrapOnClicking('@Dewey');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .click();
+      verifyFocusIsNotTrapped(cy.get('@lastlyFocusedElBeforeTrapIsActivated'));
+    });
+  });
 });

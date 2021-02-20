@@ -427,6 +427,22 @@ const createFocusTrap = function (elements, userOptions) {
     return trap;
   };
 
+  const removeDocSelection = function () {
+    // remove any current selection in the document to make sure, especially on Chrome,
+    //  that radio buttons are selectable if present, the trap is in a focusable
+    //  container, and the container has a text selection
+    // @see https://github.com/focus-trap/focus-trap/issues/313 for more context
+    // @ref https://stackoverflow.com/questions/3169786/clear-text-selection-with-javascript
+    // @ref https://developer.mozilla.org/en-US/docs/Web/API/Selection#browser_compatibility
+    const selection =
+      typeof document.getSelection === 'function'
+        ? document.getSelection()
+        : document.selection;
+    if (selection && typeof selection.empty === 'function') {
+      selection.empty();
+    }
+  };
+
   //
   // TRAP DEFINITION
   //
@@ -451,6 +467,7 @@ const createFocusTrap = function (elements, userOptions) {
         onActivate();
       }
 
+      removeDocSelection();
       addListeners();
       return this;
     },

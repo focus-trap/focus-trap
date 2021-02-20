@@ -603,6 +603,39 @@
       </div>
     </div>
 
+    <div id="demo-textfocusradiobug">
+      <h2 id="textfocusradiobug-heading">text focus bug</h2>
+      <div id="textfocusradiobug-main" tabindex="-1">
+        <button id="activate-textfocusradiobug">activate trap</button>
+        <p>
+          This is a test for <a href="https://github.com/focus-trap/focus-trap/issues/313">issue 313</a>
+          where selecting <span id="content-textfocusradiobug">some of this text</span> <em>prior</em>
+          to activating the trap <strong>on Chrome</strong> will prevent the ability to select any of
+          the radio buttons &mdash; unless the document&apos;s selection is cleared while activating
+          the trap (which is what we now do).
+        </p>
+        <div id="textfocusradiobug" class="trap">
+          <div>
+            <label>
+              <input type="radio" id="textfocusradiobug-huey" name="drone" value="huey" checked>
+              Huey
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="textfocusradiobug-dewey" name="drone" value="dewey">
+            <label for="textfocusradiobug-dewey">Dewey</label>
+          </div>
+          <div>
+            <input type="radio" id="textfocusradiobug-louie" name="drone" value="louie">
+            <label for="textfocusradiobug-louie">Louie</label>
+          </div>
+          <input type="text" />
+          <br />
+          <button id="deactivate-textfocusradiobug">deactivate trap</button>
+        </div>
+      </div>
+    </div>
+
     <p>
       <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
       <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>

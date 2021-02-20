@@ -17,3 +17,4 @@ require('./multiple-elements');
 require('./multiple-elements-delete');
 require('./multiple-elements-delete-all');
 require('./multiple-traps-multiple-elements');
+require('./text-focus-radio-bug');
