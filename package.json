@@ -79,7 +79,7 @@
     "budo": "^11.6.4",
     "cypress": "^6.7.1",
     "cypress-plugin-tab": "^1.0.5",
-    "eslint": "^7.21.0",
+    "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-cypress": "^2.11.2",
     "onchange": "^7.1.0",
