@@ -87,7 +87,7 @@
     "rollup": "^2.42.3",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-terser": "^7.0.1",
-    "start-server-and-test": "^1.12.0",
+    "start-server-and-test": "^1.12.1",
     "typescript": "^4.2.3"
   }
 }
