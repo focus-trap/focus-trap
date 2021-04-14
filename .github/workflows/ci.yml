@@ -52,18 +52,17 @@ jobs:
         run: yarn build
   e2e:
     runs-on: ubuntu-latest
-    container: cypress/included:7.1.0
     strategy:
       matrix:
         browser: [chrome, firefox]
+    container:
+      image: cypress/included:7.1.0
+      options: --user 1001
     env:
       CYPRESS_BROWSER: ${{ matrix.browser }}
     steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@v2
-
-      - name: Install dependencies 📦
-        uses: yarn --frozen-lockfile
-
-      - name: Run tests 🧪
-        run: yarn test:cypress:ci
+      - uses: actions/checkout@v1
+      - uses: cypress-io/github-action@v2.6.1
+        with:
+          start: yarn start
+          browser: ${{ matrix.browser }}
