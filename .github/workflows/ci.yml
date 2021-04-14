@@ -14,7 +14,7 @@ jobs:
       CI: true
     strategy:
       matrix:
-        node: [12, 14]
+        node: [14]
     steps:
       - uses: actions/checkout@master
 
@@ -52,7 +52,7 @@ jobs:
         run: yarn build
   e2e:
     runs-on: ubuntu-latest
-    container: cypress/included:5.0.0
+    container: cypress/included:7.1.0
     strategy:
       matrix:
         # cypress executable says 'Browser: 'firefox' was not found on your system
