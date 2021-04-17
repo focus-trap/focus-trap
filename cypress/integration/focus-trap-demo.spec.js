@@ -177,22 +177,69 @@ describe('focus-trap', () => {
       cy.get('#demo-ifc').as('testRoot');
     });
 
-    it('specify element to be focused(even with attribute tabindex="-1") after focus trap activation', () => {
+    it('specify element to be focused (even with attribute tabindex="-1") after focus trap activation', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: /^activate trap/ })
         .click();
 
-      // instead of next tab-order element being focused, element specified should be focused
-      cy.get('@testRoot').get('#ifc').as('focusedEl').should('be.focused');
+      // instead of next tab-order element being focused, initial focus element should be focused
+      cy.get('@testRoot').get('#ifc').should('be.focused');
 
       // active trap does not return focus back to 'tabindex="-1"' containing element, and keep focus inside of that containing element
+      // NOTE: since the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+      //  understand that a non-tabbable node can still be focusable and that it's possible
+      //  to tab away from it, we have to trigger the tab key on the 'first' button even
+      //  though we know focus is on the #ifc container; still, the sequence should be the
+      //  same as if we were able to do `cy.focused().tab()`, which means 4 tabs to get back
+      //  to the 'first' button in the full sequence
       cy.get('@testRoot')
         .findByRole('button', { name: 'first' })
         .as('firstTabbableElInTrap')
-        .tab()
-        .tab()
-        .tab();
+        .tab() // to first
+        .tab() // to second
+        .tab() // to deactivate
+        .tab(); // should go back to first
+      cy.get('@firstTabbableElInTrap').should('be.focused');
+
+      // click on outside element deactivates this trap
+      cy.findByRole('heading', { name: 'focus-trap demo' })
+        .as('outsideFocusedEl')
+        .click();
+      cy.get('@firstTabbableElInTrap').should('be.not.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      verifyFocusIsNotTrapped(cy.get('@outsideFocusedEl'));
+    });
+
+    it('specify element to be focused (even with attribute tabindex="-1") after focus trap activation, and use reverse tab order', () => {
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .click();
+
+      // instead of next tab-order element being focused, initial focus element should be focused
+      cy.get('@testRoot').get('#ifc').should('be.focused');
+
+      // active trap does not return focus back to 'tabindex="-1"' containing element, and keep focus inside of that containing element
+      // NOTE: since the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+      //  understand that a non-tabbable node can still be focusable and that it's possible
+      //  to tab away from it, we have to trigger the tab key on the 'first' button even
+      //  though we know focus is on the #ifc container; still, the sequence should be the
+      //  same as if we were able to do `cy.focused().tab()`, which means 4 tabs to get back
+      //  to the 'first' button in the full sequence
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'first' })
+        .as('firstTabbableElInTrap')
+        .tab({ shift: true }); // to deactivate
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .should('be.focused');
+
+      cy.focused()
+        .tab({ shift: true }) // to second
+        .tab({ shift: true }); // to first
       cy.get('@firstTabbableElInTrap').should('be.focused');
 
       // click on outside element deactivates this trap

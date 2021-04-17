@@ -283,6 +283,8 @@ const createFocusTrap = function (elements, userOptions) {
 
     if (state.tabbableGroups.length > 0) {
       // make sure the target is actually contained in a group
+      // NOTE: the target may also be the container itself if it's tabbable
+      //  with tabIndex='-1' and was given initial focus
       const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
         container.contains(e.target)
       );
@@ -301,12 +303,27 @@ const createFocusTrap = function (elements, userOptions) {
         }
       } else if (e.shiftKey) {
         // REVERSE
-        const startOfGroupIndex = findIndex(
+
+        // is the target the first tabbable node in a group?
+        let startOfGroupIndex = findIndex(
           state.tabbableGroups,
           ({ firstTabbableNode }) => e.target === firstTabbableNode
         );
 
+        if (
+          startOfGroupIndex < 0 &&
+          state.tabbableGroups[containerIndex].container === e.target
+        ) {
+          // an exception case where the target is the container itself, in which
+          //  case, we should handle shift+tab as if focus were on the container's
+          //  first tabbable node, and go to the last tabbable node of the LAST group
+          startOfGroupIndex = containerIndex;
+        }
+
         if (startOfGroupIndex >= 0) {
+          // YES: then shift+tab should go to the last tabbable node in the
+          //  previous group (and wrap around to the last tabbable node of
+          //  the LAST group if it's the first tabbable node of the FIRST group)
           const destinationGroupIndex =
             startOfGroupIndex === 0
               ? state.tabbableGroups.length - 1
@@ -317,12 +334,27 @@ const createFocusTrap = function (elements, userOptions) {
         }
       } else {
         // FORWARD
-        const lastOfGroupIndex = findIndex(
+
+        // is the target the last tabbable node in a group?
+        let lastOfGroupIndex = findIndex(
           state.tabbableGroups,
           ({ lastTabbableNode }) => e.target === lastTabbableNode
         );
 
+        if (
+          lastOfGroupIndex < 0 &&
+          state.tabbableGroups[containerIndex].container === e.target
+        ) {
+          // an exception case where the target is the container itself, in which
+          //  case, we should handle tab as if focus were on the container's
+          //  last tabbable node, and go to the first tabbable node of the FIRST group
+          lastOfGroupIndex = containerIndex;
+        }
+
         if (lastOfGroupIndex >= 0) {
+          // YES: then tab should go to the first tabbable node in the next
+          //  group (and wrap around to the first tabbable node of the FIRST
+          //  group if it's the last tabbable node of the LAST group)
           const destinationGroupIndex =
             lastOfGroupIndex === state.tabbableGroups.length - 1
               ? 0
@@ -340,6 +372,7 @@ const createFocusTrap = function (elements, userOptions) {
       e.preventDefault();
       tryFocus(destinationNode);
     }
+    // else, let the browser take care of [shift+]tab and move the focus
   };
 
   const checkKey = function (e) {
