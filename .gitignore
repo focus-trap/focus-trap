@@ -70,3 +70,4 @@ dist/
 .Thumbs
 
 cypress/videos
+cypress/screenshots
