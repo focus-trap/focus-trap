@@ -69,4 +69,4 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Run tests 🧪
-        run: yarn test:cypress-ci
+        run: yarn test:cypress:ci
