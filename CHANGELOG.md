@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- 21c82ce: Bump tabbable from 5.1.6 to 5.2.0.
+- 21c82ce: Bump tabbable from 5.1.6 to 5.2.0. There should be no changes in behavior as a result of this upgrade as `focus-trap` does not currently leverage the new `displayCheck` option.
 
 ### Patch Changes
 
