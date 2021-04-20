@@ -1,5 +1,15 @@
 # Changelog
 
+## 6.4.0
+
+### Minor Changes
+
+- 21c82ce: Bump tabbable from 5.1.6 to 5.2.0.
+
+### Patch Changes
+
+- 1baf62e: Fix focus trapped on initial focus container with tabindex=-1 when pressing shift+tab (#363)
+
 ## 6.3.0
 
 ### Minor Changes
