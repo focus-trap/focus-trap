@@ -51,6 +51,7 @@ For a __maintainer__ to update the demo, however, these steps can be followed:
 ```bash
 $ git push -f origin HEAD:gh-pages # push all the latest to the branch
 $ git checkout gh-pages
+$ git pull --rebase # get the latest code you just pushed to origin
 
 # remove the exclusion for the ./demo/demo-bundle.js file
 #  in ./.gitignore
