@@ -80,7 +80,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 > A focus trap must have at least one container with at least one tabbable/focusable node in it to be considered valid. While nodes can be added/removed at runtime, with the trap adjusting to added/removed tabbable nodes, __an error will be thrown__ if the trap ever gets into a state where it determines none of its containers have any tabbable nodes in them _and_ the `fallbackFocus` option does not resolve to an alternate node where focus can go.
 
-`createOptions`:
+#### createOptions
 
 - **onActivate** {function}: A function that will be called when the focus trap activates.
 - **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
