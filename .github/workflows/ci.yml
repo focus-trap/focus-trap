@@ -52,21 +52,18 @@ jobs:
         run: yarn build
   e2e:
     runs-on: ubuntu-latest
-    container: cypress/included:7.1.0
     strategy:
       matrix:
-        # cypress executable says 'Browser: 'firefox' was not found on your system
-        #  or is not supported by Cypress.' seems to be defect
-        #  @see https://github.com/cypress-io/cypress-docker-images/issues/363
-        browser: [chrome]
+        browser: [chrome, firefox]
+    timeout-minutes: 20
+    container:
+      image: cypress/included:7.1.0
+      options: --user 1001 --shm-size=2g # @see https://github.com/cypress-io/github-action/issues/104#issuecomment-666047965
     env:
       CYPRESS_BROWSER: ${{ matrix.browser }}
     steps:
-      - name: Checkout 🛎
-        uses: actions/checkout@master
-
-      - name: Install dependencies 📦
-        uses: bahmutov/npm-install@v1
-
-      - name: Run tests 🧪
-        run: yarn test:cypress:ci
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2.6.1
+        with:
+          start: yarn start
+          browser: ${{ matrix.browser }}
