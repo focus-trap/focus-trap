@@ -24,7 +24,7 @@ When the focus trap is deactivated, this is what should happen:
 - Focus is passed to *whichever element had focus when the trap was activated* (e.g. the button that opened the modal or menu).
 - Tabbing and clicking behave normally everywhere.
 
-[Check out the demos.](http://davidtheclark.github.io/focus-trap/demo/)
+[Check out the demos.](https://davidtheclark.github.io/focus-trap/)
 
 For more advanced usage (e.g. focus traps within focus traps), you can also pause a focus trap's behavior without deactivating it entirely, then unpause at will.
 
@@ -121,28 +121,35 @@ Returns the `focusTrap`.
 
 ## Examples
 
-Read code in `demo/` and [see how it works](http://davidtheclark.github.io/focus-trap/demo/).
+See how it works by looking through the [live demos](http://davidtheclark.github.io/focus-trap/).
 
-Here's what happens in `demo-one.js`:
+Here's what happens in the default demo:
 
 ```js
-var createFocusTrap = require('../../');
+var createFocusTrap = require('../..');
 
-var containerOne = document.getElementById('demo-one');
-var focusTrapOne = createFocusTrap('#demo-one', {
-  onDeactivate: function () {
-    containerOne.className = 'trap';
+var container = document.getElementById('default');
+
+var focusTrap = createFocusTrap('#default', {
+  onActivate: function() {
+    container.className = 'trap is-active';
   },
+  onDeactivate: function() {
+    container.className = 'trap';
+  }
 });
 
-document.getElementById('activate-one').addEventListener('click', function () {
-  focusTrapOne.activate();
-  containerOne.className = 'trap is-active';
-});
+document
+  .getElementById('activate-default')
+  .addEventListener('click', function() {
+    focusTrap.activate();
+  });
 
-document.getElementById('deactivate-one').addEventListener('click', function () {
-  focusTrapOne.deactivate();
-});
+document
+  .getElementById('deactivate-default')
+  .addEventListener('click', function() {
+    focusTrap.deactivate();
+  });
 ```
 
 ## Other details
