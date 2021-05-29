@@ -43,6 +43,39 @@
     </p>
   </div>
 
+  <h2>animated</h2>
+  <p>
+    This focus trap will fade in when activated and fade out when deactivated. Note that the fade animation needs to
+    be written yourself, it is not built into the library.
+  </p>
+  <style>
+    .DemoAnimatedTrap {
+      position: absolute;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+    .DemoAnimatedTrap.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+  <p>
+    <button id="activate-animated">
+      activate trap
+    </button>
+  </p>
+  <div id="animated" class="trap DemoAnimatedTrap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <p>
+      <button id="deactivate-animated">
+        deactivate trap
+      </button>
+    </p>
+  </div>
+
   <h2 id="iene-heading">initial element, no escape</h2>
   <p>
     When this focus trap activates, focus jumps to a specific, manually specified element.
