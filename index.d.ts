@@ -74,7 +74,7 @@ declare module "focus-trap" {
     clickOutsideDeactivates?: boolean;
   }
 
-  type ActivateOptions = Pick<Options, "onActivate" | "onSuccessfulActivation">;
+  type ActivateOptions = Pick<Options, "onActivate" | "onSuccessfulActivation" | "checkCanActivate">;
 
   interface DeactivateOptions extends Pick<Options, "onDeactivate"> {
     returnFocus?: boolean;

@@ -34,11 +34,10 @@ function createFocusTrap(element, userOptions) {
 
   return trap;
 
-  function delayFocusTrapActivation(callback) {
+  function delayFocusTrapActivation(checkCanActivate, callback) {
     var startDate = Date.now();
     var interval = setInterval(function() {
-      var canActivate = config.checkCanActivate(container);
-      if (canActivate) {
+      if (checkCanActivate(container)) {
         clearInterval(interval);
         callback();
       } else {
@@ -66,25 +65,25 @@ function createFocusTrap(element, userOptions) {
     state.paused = false;
     state.nodeFocusedBeforeActivation = doc.activeElement;
 
-    var onActivate =
-      activateOptions && activateOptions.onActivate
-        ? activateOptions.onActivate
-        : config.onActivate;
+    function getOption(optionName) {
+      return activateOptions && activateOptions[optionName]
+        ? activateOptions[optionName]
+        : config[optionName];
+    }
 
-    var onSuccessfulActivation =
-      activateOptions && activateOptions.onSuccessfulActivation
-        ? activateOptions.onSuccessfulActivation
-        : config.onSuccessfulActivation;
+    var onActivate = getOption('onActivate');
+    var onSuccessfulActivation = getOption('onSuccessfulActivation');
+    var checkCanActivate = getOption('checkCanActivate');
 
-    if (config.checkCanActivate) {
+    if (checkCanActivate) {
       if (onActivate) {
         onActivate();
       }
 
-      delayFocusTrapActivation(function() {
+      delayFocusTrapActivation(checkCanActivate, function() {
         updateTabbableNodes();
         addListeners();
-        if (config.onSuccessfulActivation) {
+        if (onSuccessfulActivation) {
           onSuccessfulActivation();
         }
       });
