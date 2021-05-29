@@ -86,6 +86,7 @@ These options are used to override the focus trap's default behavior for this pa
 
 - **onActivate** {function | null | false}: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 - **onSuccessfulActivation** {function | null | false}: Default: whatever you chose for `createOptions.onSuccessfulActivation`. `null` or `false` are the equivalent of a `noop`.
+- **checkCanActivate** {function | null | false}: Default: whatever you chose for `createOptions.checkCanActivate`.
 
 ### focusTrap.deactivate([deactivateOptions])
 
