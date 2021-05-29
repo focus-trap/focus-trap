@@ -71,6 +71,11 @@ function createFocusTrap(element, userOptions) {
         ? activateOptions.onActivate
         : config.onActivate;
 
+    var onSuccessfulActivation =
+      activateOptions && activateOptions.onSuccessfulActivation
+        ? activateOptions.onSuccessfulActivation
+        : config.onSuccessfulActivation;
+
     if (config.checkCanActivate) {
       if (onActivate) {
         onActivate();
@@ -79,6 +84,9 @@ function createFocusTrap(element, userOptions) {
       delayFocusTrapActivation(function() {
         updateTabbableNodes();
         addListeners();
+        if (config.onSuccessfulActivation) {
+          onSuccessfulActivation();
+        }
       });
     } else {
       updateTabbableNodes();
@@ -86,6 +94,7 @@ function createFocusTrap(element, userOptions) {
         onActivate();
       }
       addListeners();
+      onSuccessfulActivation();
     }
 
     return trap;

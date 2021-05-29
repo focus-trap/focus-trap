@@ -8,8 +8,14 @@ var focusTrap = createFocusTrap('#animated', {
   checkCanActivate: function(trapElement) {
     return getComputedStyle(trapElement).visibility !== 'hidden';
   },
+  // Called before focus is sent
   onActivate: function() {
     container.classList.add('is-active');
+  },
+  // Called after focus is sent
+  // Only relevent if `checkCanActivate` is used
+  onSuccessfulActivation: function() {
+    console.log('Focus has been sent to the animated focus trap');
   },
   onDeactivate: function() {
     container.classList.remove('is-active');

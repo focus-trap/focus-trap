@@ -24,6 +24,13 @@ declare module "focus-trap" {
     checkCanActivate?: (elem: FocusTarget) => boolean
 
     /**
+     * This function is only relevant if used in conjunction with `checkCanActivate`.
+     * `onActivate` is called before focus is sent to the target.
+     * `onSuccessfulActivation` is called after focus is sent to the target.
+     */
+    onSuccessfulActivation?: () => void
+
+    /**
      * A function that will be called when the focus trap deactivates.
      */
     onDeactivate?: () => void;
@@ -67,7 +74,7 @@ declare module "focus-trap" {
     clickOutsideDeactivates?: boolean;
   }
 
-  type ActivateOptions = Pick<Options, "onActivate">;
+  type ActivateOptions = Pick<Options, "onActivate" | "onSuccessfulActivation">;
 
   interface DeactivateOptions extends Pick<Options, "onDeactivate"> {
     returnFocus?: boolean;
