@@ -34,10 +34,33 @@ function focusTrap(element, userOptions) {
 
   return trap;
 
+  function delayFocusTrapActivation(callback) {
+    var startDate = Date.now();
+    var interval = setInterval(function() {
+      var canActivate = config.checkCanActivate(container);
+      if (canActivate) {
+        clearInterval(interval);
+        callback();
+      } else {
+        var timeDifferenceInSeconds = (Date.now() - startDate) / 1000;
+        if (timeDifferenceInSeconds > 10) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            [
+              'Focus-Trap activation for the following element timed out after',
+              timeDifferenceInSeconds,
+              'seconds'
+            ].join(' '),
+            container
+          );
+          clearInterval(interval);
+        }
+      }
+    }, 5);
+  }
+
   function activate(activateOptions) {
     if (state.active) return;
-
-    updateTabbableNodes();
 
     state.active = true;
     state.paused = false;
@@ -47,11 +70,24 @@ function focusTrap(element, userOptions) {
       activateOptions && activateOptions.onActivate
         ? activateOptions.onActivate
         : config.onActivate;
-    if (onActivate) {
-      onActivate();
+
+    if (config.checkCanActivate) {
+      if (onActivate) {
+        onActivate();
+      }
+
+      delayFocusTrapActivation(function() {
+        updateTabbableNodes();
+        addListeners();
+      });
+    } else {
+      updateTabbableNodes();
+      if (onActivate) {
+        onActivate();
+      }
+      addListeners();
     }
 
-    addListeners();
     return trap;
   }
 
