@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+- Added: `checkCanActivate` and `onSuccessfulActivation` settings for better animated dialog support.
+
 ## 3.0.0
 
 - **Breaking (kind of):** Update Tabbable to detect more elements and be more careful with radio buttons (see [Tabbable's changelog](https://github.com/davidtheclark/tabbable/blob/master/CHANGELOG.md)).
@@ -46,7 +50,7 @@
 
 ## 2.0.2
 
-- Fixed: `clickOutsideDeactivates` no longer triggers deactivation when you click *inside* the trap.
+- Fixed: `clickOutsideDeactivates` no longer triggers deactivation when you click _inside_ the trap.
 
 ## 2.0.1
 
