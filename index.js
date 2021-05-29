@@ -3,7 +3,7 @@ var xtend = require('xtend');
 
 var listeningFocusTrap = null;
 
-function focusTrap(element, userOptions) {
+function createFocusTrap(element, userOptions) {
   var doc = document;
   var container =
     typeof element === 'string' ? doc.querySelector(element) : element;
@@ -312,4 +312,4 @@ function delay(fn) {
   return setTimeout(fn, 0);
 }
 
-module.exports = focusTrap;
+module.exports = createFocusTrap;
