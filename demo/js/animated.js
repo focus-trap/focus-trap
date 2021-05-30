@@ -1,35 +1,26 @@
-var createFocusTrap = require('../..');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('animated');
+const container = document.getElementById('animated');
 
-var focusTrap = createFocusTrap('#animated', {
+const focusTrap = createFocusTrap('#animated', {
   // There is a delay between when the class is applied
   // and when the element is focusable
-  checkCanActivate: function(trapElement) {
-    return getComputedStyle(trapElement).visibility !== 'hidden';
-  },
+  checkCanActivate: (trapElement) =>
+    getComputedStyle(trapElement).visibility !== 'hidden',
   // Called before focus is sent
-  onActivate: function() {
-    container.classList.add('is-active');
-  },
+  onActivate: () => container.classList.add('is-active'),
   // Called after focus is sent
   // Only relevent if `checkCanActivate` is used
-  onSuccessfulActivation: function() {
-    console.log('Focus has been sent to the animated focus trap');
-  },
-  onDeactivate: function() {
-    container.classList.remove('is-active');
-  }
+  onSuccessfulActivation: () =>
+    // eslint-disable-next-line no-console
+    console.log('Focus has been sent to the animated focus trap'),
+  onDeactivate: () => container.classList.remove('is-active'),
 });
 
 document
   .getElementById('activate-animated')
-  .addEventListener('click', function() {
-    focusTrap.activate();
-  });
+  .addEventListener('click', focusTrap.activate);
 
 document
   .getElementById('deactivate-animated')
-  .addEventListener('click', function() {
-    focusTrap.deactivate();
-  });
+  .addEventListener('click', focusTrap.deactivate);
