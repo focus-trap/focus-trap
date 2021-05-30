@@ -1,4 +1,4 @@
-var createFocusTrap = require('../..');
+var createFocusTrap = require('../../');
 
 var container = document.getElementById('nested');
 var nested = document.getElementById('nested-nested');
