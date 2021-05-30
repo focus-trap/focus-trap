@@ -2,6 +2,30 @@ import { tabbable, isFocusable } from 'tabbable';
 
 let activeFocusDelay;
 
+const delayFocusTrapActivation = (container, checkCanActivate, callback) => {
+  const startDate = Date.now();
+  const interval = setInterval(function () {
+    if (checkCanActivate(container)) {
+      clearInterval(interval);
+      callback();
+    } else {
+      const timeDifferenceInSeconds = (Date.now() - startDate) / 1000;
+      if (timeDifferenceInSeconds > 10) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          [
+            'Focus-Trap activation for the following element timed out after',
+            timeDifferenceInSeconds,
+            'seconds',
+          ].join(' '),
+          container
+        );
+        clearInterval(interval);
+      }
+    }
+  }, 5);
+};
+
 const activeFocusTraps = (function () {
   const trapQueue = [];
   return {
@@ -470,21 +494,45 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
-      updateTabbableNodes();
-
       state.active = true;
       state.paused = false;
       state.nodeFocusedBeforeActivation = doc.activeElement;
 
-      const onActivate =
-        activateOptions && activateOptions.onActivate
-          ? activateOptions.onActivate
-          : config.onActivate;
-      if (onActivate) {
-        onActivate();
+      const getOption = (optionName) => {
+        return activateOptions && activateOptions[optionName]
+          ? activateOptions[optionName]
+          : config[optionName];
+      };
+
+      const onActivate = getOption('onActivate');
+      const onSuccessfulActivation = getOption('onSuccessfulActivation');
+      const checkCanActivate = getOption('checkCanActivate');
+
+      if (checkCanActivate) {
+        if (onActivate) {
+          onActivate();
+        }
+
+        state.containers.forEach((container) => {
+          delayFocusTrapActivation(container, checkCanActivate, () => {
+            updateTabbableNodes();
+            addListeners();
+            if (onSuccessfulActivation) {
+              onSuccessfulActivation();
+            }
+          });
+        });
+      } else {
+        updateTabbableNodes();
+        if (onActivate) {
+          onActivate();
+        }
+        addListeners();
+        if (onSuccessfulActivation) {
+          onSuccessfulActivation();
+        }
       }
 
-      addListeners();
       return this;
     },
 
