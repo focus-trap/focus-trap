@@ -1,8 +1,9 @@
 const { createFocusTrap } = require('../../dist/focus-trap');
 
-const container = document.getElementById('delay');
+const container = document.getElementById('no-delay');
 
 const focusTrap = createFocusTrap(container, {
+  delayInitialFocus: false,
   onActivate() {
     container.style.opacity = '1';
     container.classList.add('is-active');
@@ -15,6 +16,7 @@ const focusTrap = createFocusTrap(container, {
 
 const showContainer = function (e) {
   if (e.keyCode === 13) {
+    e.preventDefault();
     focusTrap.activate();
   }
 };
@@ -24,8 +26,8 @@ const hideContainer = function () {
 };
 
 document
-  .getElementById('activate-delay')
+  .getElementById('activate-no-delay')
   .addEventListener('keydown', showContainer);
 document
-  .getElementById('close-button-delay')
+  .getElementById('close-button-no-delay')
   .addEventListener('click', hideContainer);

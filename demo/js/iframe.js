@@ -1,24 +1,16 @@
-var createFocusTrap = require('../../');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('iframe');
+const container = document.getElementById('iframe');
 
-var focusTrap = createFocusTrap('#iframe', {
-  onActivate: function() {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function() {
-    container.className = 'trap';
-  }
+const focusTrap = createFocusTrap('#iframe', {
+  onActivate: () => (container.className = 'trap is-active'),
+  onDeactivate: () => (container.className = 'trap'),
 });
 
 document
   .getElementById('activate-iframe')
-  .addEventListener('click', function() {
-    focusTrap.activate();
-  });
+  .addEventListener('click', focusTrap.activate);
 
 document
   .getElementById('deactivate-iframe')
-  .addEventListener('click', function() {
-    focusTrap.deactivate();
-  });
+  .addEventListener('click', focusTrap.deactivate);

@@ -1,0 +1,163 @@
+{
+  "projectName": "focus-trap",
+  "projectOwner": "focus-trap",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
+  "commit": false,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "davidtheclark",
+      "name": "David Clark",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/628431?v=4",
+      "profile": "http://davidtheclark.com/",
+      "contributions": [
+        "code",
+        "bug",
+        "infra",
+        "test",
+        "doc",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "stefcameron",
+      "name": "Stefan Cameron",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2855350?v=4",
+      "profile": "https://stefancameron.com/",
+      "contributions": [
+        "code",
+        "bug",
+        "infra",
+        "test",
+        "doc",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "liunate",
+      "name": "Nate Liu",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/38996291?v=4",
+      "profile": "https://github.com/liunate",
+      "contributions": [
+        "test"
+      ]
+    },
+    {
+      "login": "sadick254",
+      "name": "Sadick",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5238135?v=4",
+      "profile": "https://github.com/sadick254",
+      "contributions": [
+        "code",
+        "test",
+        "doc"
+      ]
+    },
+    {
+      "login": "michael-ar",
+      "name": "Michael Reynolds",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/18557997?v=4",
+      "profile": "https://github.com/michael-ar",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "SeanMcP",
+      "name": "Sean McPherson",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6360367?v=4",
+      "profile": "https://seanmcp.com/",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "dependabot",
+      "name": "Dependabot",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/27347476?v=4",
+      "profile": "https://github.com/features/security",
+      "contributions": [
+        "maintenance"
+      ]
+    },
+    {
+      "login": "Slapbox",
+      "name": "Slapbox",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6835891?v=4",
+      "profile": "https://recollectr.io",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "bparish628",
+      "name": "Benjamin Parish",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/8492971?v=4",
+      "profile": "https://github.com/bparish628",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "scottblinch",
+      "name": "Scott Blinch",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4682114?v=4",
+      "profile": "https://scottblinch.me/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cgood92",
+      "name": "Clint Goodman",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5473697?v=4",
+      "profile": "https://clintgoodman.com",
+      "contributions": [
+        "code",
+        "doc",
+        "example",
+        "test"
+      ]
+    },
+    {
+      "login": "zioth",
+      "name": "Zioth",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/945603?v=4",
+      "profile": "https://github.com/zioth",
+      "contributions": [
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "randypuro",
+      "name": "Randy Puro",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2579?v=4",
+      "profile": "https://github.com/randypuro",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "thawkin3",
+      "name": "Tyler Hawkins",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13806458?v=4",
+      "profile": "http://tylerhawkins.info/201R/",
+      "contributions": [
+        "tool",
+        "test",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "contributorsSortAlphabetically": true,
+  "skipCi": true
+}

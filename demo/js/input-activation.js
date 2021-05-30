@@ -1,22 +1,16 @@
-var createFocusTrap = require('../../');
+const { createFocusTrap } = require('../../dist/focus-trap');
 
-var container = document.getElementById('input-activation');
+const container = document.getElementById('input-activation');
 
-var focusTrap = createFocusTrap(container, {
-  onActivate: function() {
-    container.className = 'trap is-active';
-  },
-  onDeactivate: function() {
-    container.className = 'trap';
-  }
-});
-
-document.getElementById('focused-input8').addEventListener('input', function() {
-  focusTrap.activate();
+const focusTrap = createFocusTrap(container, {
+  onActivate: () => (container.className = 'trap is-active'),
+  onDeactivate: () => (container.className = 'trap'),
 });
 
 document
+  .getElementById('focused-input8')
+  .addEventListener('input', focusTrap.activate);
+
+document
   .getElementById('deactivate-input-activation')
-  .addEventListener('click', function() {
-    focusTrap.deactivate();
-  });
+  .addEventListener('click', focusTrap.deactivate);

@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+
+jobs:
+  test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    strategy:
+      matrix:
+        node: [14]
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup environment
+        id: setups
+        run: |-
+          echo "::set-output name=yarn_cache::$(yarn cache dir)"
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@master
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+
+      - name: Yarn cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.setups.outputs.yarn_cache }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-node-${{ matrix.node }}
+
+      - name: Install packages
+        run: yarn --frozen-lockfile
+
+      - name: Lint
+        run: |-
+          yarn format:check;
+          yarn lint;
+
+      - name: Test
+        run: |-
+          yarn test:unit;
+          yarn test:types;
+
+      - name: Build # Tests to see if a build can succeed
+        run: yarn build
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+    timeout-minutes: 20
+    container:
+      image: cypress/included:7.4.0
+      options: --user 1001 --shm-size=2g # @see https://github.com/cypress-io/github-action/issues/104#issuecomment-666047965
+    env:
+      CYPRESS_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cypress-io/github-action@v2.6.1
+        with:
+          start: yarn start
+          browser: ${{ matrix.browser }}
