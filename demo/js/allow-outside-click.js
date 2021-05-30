@@ -10,10 +10,10 @@ function initialize() {
     allowOutsideClick: allowOutsideClick,
     escapeDeactivates: false,
     onActivate: function () {
-      container.className = 'trap is-active';
+      container.classList.add('is-active');
     },
     onDeactivate: function () {
-      container.className = 'trap';
+      container.classList.remove('is-active');
     },
   });
 }

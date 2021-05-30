@@ -4,20 +4,20 @@ const container = document.getElementById('sibling-first');
 const second = document.getElementById('sibling-second');
 
 const firstFocusTrap = createFocusTrap('#sibling-first', {
-  onDeactivate: () => (container.className = 'trap'),
+  onDeactivate: () => container.classList.remove('is-active'),
 });
 
 const secondFocusTrap = createFocusTrap('#sibling-second', {
   onDeactivate: function () {
     second.style.display = 'none';
-    second.className = 'trap';
+    second.classList.remove('is-active');
   },
 });
 
 document
   .getElementById('activate-first-sibling')
   .addEventListener('click', function () {
-    container.className = 'trap is-active';
+    container.classList.add('is-active');
     firstFocusTrap.activate();
   });
 

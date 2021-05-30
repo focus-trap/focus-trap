@@ -5,8 +5,8 @@ const focusable = document.getElementById('tif-hide-focusable');
 
 const focusTrap = createFocusTrap(container, {
   fallbackFocus: container,
-  onActivate: () => (container.className = 'trap is-active'),
-  onDeactivate: () => (container.className = 'trap'),
+  onActivate: () => container.classList.add('is-active'),
+  onDeactivate: () => container.classList.remove('is-active'),
 });
 
 document

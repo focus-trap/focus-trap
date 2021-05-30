@@ -20,11 +20,11 @@ const initialize = function () {
     clickOutsideDeactivates,
     escapeDeactivates: false,
     onActivate: function () {
-      container.className = 'trap is-active';
+      container.classList.add('is-active');
     },
     onDeactivate: function () {
       active = false;
-      container.className = 'trap';
+      container.classList.remove('is-active');
     },
   });
 };
