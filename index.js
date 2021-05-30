@@ -499,7 +499,7 @@ const createFocusTrap = function (elements, userOptions) {
       state.nodeFocusedBeforeActivation = doc.activeElement;
 
       const getOption = (optionName) => {
-        return activateOptions && activateOptions[optionName]
+        return activateOptions && activateOptions[optionName] !== undefined
           ? activateOptions[optionName]
           : config[optionName];
       };
@@ -549,19 +549,18 @@ const createFocusTrap = function (elements, userOptions) {
 
       activeFocusTraps.deactivateTrap(trap);
 
-      const onDeactivate =
-        deactivateOptions && deactivateOptions.onDeactivate !== undefined
-          ? deactivateOptions.onDeactivate
-          : config.onDeactivate;
+      const getOption = (optionName) => {
+        return deactivateOptions && deactivateOptions[optionName] !== undefined
+          ? deactivateOptions[optionName]
+          : config[optionName];
+      };
+
+      const onDeactivate = getOption('onDeactivate');
+      const returnFocus = getOption('returnFocus');
+
       if (onDeactivate) {
         onDeactivate();
       }
-
-      const returnFocus =
-        deactivateOptions && deactivateOptions.returnFocus !== undefined
-          ? deactivateOptions.returnFocus
-          : config.returnFocusOnDeactivate;
-
       if (returnFocus) {
         delay(function () {
           tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
