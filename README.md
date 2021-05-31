@@ -82,18 +82,19 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 #### createOptions
 
-- **onActivate** {function}: A function that will be called when the focus trap activates.
-- **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
-- **initialFocus** {element|string|function}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
-- **fallbackFocus** {element|string|function}: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
-- **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
-- **clickOutsideDeactivates** {boolean|(e: MouseEvent) => boolean}: If `true` or returns `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing (i.e. to pass-through to the element that was clicked). This option **takes precedence** over `allowOutsideClick` when it's set to `true`. Default: `false`.
+- **onActivate** `{() => void}`: A function that will be called when the focus trap activates.
+- **onDeactivate** `{() => void}`: A function that will be called when the focus trap deactivates,
+- **initialFocus** `{HTMLElement | SVGElement | string | () => HTMLElement | SVGElement}`: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
+- **fallbackFocus** `{HTMLElement | SVGElement | string | () => HTMLElement | SVGElement}`: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
+- **escapeDeactivates** `{boolean}`: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
+- **clickOutsideDeactivates** `{boolean | (e: MouseEvent | TouchEvent) => boolean}`: If `true` or returns `true`, a click outside the focus trap will deactivate the focus trap and allow the click event to do its thing (i.e. to pass-through to the element that was clicked). This option **takes precedence** over `allowOutsideClick` when it's set to `true`. Default: `false`.
   - ⚠️ If you're using a password manager such as 1Password, where the app adds a clickable icon to all fillable fields, you should avoid using this option, and instead use the `allowOutsideClick` option to better control exactly when the focus trap can be deactivated. The clickable icons are usually positioned absolutely, floating on top of the fields, and therefore _not_ part of the container the trap is managing. When using the `clickOutsideDeactivates` option, clicking on a field's 1Password icon will likely cause the trap to be unintentionally deactivated.
-- **allowOutsideClick** {boolean|(e: MouseEvent) => boolean}: If set and is or returns `true`, a click outside the focus trap will not be prevented, even when `clickOutsideDeactivates` is `false`. When `clickOutsideDeactivates` is `true`, this option is **ignored** (i.e. if it's a function, it will not be called). Use this option to control if (and even which) clicks are allowed outside the trap in conjunction with `clickOutsideDeactivates: false`. Default: `false`.
-- **returnFocusOnDeactivate** {boolean}: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
-- **setReturnFocus** {element|string|function}: By default, focus trap on deactivation will return to the element that was focused before activation. With this option you can specify another element to programmatically receive focus after deactivation. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
-- **preventScroll** {boolean}: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
-- **delayInitialFocus** {boolean}: Default: `true`. Delays the autofocus when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
+- **allowOutsideClick** `{boolean | (e: MouseEvent | TouchEvent) => boolean}`: If set and is or returns `true`, a click outside the focus trap will not be prevented, even when `clickOutsideDeactivates` is `false`. When `clickOutsideDeactivates` is `true`, this option is **ignored** (i.e. if it's a function, it will not be called). Use this option to control if (and even which) clicks are allowed outside the trap in conjunction with `clickOutsideDeactivates: false`. Default: `false`.
+  - ⚠️ If this is a function, it will be called **twice** on every click: First on `mousedown` (or `touchstart` on mobile), and then on the actual `click` if the function returned `true` on the first event. Be sure to check the event type if the double call is an issue in your code.
+- **returnFocusOnDeactivate** `{boolean}`: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
+- **setReturnFocus** `{HTMLElement | SVGElement | string | () => HTMLElement | SVGElement}`: By default, focus trap on deactivation will return to the element that was focused before activation. With this option you can specify another element to programmatically receive focus after deactivation. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
+- **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
+- **delayInitialFocus** `{boolean}`: Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 
 ### trap.activate([activateOptions])
 
@@ -113,7 +114,7 @@ Returns the `trap`.
 
 These options are used to override the focus trap's default behavior for this particular activation.
 
-- **onActivate** {function | null | false}: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
+- **onActivate** `{() => void | null | false}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 
 ### trap.deactivate([deactivateOptions])
 
@@ -125,8 +126,8 @@ Returns the `trap`.
 
 These options are used to override the focus trap's default behavior for this particular deactivation.
 
-- **returnFocus** {boolean}: Default: whatever you chose for `createOptions.returnFocusOnDeactivate`.
-- **onDeactivate** {function | null | false}: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **returnFocus** `{boolean}`: Default: whatever you chose for `createOptions.returnFocusOnDeactivate`.
+- **onDeactivate** `{() => void | null | false}`: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
 
 ### trap.pause()
 
