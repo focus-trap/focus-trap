@@ -13,11 +13,8 @@ const delayFocusTrapActivation = (container, checkCanActivate, callback) => {
       if (timeDifferenceInSeconds > 10) {
         // eslint-disable-next-line no-console
         console.warn(
-          [
-            'Focus-Trap activation for the following element timed out after',
-            timeDifferenceInSeconds,
-            'seconds',
-          ].join(' '),
+          'Focus-Trap activation for the following element timed out after %s seconds',
+          timeDifferenceInSeconds,
           container
         );
         clearInterval(interval);
