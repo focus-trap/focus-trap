@@ -15,14 +15,26 @@ declare module 'focus-trap' {
     onActivate?: () => void;
     /**
      * A function for determining if it is safe to activate the focus trap
-     * or not. If this returns false, it will attempt to activate again in
-     * 5 milliseconds. It will repeat this up to a maximum of 10 seconds.
+     * or not.
+     *
+     * If an item in the returned array is `true`, the trap for that item will activate.
+     *
+     * If an item in the returned array is a number, it will attempt to activate that trap again in
+     * that many milliseconds.
+     *
+     * It will repeat this process until it hits the `activationCheckTimeout` time.
+     *
      * The purpose of this is to prevent the focus-trap from activating
      * early when dealing with animated focus-traps like dialogs that fade
      * in and out. When a dialog fades in, there is a brief delay between
      * the activation of the trap and the trap element being focusable.
      */
-    checkCanActivate?: (elem: FocusTarget) => boolean
+    checkCanActivate?: (trapContainers: Array<FocusTarget>) => Array<true | number>
+
+    /**
+     * How many seconds the trap will attempt to activate for before giving up.
+     */
+    activationCheckTimeout: number = 10
 
     /**
      * This function is only relevant if used in conjunction with `checkCanActivate`.
