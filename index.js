@@ -139,6 +139,13 @@ const createFocusTrap = function (elements, userOptions) {
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
+  const getOption = (configOverrideOptions, optionName, configOptionName) => {
+    return configOverrideOptions &&
+      configOverrideOptions[optionName] !== undefined
+      ? configOverrideOptions[optionName]
+      : config[configOptionName || optionName];
+  };
+
   const containersContain = function (element) {
     return state.containers.some((container) => container.contains(element));
   };
@@ -498,15 +505,12 @@ const createFocusTrap = function (elements, userOptions) {
       state.paused = false;
       state.nodeFocusedBeforeActivation = doc.activeElement;
 
-      const getOption = (optionName) => {
-        return activateOptions && activateOptions[optionName] !== undefined
-          ? activateOptions[optionName]
-          : config[optionName];
-      };
-
-      const onActivate = getOption('onActivate');
-      const onSuccessfulActivation = getOption('onSuccessfulActivation');
-      const checkCanActivate = getOption('checkCanActivate');
+      const onActivate = getOption(activateOptions, 'onActivate');
+      const onSuccessfulActivation = getOption(
+        activateOptions,
+        'onSuccessfulActivation'
+      );
+      const checkCanActivate = getOption(activateOptions, 'checkCanActivate');
 
       if (checkCanActivate) {
         if (onActivate) {
@@ -549,19 +553,17 @@ const createFocusTrap = function (elements, userOptions) {
 
       activeFocusTraps.deactivateTrap(trap);
 
-      const onDeactivate =
-        deactivateOptions && deactivateOptions.onDeactivate !== undefined
-          ? deactivateOptions.onDeactivate
-          : config.onDeactivate;
+      const onDeactivate = getOption(deactivateOptions, 'onDeactivate');
 
       if (onDeactivate) {
         onDeactivate();
       }
 
-      const returnFocus =
-        deactivateOptions && deactivateOptions.returnFocus !== undefined
-          ? deactivateOptions.returnFocus
-          : config.returnFocusOnDeactivate;
+      const returnFocus = getOption(
+        deactivateOptions,
+        'returnFocus',
+        'returnFocusOnDeactivate'
+      );
 
       if (returnFocus) {
         delay(function () {
