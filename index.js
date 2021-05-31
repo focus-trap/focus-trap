@@ -2,6 +2,27 @@ import { tabbable, isFocusable } from 'tabbable';
 
 let activeFocusDelay;
 
+const delayFocusTrapActivation = (container, checkCanActivate, callback) => {
+  const startDate = Date.now();
+  const interval = setInterval(function () {
+    if (checkCanActivate(container)) {
+      clearInterval(interval);
+      callback();
+    } else {
+      const timeDifferenceInSeconds = (Date.now() - startDate) / 1000;
+      if (timeDifferenceInSeconds > 10) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          'Focus-Trap activation for the following element timed out after %s seconds',
+          timeDifferenceInSeconds,
+          container
+        );
+        clearInterval(interval);
+      }
+    }
+  }, 5);
+};
+
 const activeFocusTraps = (function () {
   const trapQueue = [];
   return {
@@ -114,47 +135,6 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
-
-  const delayFocusTrapActivation = (callback) => {
-    const startDate = Date.now();
-
-    const { checkCanActivate = () => {}, activationCheckTimeout } = config;
-
-    const runChecks = () => {
-      const checkCanActivateResults = checkCanActivate(state.containers);
-      const timeDifferenceInSeconds = (Date.now() - startDate) / 1000;
-
-      checkCanActivateResults.forEach((result, index) => {
-        let timeOut;
-        if (result === true) {
-          clearTimeout(timeOut);
-          callback(state.containers[index]);
-        } else if (typeof result === 'number') {
-          if (timeDifferenceInSeconds >= activationCheckTimeout) {
-            // eslint-disable-next-line no-console
-            console.warn(
-              'Focus-Trap activation for the following elements timed out after %s seconds',
-              timeDifferenceInSeconds,
-              state.containers
-            );
-            clearTimeout(timeOut);
-          } else {
-            timeOut = setTimeout(() => {
-              runChecks();
-            }, result);
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.error(
-            'The result from checkCanActivate must be an array of items that are either `true` or a number',
-            { checkCanActivateResults, containers: state.containers }
-          );
-        }
-      });
-    };
-
-    runChecks();
-  };
 
   const getOption = (configOverrideOptions, optionName, configOptionName) => {
     return configOverrideOptions &&
@@ -534,12 +514,14 @@ const createFocusTrap = function (elements, userOptions) {
           onActivate();
         }
 
-        delayFocusTrapActivation((container) => {
-          updateTabbableNodes();
-          addListeners();
-          if (onSuccessfulActivation) {
-            onSuccessfulActivation();
-          }
+        state.containers.forEach((container) => {
+          delayFocusTrapActivation(container, checkCanActivate, () => {
+            updateTabbableNodes();
+            addListeners();
+            if (onSuccessfulActivation) {
+              onSuccessfulActivation();
+            }
+          });
         });
       } else {
         updateTabbableNodes();
