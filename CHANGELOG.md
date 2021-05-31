@@ -1,9 +1,5 @@
 # Changelog
 
-## 6.5.0
-
-- Added: `checkCanActivate` and `onSuccessfulActivation` settings for better animated dialog support.
-
 ## 6.4.0
 
 ### Minor Changes
