@@ -1,6 +1,6 @@
 body {
   color: #333;
-  font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.4;
   -webkit-box-sizing: border-box;
@@ -22,7 +22,7 @@ body {
 }
 
 .is-active {
-  background: #FEE9FF;
+  background: #fee9ff;
 }
 
 .is-active-nested {
@@ -41,6 +41,17 @@ body {
   visibility: visible;
 }
 
+.animated-trigger {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+.animated-trigger.is-triggered {
+  opacity: 0;
+  visibility: hidden;
+}
+
 .inline-label {
   margin-right: 0.5em;
 }
@@ -50,7 +61,8 @@ body {
   outline: 0;
 }
 
-code, kbd {
+code,
+kbd {
   background: #eee;
   font-size: 90%;
   padding: 0 2px;

@@ -71,6 +71,33 @@
       </p>
     </div>
 
+    <div id="demo-animated-trigger">
+      <h2 id="animated-trigger-heading">animated trigger</h2>
+      <p>
+        This focus trap will fade in when activated and fade out when deactivated. It logs a message to the
+        console when the trap has finished activating. Note that the fade animation needs to be written yourself,
+        it is not built into the library.
+      </p>
+      <p>
+        <button id="activate-animated-trigger" class="animated-trigger" aria-describedby="animated-trigger-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="animated-trigger" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="deactivate-animated-trigger" aria-describedby="animated-trigger-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/animated-trigger.js">View demo source ⋙</a>
+      </p>
+    </div>
+
     <div id="demo-iene">
       <h2 id="iene-heading">initial element, no escape</h2>
       <p>

@@ -1,5 +1,6 @@
 require('./default');
 require('./animated');
+require('./animated-trigger');
 require('./initial-element-no-escape');
 require('./initially-focused-container');
 require('./hidden-treasures');
