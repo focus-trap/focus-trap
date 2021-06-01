@@ -19,12 +19,10 @@ const initialize = function () {
     returnFocusOnDeactivate,
     clickOutsideDeactivates,
     escapeDeactivates: false,
-    onActivate: function () {
-      container.className = 'trap is-active';
-    },
-    onDeactivate: function () {
+    onActivate: () => container.classList.add('is-active'),
+    onDeactivate: () => {
       active = false;
-      container.className = 'trap';
+      container.classList.remove('is-active');
     },
   });
 };

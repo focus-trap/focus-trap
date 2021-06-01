@@ -6,14 +6,14 @@ const selectors = ['#multipleelements-1', '#multipleelements-3'];
 const focusTrap = createFocusTrap(selectors, {
   clickOutsideDeactivates: true,
   onActivate: function () {
-    container.className = 'trap is-active';
+    container.classList.add('is-active');
     selectors.forEach(
       (selector) =>
         (document.querySelector(selector).className = 'is-active-nested')
     );
   },
   onDeactivate: function () {
-    container.className = 'trap';
+    container.classList.remove('is-active');
     selectors.forEach(
       (selector) => (document.querySelector(selector).className = null)
     );

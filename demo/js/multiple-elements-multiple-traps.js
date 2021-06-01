@@ -5,12 +5,12 @@ let isTrap1Active = false;
 let isTrap2Active = false;
 
 const onActivateTrap = function () {
-  container.className = 'trap is-active';
+  container.classList.add('is-active');
 };
 
 const onDeactivateTrap = function () {
   if (!isTrap1Active && !isTrap2Active) {
-    container.className = 'trap';
+    container.classList.remove('is-active');
   }
 };
 
