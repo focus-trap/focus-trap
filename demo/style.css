@@ -29,14 +29,14 @@ body {
   background: pink;
 }
 
-.animated {
+.animated-dialog {
   position: absolute;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s, visibility 0.5s;
 }
 
-.animated.is-active {
+.animated-dialog.is-active {
   opacity: 1;
   visibility: visible;
 }

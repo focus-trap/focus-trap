@@ -1,8 +1,8 @@
 const { createFocusTrap } = require('../../dist/focus-trap');
 
-const container = document.getElementById('animated');
+const container = document.getElementById('animated-dialog');
 
-const focusTrap = createFocusTrap('#animated', {
+const focusTrap = createFocusTrap('#animated-dialog', {
   // Called before focus is sent
   onActivate: () => container.classList.add('is-active'),
   // There is a delay between when the class is applied
@@ -36,9 +36,9 @@ const focusTrap = createFocusTrap('#animated', {
 });
 
 document
-  .getElementById('activate-animated')
+  .getElementById('activate-animated-dialog')
   .addEventListener('click', focusTrap.activate);
 
 document
-  .getElementById('deactivate-animated')
+  .getElementById('deactivate-animated-dialog')
   .addEventListener('click', focusTrap.deactivate);

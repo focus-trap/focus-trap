@@ -1,5 +1,5 @@
 require('./default');
-require('./animated');
+require('./animated-dialog');
 require('./animated-trigger');
 require('./initial-element-no-escape');
 require('./initially-focused-container');
