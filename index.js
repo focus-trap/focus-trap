@@ -526,6 +526,11 @@ const createFocusTrap = function (elements, userOptions) {
       activeFocusTraps.deactivateTrap(trap);
 
       const onDeactivate = getOption(deactivateOptions, 'onDeactivate');
+      const onPostDeactivate = getOption(deactivateOptions, 'onPostDeactivate');
+      const checkCanDeactivate = getOption(
+        deactivateOptions,
+        'checkCanDeactivate'
+      );
 
       if (onDeactivate) {
         onDeactivate();
@@ -537,12 +542,29 @@ const createFocusTrap = function (elements, userOptions) {
         'returnFocusOnDeactivate'
       );
 
-      if (returnFocus) {
-        delay(function () {
-          tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
-        });
+      const finishDeactivation = (value) => {
+        if (returnFocus) {
+          delay(() => {
+            tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+            if (onPostDeactivate) {
+              onPostDeactivate(value);
+            }
+          });
+        }
+      };
+
+      if (checkCanDeactivate) {
+        // would be even more succinct to use `finally(finishActivation)` but I'm leary
+        //  of someone on some old version of some browser that doesn't support
+        //  it since it wasn't part of the original Promises spec
+        checkCanDeactivate(state.nodeFocusedBeforeActivation).then(
+          finishDeactivation,
+          finishDeactivation
+        );
+        return this;
       }
 
+      finishDeactivation();
       return this;
     },
 
