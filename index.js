@@ -477,20 +477,26 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
-      state.active = true;
-      state.paused = false;
-      state.nodeFocusedBeforeActivation = doc.activeElement;
-
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanActivate = getOption(activateOptions, 'checkCanActivate');
+
+      if (!checkCanActivate) {
+        updateTabbableNodes();
+      }
+
+      state.active = true;
+      state.paused = false;
+      state.nodeFocusedBeforeActivation = doc.activeElement;
 
       if (onActivate) {
         onActivate();
       }
 
       const finishActivation = (value) => {
-        updateTabbableNodes();
+        if (checkCanActivate) {
+          updateTabbableNodes();
+        }
         addListeners();
         if (onPostActivate) {
           onPostActivate(value);
