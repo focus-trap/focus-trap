@@ -54,7 +54,7 @@ declare module 'focus-trap' {
      * if the trigger of a focus-trap is animated to fade in and out. When a trigger element fades in,
      * there is a brief delay between the deactivation of the trap and when the trigger element is focusable.
      */
-    checkCanFocusTrigger?: (containers: Array<FocusTarget>) => Promise<unknown>
+    checkCanFocusTrigger?: (trigger: HTMLElement | SVGElement) => Promise<unknown>
 
     /**
      * By default, when a focus trap is activated the first element in the
@@ -120,9 +120,9 @@ declare module 'focus-trap' {
     delayInitialFocus?: boolean;
   }
 
-  type ActivateOptions = Pick<Options, 'onActivate' | 'onSuccessfulActivation' | 'checkCanFocusTrap'>;
+  type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;
 
-  interface DeactivateOptions extends Pick<Options, 'onDeactivate'> {
+  interface DeactivateOptions extends Pick<Options, 'onDeactivate' | 'onPostDeactivate' | 'checkCanFocusTrigger'> {
     returnFocus?: boolean;
   }
 
