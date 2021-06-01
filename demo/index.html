@@ -50,24 +50,12 @@
         This focus trap will fade in when activated and fade out when deactivated. Note that the fade animation needs to
         be written yourself, it is not built into the library.
       </p>
-      <style>
-        .DemoAnimatedTrap {
-          position: absolute;
-          opacity: 0;
-          visibility: hidden;
-          transition: opacity 0.5s, visibility 0.5s;
-        }
-        .DemoAnimatedTrap.is-active {
-          opacity: 1;
-          visibility: visible;
-        }
-      </style>
       <p>
         <button id="activate-animated">
           activate trap
         </button>
       </p>
-      <div id="animated" class="trap DemoAnimatedTrap">
+      <div id="animated" class="trap animated">
         <p>
           Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>

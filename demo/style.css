@@ -29,6 +29,18 @@ body {
   background: pink;
 }
 
+.animated {
+  position: absolute;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+
+.animated.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
 .inline-label {
   margin-right: 0.5em;
 }
