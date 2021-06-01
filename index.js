@@ -2,27 +2,6 @@ import { tabbable, isFocusable } from 'tabbable';
 
 let activeFocusDelay;
 
-const delayFocusTrapActivation = (container, checkCanActivate, callback) => {
-  const startDate = Date.now();
-  const interval = setInterval(function () {
-    if (checkCanActivate(container)) {
-      clearInterval(interval);
-      callback();
-    } else {
-      const timeDifferenceInSeconds = (Date.now() - startDate) / 1000;
-      if (timeDifferenceInSeconds > 10) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          'Focus-Trap activation for the following element timed out after %s seconds',
-          timeDifferenceInSeconds,
-          container
-        );
-        clearInterval(interval);
-      }
-    }
-  }, 5);
-};
-
 const activeFocusTraps = (function () {
   const trapQueue = [];
   return {
@@ -503,37 +482,33 @@ const createFocusTrap = function (elements, userOptions) {
       state.nodeFocusedBeforeActivation = doc.activeElement;
 
       const onActivate = getOption(activateOptions, 'onActivate');
-      const onSuccessfulActivation = getOption(
-        activateOptions,
-        'onSuccessfulActivation'
-      );
-      const checkCanActivate = getOption(activateOptions, 'checkCanActivate');
+      const onPostActivate = getOption(activateOptions, 'onPostActivate');
+      const checkCanFocus = getOption(activateOptions, 'checkCanFocus');
 
-      if (checkCanActivate) {
-        if (onActivate) {
-          onActivate();
-        }
-
-        state.containers.forEach((container) => {
-          delayFocusTrapActivation(container, checkCanActivate, () => {
-            updateTabbableNodes();
-            addListeners();
-            if (onSuccessfulActivation) {
-              onSuccessfulActivation();
-            }
-          });
-        });
-      } else {
-        updateTabbableNodes();
-        if (onActivate) {
-          onActivate();
-        }
-        addListeners();
-        if (onSuccessfulActivation) {
-          onSuccessfulActivation();
-        }
+      if (onActivate) {
+        onActivate();
       }
 
+      const finishActivation = (value) => {
+        updateTabbableNodes();
+        addListeners();
+        if (onPostActivate) {
+          onPostActivate(value);
+        }
+      };
+
+      if (checkCanFocus) {
+        // would be even more succinct to use `finally(finishActivation)` but I'm leary
+        //  of someone on some old version of some browser that doesn't support
+        //  it since it wasn't part of the original Promises spec
+        checkCanFocus(state.containers).then(
+          finishActivation,
+          finishActivation
+        );
+        return this;
+      }
+
+      finishActivation();
       return this;
     },
 

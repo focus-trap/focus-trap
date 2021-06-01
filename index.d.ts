@@ -10,31 +10,35 @@ declare module 'focus-trap' {
 
   export interface Options {
     /**
-     * A function that will be called when the focus trap activates.
+     * A function that will be called **before** sending focus to the
+     * target element upon activation.
      */
     onActivate?: () => void;
-    /**
-     * A function for determining if it is safe to activate the focus trap
-     * or not. If this returns false, it will attempt to activate again in
-     * 5 milliseconds. It will repeat this up to a maximum of 10 seconds.
-     * The purpose of this is to prevent the focus-trap from activating
-     * early when dealing with animated focus-traps like dialogs that fade
-     * in and out. When a dialog fades in, there is a brief delay between
-     * the activation of the trap and the trap element being focusable.
-     */
-    checkCanActivate?: (elem: FocusTarget) => boolean
 
     /**
-     * This function is only relevant if used in conjunction with `checkCanActivate`.
-     * `onActivate` is called before focus is sent to the target.
-     * `onSuccessfulActivation` is called after focus is sent to the target.
+     * A function that will be called **after** focus has been sent to the
+     * target element upon activation.
      */
-    onSuccessfulActivation?: () => void
+    onPostActivate?: (value: unknown) => void
 
     /**
      * A function that will be called when the focus trap deactivates.
      */
     onDeactivate?: () => void;
+
+    /**
+     * A function for determining if it is safe to activate the focus trap
+     * or not.
+     *
+     * It should return a promise that only resolves once all the listed containers
+     * are able to receive focus.
+     *
+     * The purpose of this is to prevent early focus-trap activation on animated
+     * dialogs that fade in and out. When a dialog fades in, there is a brief delay
+     * between the activation of the trap and the trap element being focusable.
+     */
+    checkCanFocus?: (containers: Array<FocusTarget>) => Promise<unknown>
+
     /**
      * By default, when a focus trap is activated the first element in the
      * focus trap's tab order will receive focus. With this option you can

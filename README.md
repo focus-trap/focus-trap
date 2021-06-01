@@ -82,10 +82,10 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 #### createOptions
 
-- **onActivate** {function}: A function that will be called when the focus trap activates.
+- **onActivate** {function}: A function that will be called **before** sending focus to the target element upon activation.
+- **onPostActivate** {function}: A function that will be called **after** sending focus to the target element upon activation.
 - **onDeactivate** {function}: A function that will be called when the focus trap deactivates,
-- **checkCanActivate** {function}: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. If checkCanActivate returns false, it will try sending focus again every 5 milliseconds (up to 10 seconds) until it is able to send focus.
-- **onSuccessfulActivation** {function}: This function is only relevant if used in conjunction with `checkCanActivate`. `onActivate` is called before focus is sent to the target. `onSuccessfulActivation` is called after focus is sent to the target.
+- **checkCanFocus** {function}: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocus` expects a promise to be returned. When that promise resolves, focus will be sent to the focus-trap. Due to the lack of Promise support, checkCanFocus is not supported in IE11 unless you provide a Promise polyfill.
 - **initialFocus** {element|string|function}: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
 - **fallbackFocus** {element|string|function}: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
 - **escapeDeactivates** {boolean}: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
@@ -116,8 +116,8 @@ Returns the `trap`.
 These options are used to override the focus trap's default behavior for this particular activation.
 
 - **onActivate** {function | null | false}: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
-- **onSuccessfulActivation** {function | null | false}: Default: whatever you chose for `createOptions.onSuccessfulActivation`. `null` or `false` are the equivalent of a `noop`.
-- **checkCanActivate** {function | null | false}: Default: whatever you chose for `createOptions.checkCanActivate`.
+- **onPostActivate** {function | null | false}: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
+- **checkCanFocus** {function | null | false}: Default: whatever you chose for `createOptions.checkCanFocus`.
 
 ### trap.deactivate([deactivateOptions])
 
