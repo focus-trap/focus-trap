@@ -22,11 +22,6 @@ declare module 'focus-trap' {
     onPostActivate?: (value: unknown) => void
 
     /**
-     * A function that will be called when the focus trap deactivates.
-     */
-    onDeactivate?: () => void;
-
-    /**
      * A function for determining if it is safe to activate the focus trap
      * or not.
      *
@@ -38,6 +33,28 @@ declare module 'focus-trap' {
      * between the activation of the trap and the trap element being focusable.
      */
     checkCanActivate?: (containers: Array<FocusTarget>) => Promise<unknown>
+
+    /**
+     * A function that will be called **before** sending focus to the
+     * trigger element upon deactivation.
+     */
+    onDeactivate?: () => void;
+
+    /**
+     * A function that will be called **after** focus has been sent to the
+     * trigger element upon deactivation.
+     */
+    onPostDeactivate?: (value: unknown) => void
+    /**
+     * A function for determining if it is safe to send focus back to the trigger element.
+     *
+     * It should return a promise that only resolves once the trigger element is focusable.
+     *
+     * The purpose of this is to prevent the focus being sent to the trigger element to early
+     * if the trigger of a focus-trap is animated to fade in and out. When a trigger element fades in,
+     * there is a brief delay between the deactivation of the trap and when the trigger element is focusable.
+     */
+    checkCanDeactivate?: (containers: Array<FocusTarget>) => Promise<unknown>
 
     /**
      * By default, when a focus trap is activated the first element in the
