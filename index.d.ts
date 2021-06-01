@@ -22,7 +22,7 @@ declare module 'focus-trap' {
     onPostActivate?: (value: unknown) => void
 
     /**
-     * A function for determining if it is safe to activate the focus trap
+     * A function for determining if it is safe to send focus to the focus trap
      * or not.
      *
      * It should return a promise that only resolves once all the listed containers
@@ -32,7 +32,7 @@ declare module 'focus-trap' {
      * dialogs that fade in and out. When a dialog fades in, there is a brief delay
      * between the activation of the trap and the trap element being focusable.
      */
-    checkCanActivate?: (containers: Array<FocusTarget>) => Promise<unknown>
+    checkCanFocusTrap?: (containers: Array<FocusTarget>) => Promise<unknown>
 
     /**
      * A function that will be called **before** sending focus to the
@@ -54,7 +54,7 @@ declare module 'focus-trap' {
      * if the trigger of a focus-trap is animated to fade in and out. When a trigger element fades in,
      * there is a brief delay between the deactivation of the trap and when the trigger element is focusable.
      */
-    checkCanDeactivate?: (containers: Array<FocusTarget>) => Promise<unknown>
+    checkCanFocusTrigger?: (containers: Array<FocusTarget>) => Promise<unknown>
 
     /**
      * By default, when a focus trap is activated the first element in the
@@ -120,7 +120,7 @@ declare module 'focus-trap' {
     delayInitialFocus?: boolean;
   }
 
-  type ActivateOptions = Pick<Options, 'onActivate' | 'onSuccessfulActivation' | 'checkCanActivate'>;
+  type ActivateOptions = Pick<Options, 'onActivate' | 'onSuccessfulActivation' | 'checkCanFocusTrap'>;
 
   interface DeactivateOptions extends Pick<Options, 'onDeactivate'> {
     returnFocus?: boolean;

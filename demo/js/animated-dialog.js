@@ -7,7 +7,7 @@ const focusTrap = createFocusTrap('#animated-dialog', {
   onActivate: () => container.classList.add('is-active'),
   // There is a delay between when the class is applied
   // and when the element is focusable
-  checkCanActivate: (trapContainers) => {
+  checkCanFocusTrap: (trapContainers) => {
     const results = trapContainers.map(
       (trapContainer) =>
         new Promise((resolve) => {
@@ -25,7 +25,7 @@ const focusTrap = createFocusTrap('#animated-dialog', {
     );
   },
   // Called after focus is sent
-  // Only relevent if `checkCanActivate` is used
+  // Only relevent if `checkCanFocusTrap` is used
   onPostActivate: (value) => {
     // eslint-disable-next-line no-console
     console.log('Focus has been sent to the animated focus trap');

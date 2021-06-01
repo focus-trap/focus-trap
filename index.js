@@ -479,9 +479,9 @@ const createFocusTrap = function (elements, userOptions) {
 
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
-      const checkCanActivate = getOption(activateOptions, 'checkCanActivate');
+      const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
 
-      if (!checkCanActivate) {
+      if (!checkCanFocusTrap) {
         updateTabbableNodes();
       }
 
@@ -494,7 +494,7 @@ const createFocusTrap = function (elements, userOptions) {
       }
 
       const finishActivation = (value) => {
-        if (checkCanActivate) {
+        if (checkCanFocusTrap) {
           updateTabbableNodes();
         }
         addListeners();
@@ -503,11 +503,11 @@ const createFocusTrap = function (elements, userOptions) {
         }
       };
 
-      if (checkCanActivate) {
+      if (checkCanFocusTrap) {
         // would be even more succinct to use `finally(finishActivation)` but I'm leary
         //  of someone on some old version of some browser that doesn't support
         //  it since it wasn't part of the original Promises spec
-        checkCanActivate(state.containers).then(
+        checkCanFocusTrap(state.containers).then(
           finishActivation,
           finishActivation
         );
@@ -533,9 +533,9 @@ const createFocusTrap = function (elements, userOptions) {
 
       const onDeactivate = getOption(deactivateOptions, 'onDeactivate');
       const onPostDeactivate = getOption(deactivateOptions, 'onPostDeactivate');
-      const checkCanDeactivate = getOption(
+      const checkCanFocusTrigger = getOption(
         deactivateOptions,
-        'checkCanDeactivate'
+        'checkCanFocusTrigger'
       );
 
       if (onDeactivate) {
@@ -559,11 +559,11 @@ const createFocusTrap = function (elements, userOptions) {
         }
       };
 
-      if (checkCanDeactivate) {
+      if (checkCanFocusTrigger) {
         // would be even more succinct to use `finally(finishActivation)` but I'm leary
         //  of someone on some old version of some browser that doesn't support
         //  it since it wasn't part of the original Promises spec
-        checkCanDeactivate(state.nodeFocusedBeforeActivation).then(
+        checkCanFocusTrigger(state.nodeFocusedBeforeActivation).then(
           finishDeactivation,
           finishDeactivation
         );

@@ -15,7 +15,7 @@ const focusTrap = createFocusTrap('#animated-trigger', {
   },
   // There is a delay between when the class is removed
   // and when the trigger is focusable
-  checkCanDeactivate: (triggerButton) => {
+  checkCanFocusTrigger: (triggerButton) => {
     return new Promise((resolve) => {
       const interval = setInterval(() => {
         if (getComputedStyle(triggerButton).visibility !== 'hidden') {
