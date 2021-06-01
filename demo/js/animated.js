@@ -3,6 +3,8 @@ const { createFocusTrap } = require('../../dist/focus-trap');
 const container = document.getElementById('animated');
 
 const focusTrap = createFocusTrap('#animated', {
+  // Called before focus is sent
+  onActivate: () => container.classList.add('is-active'),
   // There is a delay between when the class is applied
   // and when the element is focusable
   checkCanFocus: (trapContainers) => {
@@ -22,8 +24,6 @@ const focusTrap = createFocusTrap('#animated', {
       () => 'The value that you return here will be sent to onPostActivate'
     );
   },
-  // Called before focus is sent
-  onActivate: () => container.classList.add('is-active'),
   // Called after focus is sent
   // Only relevent if `checkCanActivate` is used
   onPostActivate: (value) => {
