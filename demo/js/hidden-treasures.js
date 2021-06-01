@@ -4,8 +4,8 @@ const container = document.getElementById('ht');
 const more = document.getElementById('ht-more');
 
 const focusTrap = createFocusTrap(container, {
-  onActivate: () => (container.className = 'trap is-active'),
-  onDeactivate: () => (container.className = 'trap'),
+  onActivate: () => container.classList.add('is-active'),
+  onDeactivate: () => container.classList.remove('is-active'),
 });
 
 document
