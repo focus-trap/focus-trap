@@ -483,7 +483,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
-      const checkCanFocus = getOption(activateOptions, 'checkCanFocus');
+      const checkCanActivate = getOption(activateOptions, 'checkCanActivate');
 
       if (onActivate) {
         onActivate();
@@ -497,11 +497,11 @@ const createFocusTrap = function (elements, userOptions) {
         }
       };
 
-      if (checkCanFocus) {
+      if (checkCanActivate) {
         // would be even more succinct to use `finally(finishActivation)` but I'm leary
         //  of someone on some old version of some browser that doesn't support
         //  it since it wasn't part of the original Promises spec
-        checkCanFocus(state.containers).then(
+        checkCanActivate(state.containers).then(
           finishActivation,
           finishActivation
         );

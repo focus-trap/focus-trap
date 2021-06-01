@@ -7,7 +7,7 @@ const focusTrap = createFocusTrap('#animated', {
   onActivate: () => container.classList.add('is-active'),
   // There is a delay between when the class is applied
   // and when the element is focusable
-  checkCanFocus: (trapContainers) => {
+  checkCanActivate: (trapContainers) => {
     const results = trapContainers.map(
       (trapContainer) =>
         new Promise((resolve) => {
