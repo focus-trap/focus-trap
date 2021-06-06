@@ -19,7 +19,7 @@ declare module 'focus-trap' {
      * A function that will be called **after** focus has been sent to the
      * target element upon activation.
      */
-    onPostActivate?: (value: unknown) => void
+    onPostActivate?: () => void
 
     /**
      * A function for determining if it is safe to send focus to the focus trap
@@ -44,15 +44,15 @@ declare module 'focus-trap' {
      * A function that will be called **after** focus has been sent to the
      * trigger element upon deactivation.
      */
-    onPostDeactivate?: (value: unknown) => void
+    onPostDeactivate?: () => void
     /**
      * A function for determining if it is safe to send focus back to the trigger element.
      *
      * It should return a promise that only resolves once the trigger element is focusable.
      *
-     * The purpose of this is to prevent the focus being sent to the trigger element to early
-     * if the trigger of a focus-trap is animated to fade in and out. When a trigger element fades in,
-     * there is a brief delay between the deactivation of the trap and when the trigger element is focusable.
+     * The purpose of this is to prevent the focus being sent to an animated trigger element too early.
+     * If a trigger element fades in upon trap deactivation, there is a brief delay between the deactivation
+     * of the trap and when the trigger element is focusable.
      */
     checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>
 
