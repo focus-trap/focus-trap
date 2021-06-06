@@ -19,10 +19,8 @@ const initialize = function () {
     returnFocusOnDeactivate,
     clickOutsideDeactivates,
     escapeDeactivates: false,
-    onActivate: function () {
-      container.classList.add('is-active');
-    },
-    onDeactivate: function () {
+    onActivate: () => container.classList.add('is-active'),
+    onDeactivate: () => {
       active = false;
       container.classList.remove('is-active');
     },

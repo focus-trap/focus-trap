@@ -4,9 +4,9 @@ declare module 'focus-trap' {
    * `document.querySelector()` to find the DOM node), or a function that
    * returns a DOM node.
    */
-  export type FocusTarget = HTMLElement | string | { (): HTMLElement };
+  export type FocusTarget = HTMLElement | SVGElement | string | { (): HTMLElement | SVGElement };
 
-  type MouseEventToBoolean = (event: MouseEvent) => boolean
+  type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean
 
   export interface Options {
     /**
@@ -131,7 +131,7 @@ declare module 'focus-trap' {
     deactivate(deactivateOptions?: DeactivateOptions): FocusTrap;
     pause(): FocusTrap;
     unpause(): FocusTrap;
-    updateContainerElements(containerElements: HTMLElement | string | Array<HTMLElement | string>): FocusTrap;
+    updateContainerElements(containerElements: HTMLElement | SVGElement | string | Array<HTMLElement | SVGElement | string>): FocusTrap;
   }
 
   /**
@@ -142,7 +142,7 @@ declare module 'focus-trap' {
    *  find the element.
    */
   export function createFocusTrap(
-    element: HTMLElement | string | Array<HTMLElement | string>,
+    element: HTMLElement | SVGElement | string | Array<HTMLElement | SVGElement | string>,
     userOptions?: Options
   ): FocusTrap;
 }

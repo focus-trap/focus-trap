@@ -9,12 +9,8 @@ function initialize() {
   return createFocusTrap('#allowoutsideclick', {
     allowOutsideClick: allowOutsideClick,
     escapeDeactivates: false,
-    onActivate: function () {
-      container.classList.add('is-active');
-    },
-    onDeactivate: function () {
-      container.classList.remove('is-active');
-    },
+    onActivate: () => container.classList.add('is-active'),
+    onDeactivate: () => container.classList.remove('is-active'),
   });
 }
 

@@ -25,7 +25,7 @@
     <div id="demo-default">
       <h2 id="default-heading">default behavior</h2>
       <p>
-        <button id="activate-default" aria-label="activate trap for 'defaults' demo">
+        <button id="activate-default" aria-describedby="default-heading">
           activate trap
         </button>
       </p>
@@ -34,13 +34,13 @@
           Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
-          <button id="deactivate-default" aria-label="deactivate trap for 'defaults' demo">
+          <button id="deactivate-default" aria-describedby="default-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/default.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/default.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -67,7 +67,7 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/animated.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/animated.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -94,7 +94,7 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/animated-trigger.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/animated-trigger.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -107,7 +107,7 @@
         Also, in this demo the <kbd>Escape</kbd> key does not deactivate the focus trap. You must click the button.
       </p>
       <p>
-        <button id="activate-iene" aria-label="activate trap for 'initial element, no escape' demo">
+        <button id="activate-iene" aria-describedby="iene-heading">
           activate trap
         </button>
       </p>
@@ -122,13 +122,13 @@
           <input id="focused-input" />
         </p>
         <p>
-          <button id="deactivate-iene" aria-label="deactivate trap for 'initial element, no escape' demo">
+          <button id="deactivate-iene" aria-describedby="iene-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/initial-element-no-escape.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/initial-element-no-escape.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -142,7 +142,7 @@
         Also, clicking on an outside element automatically deactivates this trap.
       </p>
       <p>
-        <button id="activate-ifc" aria-label="activate trap for 'initially focused container' demo">
+        <button id="activate-ifc" aria-describedby="ifc-heading">
           activate trap
         </button>
       </p>
@@ -158,13 +158,13 @@
           </button>
         </p>
         <p>
-          <button id="deactivate-ifc" aria-label="deactivate trap for 'initially focused container' demo">
+          <button id="deactivate-ifc" aria-describedby="ifc-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/initially-focused-container.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/initially-focused-container.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -174,7 +174,7 @@
         Focusable nodes are initially hidden and then revealed within the trap. Use <kbd>Escape</kbd> to exit.
       </p>
       <p>
-        <button id="activate-ht" aria-label="activate trap for 'hidden treasures' demo">
+        <button id="activate-ht" aria-describedby="ht-heading">
           activate trap
         </button>
       </p>
@@ -203,7 +203,7 @@
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/hidden-treasures.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/hidden-treasures.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -213,18 +213,18 @@
         Nested focus traps.
       </p>
       <p>
-        <button id="activate-nested" aria-label="activate trap for 'nested' demo">
+        <button id="activate-nested" aria-describedby="nested-heading">
           activate trap
         </button>
       </p>
       <div id="nested" class="trap is-active" tabindex="-1" style="display:none;">
         <p>
-          <button id="deactivate-nested" aria-label="deactivate outer trap for 'nested' demo">
+          <button id="deactivate-nested" aria-describedby="nested-heading">
             deactivate outer trap
           </button>
         </p>
         <p>
-          <button id="nested-activate-nested" aria-label="activate inner trap for 'nested' demo">
+          <button id="nested-activate-nested" aria-describedby="nested-heading">
             activate inner trap
           </button>
         </p>
@@ -235,14 +235,14 @@
             </button>
           </p>
           <p>
-            <button id="nested-deactivate-nested" aria-label="deactivate and close inner trap for 'nested' demo">
+            <button id="nested-deactivate-nested" aria-describedby="nested-heading">
               deactivate and close inner trap
             </button>
           </p>
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/nested.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/nested.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -253,30 +253,30 @@
       </p>
       <div id="sibling-first" class="trap" tabindex="-1">
         <p>
-          <button id="activate-first-sibling" aria-label="activate first trap for 'sibling traps' demo">
+          <button id="activate-first-sibling" aria-describedby="sibling-heading">
             activate first trap
           </button>
         </p>
         <p>
-          <button id="deactivate-first-sibling" aria-label="deactivate first trap for 'sibling traps' demo">
+          <button id="deactivate-first-sibling" aria-describedby="sibling-heading">
             deactivate first trap
           </button>
         </p>
         <p>
-          <button id="activate-second-sibling" aria-label="activate second trap for 'sibling traps' demo">
+          <button id="activate-second-sibling" aria-describedby="sibling-heading">
             activate second trap
           </button>
         </p>
       </div>
       <div id="sibling-second" class="trap is-active-nested" tabindex="-1" style="display: none;">
         <p>
-          <button id="deactivate-second-sibling" aria-label="deactivate second trap for 'sibling traps' demo">
+          <button id="deactivate-second-sibling" aria-describedby="sibling-heading">
             deactivate second trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/sibling.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/sibling.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -288,13 +288,13 @@
         If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
       </p>
       <p>
-        <button id="activate-tif" aria-label="activate trap for 'tricky initial focus' demo">
+        <button id="activate-tif" aria-describedby="tif-heading">
           activate trap
         </button>
       </p>
       <div id="tif" class="trap" tabindex="-1">
         <p>
-          <button id="deactivate-tif" tabindex="-1" aria-label="deactivate trap for 'tricky initial focus' demo">
+          <button id="deactivate-tif" tabindex="-1" aria-describedby="tif-heading">
             deactivate trap
           </button>
         </p>
@@ -310,7 +310,7 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/tricky-initial-focus.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/tricky-initial-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -330,13 +330,13 @@
           <input id="focused-input8" />
         </p>
         <p>
-          <button id="deactivate-input-activation" aria-label="deactivate trap for 'input activation' demo">
+          <button id="deactivate-input-activation" aria-describedby="input-activation-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/input-activation.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/input-activation.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -346,20 +346,20 @@
         focus-trap ensure that the placement of focus within the trap is slightly delayed, so the focused element does not capture the event that originated the activation of the focus trap. For example, the same <kbd>Enter</kbd> keystroke won't open <em>and</em> close this trap.
       </p>
       <p>
-        <button id="activate-delay">
+        <button id="activate-delay" aria-describedby="delay-heading">
           Reveal by pressing Enter
         </button>
       </p>
 
       <div id="delay" class="trap" style="opacity: 0.2;">
         <p>
-          <button id="close-button-delay">
+          <button id="close-button-delay" aria-describedby="delay-heading">
             Hide
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/delay.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/delay.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -369,20 +369,20 @@
         focus-trap ensure that the placement of focus within the trap is not delayed, so the focused element captures the event that originated the activation of the focus trap.
       </p>
       <p>
-        <button id="activate-no-delay">
+        <button id="activate-no-delay" aria-describedby="delay-heading-explicit">
           Reveal by pressing Enter
         </button>
       </p>
 
       <div id="no-delay" class="trap" style="opacity: 0.2;">
         <p>
-          <button id="close-button-no-delay">
+          <button id="close-button-no-delay" aria-describedby="delay-heading-explicit">
             Hide
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/no-delay.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/no-delay.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -392,7 +392,7 @@
         A default focus trap that contains a radio group. You should be able to change the radio group with the arrow keys, but <kbd>Tab</kbd> should only focus the active radio. (Notice that you need a checked radio in the group for things to work as expected.)
       </p>
       <p>
-        <button id="activate-radio" aria-label="activate trap for 'radio group' demo">
+        <button id="activate-radio" aria-describedby="radio-heading">
           activate trap
         </button>
       </p>
@@ -408,13 +408,13 @@
           </div>
         </fieldset>
         <p>
-          <button id="deactivate-radio" aria-label="deactivate trap for 'radio group' demo">
+          <button id="deactivate-radio" aria-describedby="radio-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/radio.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/radio.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -424,7 +424,7 @@
         This focus trap contains an iframe. You should be able to tab into and out of the iframe. But you need to have a focusable element before and after the iframe for things to work as expected.
       </p>
       <p>
-        <button id="activate-iframe" aria-label="activate trap for 'iframe' demo">
+        <button id="activate-iframe" aria-describedby="iframe-heading">
           activate trap
         </button>
       </p>
@@ -436,13 +436,13 @@
         </p>
         <iframe src="./iframe-content.html"></iframe>
         <p>
-          <button id="deactivate-iframe" aria-label="deactivate trap for 'iframe' demo">
+          <button id="deactivate-iframe" aria-describedby="iframe-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/iframe.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/iframe.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -464,7 +464,7 @@
         </label>
       </p>
       <p>
-        <button id="activate-allowoutsideclick" aria-label="activate trap for 'allow outside click option' demo">
+        <button id="activate-allowoutsideclick" aria-describedby="allowoutsideclick-heading">
           activate trap
         </button>
       </p>
@@ -473,13 +473,13 @@
           Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
-          <button id="deactivate-allowoutsideclick" aria-label="deactivate trap for 'allow outside click option' demo">
+          <button id="deactivate-allowoutsideclick" aria-describedby="allowoutsideclick-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/allow-outside-click.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/allow-outside-click.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -515,7 +515,7 @@
         </label>
       </p>
       <p>
-        <button id="activate-clickoutsidedeactivates" aria-label="activate trap for 'click outside deactivates option' demo">
+        <button id="activate-clickoutsidedeactivates" aria-describedby="clickoutsidedeactivates-heading">
           activate trap
         </button>
       </p>
@@ -536,7 +536,7 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/click-outside-deactivates.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/click-outside-deactivates.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -546,7 +546,7 @@
         With setReturnFocus it is possible to overwrite the returnFocusElement.
       </p>
       <p>
-        <button id="activate-setreturnfocus" aria-label="activate trap for 'set return focus option' demo">
+        <button id="activate-setreturnfocus" aria-describedby="setreturnfocus-heading">
           activate trap
         </button>
         <button id="overwritten-element">Element to return</button>
@@ -557,13 +557,13 @@
           <a href="#">focusable</a> parts.
         </p>
         <p>
-          <button id="deactivate-setreturnfocus" aria-label="deactivate trap for 'set return focus option' demo">
+          <button id="deactivate-setreturnfocus" aria-describedby="setreturnfocus-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/set-return-focus.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/set-return-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -574,7 +574,7 @@
         boundaries (darker color). Clicking outside deactivates.
       </p>
       <p>
-        <button id="activate-multipleelements" aria-label="activate trap for 'multiple elements' demo">
+        <button id="activate-multipleelements" aria-describedby="multipleelements-heading">
           activate trap
         </button>
       </p>
@@ -591,13 +591,13 @@
           it <a href="#">works</a>.
         </p>
         <p>
-          <button id="deactivate-multipleelements" aria-label="deactivate trap for 'multiple elements' demo">
+          <button id="deactivate-multipleelements" aria-describedby="multipleelements-heading">
             deactivate trap
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -609,7 +609,7 @@
         one tabbable node in it at all times.
       </p>
       <p>
-        <button id="activate-multipleelements-delete" aria-label="activate trap for 'multiple elements with delete' demo">
+        <button id="activate-multipleelements-delete" aria-describedby="multipleelements-delete-heading">
           activate trap
         </button>
       </p>
@@ -627,13 +627,13 @@
         </div>
         <div>
           <p>Not in trap (clicks allowed)</p>
-          <button id="deactivate-multipleelements-delete" aria-label="deactivate trap for 'multiple elements with delete' demo">
+          <button id="deactivate-multipleelements-delete" aria-describedby="multipleelements-delete-heading">
             deactivate trap
           </button>
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements-delete.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements-delete.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -645,7 +645,7 @@
         the focus <em>fall back</em> to the "deactivate" button on the next tab key press.
       </p>
       <p>
-        <button id="activate-multipleelements-delete-all" aria-label="activate trap for 'multiple elements with delete all' demo">
+        <button id="activate-multipleelements-delete-all" aria-describedby="multipleelements-delete-all-heading">
           activate trap
         </button>
       </p>
@@ -660,13 +660,13 @@
         </div>
         <div>
           <p>Not in trap (fallback; clicks allowed)</p>
-          <button id="deactivate-multipleelements-delete-all" aria-label="deactivate trap for 'multiple elements with delete all' demo">
+          <button id="deactivate-multipleelements-delete-all" aria-describedby="multipleelements-delete-all-heading">
             deactivate trap
           </button>
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements-delete-all.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements-delete-all.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -678,10 +678,10 @@
         and deactivate trap buttons is allowed.
       </p>
       <p>
-        <button id="activate-multipleelements-multipletraps-1" class="enable-outside" aria-label="activate trap 1 for 'multiple traps with multiple elements' demo">
+        <button id="activate-multipleelements-multipletraps-1" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
           activate trap 1
         </button>
-        <button id="activate-multipleelements-multipletraps-2" class="enable-outside" aria-label="activate trap 2 for 'multiple traps with multiple elements' demo">
+        <button id="activate-multipleelements-multipletraps-2" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
           activate trap 2
         </button>
       </p>
@@ -701,16 +701,16 @@
           Here is the <a href="#">last</a> trap <a href="#">area</a>.
         </p>
         <p>
-          <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside" aria-label="deactivate trap 1 for 'multiple traps with multiple elements' demo">
+          <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
             deactivate trap 1
           </button>
-          <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside" aria-label="deactivate trap 2 for 'multiple traps with multiple elements' demo">
+          <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
             deactivate trap 2
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements-multiple-traps.js">View demo source ⋙</a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/demo/js/multiple-elements-multiple-traps.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
