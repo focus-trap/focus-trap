@@ -19,20 +19,18 @@ const focusTrap = createFocusTrap('#animated-trigger', {
     return new Promise((resolve) => {
       const interval = setInterval(() => {
         if (getComputedStyle(triggerButton).visibility !== 'hidden') {
-          resolve(
-            'The value that you resolve the promise with will be sent to onPostDeactivate'
-          );
+          resolve();
           clearInterval(interval);
         }
       }, 5);
     });
   },
   // Called after focus is sent to the trigger button
-  onPostDeactivate: (value) => {
+  onPostDeactivate: () => {
     // eslint-disable-next-line no-console
-    console.log('Focus has been sent to the focus trap trigger button');
-    // eslint-disable-next-line no-console
-    console.log(value);
+    console.log(
+      'Focus has been sent to the animated focus trap trigger button'
+    );
   },
 });
 

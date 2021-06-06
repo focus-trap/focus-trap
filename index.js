@@ -493,13 +493,13 @@ const createFocusTrap = function (elements, userOptions) {
         onActivate();
       }
 
-      const finishActivation = (value) => {
+      const finishActivation = () => {
         if (checkCanFocusTrap) {
           updateTabbableNodes();
         }
         addListeners();
         if (onPostActivate) {
-          onPostActivate(value);
+          onPostActivate();
         }
       };
 
@@ -548,12 +548,12 @@ const createFocusTrap = function (elements, userOptions) {
         'returnFocusOnDeactivate'
       );
 
-      const finishDeactivation = (value) => {
+      const finishDeactivation = () => {
         if (returnFocus) {
           delay(() => {
             tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
             if (onPostDeactivate) {
-              onPostDeactivate(value);
+              onPostDeactivate();
             }
           });
         }

@@ -20,17 +20,13 @@ const focusTrap = createFocusTrap('#animated-dialog', {
         })
     );
     // Return a promise that resolves when all the trap containers are able to receive focus
-    return Promise.all(results).then(
-      () => 'The value that you return here will be sent to onPostActivate'
-    );
+    return Promise.all(results);
   },
   // Called after focus is sent
   // Only relevent if `checkCanFocusTrap` is used
-  onPostActivate: (value) => {
+  onPostActivate: () => {
     // eslint-disable-next-line no-console
     console.log('Focus has been sent to the animated focus trap');
-    // eslint-disable-next-line no-console
-    console.log(value);
   },
   onDeactivate: () => container.classList.remove('is-active'),
 });
