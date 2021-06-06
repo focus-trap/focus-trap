@@ -504,7 +504,7 @@ const createFocusTrap = function (elements, userOptions) {
       };
 
       if (checkCanFocusTrap) {
-        checkCanFocusTrap(state.containers).then(finishActivation);
+        checkCanFocusTrap(state.containers.concat()).then(finishActivation);
         return this;
       }
 
@@ -554,9 +554,9 @@ const createFocusTrap = function (elements, userOptions) {
       };
 
       if (checkCanReturnFocus) {
-        checkCanReturnFocus(state.nodeFocusedBeforeActivation).then(
-          finishDeactivation
-        );
+        checkCanReturnFocus(
+          getReturnFocusNode(state.nodeFocusedBeforeActivation)
+        ).then(finishDeactivation);
         return this;
       }
 
