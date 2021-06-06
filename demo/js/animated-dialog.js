@@ -8,22 +8,20 @@ const focusTrap = createFocusTrap('#animated-dialog', {
   // There is a delay between when the class is applied
   // and when the element is focusable
   checkCanFocusTrap: (trapContainers) => {
-    const results = trapContainers.map(
-      (trapContainer) =>
-        new Promise((resolve) => {
-          const interval = setInterval(() => {
-            if (getComputedStyle(trapContainer).visibility !== 'hidden') {
-              resolve();
-              clearInterval(interval);
-            }
-          }, 5);
-        })
-    );
+    const results = trapContainers.map((trapContainer) => {
+      return new Promise((resolve) => {
+        const interval = setInterval(() => {
+          if (getComputedStyle(trapContainer).visibility !== 'hidden') {
+            resolve();
+            clearInterval(interval);
+          }
+        }, 5);
+      });
+    });
     // Return a promise that resolves when all the trap containers are able to receive focus
     return Promise.all(results);
   },
-  // Called after focus is sent
-  // Only relevent if `checkCanFocusTrap` is used
+  // Called after focus is sent to the focus trap
   onPostActivate: () => {
     // eslint-disable-next-line no-console
     console.log('Focus has been sent to the animated focus trap');
