@@ -504,13 +504,7 @@ const createFocusTrap = function (elements, userOptions) {
       };
 
       if (checkCanFocusTrap) {
-        // would be even more succinct to use `finally(finishActivation)` but I'm leary
-        //  of someone on some old version of some browser that doesn't support
-        //  it since it wasn't part of the original Promises spec
-        checkCanFocusTrap(state.containers).then(
-          finishActivation,
-          finishActivation
-        );
+        checkCanFocusTrap(state.containers).then(finishActivation);
         return this;
       }
 
@@ -560,11 +554,7 @@ const createFocusTrap = function (elements, userOptions) {
       };
 
       if (checkCanFocusTrigger) {
-        // would be even more succinct to use `finally(finishActivation)` but I'm leary
-        //  of someone on some old version of some browser that doesn't support
-        //  it since it wasn't part of the original Promises spec
         checkCanFocusTrigger(state.nodeFocusedBeforeActivation).then(
-          finishDeactivation,
           finishDeactivation
         );
         return this;
