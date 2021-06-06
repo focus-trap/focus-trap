@@ -527,9 +527,9 @@ const createFocusTrap = function (elements, userOptions) {
 
       const onDeactivate = getOption(deactivateOptions, 'onDeactivate');
       const onPostDeactivate = getOption(deactivateOptions, 'onPostDeactivate');
-      const checkCanFocusTrigger = getOption(
+      const checkCanReturnFocus = getOption(
         deactivateOptions,
-        'checkCanFocusTrigger'
+        'checkCanReturnFocus'
       );
 
       if (onDeactivate) {
@@ -553,8 +553,8 @@ const createFocusTrap = function (elements, userOptions) {
         }
       };
 
-      if (checkCanFocusTrigger) {
-        checkCanFocusTrigger(state.nodeFocusedBeforeActivation).then(
+      if (checkCanReturnFocus) {
+        checkCanReturnFocus(state.nodeFocusedBeforeActivation).then(
           finishDeactivation
         );
         return this;
