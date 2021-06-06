@@ -32,7 +32,7 @@ declare module 'focus-trap' {
      * dialogs that fade in and out. When a dialog fades in, there is a brief delay
      * between the activation of the trap and the trap element being focusable.
      */
-    checkCanFocusTrap?: (containers: Array<FocusTarget>) => Promise<unknown>
+    checkCanFocusTrap?: (containers: Array<HTMLElement | SVGElement>) => Promise<unknown>
 
     /**
      * A function that will be called **before** sending focus to the
