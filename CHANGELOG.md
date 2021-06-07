@@ -1,5 +1,15 @@
 # Changelog
 
+## 6.5.0
+
+### Minor Changes
+
+- 278e77e: Adding 4 new configuration event options to improve support for animated dialogs and animated focus trap triggers: `checkCanFocusTrap()`, `onPostActivate()`, `checkCanReturnFocus()`, and `onPostDeactivate()`.
+
+### Patch Changes
+
+- 8d11e15: Improve docs and types for most options, adding `SVGElement` as a supported type of "DOM node" since it supports the `focus()` method, same as `HTMLElement`.
+
 ## 6.4.0
 
 ### Minor Changes
