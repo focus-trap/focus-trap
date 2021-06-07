@@ -115,6 +115,13 @@ const createFocusTrap = function (elements, userOptions) {
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
+  const getOption = (configOverrideOptions, optionName, configOptionName) => {
+    return configOverrideOptions &&
+      configOverrideOptions[optionName] !== undefined
+      ? configOverrideOptions[optionName]
+      : config[configOptionName || optionName];
+  };
+
   const containersContain = function (element) {
     return state.containers.some((container) => container.contains(element));
   };
@@ -470,21 +477,41 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
-      updateTabbableNodes();
+      const onActivate = getOption(activateOptions, 'onActivate');
+      const onPostActivate = getOption(activateOptions, 'onPostActivate');
+      const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
+
+      if (!checkCanFocusTrap) {
+        updateTabbableNodes();
+      }
 
       state.active = true;
       state.paused = false;
       state.nodeFocusedBeforeActivation = doc.activeElement;
 
-      const onActivate =
-        activateOptions && activateOptions.onActivate
-          ? activateOptions.onActivate
-          : config.onActivate;
       if (onActivate) {
         onActivate();
       }
 
-      addListeners();
+      const finishActivation = () => {
+        if (checkCanFocusTrap) {
+          updateTabbableNodes();
+        }
+        addListeners();
+        if (onPostActivate) {
+          onPostActivate();
+        }
+      };
+
+      if (checkCanFocusTrap) {
+        checkCanFocusTrap(state.containers.concat()).then(
+          finishActivation,
+          finishActivation
+        );
+        return this;
+      }
+
+      finishActivation();
       return this;
     },
 
@@ -501,25 +528,42 @@ const createFocusTrap = function (elements, userOptions) {
 
       activeFocusTraps.deactivateTrap(trap);
 
-      const onDeactivate =
-        deactivateOptions && deactivateOptions.onDeactivate !== undefined
-          ? deactivateOptions.onDeactivate
-          : config.onDeactivate;
+      const onDeactivate = getOption(deactivateOptions, 'onDeactivate');
+      const onPostDeactivate = getOption(deactivateOptions, 'onPostDeactivate');
+      const checkCanReturnFocus = getOption(
+        deactivateOptions,
+        'checkCanReturnFocus'
+      );
+
       if (onDeactivate) {
         onDeactivate();
       }
 
-      const returnFocus =
-        deactivateOptions && deactivateOptions.returnFocus !== undefined
-          ? deactivateOptions.returnFocus
-          : config.returnFocusOnDeactivate;
+      const returnFocus = getOption(
+        deactivateOptions,
+        'returnFocus',
+        'returnFocusOnDeactivate'
+      );
 
-      if (returnFocus) {
-        delay(function () {
-          tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
-        });
+      const finishDeactivation = () => {
+        if (returnFocus) {
+          delay(() => {
+            tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+            if (onPostDeactivate) {
+              onPostDeactivate();
+            }
+          });
+        }
+      };
+
+      if (returnFocus && checkCanReturnFocus) {
+        checkCanReturnFocus(
+          getReturnFocusNode(state.nodeFocusedBeforeActivation)
+        ).then(finishDeactivation, finishDeactivation);
+        return this;
       }
 
+      finishDeactivation();
       return this;
     },
 

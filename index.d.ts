@@ -10,13 +10,58 @@ declare module 'focus-trap' {
 
   export interface Options {
     /**
-     * A function that will be called when the focus trap activates.
+     * A function that will be called **before** sending focus to the
+     * target element upon activation.
      */
     onActivate?: () => void;
+
     /**
-     * A function that will be called when the focus trap deactivates.
+     * A function that will be called **after** focus has been sent to the
+     * target element upon activation.
+     */
+    onPostActivate?: () => void
+
+    /**
+     * A function for determining if it is safe to send focus to the focus trap
+     * or not.
+     *
+     * It should return a promise that only resolves once all the listed `containers`
+     * are able to receive focus.
+     *
+     * The purpose of this is to prevent early focus-trap activation on animated
+     * dialogs that fade in and out. When a dialog fades in, there is a brief delay
+     * between the activation of the trap and the trap element being focusable.
+     */
+    checkCanFocusTrap?: (containers: Array<HTMLElement | SVGElement>) => Promise<void>
+
+    /**
+     * A function that will be called **before** sending focus to the
+     * trigger element upon deactivation.
      */
     onDeactivate?: () => void;
+
+    /**
+     * A function that will be called **after** focus has been sent to the
+     * trigger element upon deactivation.
+     */
+    onPostDeactivate?: () => void
+    /**
+     * A function for determining if it is safe to send focus back to the `trigger` element.
+     *
+     * It should return a promise that only resolves once `trigger` is focusable.
+     *
+     * The purpose of this is to prevent the focus being sent to an animated trigger element too early.
+     * If a trigger element fades in upon trap deactivation, there is a brief delay between the deactivation
+     * of the trap and when the trigger element is focusable.
+     *
+     * `trigger` will be either the node that had focus prior to the trap being activated,
+     * or the result of the `setReturnFocus` option, if configured.
+     *
+     * This handler is **not** called if the `returnFocusOnDeactivate` configuration option
+     * (or the `returnFocus` deactivation option) is falsy.
+     */
+    checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>
+
     /**
      * By default, when a focus trap is activated the first element in the
      * focus trap's tab order will receive focus. With this option you can
@@ -81,9 +126,9 @@ declare module 'focus-trap' {
     delayInitialFocus?: boolean;
   }
 
-  type ActivateOptions = Pick<Options, 'onActivate'>;
+  type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;
 
-  interface DeactivateOptions extends Pick<Options, 'onDeactivate'> {
+  interface DeactivateOptions extends Pick<Options, 'onDeactivate' | 'onPostDeactivate' | 'checkCanReturnFocus'> {
     returnFocus?: boolean;
   }
 

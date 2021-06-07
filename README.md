@@ -82,8 +82,12 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 #### createOptions
 
-- **onActivate** `{() => void}`: A function that will be called when the focus trap activates.
-- **onDeactivate** `{() => void}`: A function that will be called when the focus trap deactivates,
+- **onActivate** `{() => void}`: A function that will be called **before** sending focus to the target element upon activation.
+- **onPostActivate** `{() => void}`: A function that will be called **after** sending focus to the target element upon activation.
+- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option). Due to the lack of Promise support, `checkCanFocusTrap` is not supported in IE unless you provide a Promise polyfill.
+- **onDeactivate** `{() => void}`: A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
+- **onPostDeactivate** `{() => void}`: A function that will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
+- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: An animated trigger button will have a small delay between when `onDeactivate` is called and when the focus is able to be sent back to the trigger. `checkCanReturnFocus` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to to the node that had focus prior to the activation of the trap (or the node configured in the `setReturnFocus` option). Due to the lack of Promise support, `checkCanReturnFocus` is not supported in IE unless you provide a Promise polyfill.
 - **initialFocus** `{HTMLElement | SVGElement | string | () => HTMLElement | SVGElement}`: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
 - **fallbackFocus** `{HTMLElement | SVGElement | string | () => HTMLElement | SVGElement}`: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns a DOM node.
 - **escapeDeactivates** `{boolean}`: Default: `true`. If `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out.
@@ -114,7 +118,9 @@ Returns the `trap`.
 
 These options are used to override the focus trap's default behavior for this particular activation.
 
-- **onActivate** `{() => void | null | false}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
+- **onActivate** `{() => void}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
+- **onPostActivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
+- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
 
 ### trap.deactivate([deactivateOptions])
 
@@ -127,7 +133,9 @@ Returns the `trap`.
 These options are used to override the focus trap's default behavior for this particular deactivation.
 
 - **returnFocus** `{boolean}`: Default: whatever you chose for `createOptions.returnFocusOnDeactivate`.
-- **onDeactivate** `{() => void | null | false}`: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **onDeactivate** `{() => void}`: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **onPostDeactivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: Default: whatever you chose for `createOptions.checkCanReturnFocus`. Not called if the `returnFocus` option is falsy. `trigger` is either the originally focused node prior to activation, or the result of the `setReturnFocus` configuration option.
 
 ### trap.pause()
 

@@ -10,7 +10,7 @@ const firstFocusTrap = createFocusTrap('#sibling-first', {
 const secondFocusTrap = createFocusTrap('#sibling-second', {
   onDeactivate: function () {
     second.style.display = 'none';
-    second.className = 'trap';
+    second.classList.remove('is-active');
   },
 });
 
