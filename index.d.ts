@@ -25,7 +25,7 @@ declare module 'focus-trap' {
      * A function for determining if it is safe to send focus to the focus trap
      * or not.
      *
-     * It should return a promise that only resolves once all the listed containers
+     * It should return a promise that only resolves once all the listed `containers`
      * are able to receive focus.
      *
      * The purpose of this is to prevent early focus-trap activation on animated
@@ -46,13 +46,19 @@ declare module 'focus-trap' {
      */
     onPostDeactivate?: () => void
     /**
-     * A function for determining if it is safe to send focus back to the trigger element.
+     * A function for determining if it is safe to send focus back to the `trigger` element.
      *
-     * It should return a promise that only resolves once the trigger element is focusable.
+     * It should return a promise that only resolves once `trigger` is focusable.
      *
      * The purpose of this is to prevent the focus being sent to an animated trigger element too early.
      * If a trigger element fades in upon trap deactivation, there is a brief delay between the deactivation
      * of the trap and when the trigger element is focusable.
+     *
+     * `trigger` will be either the node that had focus prior to the trap being activated,
+     * or the result of the `setReturnFocus` option, if configured.
+     *
+     * This handler is **not** called if the `returnFocusOnDeactivate` configuration option
+     * (or the `returnFocus` deactivation option) is falsy.
      */
     checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>
 
