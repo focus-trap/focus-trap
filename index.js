@@ -556,7 +556,7 @@ const createFocusTrap = function (elements, userOptions) {
         }
       };
 
-      if (checkCanReturnFocus) {
+      if (returnFocus && checkCanReturnFocus) {
         checkCanReturnFocus(
           getReturnFocusNode(state.nodeFocusedBeforeActivation)
         ).then(finishDeactivation, finishDeactivation);
