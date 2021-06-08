@@ -42,23 +42,10 @@ Please feel free to use the bot on your own issue or PR to add yourself as a con
 
 > ✨ No contribution is too small not to be included. We appreciate your help!
 
-## Updating the demo
+## Updating the docs
 
-This would mean making a PR into the `gh-pages` branch. Keep in mind that the code may be much older than `master`.
+The docs are published at http://focus-trap.github.io/focus-trap/ and served from the `/docs` directory in the repo.
 
-For a __maintainer__ to update the demo, however, these steps can be followed:
+Simply run `yarn demo-bundle` locally, commit the updated `/docs/demo-bundle.js` file, and open a PR to updated it.
 
-```bash
-$ git push -f origin HEAD:gh-pages # push all the latest to the branch
-$ git checkout gh-pages
-$ git pull --rebase # get the latest code you just pushed to origin
-
-# remove the exclusion for the ./demo/demo-bundle.js file
-#  in ./.gitignore
-
-$ yarn demo-bundle # this will generate ./demo/demo-bundle.js
-
-$ git add .
-$ git commit -m "Updating demo to latest"
-$ git push
-```
+Ideally, this is done within any PR that modifies anything under `/docs`, or the library code itself.
