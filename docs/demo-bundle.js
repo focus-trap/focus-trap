@@ -564,15 +564,15 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
       var returnFocus = getOption(deactivateOptions, 'returnFocus', 'returnFocusOnDeactivate');
 
       var finishDeactivation = function finishDeactivation() {
-        if (returnFocus) {
-          delay(function () {
+        delay(function () {
+          if (returnFocus) {
             tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+          }
 
-            if (onPostDeactivate) {
-              onPostDeactivate();
-            }
-          });
-        }
+          if (onPostDeactivate) {
+            onPostDeactivate();
+          }
+        });
       };
 
       if (returnFocus && checkCanReturnFocus) {
@@ -685,10 +685,12 @@ document
 const { createFocusTrap } = require('../../dist/focus-trap');
 
 const container = document.getElementById('animated-dialog');
+const activatedFlag = document.getElementById('animated-dialog-trap-activated');
 
 const focusTrap = createFocusTrap('#animated-dialog', {
   // Called before focus is sent
   onActivate: () => container.classList.add('is-active'),
+
   // There is a delay between when the class is applied
   // and when the element is focusable
   checkCanFocusTrap: (trapContainers) => {
@@ -705,12 +707,12 @@ const focusTrap = createFocusTrap('#animated-dialog', {
     // Return a promise that resolves when all the trap containers are able to receive focus
     return Promise.all(results);
   },
+
   // Called after focus is sent to the focus trap
-  onPostActivate: () => {
-    // eslint-disable-next-line no-console
-    console.log('Focus has been sent to the animated focus trap');
-  },
+  onPostActivate: () => activatedFlag.classList.remove('is-hidden'),
+
   onDeactivate: () => container.classList.remove('is-active'),
+  onPostDeactivate: () => activatedFlag.classList.add('is-hidden'),
 });
 
 document
@@ -726,12 +728,16 @@ const { createFocusTrap } = require('../../dist/focus-trap');
 
 const container = document.getElementById('animated-trigger');
 const trigger = document.getElementById('activate-animated-trigger');
+const deactivatedFlag = document.getElementById(
+  'animated-trigger-trap-deactivated'
+);
 
 const focusTrap = createFocusTrap('#animated-trigger', {
   // Called before focus is sent
   onActivate: () => {
     container.classList.add('is-active');
     trigger.classList.add('is-triggered');
+    deactivatedFlag.classList.add('is-hidden');
   },
   onDeactivate: () => {
     container.classList.remove('is-active');
@@ -751,10 +757,7 @@ const focusTrap = createFocusTrap('#animated-trigger', {
   },
   // Called after focus is sent to the trigger button
   onPostDeactivate: () => {
-    // eslint-disable-next-line no-console
-    console.log(
-      'Focus has been sent to the animated focus trap trigger button'
-    );
+    deactivatedFlag.classList.remove('is-hidden');
   },
 });
 
@@ -764,7 +767,12 @@ document
 
 document
   .getElementById('deactivate-animated-trigger')
-  .addEventListener('click', focusTrap.deactivate);
+  .addEventListener('click', () => {
+    focusTrap.deactivate({
+      returnFocus: document.getElementById('animated-trigger-returnfocus')
+        .checked,
+    });
+  });
 
 },{"../../dist/focus-trap":1}],5:[function(require,module,exports){
 const { createFocusTrap } = require('../../dist/focus-trap');

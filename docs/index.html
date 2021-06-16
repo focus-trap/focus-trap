@@ -47,14 +47,17 @@
     <div id="demo-animated-dialog">
       <h2 id="animated-dialog-heading">animated dialog</h2>
       <p>
-        This focus trap will fade in when activated and fade out when deactivated. It logs a message to the
-        console when the trap has finished activating. Note that the fade animation needs to be written yourself,
-        it is not built into the library.
+        This focus trap will fade in when activated and fade out when deactivated. Once the trap has been activated
+        (i.e. <code>onPostActivate</code>), a &quot;trap activated&quot; message appears next to the Activate button.
+        Note that the fade animation needs to be written yourself, it is not built into the library.
       </p>
       <p>
         <button id="activate-animated-dialog" aria-describedby="animated-dialog-heading">
           activate trap
         </button>
+        <span id="animated-dialog-trap-activated" class="is-hidden">
+          <strong>Trap activated</strong>
+        </span>
       </p>
       <div id="animated-dialog" class="trap animated-dialog">
         <p>
@@ -75,13 +78,23 @@
       <h2 id="animated-trigger-heading">animated trigger</h2>
       <p>
         The activation button for this focus trap will fade out when the trap activates and fade in when the trap deactivates.
-        It logs a message to the console when the trigger has received focus again. Note that the fade animation needs to be
-        written yourself, it is not built into the library.
+        If the &quot;returnFocus&quot; option is checked, the activation trigger will receive focus after the trap deactivates.
+        Otherwise, the Deactivate button will retain focus after deactivation because that's the last element that was clicked
+        prior to deactivation. Once the trap has been deactivated (i.e. <code>onPostDeactivate</code>), a &quot;trap deactivated&quot;
+        message appears next to the &quot;returnFocus&quot; option. Note that the fade animation needs to be written yourself, it is not
+        built into the library.
       </p>
       <p>
         <button id="activate-animated-trigger" class="animated-trigger" aria-describedby="animated-trigger-heading">
           activate trap
         </button>
+        <label>
+          <input id="animated-trigger-returnfocus" type="checkbox" checked />
+          returnFocus (on deactivate)
+        </label>
+        <span id="animated-trigger-trap-deactivated" class="is-hidden">
+          <strong>Trap deactivated</strong>
+        </span>
       </p>
       <div id="animated-trigger" class="trap">
         <p>

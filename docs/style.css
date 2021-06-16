@@ -67,3 +67,7 @@ kbd {
   font-size: 90%;
   padding: 0 2px;
 }
+
+.is-hidden {
+  display: none;
+}

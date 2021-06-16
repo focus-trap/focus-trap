@@ -130,6 +130,9 @@ describe('focus-trap', () => {
         .as('firstElementInTrap')
         .should('be.focused');
 
+      // activated message should be visible (per onPostActivate option)
+      cy.get('#animated-dialog-trap-activated').should('be.visible');
+
       // trap is active(keep focus in trap by blocking clicks on outside focusable element)
       cy.get('#return-to-repo').click();
       cy.get('@firstElementInTrap').should('be.focused');
@@ -193,54 +196,85 @@ describe('focus-trap', () => {
   });
 
   describe('demo: animated-trigger', () => {
-    it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
-      cy.get('#demo-animated-trigger').as('testRoot');
+    [true, false].forEach((returnFocus) => {
+      it(`traps focus tab sequence and allows deactivation by clicking deactivate button, ${
+        returnFocus
+          ? 'focus returns to trigger on deactivate'
+          : 'focus does NOT return to trigger on deactivate'
+      }`, () => {
+        cy.get('#demo-animated-trigger').as('testRoot');
 
-      // activate trap
-      cy.get('@testRoot')
-        .findByRole('button', { name: /^activate trap/ })
-        .as('lastlyFocusedElementBeforeTrapIsActivated')
-        .click();
+        if (!returnFocus) {
+          // disable the returnFocus option (which is on by default)
+          cy.get('#animated-trigger-returnfocus').click();
+        }
 
-      // 1st element should be focused
-      cy.get('@testRoot')
-        .findByRole('link', { name: 'with' })
-        .as('firstElementInTrap')
-        .should('be.focused');
+        // activate trap
+        cy.get('@testRoot')
+          .findByRole('button', { name: /^activate trap/ })
+          .as('lastlyFocusedElementBeforeTrapIsActivated')
+          .click();
 
-      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
-      cy.get('#return-to-repo').click();
-      cy.get('@firstElementInTrap').should('be.focused');
+        // 1st element should be focused
+        cy.get('@testRoot')
+          .findByRole('link', { name: 'with' })
+          .as('firstElementInTrap')
+          .should('be.focused');
 
-      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
-      cy.get('#animated-trigger-heading').click();
-      cy.get('@firstElementInTrap').should('be.focused');
+        // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+        cy.get('#return-to-repo').click();
+        cy.get('@firstElementInTrap').should('be.focused');
 
-      // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
-      cy.get('@firstElementInTrap')
-        .tab()
-        .should('have.text', 'some')
-        .should('be.focused')
-        .tab()
-        .should('have.text', 'focusable')
-        .should('be.focused')
-        .tab()
-        .as('lastElementInTrap')
-        .should('contain', 'deactivate trap')
-        .should('be.focused')
-        .tab();
+        // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+        cy.get('#animated-trigger-heading').click();
+        cy.get('@firstElementInTrap').should('be.focused');
 
-      // trap is active(keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
-      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
-      cy.get('@lastElementInTrap').should('be.focused');
+        // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
+        cy.get('@firstElementInTrap')
+          .tab()
+          .should('have.text', 'some')
+          .should('be.focused')
+          .tab()
+          .should('have.text', 'focusable')
+          .should('be.focused')
+          .tab()
+          .as('lastElementInTrap')
+          .should('contain', 'deactivate trap')
+          .should('be.focused')
+          .tab();
 
-      // focus can be transitioned freely when trap is deactivated
-      cy.get('@testRoot')
-        .findByRole('button', { name: /^deactivate trap/ })
-        .click();
-      verifyFocusIsNotTrapped(
-        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
-      );
+        // trap is active(keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+        cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+        cy.get('@lastElementInTrap').should('be.focused');
+
+        cy.get('@testRoot')
+          .findByRole('button', { name: /^deactivate trap/ })
+          .as('deactivateButton')
+          .click();
+
+        if (returnFocus) {
+          // Activate button (trigger) should have focus again
+          cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should(
+            'be.focused'
+          );
+        } else {
+          // Activate button (trigger) should NOT have focus again
+          cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should(
+            'be.not.focused'
+          );
+        }
+
+        // deactivated message should be visible (per onPostDeactivate option)
+        cy.get('#animated-trigger-trap-deactivated').should('be.visible');
+
+        // focus can be transitioned freely when trap is deactivated
+        verifyFocusIsNotTrapped(
+          // if focus was returned, Activate has focus; otherwise, Deactivate does
+          returnFocus
+            ? cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+            : cy.get('@deactivateButton')
+        );
+      });
     });
 
     it('allows deactivation by pressing ESC', () => {
