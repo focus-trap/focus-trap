@@ -48,7 +48,7 @@
       <h2 id="animated-dialog-heading">animated dialog</h2>
       <p>
         This focus trap will fade in when activated and fade out when deactivated. Once the trap has been activated
-        (i.e. <code>onPostActivate</code>), a &quot;trap activated&quot; message appears next to the Activate button.
+        (i.e. <code>onPostActivate</code>), a "trap activated" message appears next to the Activate button.
         Note that the fade animation needs to be written yourself, it is not built into the library.
       </p>
       <p>
@@ -76,14 +76,15 @@
 
     <div id="demo-animated-trigger">
       <h2 id="animated-trigger-heading">animated trigger</h2>
-      <p>
-        The activation button for this focus trap will fade out when the trap activates and fade in when the trap deactivates.
-        If the &quot;returnFocus&quot; option is checked, the activation trigger will receive focus after the trap deactivates.
-        Otherwise, the Deactivate button will retain focus after deactivation because that's the last element that was clicked
-        prior to deactivation. Once the trap has been deactivated (i.e. <code>onPostDeactivate</code>), a &quot;trap deactivated&quot;
-        message appears next to the &quot;returnFocus&quot; option. Note that the fade animation needs to be written yourself, it is not
-        built into the library.
-      </p>
+      <p>The activation button for this focus trap will fade out when the trap activates and fade in when the trap deactivates.</p>
+
+      <p>If the <code>returnFocus</code> option is <code>true</code>, the activation button will receive focus after the trap deactivates.</p>
+
+      <p>If the <code>returnFocus</code> option is <code>false</code>, the Deactivate button will retain focus after deactivation because that is the last element that was clicked.</p>
+
+      <p>Prior to deactivation. Once the trap has been deactivated (i.e. <code>onPostDeactivate</code>), a "trap deactivated" message appears next to the "returnFocus" option.</p>
+
+      <p>Note that the fade animation needs to be written yourself, it is not built into the library.</p>
       <p>
         <button id="activate-animated-trigger" class="animated-trigger" aria-describedby="animated-trigger-heading">
           activate trap
