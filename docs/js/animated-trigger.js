@@ -2,12 +2,19 @@ const { createFocusTrap } = require('../../dist/focus-trap');
 
 const container = document.getElementById('animated-trigger');
 const trigger = document.getElementById('activate-animated-trigger');
+const deactivatedFlag = document.getElementById(
+  'animated-trigger-trap-deactivated'
+);
+const returnFocusCheckbox = document.getElementById(
+  'animated-trigger-returnfocus'
+);
 
 const focusTrap = createFocusTrap('#animated-trigger', {
   // Called before focus is sent
   onActivate: () => {
     container.classList.add('is-active');
     trigger.classList.add('is-triggered');
+    deactivatedFlag.classList.add('is-hidden');
   },
   onDeactivate: () => {
     container.classList.remove('is-active');
@@ -27,10 +34,7 @@ const focusTrap = createFocusTrap('#animated-trigger', {
   },
   // Called after focus is sent to the trigger button
   onPostDeactivate: () => {
-    // eslint-disable-next-line no-console
-    console.log(
-      'Focus has been sent to the animated focus trap trigger button'
-    );
+    deactivatedFlag.classList.remove('is-hidden');
   },
 });
 
@@ -40,4 +44,8 @@ document
 
 document
   .getElementById('deactivate-animated-trigger')
-  .addEventListener('click', focusTrap.deactivate);
+  .addEventListener('click', () => {
+    focusTrap.deactivate({
+      returnFocus: returnFocusCheckbox.checked,
+    });
+  });

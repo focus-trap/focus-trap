@@ -546,14 +546,14 @@ const createFocusTrap = function (elements, userOptions) {
       );
 
       const finishDeactivation = () => {
-        if (returnFocus) {
-          delay(() => {
+        delay(() => {
+          if (returnFocus) {
             tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
-            if (onPostDeactivate) {
-              onPostDeactivate();
-            }
-          });
-        }
+          }
+          if (onPostDeactivate) {
+            onPostDeactivate();
+          }
+        });
       };
 
       if (returnFocus && checkCanReturnFocus) {

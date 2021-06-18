@@ -41,8 +41,9 @@ declare module 'focus-trap' {
     onDeactivate?: () => void;
 
     /**
-     * A function that will be called **after** focus has been sent to the
-     * trigger element upon deactivation.
+     * A function that will be called after the trap is deactivated, after `onDeactivate`.
+     * If `returnFocus` was set, it will be called **after** focus has been sent to the trigger
+     * element upon deactivation; otherwise, it will be called after deactivation completes.
      */
     onPostDeactivate?: () => void
     /**
