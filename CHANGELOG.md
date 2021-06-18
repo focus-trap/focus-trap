@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.5.1
+
+### Patch Changes
+
+- c38bf3f: onPostDeactivate should always be called even if returnFocus/OnDeactivate is disabled.
+
 ## 6.5.0
 
 ### Minor Changes
