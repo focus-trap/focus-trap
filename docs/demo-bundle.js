@@ -731,6 +731,9 @@ const trigger = document.getElementById('activate-animated-trigger');
 const deactivatedFlag = document.getElementById(
   'animated-trigger-trap-deactivated'
 );
+const returnFocusCheckbox = document.getElementById(
+  'animated-trigger-returnfocus'
+);
 
 const focusTrap = createFocusTrap('#animated-trigger', {
   // Called before focus is sent
@@ -769,8 +772,7 @@ document
   .getElementById('deactivate-animated-trigger')
   .addEventListener('click', () => {
     focusTrap.deactivate({
-      returnFocus: document.getElementById('animated-trigger-returnfocus')
-        .checked,
+      returnFocus: returnFocusCheckbox.checked,
     });
   });
 
