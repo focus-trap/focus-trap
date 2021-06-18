@@ -16,6 +16,7 @@ const focusTrap = createFocusTrap('#animated-trigger', {
   onDeactivate: () => {
     container.classList.remove('is-active');
     trigger.classList.remove('is-triggered');
+    deactivatedFlag.classList.remove('is-hidden');
   },
   // There is a delay between when the class is removed
   // and when the trigger is focusable
