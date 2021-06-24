@@ -962,7 +962,7 @@ describe('focus-trap', () => {
     });
   });
 
-  describe.only('demo: initialFocusOnActivate', () => {
+  describe('demo: initialFocusOnActivate', () => {
     const activateTrap = function () {
       cy.get('@testRoot')
         .findByRole('button', { name: /^activate trap/ })
