@@ -88,6 +88,7 @@ const createFocusTrap = function (elements, userOptions) {
   const doc = document;
 
   const config = {
+    initialFocusOnActivate: true,
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
@@ -416,7 +417,7 @@ const createFocusTrap = function (elements, userOptions) {
   // EVENT LISTENERS
   //
 
-  const addListeners = function () {
+  const addListeners = function ({ initialFocusOnActivate } = {}) {
     if (!state.active) {
       return;
     }
@@ -424,13 +425,15 @@ const createFocusTrap = function (elements, userOptions) {
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trap);
 
-    // Delay ensures that the focused element doesn't capture the event
-    // that caused the focus trap activation.
-    activeFocusDelay = config.delayInitialFocus
-      ? delay(function () {
-          tryFocus(getInitialFocusNode());
-        })
-      : tryFocus(getInitialFocusNode());
+    if (initialFocusOnActivate) {
+      // Delay ensures that the focused element doesn't capture the event
+      // that caused the focus trap activation.
+      activeFocusDelay = config.delayInitialFocus
+        ? delay(function () {
+            tryFocus(getInitialFocusNode());
+          })
+        : tryFocus(getInitialFocusNode());
+    }
 
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {
@@ -480,6 +483,10 @@ const createFocusTrap = function (elements, userOptions) {
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
+      const initialFocusOnActivate = getOption(
+        activateOptions,
+        'initialFocusOnActivate'
+      );
 
       if (!checkCanFocusTrap) {
         updateTabbableNodes();
@@ -497,7 +504,7 @@ const createFocusTrap = function (elements, userOptions) {
         if (checkCanFocusTrap) {
           updateTabbableNodes();
         }
-        addListeners();
+        addListeners({ initialFocusOnActivate });
         if (onPostActivate) {
           onPostActivate();
         }

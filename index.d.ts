@@ -90,6 +90,11 @@ declare module 'focus-trap' {
      */
     setReturnFocus?: FocusTarget;
     /**
+     * Default: `true`. If `false`, when the trap is activated,
+     * focus will *not* be given to the first tabbable element.
+     */
+    initialFocusOnActivate?: boolean;
+    /**
      * Default: `true`. If `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
      * to force the user to make a decision instead of allowing an easy

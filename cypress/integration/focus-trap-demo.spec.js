@@ -962,6 +962,103 @@ describe('focus-trap', () => {
     });
   });
 
+  describe.only('demo: initialFocusOnActivate', () => {
+    const activateTrap = function () {
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+    };
+
+    const getFirstElementInTrap = function () {
+      return cy
+        .get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap');
+    };
+
+    it('traps focus and focuses the first tabbable element when initialFocusOnActivate=true', () => {
+      cy.get('#demo-initialfocusonactivate').as('testRoot');
+
+      // set initialfocusonactivate=TRUE
+      cy.get('#select-initialfocusonactivate').select('true');
+
+      activateTrap();
+      getFirstElementInTrap().should('be.focused');
+
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.focused()
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'deactivate trap')
+        .should('be.focused')
+        .tab();
+
+      // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+
+      // deactivate trap
+      cy.get('#deactivate-initialfocusonactivate').click();
+
+      // implies trap no longer active since checkbox is outside trap
+      cy.get('#activate-initialfocusonactivate').should('be.focused');
+
+      cy.get('@lastElementInTrap').should('not.be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      verifyFocusIsNotTrapped(cy.get('#activate-initialfocusonactivate'));
+    });
+
+    it('traps focus but does NOT focus the first tabbable element when initialFocusOnActivate=false', () => {
+      cy.get('#demo-initialfocusonactivate').as('testRoot');
+
+      // set initialfocusonactivate=FALSE
+      cy.get('#select-initialfocusonactivate').select('false');
+
+      activateTrap();
+      getFirstElementInTrap().should('not.be.focused');
+
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.focused()
+        .tab()
+        .should('have.text', 'with')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'deactivate trap')
+        .should('be.focused')
+        .tab();
+
+      // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+
+      // deactivate trap
+      cy.get('#deactivate-initialfocusonactivate').click();
+
+      // implies trap no longer active since checkbox is outside trap
+      cy.get('#activate-initialfocusonactivate').should('be.focused');
+
+      cy.get('@lastElementInTrap').should('not.be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      verifyFocusIsNotTrapped(cy.get('#activate-initialfocusonactivate'));
+    });
+  });
+
   describe('demo: setreturnfocus', () => {
     it('specify element to receive focus after trap deactivation', () => {
       cy.get('#demo-setreturnfocus').as('testRoot');
