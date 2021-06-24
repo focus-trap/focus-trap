@@ -167,6 +167,15 @@
         "a11y",
         "code"
       ]
+    },
+    {
+      "login": "mruzekw",
+      "name": "Will Mruzek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/108522?v=4",
+      "profile": "http://willmruzek.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

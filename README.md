@@ -1,7 +1,7 @@
 # focus-trap [![CI](https://github.com/focus-trap/focus-trap/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/focus-trap/focus-trap/actions?query=workflow:CI+branch:master) [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Trap focus within a DOM node.
@@ -251,6 +251,7 @@ In alphabetical order:
     <td align="center"><a href="http://tylerhawkins.info/201R/"><img src="https://avatars0.githubusercontent.com/u/13806458?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tyler Hawkins</b></sub></a><br /><a href="#tool-thawkin3" title="Tools">🔧</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=thawkin3" title="Tests">⚠️</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=thawkin3" title="Documentation">📖</a></td>
   </tr>
   <tr>
+    <td align="center"><a href="http://willmruzek.com/"><img src="https://avatars.githubusercontent.com/u/108522?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Will Mruzek</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/commits?author=mruzekw" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/zioth"><img src="https://avatars3.githubusercontent.com/u/945603?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zioth</b></sub></a><br /><a href="#ideas-zioth" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/focus-trap/focus-trap/issues?q=author%3Azioth" title="Bug reports">🐛</a></td>
   </tr>
 </table>
