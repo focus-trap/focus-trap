@@ -174,7 +174,11 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/108522?v=4",
       "profile": "http://willmruzek.com/",
       "contributions": [
-        "code"
+        "code",
+        "doc",
+        "example",
+        "test",
+        "question"
       ]
     }
   ],
