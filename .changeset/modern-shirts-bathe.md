@@ -11,14 +11,14 @@ Examples use-cases:
 - Modals/dialogs
 - On mobile devices where "tabbing" doesn't make sense without a connected Bluetooth keyboard
 
-In addition, this change ensusres that any manually focused (outside of `focus-trap` code) element inside the trap will be brought back if focus is somehow found outside of the trap.
+In addition, this change ensures that any element inside the trap manually focused outside of `focus-trap` code will be brought back in focus if focus is somehow found outside of the trap.
 
 Example usage:
 
 When the trap activates, there will be no initially focused element inside the new trap.
 
 ```js
-createFocusTrap('#some-container', {
+const focusTrap = createFocusTrap('#some-container', {
   initialFocus: false,
 });
 ```
