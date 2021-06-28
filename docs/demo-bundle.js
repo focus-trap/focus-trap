@@ -625,9 +625,6 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
   }; // initialize container elements
 
   trap.updateContainerElements(elements);
-  doc.addEventListener('focus', function (event) {
-    return console.log(event);
-  });
   return trap;
 };
 
