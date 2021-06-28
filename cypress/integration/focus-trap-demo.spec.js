@@ -304,6 +304,78 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: escape deactivates', () => {
+    it('traps focus tab sequence and disallows deactivation by ESC after trap is activated', () => {
+      cy.get('#demo-escape-deactivates').as('testRoot');
+
+      cy.get('#escape-deactivates-option')
+        .as('testOption')
+        .should('be.checked');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+      cy.get('#escape-deactivates-heading').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'deactivate trap')
+        .should('be.focused')
+        .tab();
+
+      // trap is active(keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+
+      // prevent deactivation by unchecking option
+      cy.get('@firstElementInTrap').focus();
+      cy.get('@testOption').click();
+      cy.get('@firstElementInTrap').type('{esc}');
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // re-allow deactivation by ESC and deactivate
+      cy.get('@testOption').click();
+      cy.get('@firstElementInTrap').type('{esc}');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .click();
+      // NOTE: While the trap should have returned focus to the 'activate trap' button
+      //  (`@lastlyFocusedElementBeforeTrapIsActivated`), having Cypress click on the
+      //  `@testOptional` element (which is outside the trap) seems to confuse things,
+      //  but only in Cypress, in that focus doesn't return to the 'activate trap'
+      //  button even though debugging shows that the trap clearly does focus that
+      //  button upon deactivation. In Cypress, however, when allowing outside clicks,
+      //  it seems Cypress does something peculiar that overrides the trap's ability
+      //  to return focus to the activate button.
+      verifyFocusIsNotTrapped(cy.get('@lastElementInTrap'));
+    });
+  });
+
   describe('demo: iene', () => {
     beforeEach(() => {
       cy.get('#demo-iene').as('testRoot');

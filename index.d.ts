@@ -6,7 +6,8 @@ declare module 'focus-trap' {
    */
   export type FocusTarget = HTMLElement | SVGElement | string | { (): HTMLElement | SVGElement };
 
-  type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean
+  type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
+  type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
 
   export interface Options {
     /**
@@ -90,12 +91,13 @@ declare module 'focus-trap' {
      */
     setReturnFocus?: FocusTarget;
     /**
-     * Default: `true`. If `false`, the `Escape` key will not trigger
+     * Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
      * to force the user to make a decision instead of allowing an easy
-     * way out.
+     * way out. Note that if a function is given, it's only called if the ESC key
+     * was pressed.
      */
-    escapeDeactivates?: boolean;
+    escapeDeactivates?: boolean | KeyboardEventToBoolean;
     /**
      * If `true` or returns `true`, a click outside the focus trap will
      * deactivate the focus trap and allow the click event to do its thing (i.e.
