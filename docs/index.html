@@ -115,10 +115,23 @@
     <div id="demo-iene">
       <h2 id="iene-heading">initial element, no escape</h2>
       <p>
-        When this focus trap activates, focus jumps to a specific, manually specified element.
+        If <code>initialFocus</code> is a selector or DOM node, focus will jump to that specified element when the trap activates.
       </p>
       <p>
+        If <code>initialFocus</code> is <code>false</code>, no element will be given focus when the trap activates.
+      </p>
+      <p><code>initiialFocus</code> is set to the first tabbable element by default.</p>
+      <p>
         Also, in this demo the <kbd>Escape</kbd> key does not deactivate the focus trap. You must click the button.
+      </p>
+      <p>
+        <label>
+          Set <code>initialFocus</code> as:
+          <select id="select-iene">
+            <option value="#focused-input">#focused-input</option>
+            <option value="false">false</option>
+          </select>
+        </label>
       </p>
       <p>
         <button id="activate-iene" aria-describedby="iene-heading">
@@ -578,41 +591,6 @@
       </div>
       <p>
         <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/set-return-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
-      </p>
-    </div>
-
-    <div id="demo-initialfocusonactivate">
-      <h2 id="initialfocusonactivate-heading">initialFocusOnActivate option</h2>
-      <p>
-        The initialFocusOnActivate option controls whether or not the first tabbable element should be focused when the trap is activated.
-      </p>
-      <p>
-        <label>
-          Set <code>initialFocusOnActivate</code> as:
-          <select id="select-initialfocusonactivate">
-            <option value="true">true (default)</option>
-            <option value="false">false</option>
-          </select>
-        </label>
-      </p>
-      <p>
-        <button id="activate-initialfocusonactivate" aria-describedby="initialfocusonactivate-heading">
-          activate trap
-        </button>
-      </p>
-      <div id="initialfocusonactivate" class="trap">
-        <p>
-          Here is a focus trap <a href="#">with</a> <a href="#">some</a>
-          <a href="#">focusable</a> parts.
-        </p>
-        <p>
-          <button id="deactivate-initialfocusonactivate" aria-describedby="initialfocusonactivate-heading">
-            deactivate trap
-          </button>
-        </p>
-      </div>
-      <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/initial-focus-on-activate.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 

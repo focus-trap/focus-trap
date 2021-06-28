@@ -14,7 +14,6 @@ require('./iframe');
 require('./allow-outside-click');
 require('./click-outside-deactivates');
 require('./set-return-focus');
-require('./initial-focus-on-activate');
 require('./no-delay');
 require('./multiple-elements');
 require('./multiple-elements-delete');

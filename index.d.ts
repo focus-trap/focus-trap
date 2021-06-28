@@ -66,9 +66,10 @@ declare module 'focus-trap' {
     /**
      * By default, when a focus trap is activated the first element in the
      * focus trap's tab order will receive focus. With this option you can
-     * specify a different element to receive that initial focus.
+     * specify a different element to receive that initial focus, or use `false`
+     * for no initially focused element.
      */
-    initialFocus?: FocusTarget;
+    initialFocus?: FocusTarget | false;
     /**
      * By default, an error will be thrown if the focus trap contains no
      * elements in its tab order. With this option you can specify a
@@ -89,11 +90,6 @@ declare module 'focus-trap' {
      * that was focused before activation.
      */
     setReturnFocus?: FocusTarget;
-    /**
-     * Default: `true`. If `false`, when the trap is activated,
-     * focus will *not* be given to the first tabbable element.
-     */
-    initialFocusOnActivate?: boolean;
     /**
      * Default: `true`. If `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want

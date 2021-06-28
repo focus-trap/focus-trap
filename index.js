@@ -88,7 +88,6 @@ const createFocusTrap = function (elements, userOptions) {
   const doc = document;
 
   const config = {
-    initialFocusOnActivate: true,
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
@@ -155,6 +154,11 @@ const createFocusTrap = function (elements, userOptions) {
   const getInitialFocusNode = function () {
     let node;
 
+    // false indicates we want no initialFocus at all
+    if (getOption({}, 'initialFocus') === false) {
+      return false;
+    }
+
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
     } else if (containersContain(doc.activeElement)) {
@@ -204,9 +208,14 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const tryFocus = function (node) {
+    if (node === false) {
+      return;
+    }
+
     if (node === doc.activeElement) {
       return;
     }
+
     if (!node || !node.focus) {
       tryFocus(getInitialFocusNode());
       return;
@@ -417,7 +426,7 @@ const createFocusTrap = function (elements, userOptions) {
   // EVENT LISTENERS
   //
 
-  const addListeners = function ({ initialFocusOnActivate } = {}) {
+  const addListeners = function () {
     if (!state.active) {
       return;
     }
@@ -425,15 +434,13 @@ const createFocusTrap = function (elements, userOptions) {
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trap);
 
-    if (initialFocusOnActivate) {
-      // Delay ensures that the focused element doesn't capture the event
-      // that caused the focus trap activation.
-      activeFocusDelay = config.delayInitialFocus
-        ? delay(function () {
-            tryFocus(getInitialFocusNode());
-          })
-        : tryFocus(getInitialFocusNode());
-    }
+    // Delay ensures that the focused element doesn't capture the event
+    // that caused the focus trap activation.
+    activeFocusDelay = config.delayInitialFocus
+      ? delay(function () {
+          tryFocus(getInitialFocusNode());
+        })
+      : tryFocus(getInitialFocusNode());
 
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {
@@ -483,10 +490,6 @@ const createFocusTrap = function (elements, userOptions) {
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
-      const initialFocusOnActivate = getOption(
-        activateOptions,
-        'initialFocusOnActivate'
-      );
 
       if (!checkCanFocusTrap) {
         updateTabbableNodes();
@@ -504,7 +507,7 @@ const createFocusTrap = function (elements, userOptions) {
         if (checkCanFocusTrap) {
           updateTabbableNodes();
         }
-        addListeners({ initialFocusOnActivate });
+        addListeners();
         if (onPostActivate) {
           onPostActivate();
         }
