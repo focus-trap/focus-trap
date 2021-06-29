@@ -154,6 +154,11 @@ const createFocusTrap = function (elements, userOptions) {
   const getInitialFocusNode = function () {
     let node;
 
+    // false indicates we want no initialFocus at all
+    if (getOption({}, 'initialFocus') === false) {
+      return false;
+    }
+
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
     } else if (containersContain(doc.activeElement)) {
@@ -203,9 +208,14 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const tryFocus = function (node) {
+    if (node === false) {
+      return;
+    }
+
     if (node === doc.activeElement) {
       return;
     }
+
     if (!node || !node.focus) {
       tryFocus(getInitialFocusNode());
       return;

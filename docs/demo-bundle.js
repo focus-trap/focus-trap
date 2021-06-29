@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 /*!
-* focus-trap 6.5.0
+* focus-trap 6.5.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 'use strict';
@@ -213,7 +213,11 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
   };
 
   var getInitialFocusNode = function getInitialFocusNode() {
-    var node;
+    var node; // false indicates we want no initialFocus at all
+
+    if (getOption({}, 'initialFocus') === false) {
+      return false;
+    }
 
     if (getNodeForOption('initialFocus') !== null) {
       node = getNodeForOption('initialFocus');
@@ -256,6 +260,10 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
   };
 
   var tryFocus = function tryFocus(node) {
+    if (node === false) {
+      return;
+    }
+
     if (node === doc.activeElement) {
       return;
     }
@@ -962,21 +970,29 @@ require('./multiple-elements-multiple-traps');
 const { createFocusTrap } = require('../../dist/focus-trap');
 
 const container = document.getElementById('iene');
+const activateTrigger = document.getElementById('activate-iene');
+const deactivateTrigger = document.getElementById('deactivate-iene');
+const select = document.getElementById('select-iene');
 
-const focusTrap = createFocusTrap(container, {
-  onActivate: () => container.classList.add('is-active'),
-  onDeactivate: () => container.classList.remove('is-active'),
-  initialFocus: '#focused-input',
-  escapeDeactivates: false,
+const initialize = function ({ initialFocus = '#focused-input' }) {
+  return createFocusTrap(container, {
+    onActivate: () => container.classList.add('is-active'),
+    onDeactivate: () => container.classList.remove('is-active'),
+    initialFocus,
+    escapeDeactivates: false,
+  });
+};
+
+let focusTrap = initialize({ initialFocus: select.value });
+
+activateTrigger.addEventListener('click', () => focusTrap.activate());
+deactivateTrigger.addEventListener('click', () => focusTrap.deactivate());
+
+select.addEventListener('change', function (event) {
+  focusTrap = initialize({
+    initialFocus: event.target.value === 'false' ? false : event.target.value,
+  });
 });
-
-document
-  .getElementById('activate-iene')
-  .addEventListener('click', focusTrap.activate);
-
-document
-  .getElementById('deactivate-iene')
-  .addEventListener('click', focusTrap.deactivate);
 
 },{"../../dist/focus-trap":1}],12:[function(require,module,exports){
 const { createFocusTrap } = require('../../dist/focus-trap');

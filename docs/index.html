@@ -115,10 +115,23 @@
     <div id="demo-iene">
       <h2 id="iene-heading">initial element, no escape</h2>
       <p>
-        When this focus trap activates, focus jumps to a specific, manually specified element.
+        If <code>initialFocus</code> is a selector or DOM node, focus will jump to that specified element when the trap activates.
       </p>
       <p>
+        If <code>initialFocus</code> is <code>false</code>, no element will be given focus when the trap activates.
+      </p>
+      <p><code>initialFocus</code> is set to the first tabbable element by default.</p>
+      <p>
         Also, in this demo the <kbd>Escape</kbd> key does not deactivate the focus trap. You must click the button.
+      </p>
+      <p>
+        <label>
+          Set <code>initialFocus</code> as:
+          <select id="select-iene">
+            <option value="#focused-input">#focused-input</option>
+            <option value="false">false</option>
+          </select>
+        </label>
       </p>
       <p>
         <button id="activate-iene" aria-describedby="iene-heading">
