@@ -19,7 +19,7 @@
       In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus!
     </p>
     <p>
-      When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, hitting <kbd>Escape</kbd>.
+      When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, pressing the <kbd>Escape</kbd> key.
     </p>
 
     <div id="demo-default">
@@ -109,6 +109,42 @@
       </div>
       <p>
         <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/animated-trigger.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
+    <div id="demo-escape-deactivates">
+      <h2 id="escape-deactivates-heading">configurable escape behavior</h2>
+      <p>
+        This focus trap leverages the <code>escapeDeactivates</code> option as a <code>function</code>
+        rather than a boolean. By default, pressing ESC will deactivate the trap, but while the trap
+        is active, you can check or uncheck the option, and the ESC key will behave accordingly.
+      </p>
+      <p>
+        Since the <code>escapeDeactivates</code> option received the related <code>KeyboardEvent</code>,
+        it could be used to programmatically decide if the ESC key should allow the trap to be
+        deactivated, perhaps based on the node that's currently focused, or some other condition.
+      </p>
+      <p>
+        <button id="activate-escape-deactivates" aria-describedby="escape-deactivates-heading">
+          activate trap
+        </button>
+        <label>
+          <input id="escape-deactivates-option" type="checkbox" checked />
+          deactivate on ESC key
+        </label>
+      </p>
+      <div id="escape-deactivates" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="deactivate-escape-deactivates" aria-describedby="escape-deactivates-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/default.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
