@@ -1,7 +1,5 @@
 import { tabbable, isFocusable } from 'tabbable';
 
-let activeFocusDelay;
-
 const activeFocusTraps = (function () {
   const trapQueue = [];
   return {
@@ -111,6 +109,10 @@ const createFocusTrap = function (elements, userOptions) {
     mostRecentlyFocusedNode: null,
     active: false,
     paused: false,
+
+    // timer ID for when delayInitialFocus is true and initial focus in this trap
+    //  has been delayed during activation
+    delayInitialFocusTimer: undefined,
   };
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
@@ -439,7 +441,7 @@ const createFocusTrap = function (elements, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    activeFocusDelay = config.delayInitialFocus
+    state.delayInitialFocusTimer = config.delayInitialFocus
       ? delay(function () {
           tryFocus(getInitialFocusNode());
         })
@@ -533,7 +535,8 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
-      clearTimeout(activeFocusDelay);
+      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
+      state.delayInitialFocusTimer = undefined;
 
       removeListeners();
       state.active = false;
