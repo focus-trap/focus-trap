@@ -180,6 +180,15 @@
         "test",
         "question"
       ]
+    },
+    {
+      "login": "far-fetched",
+      "name": "Piotr Panek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11621383?v=4",
+      "profile": "https://github.com/far-fetched",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
