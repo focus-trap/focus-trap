@@ -916,7 +916,9 @@ const focusTrap = createFocusTrap('#escape-deactivates', {
   escapeDeactivates: () => escapeDeactivatesOption.checked,
 
   // allow clicking on the checkbox or its label since it's outside the trap
-  allowOutsideClick: (e) => e.target === escapeDeactivatesOption || e.target === escapeDeactivatesOption.parentNode,
+  allowOutsideClick: (e) =>
+    e.target === escapeDeactivatesOption ||
+    e.target === escapeDeactivatesOption.parentNode,
 });
 
 document
