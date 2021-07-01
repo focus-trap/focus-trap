@@ -1,5 +1,36 @@
 # Changelog
 
+## 6.6.0
+
+### Minor Changes
+
+- 281e66c: Add option to allow no initial focus when trap activates via `initialFocus: false`
+
+  There may be cases where we don't want to focus the first tabbable element when a focus trap activates.
+
+  Examples use-cases:
+
+  - Modals/dialogs
+  - On mobile devices where "tabbing" doesn't make sense without a connected Bluetooth keyboard
+
+  In addition, this change ensures that any element inside the trap manually focused outside of `focus-trap` code will be brought back in focus if focus is somehow found outside of the trap.
+
+  Example usage:
+
+  When the trap activates, there will be no initially focused element inside the new trap.
+
+  ```js
+  const focusTrap = createFocusTrap('#some-container', {
+    initialFocus: false,
+  });
+  ```
+
+- 75be463: `escapeDeactivates` can now be either a boolean (as before) or a function that takes an event and returns a boolean.
+
+### Patch Changes
+
+- e2294f0: Fix race condition when activating a second trap where initial focus in the second trap may be thwarted because pausing of first trap clears the `delayInitialFocus` timer created for the second trap before during its activation sequence.
+
 ## 6.5.1
 
 ### Patch Changes
