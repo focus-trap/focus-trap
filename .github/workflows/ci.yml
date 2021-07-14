@@ -57,7 +57,7 @@ jobs:
         browser: [chrome, firefox]
     timeout-minutes: 20
     container:
-      image: cypress/included:7.6.0
+      image: cypress/included:7.7.0
       options: --user 1001 --shm-size=2g # @see https://github.com/cypress-io/github-action/issues/104#issuecomment-666047965
     env:
       CYPRESS_BROWSER: ${{ matrix.browser }}
