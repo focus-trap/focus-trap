@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.6.1
+
+### Patch Changes
+
+- 24063d7: Update tabbable to v5.2.1 to get bug fix for disabled fieldsets.
+
 ## 6.6.0
 
 ### Minor Changes
