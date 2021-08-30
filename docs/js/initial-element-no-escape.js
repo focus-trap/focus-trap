@@ -20,7 +20,15 @@ activateTrigger.addEventListener('click', () => focusTrap.activate());
 deactivateTrigger.addEventListener('click', () => focusTrap.deactivate());
 
 select.addEventListener('change', function (event) {
+  let initialFocus = event.target.value;
+  if (initialFocus === 'false') {
+    initialFocus = false;
+  } else if (initialFocus === 'function-false') {
+    initialFocus = () => false;
+  }
+  // else, assume it's a selector
+
   focusTrap = initialize({
-    initialFocus: event.target.value === 'false' ? false : event.target.value,
+    initialFocus,
   });
 });

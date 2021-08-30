@@ -128,25 +128,45 @@ const createFocusTrap = function (elements, userOptions) {
     return state.containers.some((container) => container.contains(element));
   };
 
+  /**
+   * Gets the node for the given option, which is expected to be an option that
+   *  can be either a DOM node, a string that is a selector to get a node, `false`
+   *  (if a node is explicitly NOT given), or a function that returns any of these
+   *  values.
+   * @param {string} optionName
+   * @returns {undefined | false | HTMLElement | SVGElement} Returns
+   *  `undefined` if the option is not specified; `false` if the option
+   *  resolved to `false` (node explicitly not given); otherwise, the resolved
+   *  DOM node.
+   * @throws {Error} If the option is set, not `false`, and is not, or does not
+   *  resolve to a node.
+   */
   const getNodeForOption = function (optionName) {
-    const optionValue = config[optionName];
-    if (!optionValue) {
-      return null;
-    }
-
-    let node = optionValue;
-
-    if (typeof optionValue === 'string') {
-      node = doc.querySelector(optionValue);
-      if (!node) {
-        throw new Error(`\`${optionName}\` refers to no known node`);
-      }
-    }
+    let optionValue = config[optionName];
 
     if (typeof optionValue === 'function') {
-      node = optionValue();
+      optionValue = optionValue();
+    }
+
+    if (!optionValue) {
+      if (optionValue === undefined || optionValue === false) {
+        return optionValue;
+      }
+      // else, empty string (invalid), null (invalid), 0 (invalid)
+
+      throw new Error(
+        `\`${optionName}\` was specified but was not a node, or did not return a node`
+      );
+    }
+
+    let node = optionValue; // could be HTMLElement, SVGElement, or non-empty string at this point
+
+    if (typeof optionValue === 'string') {
+      node = doc.querySelector(optionValue); // resolve to node, or null if fails
       if (!node) {
-        throw new Error(`\`${optionName}\` did not return a node`);
+        throw new Error(
+          `\`${optionName}\` as selector refers to no known node`
+        );
       }
     }
 
@@ -154,22 +174,25 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const getInitialFocusNode = function () {
-    let node;
+    let node = getNodeForOption('initialFocus');
 
-    // false indicates we want no initialFocus at all
-    if (getOption({}, 'initialFocus') === false) {
+    // false explicitly indicates we want no initialFocus at all
+    if (node === false) {
       return false;
     }
 
-    if (getNodeForOption('initialFocus') !== null) {
-      node = getNodeForOption('initialFocus');
-    } else if (containersContain(doc.activeElement)) {
-      node = doc.activeElement;
-    } else {
-      const firstTabbableGroup = state.tabbableGroups[0];
-      const firstTabbableNode =
-        firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
-      node = firstTabbableNode || getNodeForOption('fallbackFocus');
+    if (node === undefined) {
+      // option not specified: use fallback options
+      if (containersContain(doc.activeElement)) {
+        node = doc.activeElement;
+      } else {
+        const firstTabbableGroup = state.tabbableGroups[0];
+        const firstTabbableNode =
+          firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
+
+        // NOTE: `fallbackFocus` option function cannot return `false` (not supported)
+        node = firstTabbableNode || getNodeForOption('fallbackFocus');
+      }
     }
 
     if (!node) {
@@ -201,7 +224,7 @@ const createFocusTrap = function (elements, userOptions) {
     // throw if no groups have tabbable nodes and we don't have a fallback focus node either
     if (
       state.tabbableGroups.length <= 0 &&
-      !getNodeForOption('fallbackFocus')
+      !getNodeForOption('fallbackFocus') // returning false not supported for this option
     ) {
       throw new Error(
         'Your focus-trap must have at least one container with at least one tabbable node in it at all times'
@@ -232,6 +255,8 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const getReturnFocusNode = function (previousActiveElement) {
+    // returning false is not supported for this option: if falsy, we fallback
+    //  to the element focused just before the trap was activated
     const node = getNodeForOption('setReturnFocus');
 
     return node ? node : previousActiveElement;
@@ -384,6 +409,7 @@ const createFocusTrap = function (elements, userOptions) {
         }
       }
     } else {
+      // NOTE: the fallbackFocus option does not support returning false to opt-out
       destinationNode = getNodeForOption('fallbackFocus');
     }
 

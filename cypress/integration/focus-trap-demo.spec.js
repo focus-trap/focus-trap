@@ -412,47 +412,51 @@ describe('focus-trap', () => {
       verifyFocusIsNotTrapped(cy.get('@lastlyFocusedElBeforeTrapIsActivated'));
     });
 
-    it('on trap activation, does not focus ANY element in the trap, when initialFocus=false', () => {
-      cy.get('#select-iene').select('false');
+    ['false', 'function-false'].forEach((option) => {
+      it(`on trap activation, does not focus ANY element in the trap, when initialFocus=${
+        option === 'false' ? option : '`() => false`'
+      }`, () => {
+        cy.get('#select-iene').select(option);
 
-      cy.get('@activateTrapBtn').click();
+        cy.get('@activateTrapBtn').click();
 
-      cy.get('@firstElementInTrap').should('not.be.focused');
+        cy.get('@firstElementInTrap').should('not.be.focused');
 
-      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
-      cy.focused()
-        .tab()
-        .should('have.text', 'with')
-        .should('be.focused')
-        .tab()
-        .should('have.text', 'some')
-        .should('be.focused')
-        .tab()
-        .should('have.text', 'focusable')
-        .should('be.focused')
-        .tab()
-        .should('have.id', 'focused-input')
-        .should('be.focused')
-        .tab()
-        .as('lastElementInTrap')
-        .should('contain', 'deactivate trap')
-        .should('be.focused')
-        .tab();
+        // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+        cy.focused()
+          .tab()
+          .should('have.text', 'with')
+          .should('be.focused')
+          .tab()
+          .should('have.text', 'some')
+          .should('be.focused')
+          .tab()
+          .should('have.text', 'focusable')
+          .should('be.focused')
+          .tab()
+          .should('have.id', 'focused-input')
+          .should('be.focused')
+          .tab()
+          .as('lastElementInTrap')
+          .should('contain', 'deactivate trap')
+          .should('be.focused')
+          .tab();
 
-      // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
-      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
-      cy.get('@lastElementInTrap').should('be.focused');
+        // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+        cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+        cy.get('@lastElementInTrap').should('be.focused');
 
-      // deactivate trap
-      cy.get('#deactivate-iene').click();
+        // deactivate trap
+        cy.get('#deactivate-iene').click();
 
-      // implies trap no longer active since checkbox is outside trap
-      cy.get('#activate-iene').should('be.focused');
+        // implies trap no longer active since checkbox is outside trap
+        cy.get('#activate-iene').should('be.focused');
 
-      cy.get('@lastElementInTrap').should('not.be.focused');
+        cy.get('@lastElementInTrap').should('not.be.focused');
 
-      // focus can be transitioned freely when trap is deactivated
-      verifyFocusIsNotTrapped(cy.get('#activate-iene'));
+        // focus can be transitioned freely when trap is deactivated
+        verifyFocusIsNotTrapped(cy.get('#activate-iene'));
+      });
     });
 
     it('brings focus to a manually focused element if focus is lost outside the trap, when initialFocus=false', () => {
