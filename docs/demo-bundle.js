@@ -190,10 +190,12 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
    *  (if a node is explicitly NOT given), or a function that returns any of these
    *  values.
    * @param {string} optionName
-   * @returns {undefined | false | HTMLElement | SVGElement | null} Returns
+   * @returns {undefined | false | HTMLElement | SVGElement} Returns
    *  `undefined` if the option is not specified; `false` if the option
-   *  resolved to `false` (node explicitly not given); otherwise, either the resolved
-   *  DOM node or `null` if a node was not found/given (but the option was set).
+   *  resolved to `false` (node explicitly not given); otherwise, the resolved
+   *  DOM node.
+   * @throws {Error} If the option is set, not `false`, and is not, or does not
+   *  resolve to a node.
    */
 
 
