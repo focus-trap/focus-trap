@@ -154,7 +154,7 @@
         If <code>initialFocus</code> is a selector or DOM node, focus will jump to that specified element when the trap activates.
       </p>
       <p>
-        If <code>initialFocus</code> is <code>false</code>, no element will be given focus when the trap activates.
+        If <code>initialFocus</code> is <code>false</code> (or a function that returns <code>false</code>), no element will be given focus when the trap activates.
       </p>
       <p><code>initialFocus</code> is set to the first tabbable element by default.</p>
       <p>
@@ -166,6 +166,7 @@
           <select id="select-iene">
             <option value="#focused-input">#focused-input</option>
             <option value="false">false</option>
+            <option value="function-false">function returns false</option>
           </select>
         </label>
       </p>

@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 /*!
-* focus-trap 6.5.1
+* focus-trap 6.6.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 'use strict';
@@ -61,8 +61,6 @@ function _defineProperty(obj, key, value) {
 
   return obj;
 }
-
-var activeFocusDelay;
 
 var activeFocusTraps = function () {
   var trapQueue = [];
@@ -170,7 +168,10 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
-    paused: false
+    paused: false,
+    // timer ID for when delayInitialFocus is true and initial focus in this trap
+    //  has been delayed during activation
+    delayInitialFocusTimer: undefined
   };
   var trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
@@ -183,29 +184,44 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
       return container.contains(element);
     });
   };
+  /**
+   * Gets the node for the given option, which is expected to be an option that
+   *  can be either a DOM node, a string that is a selector to get a node, `false`
+   *  (if a node is explicitly NOT given), or a function that returns any of these
+   *  values.
+   * @param {string} optionName
+   * @returns {undefined | false | HTMLElement | SVGElement} Returns
+   *  `undefined` if the option is not specified; `false` if the option
+   *  resolved to `false` (node explicitly not given); otherwise, the resolved
+   *  DOM node.
+   * @throws {Error} If the option is set, not `false`, and is not, or does not
+   *  resolve to a node.
+   */
+
 
   var getNodeForOption = function getNodeForOption(optionName) {
     var optionValue = config[optionName];
 
-    if (!optionValue) {
-      return null;
+    if (typeof optionValue === 'function') {
+      optionValue = optionValue();
     }
 
-    var node = optionValue;
+    if (!optionValue) {
+      if (optionValue === undefined || optionValue === false) {
+        return optionValue;
+      } // else, empty string (invalid), null (invalid), 0 (invalid)
+
+
+      throw new Error("`".concat(optionName, "` was specified but was not a node, or did not return a node"));
+    }
+
+    var node = optionValue; // could be HTMLElement, SVGElement, or non-empty string at this point
 
     if (typeof optionValue === 'string') {
-      node = doc.querySelector(optionValue);
+      node = doc.querySelector(optionValue); // resolve to node, or null if fails
 
       if (!node) {
-        throw new Error("`".concat(optionName, "` refers to no known node"));
-      }
-    }
-
-    if (typeof optionValue === 'function') {
-      node = optionValue();
-
-      if (!node) {
-        throw new Error("`".concat(optionName, "` did not return a node"));
+        throw new Error("`".concat(optionName, "` as selector refers to no known node"));
       }
     }
 
@@ -213,20 +229,22 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
   };
 
   var getInitialFocusNode = function getInitialFocusNode() {
-    var node; // false indicates we want no initialFocus at all
+    var node = getNodeForOption('initialFocus'); // false explicitly indicates we want no initialFocus at all
 
-    if (getOption({}, 'initialFocus') === false) {
+    if (node === false) {
       return false;
     }
 
-    if (getNodeForOption('initialFocus') !== null) {
-      node = getNodeForOption('initialFocus');
-    } else if (containersContain(doc.activeElement)) {
-      node = doc.activeElement;
-    } else {
-      var firstTabbableGroup = state.tabbableGroups[0];
-      var firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
-      node = firstTabbableNode || getNodeForOption('fallbackFocus');
+    if (node === undefined) {
+      // option not specified: use fallback options
+      if (containersContain(doc.activeElement)) {
+        node = doc.activeElement;
+      } else {
+        var firstTabbableGroup = state.tabbableGroups[0];
+        var firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode; // NOTE: `fallbackFocus` option function cannot return `false` (not supported)
+
+        node = firstTabbableNode || getNodeForOption('fallbackFocus');
+      }
     }
 
     if (!node) {
@@ -254,7 +272,8 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
     }); // remove groups with no tabbable nodes
     // throw if no groups have tabbable nodes and we don't have a fallback focus node either
 
-    if (state.tabbableGroups.length <= 0 && !getNodeForOption('fallbackFocus')) {
+    if (state.tabbableGroups.length <= 0 && !getNodeForOption('fallbackFocus') // returning false not supported for this option
+    ) {
       throw new Error('Your focus-trap must have at least one container with at least one tabbable node in it at all times');
     }
   };
@@ -284,6 +303,8 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
   };
 
   var getReturnFocusNode = function getReturnFocusNode(previousActiveElement) {
+    // returning false is not supported for this option: if falsy, we fallback
+    //  to the element focused just before the trap was activated
     var node = getNodeForOption('setReturnFocus');
     return node ? node : previousActiveElement;
   }; // This needs to be done on mousedown and touchstart instead of click
@@ -418,6 +439,7 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
         }
       }
     } else {
+      // NOTE: the fallbackFocus option does not support returning false to opt-out
       destinationNode = getNodeForOption('fallbackFocus');
     }
 
@@ -470,7 +492,7 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
     activeFocusTraps.activateTrap(trap); // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
 
-    activeFocusDelay = config.delayInitialFocus ? delay(function () {
+    state.delayInitialFocusTimer = config.delayInitialFocus ? delay(function () {
       tryFocus(getInitialFocusNode());
     }) : tryFocus(getInitialFocusNode());
     doc.addEventListener('focusin', checkFocusIn, true);
@@ -556,7 +578,9 @@ var createFocusTrap = function createFocusTrap(elements, userOptions) {
         return this;
       }
 
-      clearTimeout(activeFocusDelay);
+      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
+
+      state.delayInitialFocusTimer = undefined;
       removeListeners();
       state.active = false;
       state.paused = false;
@@ -1016,8 +1040,16 @@ activateTrigger.addEventListener('click', () => focusTrap.activate());
 deactivateTrigger.addEventListener('click', () => focusTrap.deactivate());
 
 select.addEventListener('change', function (event) {
+  let initialFocus = event.target.value;
+  if (initialFocus === 'false') {
+    initialFocus = false;
+  } else if (initialFocus === 'function-false') {
+    initialFocus = () => false;
+  }
+  // else, assume it's a selector
+
   focusTrap = initialize({
-    initialFocus: event.target.value === 'false' ? false : event.target.value,
+    initialFocus,
   });
 });
 
@@ -1478,7 +1510,7 @@ document
 
 },{"../../dist/focus-trap":1}],25:[function(require,module,exports){
 /*!
-* tabbable 5.2.0
+* tabbable 5.2.1
 * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 */
 'use strict';
@@ -1622,12 +1654,52 @@ var isHidden = function isHidden(node, displayCheck) {
   }
 
   return false;
+}; // form fields (nested) inside a disabled fieldset are not focusable/tabbable
+//  unless they are in the _first_ <legend> element of the top-most disabled
+//  fieldset
+
+
+var isDisabledFromFieldset = function isDisabledFromFieldset(node) {
+  if (isInput(node) || node.tagName === 'SELECT' || node.tagName === 'TEXTAREA' || node.tagName === 'BUTTON') {
+    var parentNode = node.parentElement;
+
+    while (parentNode) {
+      if (parentNode.tagName === 'FIELDSET' && parentNode.disabled) {
+        // look for the first <legend> as an immediate child of the disabled
+        //  <fieldset>: if the node is in that legend, it'll be enabled even
+        //  though the fieldset is disabled; otherwise, the node is in a
+        //  secondary/subsequent legend, or somewhere else within the fieldset
+        //  (however deep nested) and it'll be disabled
+        for (var i = 0; i < parentNode.children.length; i++) {
+          var child = parentNode.children.item(i);
+
+          if (child.tagName === 'LEGEND') {
+            if (child.contains(node)) {
+              return false;
+            } // the node isn't in the first legend (in doc order), so no matter
+            //  where it is now, it'll be disabled
+
+
+            return true;
+          }
+        } // the node isn't in a legend, so no matter where it is now, it'll be disabled
+
+
+        return true;
+      }
+
+      parentNode = parentNode.parentElement;
+    }
+  } // else, node's tabbable/focusable state should not be affected by a fieldset's
+  //  enabled/disabled state
+
+
+  return false;
 };
 
 var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable(options, node) {
-  if (node.disabled || isHiddenInput(node) || isHidden(node, options.displayCheck) ||
-  /* For a details element with a summary, the summary element gets the focused  */
-  isDetailsWithSummary(node)) {
+  if (node.disabled || isHiddenInput(node) || isHidden(node, options.displayCheck) || // For a details element with a summary, the summary element gets the focus
+  isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
     return false;
   }
 

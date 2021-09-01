@@ -4,7 +4,14 @@ declare module 'focus-trap' {
    * `document.querySelector()` to find the DOM node), or a function that
    * returns a DOM node.
    */
-  export type FocusTarget = HTMLElement | SVGElement | string | { (): HTMLElement | SVGElement };
+  export type FocusTarget = HTMLElement | SVGElement | string | (() => HTMLElement | SVGElement);
+
+  /**
+   * A DOM node, a selector string (which will be passed to
+   * `document.querySelector()` to find the DOM node), `false` to explicitly indicate
+   * an opt-out, or a function that returns a DOM node or `false`.
+   */
+  export type FocusTargetOrFalse = HTMLElement | SVGElement | string | false | (() => HTMLElement | SVGElement | false);
 
   type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
@@ -69,8 +76,11 @@ declare module 'focus-trap' {
      * focus trap's tab order will receive focus. With this option you can
      * specify a different element to receive that initial focus, or use `false`
      * for no initially focused element at all.
+     *
+     * NOTE: Setting this option to `false` (or a function that returns `false`)
+     * will prevent the `fallbackFocus` option from being used.
      */
-    initialFocus?: FocusTarget | false;
+    initialFocus?: FocusTargetOrFalse;
     /**
      * By default, an error will be thrown if the focus trap contains no
      * elements in its tab order. With this option you can specify a
@@ -78,7 +88,13 @@ declare module 'focus-trap' {
      * tabbable elements are found. For example, you may want a popover's
      * `<div>` to receive focus if the popover's content includes no
      * tabbable elements. *Make sure the fallback element has a negative
-     * `tabindex` so it can be programmatically focused.*
+     * `tabindex` so it can be programmatically focused.
+     *
+     * NOTE: If `initialFocus` is `false` (or a function that returns `false`),
+     * this function will not be called when the trap is activated, and no element
+     * will be initially focused. This function may still be called while the trap
+     * is active if things change such that there are no longer any tabbable nodes
+     * in the trap.
      */
     fallbackFocus?: FocusTarget;
     /**
