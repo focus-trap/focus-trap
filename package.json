@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "demo-bundle": "browserify docs/js/index.js -o docs/demo-bundle.js",
+    "demo-bundle": "yarn compile:cjs && browserify docs/js/index.js -o docs/demo-bundle.js",
     "format": "prettier --write \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:check": "prettier --check \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:watch": "onchange \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\" -- prettier --write {{changed}}",

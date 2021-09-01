@@ -13,7 +13,7 @@ Please be sure to go over the PR CHECKLIST below before posting your PR to make 
 __Please leave this checklist in your PR.__
 
 - Source changes maintain stated browser compatibility.
-- Includes updated `/docs/demo-bundle.js` if source or docs code was changed.
+- Includes updated docs demo bundle if source/docs code was changed (run `yarn demo-bundle` in your branch and include the `/docs/demo-bundle.js` file that gets generated in your PR).
 - Issue being fixed is referenced.
 - Unit test coverage added/updated.
 - E2E test coverage added/updated.
