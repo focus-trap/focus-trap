@@ -141,11 +141,11 @@ const createFocusTrap = function (elements, userOptions) {
    * @throws {Error} If the option is set, not `false`, and is not, or does not
    *  resolve to a node.
    */
-  const getNodeForOption = function (optionName) {
+  const getNodeForOption = function (optionName, ...params) {
     let optionValue = config[optionName];
 
     if (typeof optionValue === 'function') {
-      optionValue = optionValue();
+      optionValue = optionValue(...params);
     }
 
     if (!optionValue) {
@@ -255,11 +255,8 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const getReturnFocusNode = function (previousActiveElement) {
-    // returning false is not supported for this option: if falsy, we fallback
-    //  to the element focused just before the trap was activated
-    const node = getNodeForOption('setReturnFocus');
-
-    return node ? node : previousActiveElement;
+    const node = getNodeForOption('setReturnFocus', previousActiveElement);
+    return node ? node : node === false ? false : previousActiveElement;
   };
 
   // This needs to be done on mousedown and touchstart instead of click

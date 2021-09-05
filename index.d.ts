@@ -106,7 +106,7 @@ declare module 'focus-trap' {
      * By default, focus trap on deactivation will return to the element
      * that was focused before activation.
      */
-    setReturnFocus?: FocusTarget;
+    setReturnFocus?: HTMLElement | SVGElement | string | false | ((nodeFocusedBeforeActivation: HTMLElement | SVGElement) => HTMLElement | SVGElement | false);
     /**
      * Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
