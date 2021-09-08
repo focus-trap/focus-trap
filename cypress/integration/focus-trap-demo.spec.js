@@ -904,6 +904,39 @@ describe('focus-trap', () => {
         .click();
       verifyFocusIsNotTrapped(cy.get('@lastlyFocusedElBeforeTrapIsActivated'));
     });
+
+    it('focus can be trapped inside an iframe', () => {
+      cy.get('#demo-in-iframe').as('testRoot');
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .click();
+
+      // and element trap should be focused
+      cy.get('@testRoot').find('iframe').as('iframeInTrap');
+      cy.get('@iframeInTrap').then(([iframe]) => {
+        // Cypress limitation: TypeError: Cannot read property 'call' of undefined
+        // cy.wrap(iframe.contentDocument).find('a').should('exist');
+        const mainEl = iframe.contentDocument.querySelector('main');
+        cy.wrap(mainEl)
+          .as('mainInIframe')
+          .findByRole('button', { name: 'nothing' })
+          .as('firstElInTrap')
+          .click();
+        cy.get('@firstElInTrap').should('be.focused');
+        // Unfortunately I'd like to test tabs here but in iframe Cypress don't manage it
+
+        // If I click outside the trap in the iframe it shouldn't change the focus
+        const asideEl = iframe.contentDocument.querySelector('aside');
+        cy.wrap(asideEl)
+          .as('asideInIframe')
+          .findByRole('button', { name: 'something else' })
+          .click();
+
+        cy.get('@firstElInTrap').should('be.focused');
+      });
+    });
   });
 
   describe('Click outside go through', () => {
