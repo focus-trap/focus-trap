@@ -423,7 +423,7 @@ const createFocusTrap = function (elements, userOptions) {
   const checkKey = function (e) {
     if (
       isEscapeEvent(e) &&
-      valueOrHandler(config.escapeDeactivates) !== false
+      valueOrHandler(config.escapeDeactivates, e) !== false
     ) {
       e.preventDefault();
       trap.deactivate();
