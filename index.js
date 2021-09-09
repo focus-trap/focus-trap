@@ -83,7 +83,7 @@ const valueOrHandler = function (value, ...params) {
 };
 
 const createFocusTrap = function (elements, userOptions) {
-  const doc = document;
+  const doc = userOptions.document || document;
 
   const config = {
     returnFocusOnDeactivate: true,

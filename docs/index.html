@@ -510,6 +510,34 @@
       </p>
     </div>
 
+    <div id="demo-in-iframe">
+      <h2 id="in-iframe-heading"> working inside an iframe</h2>
+      <p>
+        This focus trap can be executed inside an iframe. You should be able
+        to trap the focus inside. You need to have provided the iframe
+        document to the focus-trap before for things to work as expected.
+        <br/>
+        As it executes inside the iframe, it cannot prevent clicks on links in the parent document.
+      </p>
+      <p>
+        <button id="activate-in-iframe" aria-describedby="in-iframe-heading">
+          activate trap
+        </button>
+      </p>
+      <iframe
+        id="in-iframe"
+        src="./in-iframe-content.html"
+        class="demo-iframe"
+        aria-describedby="iframe-heading"
+      ></iframe>
+      <p>
+        <a
+          href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-iframe.js"
+          >View demo source <span aria-hidden="true">&gt;&gt;</span></a
+        >
+      </p>
+    </div>
+
     <div id="demo-allowoutsideclick">
       <h2 id="allowoutsideclick-heading">allowOutsideClick option</h2>
       <p>

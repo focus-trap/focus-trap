@@ -71,3 +71,17 @@ kbd {
 .is-hidden {
   display: none;
 }
+
+
+.demo-iframe {
+  height: 250px;
+  width: 100%;
+}
+
+.demo-in-iframe-wrapper {
+  display:flex;
+}
+.demo-in-iframe-wrapper > aside {
+  padding: 1em 2em;
+  border: 1px solid #ccc;
+}

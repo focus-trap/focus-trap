@@ -144,6 +144,11 @@ declare module 'focus-trap' {
      * the event that triggered the focus trap activation.
      */
     delayInitialFocus?: boolean;
+    /**
+     * Default: `window.document`. Document where the focus trap will be active.
+     * This allows to use FocusTrap in an iFrame context.
+     */
+     document?: Document;
   }
 
   type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;

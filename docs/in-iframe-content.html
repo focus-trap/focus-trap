@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>iframe content</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="demo-in-iframe-wrapper">
+    <main id="in-iframe-trap" class="trap">
+      <p>This content inside the iframe will be trap.</p>
+      <p>
+        <button> nothing </button>
+      </p>
+      <p><a href="#in-iframe">link</a></p>
+      <p>
+        <button id="deactivate-in-iframe"> deactivate trap </button>
+      </p>
+    </main>
+    <aside>
+      <p>This content inside the iframe won't be trapped.</p>
+      <p>
+        <button id="outside-trap-button"> something else </button>
+      </p>
+      <p><a href="#in-iframe">link</a></p>
+    </aside>
+  </body>
+</html>
