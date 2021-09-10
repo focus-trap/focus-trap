@@ -6,6 +6,9 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import sourceMaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
+import injectProcessEnv from 'rollup-plugin-inject-process-env';
+import serve from 'rollup-plugin-serve';
+import livereload from 'rollup-plugin-livereload';
 
 const pkg = require('./package.json');
 
@@ -141,11 +144,40 @@ const umd = [
   },
 ];
 
-let config = {};
-console.log(process.env.BUILD_ENV);
+const isDevServer = process.env.SERVE === 'true';
+const isLiveReload = process.env.RELOAD === 'true';
+const demoBundleConfig = {
+  input: './docs/js/index.js',
+  output: {
+    preserveModules: false,
+    file: 'docs/demo-bundle.js',
+    format: 'iife', // immediately-invoked function expression — suitable for <script> tags
+    sourcemap: true,
+    banner,
+  },
+  plugins: [
+    resolve(),
+    commonjs(),
+    injectProcessEnv({
+      BUILD_ENV: process.env.BUILD_ENV,
+      IS_CYPRESS_ENV: process.env.IS_CYPRESS_ENV,
+    }),
+    babel({ babelHelpers: 'bundled' }),
+    isDevServer &&
+      serve({
+        port: 9966,
+        contentBase: 'docs',
+      }), // index.html should be in root of project
+    isLiveReload && livereload({ port: 9966, watch: 'docs' }),
+  ],
+};
+
+let config = [];
+console.log('Building for env ', process.env.BUILD_ENV);
+
 switch (process.env.BUILD_ENV) {
   case 'cjs':
-    config = cjs;
+    config = [...cjs, demoBundleConfig];
     break;
   case 'esm':
     config = esm;

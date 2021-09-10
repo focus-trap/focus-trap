@@ -1,8 +1,9 @@
+require('regenerator-runtime/runtime');
+
 const { createFocusTrap } = require('../../dist/focus-trap');
 
-const contextIframe = document.getElementById('in-iframe');
-
-(async function setupTrap() {
+module.exports = async () => {
+  const contextIframe = document.getElementById('in-iframe');
   // wait for iFrame DOM to completely load
   while (
     !contextIframe.contentWindow.document.getElementById('in-iframe-trap')
@@ -10,6 +11,7 @@ const contextIframe = document.getElementById('in-iframe');
     // eslint-disable-next-line no-await-in-loop
     await new Promise((r) => setTimeout(r, 500));
   }
+
   const targetDocument = contextIframe.contentWindow.document;
   if (targetDocument) {
     const trapWrapper = targetDocument.getElementById('in-iframe-trap');
@@ -26,4 +28,4 @@ const contextIframe = document.getElementById('in-iframe');
       .getElementById('deactivate-in-iframe')
       .addEventListener('click', focusTrap.deactivate);
   }
-})();
+};

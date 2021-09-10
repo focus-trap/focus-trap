@@ -65,5 +65,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: cypress-io/github-action@v2.6.1
         with:
-          start: yarn start
+          start: yarn start:cypress
           browser: ${{ matrix.browser }}

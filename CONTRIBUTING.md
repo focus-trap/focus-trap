@@ -14,8 +14,6 @@ yarn start
 
 Then open your browser to http://localhost:9966
 
-> Note that changes to **test** files ([demo](./demo) HTML and JS) are hot-reloaded, but changes to the [source](index.js) **are not**. It would be great if source changes were also hot-reloaded. If you know how to fix that, please do!
-
 ## Testing
 
 When you're done with your changes, be sure to run `yarn format` to have Prettier format your code, and use `yarn lint` to check for syntax issues. `yarn test:cypress` will run e2e tests in interactive mode.
@@ -46,6 +44,6 @@ Please feel free to use the bot on your own issue or PR to add yourself as a con
 
 The docs are published at http://focus-trap.github.io/focus-trap/ and served from the `/docs` directory in the repo.
 
-Simply run `yarn demo-bundle` locally, commit the updated `/docs/demo-bundle.js` file, and open a PR to updated it.
+Simply run `yarn demo-bundle` locally, commit the updated `/docs/demo-bundle.*` files, and open a PR to updated it.
 
 Ideally, this is done within any PR that modifies anything under `/docs`, or the library code itself.
