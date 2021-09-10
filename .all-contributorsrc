@@ -198,7 +198,8 @@
       "contributions": [
         "code",
         "test",
-        "doc"
+        "doc",
+        "tool"
       ]
     }
   ],
