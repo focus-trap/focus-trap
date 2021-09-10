@@ -168,12 +168,12 @@ const demoBundleConfig = {
         port: 9966,
         contentBase: 'docs',
       }), // index.html should be in root of project
-    isLiveReload && livereload({ port: 9966, watch: 'docs' }), //
+    isLiveReload && livereload({ port: 9966, watch: 'docs' }),
   ],
 };
 
 let config = [];
-console.log("Building for env ", process.env.BUILD_ENV);
+console.log('Building for env ', process.env.BUILD_ENV);
 
 switch (process.env.BUILD_ENV) {
   case 'cjs':
