@@ -9,12 +9,10 @@ yarn install
 To test in the browser during development, run:
 
 ```sh
-yarn start
+yarn dev
 ```
 
 Then open your browser to http://localhost:9966
-
-> Note that changes to **test** files ([demo](./demo) HTML and JS) are hot-reloaded, but changes to the [source](index.js) **are not**. It would be great if source changes were also hot-reloaded. If you know how to fix that, please do!
 
 ## Testing
 
@@ -46,6 +44,6 @@ Please feel free to use the bot on your own issue or PR to add yourself as a con
 
 The docs are published at http://focus-trap.github.io/focus-trap/ and served from the `/docs` directory in the repo.
 
-Simply run `yarn demo-bundle` locally, commit the updated `/docs/demo-bundle.js` file, and open a PR to updated it.
+Simply run `yarn build` locally, commit the updated `/docs/demo-bundle.js` file, and open a PR to updated it.
 
 Ideally, this is done within any PR that modifies anything under `/docs`, or the library code itself.
