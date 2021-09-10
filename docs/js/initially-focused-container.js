@@ -1,18 +1,19 @@
 const { createFocusTrap } = require('../../dist/focus-trap');
+module.exports = () => {
+  const container = document.getElementById('ifc');
 
-const container = document.getElementById('ifc');
+  const focusTrap = createFocusTrap('#ifc', {
+    onActivate: () => container.classList.add('is-active'),
+    onDeactivate: () => container.classList.remove('is-active'),
+    initialFocus: () => document.getElementById('ifc'),
+    clickOutsideDeactivates: true,
+  });
 
-const focusTrap = createFocusTrap('#ifc', {
-  onActivate: () => container.classList.add('is-active'),
-  onDeactivate: () => container.classList.remove('is-active'),
-  initialFocus: () => document.getElementById('ifc'),
-  clickOutsideDeactivates: true,
-});
+  document
+    .getElementById('activate-ifc')
+    .addEventListener('click', focusTrap.activate);
 
-document
-  .getElementById('activate-ifc')
-  .addEventListener('click', focusTrap.activate);
-
-document
-  .getElementById('deactivate-ifc')
-  .addEventListener('click', focusTrap.deactivate);
+  document
+    .getElementById('deactivate-ifc')
+    .addEventListener('click', focusTrap.deactivate);
+};
