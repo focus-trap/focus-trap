@@ -2,7 +2,7 @@
 * focus-trap 6.6.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
-(function () {
+var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {

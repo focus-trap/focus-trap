@@ -149,6 +149,7 @@ const isLiveReload = process.env.RELOAD === 'true';
 const demoBundleConfig = {
   input: './docs/js/index.js',
   output: {
+    name: 'focusTrapDemoBundle',
     preserveModules: false,
     file: 'docs/demo-bundle.js',
     format: 'iife', // immediately-invoked function expression — suitable for <script> tags
@@ -173,7 +174,7 @@ const demoBundleConfig = {
 };
 
 let config = [];
-console.log('Building for env ', process.env.BUILD_ENV);
+console.log('Building for env', process.env.BUILD_ENV);
 
 switch (process.env.BUILD_ENV) {
   case 'cjs':
