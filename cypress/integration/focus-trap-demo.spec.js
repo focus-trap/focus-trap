@@ -1136,6 +1136,44 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: setreturnfocus function', () => {
+    it('specify dynamically element to receive focus after trap deactivation', () => {
+      cy.get('#demo-setreturnfocus-function').as('testRoot');
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .click();
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElInTrap')
+        .should('be.focused');
+      verifyCrucialFocusTrapOnClicking('@firstElInTrap');
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate and focus this/ })
+        .click()
+        .should('be.focused');
+
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').click();
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate and focus 'activate trap'/ })
+        .click()
+        .should('not.be.focused');
+
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
+
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').click();
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate and no change in focus/ })
+        .click()
+        .should('not.be.focused');
+
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('not.be.focused');
+    });
+  });
+
   describe('demo: multiple elements passed in', () => {
     it('can accept multiple elements passed in, and keep the focus within the elements', () => {
       cy.get('#demo-multipleelements').as('testRoot');

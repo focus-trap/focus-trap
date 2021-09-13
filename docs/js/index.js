@@ -25,6 +25,7 @@ if (process.env.IS_CYPRESS_ENV === '') {
 require('./allow-outside-click')();
 require('./click-outside-deactivates')();
 require('./set-return-focus')();
+require('./set-return-focus-function')();
 require('./no-delay')();
 require('./multiple-elements')();
 require('./multiple-elements-delete')();

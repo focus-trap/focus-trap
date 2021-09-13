@@ -659,6 +659,41 @@
       </p>
     </div>
 
+    <div id="demo-setreturnfocus-function">
+      <h2 id="setreturnfocus-function-heading">setReturnFocus as function</h2>
+      <p>
+        As the function is executed in the process of deactivation, it allows you to dynamically specify which element should be focused after deactivation.
+      </p>
+      <p>
+        Once the trap is activated, you can still click on one of the 3 deactivate buttons below in order to deactivate the trap.
+      </p>
+      <p>
+        <button id="activate-setreturnfocus-function" aria-describedby="setreturnfocus-function-heading">
+          activate trap
+        </button>
+        <p id="deactivate-setreturnfocus-function">
+          <button id="focus-this">
+            deactivate and focus this
+          </button>
+          <button id="focus-initial">
+            deactivate and focus 'activate trap'
+          </button>
+          <button id="no-focus">
+            deactivate and no change in focus
+          </button>
+        </p>
+      </p>
+      <div id="setreturnfocus-function" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a>
+          <a href="#">focusable</a> parts.
+        </p>
+      </div>
+      <p>
+        <a
+          href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/set-return-focus-function.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
     <div id="demo-multipleelements">
       <h2 id="multipleelements-heading">multiple elements</h2>
       <p>
