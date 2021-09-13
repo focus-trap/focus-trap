@@ -187,7 +187,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/11621383?v=4",
       "profile": "https://github.com/far-fetched",
       "contributions": [
-        "bug"
+        "bug",
+        "doc",
+        "code",
+        "test"
       ]
     },
     {
