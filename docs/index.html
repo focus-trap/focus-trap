@@ -841,6 +841,40 @@
       </p>
     </div>
 
+    <div id="demo-open-shadow-dom">
+      <h2 id="open-shadow-dom-heading">inside an open shadow dom</h2>
+      <p>
+        This focus trap is instantiated <em>inside</em> an <strong>open</strong>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM" target="blank" rel="noreferrer">Shadow DOM</a>.
+        Some users of this library use Web Components to create things like modal dialogs,
+        which means focus needs to be trapped inside the Shadow DOM instance.
+      </p>
+      <p>
+        When the mouse is clicked on an element inside an <strong>open</strong> Shadow DOM,
+        the target node in <code>event.target</code> is always the shadow host (the node to
+        which the shadow is attached). Fortunately, <code>event.composedPath()</code>, a
+        modern API on the event object, allows focus-trap to determine the actual node that
+        was clicked inside the shadow.
+      </p>
+      <p>
+        ⚠️ focus-trap is unable to work with closed Shadow DOMs because
+        <code>event.composedPath()</code> can't see inside it. In this case, both this
+        modern API and <code>event.target</code> point to the shadow host as the actual
+        element that was clicked, and focus-trap will always determine that the click was
+        outside the trap (and either prevent it, or always deactivate the trap when the
+        <code>clickOutsideDeactivates</code> option is true).
+      </p>
+      <p>
+        <button id="activate-open-shadow-dom" aria-describedby="open-shadow-dom-heading">
+          activate trap
+        </button>
+      </p>
+      <focus-trap-modal></focus-trap-modal>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/open-shadow-dom.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <p>
       <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
       <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>

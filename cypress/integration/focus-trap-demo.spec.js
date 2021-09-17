@@ -1469,4 +1469,82 @@ describe('focus-trap', () => {
       verifyFocusIsNotTrapped(cy.get('@outsideEl'));
     });
   });
+
+  describe('demo: open-shadow-dom', () => {
+    it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
+      cy.get('#demo-open-shadow-dom').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+      cy.get('#default-heading').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'deactivate trap')
+        .should('be.focused')
+        .tab();
+
+      // trap is active(keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .click();
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
+    });
+
+    it('allows deactivation by pressing ESC', () => {
+      cy.get('#demo-open-shadow-dom').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@firstElementInTrap').type('{esc}');
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
+    });
+  });
 });

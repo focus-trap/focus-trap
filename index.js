@@ -82,6 +82,19 @@ const valueOrHandler = function (value, ...params) {
   return typeof value === 'function' ? value(...params) : value;
 };
 
+const getActualTarget = function (event) {
+  // NOTE: If the trap is _inside_ a shadow DOM, event.target will always be the
+  //  shadow host. However, event.target.composedPath() will be an array of
+  //  nodes "clicked" from inner-most (the actual element inside the shadow) to
+  //  outer-most (the host HTML document). If we have access to composedPath(),
+  //  then use its first element; otherwise, fall back to event.target (and
+  //  this only works for an _open_ shadow DOM; otherwise,
+  //  composedPath()[0] === event.target always).
+  return event.target.shadowRoot && typeof event.composedPath === 'function'
+    ? event.composedPath()[0]
+    : event.target;
+};
+
 const createFocusTrap = function (elements, userOptions) {
   const doc = userOptions.document || document;
 
@@ -262,7 +275,9 @@ const createFocusTrap = function (elements, userOptions) {
   // This needs to be done on mousedown and touchstart instead of click
   // so that it precedes the focus event.
   const checkPointerDown = function (e) {
-    if (containersContain(e.target)) {
+    const target = getActualTarget(e);
+
+    if (containersContain(target)) {
       // allow the click since it ocurred inside the trap
       return;
     }
@@ -281,7 +296,7 @@ const createFocusTrap = function (elements, userOptions) {
         //  that was clicked, whether it's focusable or not; by setting
         //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
         //  on activation (or the configured `setReturnFocus` node)
-        returnFocus: config.returnFocusOnDeactivate && !isFocusable(e.target),
+        returnFocus: config.returnFocusOnDeactivate && !isFocusable(target),
       });
       return;
     }
@@ -300,11 +315,13 @@ const createFocusTrap = function (elements, userOptions) {
 
   // In case focus escapes the trap for some strange reason, pull it back in.
   const checkFocusIn = function (e) {
-    const targetContained = containersContain(e.target);
+    const target = getActualTarget(e);
+    const targetContained = containersContain(target);
+
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
-    if (targetContained || e.target instanceof Document) {
+    if (targetContained || target instanceof Document) {
       if (targetContained) {
-        state.mostRecentlyFocusedNode = e.target;
+        state.mostRecentlyFocusedNode = target;
       }
     } else {
       // escaped! pull it back in to where it just left
@@ -318,6 +335,7 @@ const createFocusTrap = function (elements, userOptions) {
   // moment it can end up scrolling the page and causing confusion so we
   // kind of need to capture the action at the keydown phase.
   const checkTab = function (e) {
+    const target = getActualTarget(e);
     updateTabbableNodes();
 
     let destinationNode = null;
@@ -327,7 +345,7 @@ const createFocusTrap = function (elements, userOptions) {
       // NOTE: the target may also be the container itself if it's tabbable
       //  with tabIndex='-1' and was given initial focus
       const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
-        container.contains(e.target)
+        container.contains(target)
       );
 
       if (containerIndex < 0) {
@@ -348,12 +366,12 @@ const createFocusTrap = function (elements, userOptions) {
         // is the target the first tabbable node in a group?
         let startOfGroupIndex = findIndex(
           state.tabbableGroups,
-          ({ firstTabbableNode }) => e.target === firstTabbableNode
+          ({ firstTabbableNode }) => target === firstTabbableNode
         );
 
         if (
           startOfGroupIndex < 0 &&
-          state.tabbableGroups[containerIndex].container === e.target
+          state.tabbableGroups[containerIndex].container === target
         ) {
           // an exception case where the target is the container itself, in which
           //  case, we should handle shift+tab as if focus were on the container's
@@ -379,12 +397,12 @@ const createFocusTrap = function (elements, userOptions) {
         // is the target the last tabbable node in a group?
         let lastOfGroupIndex = findIndex(
           state.tabbableGroups,
-          ({ lastTabbableNode }) => e.target === lastTabbableNode
+          ({ lastTabbableNode }) => target === lastTabbableNode
         );
 
         if (
           lastOfGroupIndex < 0 &&
-          state.tabbableGroups[containerIndex].container === e.target
+          state.tabbableGroups[containerIndex].container === target
         ) {
           // an exception case where the target is the container itself, in which
           //  case, we should handle tab as if focus were on the container's
@@ -438,7 +456,9 @@ const createFocusTrap = function (elements, userOptions) {
       return;
     }
 
-    if (containersContain(e.target)) {
+    const target = getActualTarget(e);
+
+    if (containersContain(target)) {
       return;
     }
 
