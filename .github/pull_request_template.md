@@ -16,7 +16,8 @@ __Please leave this checklist in your PR.__
 - Includes updated docs demo bundle if source/docs code was changed (run `yarn demo-bundle` in your branch and include the `/docs/demo-bundle.js` file that gets generated in your PR).
 - Issue being fixed is referenced.
 - Unit test coverage added/updated.
-- E2E test coverage added/updated.
+- E2E (i.e. demos) test coverage added/updated.
+  - ⚠️ Non-covered demos (look for `IS_CYPRESS_ENV === ''` [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js)) __manually__ verified.
 - Typings added/updated.
 - README updated (API changes, instructions, etc.).
 - Changes to dependencies explained.
