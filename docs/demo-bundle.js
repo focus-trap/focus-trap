@@ -634,20 +634,6 @@ var focusTrapDemoBundle = (function () {
       return typeof value === 'function' ? value.apply(void 0, params) : value;
     };
 
-    var getActualTarget = function getActualTarget(event) {
-      // NOTE: If the trap is _inside_ a shadow DOM, event.target will always be the
-      //  shadow host. However, event.target.composedPath() will be an array of
-      //  nodes "clicked" from inner-most (the actual element inside the shadow) to
-      //  outer-most (the host HTML document). If we have access to composedPath(),
-      //  then use its first element; otherwise, fall back to event.target (and
-      //  this only works for an _open_ shadow DOM; otherwise,
-      //  composedPath()[0] === event.target always).
-      return event.target; // DEBUG
-      // return event.target.shadowRoot && typeof event.composedPath === 'function'
-      //   ? event.composedPath()[0]
-      //   : event.target;
-    };
-
     var createFocusTrap$q = function createFocusTrap(elements, userOptions) {
       var doc = userOptions.document || document;
 
@@ -817,9 +803,9 @@ var focusTrapDemoBundle = (function () {
 
 
       var checkPointerDown = function checkPointerDown(e) {
-        var target = getActualTarget(e);
 
-        if (containersContain(target)) {
+        if (containersContain(e.target)) {
+          // DEBUG
           // allow the click since it ocurred inside the trap
           return;
         }
@@ -838,7 +824,8 @@ var focusTrapDemoBundle = (function () {
             //  that was clicked, whether it's focusable or not; by setting
             //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
             //  on activation (or the configured `setReturnFocus` node)
-            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target)
+            returnFocus: config.returnFocusOnDeactivate && !isFocusable(e.target) // DEBUG
+
           });
           return;
         } // This is needed for mobile devices.
@@ -857,12 +844,13 @@ var focusTrapDemoBundle = (function () {
 
 
       var checkFocusIn = function checkFocusIn(e) {
-        var target = getActualTarget(e);
-        var targetContained = containersContain(target); // In Firefox when you Tab out of an iframe the Document is briefly focused.
+        var targetContained = containersContain(e.target); // DEBUG
+        // In Firefox when you Tab out of an iframe the Document is briefly focused.
 
-        if (targetContained || target instanceof Document) {
+        if (targetContained || e.target instanceof Document) {
+          // DEBUG
           if (targetContained) {
-            state.mostRecentlyFocusedNode = target;
+            state.mostRecentlyFocusedNode = e.target; // DEBUG
           }
         } else {
           // escaped! pull it back in to where it just left
@@ -876,7 +864,6 @@ var focusTrapDemoBundle = (function () {
 
 
       var checkTab = function checkTab(e) {
-        var target = getActualTarget(e);
         updateTabbableNodes();
         var destinationNode = null;
 
@@ -886,8 +873,9 @@ var focusTrapDemoBundle = (function () {
           //  with tabIndex='-1' and was given initial focus
           var containerIndex = findIndex$1(state.tabbableGroups, function (_ref) {
             var container = _ref.container;
-            return container.contains(target);
-          });
+            return container.contains(e.target);
+          } // DEBUG
+          );
 
           if (containerIndex < 0) {
             // target not found in any group: quite possible focus has escaped the trap,
@@ -904,10 +892,12 @@ var focusTrapDemoBundle = (function () {
             // is the target the first tabbable node in a group?
             var startOfGroupIndex = findIndex$1(state.tabbableGroups, function (_ref2) {
               var firstTabbableNode = _ref2.firstTabbableNode;
-              return target === firstTabbableNode;
-            });
+              return e.target === firstTabbableNode;
+            } // DEBUG
+            );
 
-            if (startOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target) {
+            if (startOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === e.target // DEBUG
+            ) {
               // an exception case where the target is the container itself, in which
               //  case, we should handle shift+tab as if focus were on the container's
               //  first tabbable node, and go to the last tabbable node of the LAST group
@@ -927,10 +917,12 @@ var focusTrapDemoBundle = (function () {
             // is the target the last tabbable node in a group?
             var lastOfGroupIndex = findIndex$1(state.tabbableGroups, function (_ref3) {
               var lastTabbableNode = _ref3.lastTabbableNode;
-              return target === lastTabbableNode;
-            });
+              return e.target === lastTabbableNode;
+            } // DEBUG
+            );
 
-            if (lastOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target) {
+            if (lastOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === e.target // DEBUG
+            ) {
               // an exception case where the target is the container itself, in which
               //  case, we should handle tab as if focus were on the container's
               //  last tabbable node, and go to the first tabbable node of the FIRST group
@@ -977,9 +969,8 @@ var focusTrapDemoBundle = (function () {
           return;
         }
 
-        var target = getActualTarget(e);
-
-        if (containersContain(target)) {
+        if (containersContain(e.target)) {
+          // DEBUG
           return;
         }
 
