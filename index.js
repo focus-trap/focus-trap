@@ -138,7 +138,10 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const containersContain = function (element) {
-    return state.containers.some((container) => container.contains(element));
+    return !!(
+      element &&
+      state.containers.some((container) => container.contains(element))
+    );
   };
 
   /**

@@ -1,34 +1,13 @@
 const { createFocusTrap } = require('../../dist/focus-trap');
 module.exports = () => {
-  // const container = document.getElementById('open-shadow-dom');
-  // const escapeDeactivatesOption = document.getElementById(
-  //   'escape-deactivates-option'
-  // );
-
-  // const focusTrap = createFocusTrap('#escape-deactivates', {
-  //   onActivate: () => container.classList.add('is-active'),
-  //   onDeactivate: () => container.classList.remove('is-active'),
-  //   escapeDeactivates: () => escapeDeactivatesOption.checked,
-
-  //   // allow clicking on the checkbox or its label since it's outside the trap
-  //   allowOutsideClick: (e) =>
-  //     e.target === escapeDeactivatesOption ||
-  //     e.target === escapeDeactivatesOption.parentNode,
-  // });
-
-  // document
-  //   .getElementById('activate-escape-deactivates')
-  //   .addEventListener('click', focusTrap.activate);
-  // document
-  //   .getElementById('deactivate-escape-deactivates')
-  //   .addEventListener('click', focusTrap.deactivate);
-
+  // DEBUG TODO: add warnings in options in README that support selector strings
+  // DEBUG TODO: add node about shadow DOMs in document option in README
   class FocusTrapModal extends HTMLElement {
     constructor() {
       super();
 
       const modalEl = document.createElement('div');
-      modalEl.id = 'open-shadow-dom';
+      modalEl.id = 'in-open-shadow-dom';
       modalEl.className = 'trap';
       modalEl.innerHTML = `
         <p>
@@ -36,7 +15,7 @@ module.exports = () => {
           <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
-          <button id="deactivate-open-shadow-dom" aria-describedby="open-shadow-dom-heading">
+          <button id="deactivate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">
             deactivate trap
           </button>
         </p>
@@ -58,10 +37,10 @@ module.exports = () => {
       });
 
       document
-        .getElementById('activate-open-shadow-dom')
+        .getElementById('activate-in-open-shadow-dom')
         .addEventListener('click', focusTrap.activate);
       modalEl
-        .querySelector('#deactivate-open-shadow-dom')
+        .querySelector('#deactivate-in-open-shadow-dom')
         .addEventListener('click', focusTrap.deactivate);
     }
   }

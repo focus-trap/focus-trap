@@ -680,9 +680,9 @@ var focusTrapDemoBundle = (function () {
       };
 
       var containersContain = function containersContain(element) {
-        return state.containers.some(function (container) {
+        return !!(element && state.containers.some(function (container) {
           return container.contains(element);
-        });
+        }));
       };
       /**
        * Gets the node for the given option, which is expected to be an option that
@@ -3374,26 +3374,9 @@ var focusTrapDemoBundle = (function () {
 
     var createFocusTrap = focusTrap.createFocusTrap;
 
-    var openShadowDom = function openShadowDom() {
-      // const container = document.getElementById('open-shadow-dom');
-      // const escapeDeactivatesOption = document.getElementById(
-      //   'escape-deactivates-option'
-      // );
-      // const focusTrap = createFocusTrap('#escape-deactivates', {
-      //   onActivate: () => container.classList.add('is-active'),
-      //   onDeactivate: () => container.classList.remove('is-active'),
-      //   escapeDeactivates: () => escapeDeactivatesOption.checked,
-      //   // allow clicking on the checkbox or its label since it's outside the trap
-      //   allowOutsideClick: (e) =>
-      //     e.target === escapeDeactivatesOption ||
-      //     e.target === escapeDeactivatesOption.parentNode,
-      // });
-      // document
-      //   .getElementById('activate-escape-deactivates')
-      //   .addEventListener('click', focusTrap.activate);
-      // document
-      //   .getElementById('deactivate-escape-deactivates')
-      //   .addEventListener('click', focusTrap.deactivate);
+    var inOpenShadowDom = function inOpenShadowDom() {
+      // DEBUG TODO: add warnings in options in README that support selector strings
+      // DEBUG TODO: add node about shadow DOMs in document option in README
       var FocusTrapModal = /*#__PURE__*/function (_HTMLElement) {
         _inherits(FocusTrapModal, _HTMLElement);
 
@@ -3406,9 +3389,9 @@ var focusTrapDemoBundle = (function () {
 
           _this = _super.call(this);
           var modalEl = document.createElement('div');
-          modalEl.id = 'open-shadow-dom';
+          modalEl.id = 'in-open-shadow-dom';
           modalEl.className = 'trap';
-          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <button id=\"deactivate-open-shadow-dom\" aria-describedby=\"open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      "; // use same styles as host
+          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      "; // use same styles as host
 
           var styleLinkEl = document.createElement('link');
           styleLinkEl.setAttribute('rel', 'stylesheet');
@@ -3429,8 +3412,8 @@ var focusTrapDemoBundle = (function () {
             },
             escapeDeactivates: true
           });
-          document.getElementById('activate-open-shadow-dom').addEventListener('click', focusTrap.activate);
-          modalEl.querySelector('#deactivate-open-shadow-dom').addEventListener('click', focusTrap.deactivate);
+          document.getElementById('activate-in-open-shadow-dom').addEventListener('click', focusTrap.activate);
+          modalEl.querySelector('#deactivate-in-open-shadow-dom').addEventListener('click', focusTrap.deactivate);
           return _this;
         }
 
@@ -3473,7 +3456,7 @@ var focusTrapDemoBundle = (function () {
     multipleElementsDelete();
     multipleElementsDeleteAll();
     multipleElementsMultipleTraps();
-    openShadowDom();
+    inOpenShadowDom();
 
     return js;
 

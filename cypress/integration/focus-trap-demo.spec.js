@@ -1470,9 +1470,9 @@ describe('focus-trap', () => {
     });
   });
 
-  describe('demo: open-shadow-dom', () => {
+  describe('demo: in-open-shadow-dom', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
-      cy.get('#demo-open-shadow-dom').as('testRoot');
+      cy.get('#demo-in-open-shadow-dom').as('testRoot');
 
       // activate trap
       cy.get('@testRoot')
@@ -1522,7 +1522,7 @@ describe('focus-trap', () => {
     });
 
     it('allows deactivation by pressing ESC', () => {
-      cy.get('#demo-open-shadow-dom').as('testRoot');
+      cy.get('#demo-in-open-shadow-dom').as('testRoot');
 
       // activate trap
       cy.get('@testRoot')
