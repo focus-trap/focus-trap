@@ -1,6 +1,6 @@
 require('regenerator-runtime/runtime');
 
-const { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../index');
 
 module.exports = async () => {
   const contextIframe = document.getElementById('in-iframe');

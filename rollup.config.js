@@ -146,7 +146,7 @@ const umd = [
 
 const isDevServer = process.env.SERVE === 'true';
 const isLiveReload = process.env.RELOAD === 'true';
-const demoBundleConfig = {
+const demo = {
   input: './docs/js/index.js',
   output: {
     name: 'focusTrapDemoBundle',
@@ -177,8 +177,11 @@ let config = [];
 console.log('Building for env', process.env.BUILD_ENV);
 
 switch (process.env.BUILD_ENV) {
+  case 'demo':
+    config = demo;
+    break;
   case 'cjs':
-    config = [...cjs, demoBundleConfig];
+    config = cjs;
     break;
   case 'esm':
     config = esm;

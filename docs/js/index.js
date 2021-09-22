@@ -12,6 +12,7 @@ require('./input-activation')();
 require('./delay')();
 require('./radio')();
 require('./iframe')();
+
 // loading this a Cypress env causes Chrome to fail in GitHub CI (even with
 //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
 //  and causes FireFox to fail both locally and in CI due to security context

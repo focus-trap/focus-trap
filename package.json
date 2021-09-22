@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "demo-bundle": "yarn compile:cjs",
+    "demo-bundle": "yarn compile:demo",
     "format": "prettier --write \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:check": "prettier --check \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:watch": "onchange \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\" -- prettier --write {{changed}}",
@@ -26,10 +26,11 @@
     "compile:esm": "cross-env BUILD_ENV=esm BABEL_ENV=esm rollup -c",
     "compile:cjs": "cross-env BUILD_ENV=cjs BABEL_ENV=es5 rollup -c",
     "compile:umd": "cross-env BUILD_ENV=umd BABEL_ENV=es5 rollup -c",
+    "compile:demo": "cross-env BUILD_ENV=demo BABEL_ENV=es5 rollup -c",
     "compile": "yarn compile:esm && yarn compile:cjs && yarn compile:umd",
     "build": "yarn clean && yarn compile",
-    "start": "yarn compile:cjs -- --watch --environment SERVE,RELOAD,IS_CYPRESS_ENV:''",
-    "start:cypress": "yarn compile:cjs --environment SERVE,IS_CYPRESS_ENV:\"$CYPRESS_BROWSER\"",
+    "start": "yarn compile:demo --watch --environment SERVE,RELOAD,IS_CYPRESS_ENV:''",
+    "start:cypress": "yarn compile:demo --environment SERVE,IS_CYPRESS_ENV:\"$CYPRESS_BROWSER\"",
     "test:types": "tsc index.d.ts",
     "test:unit": "echo \"No unit tests to run!\"",
     "test:cypress": "CYPRESS_BROWSER=ANY start-server-and-test start:cypress 9966 'cypress open'",

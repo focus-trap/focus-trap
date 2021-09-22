@@ -6,7 +6,7 @@ var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"cjs"};
+        const env = {"BUILD_ENV":"demo"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -34,7 +34,110 @@ var focusTrapDemoBundle = (function () {
 
     var js = {};
 
-    var focusTrap = {};
+    function ownKeys(object, enumerableOnly) {
+      var keys = Object.keys(object);
+
+      if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+
+        if (enumerableOnly) {
+          symbols = symbols.filter(function (sym) {
+            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+          });
+        }
+
+        keys.push.apply(keys, symbols);
+      }
+
+      return keys;
+    }
+
+    function _objectSpread2(target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i] != null ? arguments[i] : {};
+
+        if (i % 2) {
+          ownKeys(Object(source), true).forEach(function (key) {
+            _defineProperty(target, key, source[key]);
+          });
+        } else if (Object.getOwnPropertyDescriptors) {
+          Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+        } else {
+          ownKeys(Object(source)).forEach(function (key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+          });
+        }
+      }
+
+      return target;
+    }
+
+    function _typeof(obj) {
+      "@babel/helpers - typeof";
+
+      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+        _typeof = function (obj) {
+          return typeof obj;
+        };
+      } else {
+        _typeof = function (obj) {
+          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+        };
+      }
+
+      return _typeof(obj);
+    }
+
+    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+      try {
+        var info = gen[key](arg);
+        var value = info.value;
+      } catch (error) {
+        reject(error);
+        return;
+      }
+
+      if (info.done) {
+        resolve(value);
+      } else {
+        Promise.resolve(value).then(_next, _throw);
+      }
+    }
+
+    function _asyncToGenerator(fn) {
+      return function () {
+        var self = this,
+            args = arguments;
+        return new Promise(function (resolve, reject) {
+          var gen = fn.apply(self, args);
+
+          function _next(value) {
+            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+          }
+
+          function _throw(err) {
+            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+          }
+
+          _next(undefined);
+        });
+      };
+    }
+
+    function _defineProperty(obj, key, value) {
+      if (key in obj) {
+        Object.defineProperty(obj, key, {
+          value: value,
+          enumerable: true,
+          configurable: true,
+          writable: true
+        });
+      } else {
+        obj[key] = value;
+      }
+
+      return obj;
+    }
 
     /*!
     * tabbable 5.2.1
@@ -238,7 +341,7 @@ var focusTrapDemoBundle = (function () {
       return true;
     };
 
-    var tabbable$1 = function tabbable(el, options) {
+    var tabbable = function tabbable(el, options) {
       options = options || {};
       var regularTabbables = [];
       var orderedTabbables = [];
@@ -262,26 +365,6 @@ var focusTrapDemoBundle = (function () {
       return tabbableNodes;
     };
 
-    var focusable = function focusable(el, options) {
-      options = options || {};
-      var candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
-      return candidates;
-    };
-
-    var isTabbable = function isTabbable(node, options) {
-      options = options || {};
-
-      if (!node) {
-        throw new Error('No node provided');
-      }
-
-      if (matches.call(node, candidateSelector) === false) {
-        return false;
-      }
-
-      return isNodeMatchingSelectorTabbable(options, node);
-    };
-
     var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe').join(',');
 
     var isFocusable = function isFocusable(node, options) {
@@ -297,74 +380,6 @@ var focusTrapDemoBundle = (function () {
 
       return isNodeMatchingSelectorFocusable(options, node);
     };
-
-    var index_esm = /*#__PURE__*/Object.freeze({
-        __proto__: null,
-        focusable: focusable,
-        isFocusable: isFocusable,
-        isTabbable: isTabbable,
-        tabbable: tabbable$1
-    });
-
-    var require$$0 = /*@__PURE__*/getAugmentedNamespace(index_esm);
-
-    Object.defineProperty(focusTrap, '__esModule', {
-      value: true
-    });
-    var tabbable = require$$0;
-
-    function ownKeys(object, enumerableOnly) {
-      var keys = Object.keys(object);
-
-      if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(object);
-
-        if (enumerableOnly) {
-          symbols = symbols.filter(function (sym) {
-            return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-          });
-        }
-
-        keys.push.apply(keys, symbols);
-      }
-
-      return keys;
-    }
-
-    function _objectSpread2(target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i] != null ? arguments[i] : {};
-
-        if (i % 2) {
-          ownKeys(Object(source), true).forEach(function (key) {
-            _defineProperty(target, key, source[key]);
-          });
-        } else if (Object.getOwnPropertyDescriptors) {
-          Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-        } else {
-          ownKeys(Object(source)).forEach(function (key) {
-            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-          });
-        }
-      }
-
-      return target;
-    }
-
-    function _defineProperty(obj, key, value) {
-      if (key in obj) {
-        Object.defineProperty(obj, key, {
-          value: value,
-          enumerable: true,
-          configurable: true,
-          writable: true
-        });
-      } else {
-        obj[key] = value;
-      }
-
-      return obj;
-    }
 
     var activeFocusTraps = function () {
       var trapQueue = [];
@@ -564,7 +579,7 @@ var focusTrapDemoBundle = (function () {
 
       var updateTabbableNodes = function updateTabbableNodes() {
         state.tabbableGroups = state.containers.map(function (container) {
-          var tabbableNodes = tabbable.tabbable(container);
+          var tabbableNodes = tabbable(container);
 
           if (tabbableNodes.length > 0) {
             return {
@@ -637,7 +652,7 @@ var focusTrapDemoBundle = (function () {
             //  that was clicked, whether it's focusable or not; by setting
             //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
             //  on activation (or the configured `setReturnFocus` node)
-            returnFocus: config.returnFocusOnDeactivate && !tabbable.isFocusable(e.target)
+            returnFocus: config.returnFocusOnDeactivate && !isFocusable(e.target)
           });
           return;
         } // This is needed for mobile devices.
@@ -958,9 +973,14 @@ var focusTrapDemoBundle = (function () {
       return trap;
     };
 
-    focusTrap.createFocusTrap = createFocusTrap$o;
+    var focusTrap = /*#__PURE__*/Object.freeze({
+        __proto__: null,
+        createFocusTrap: createFocusTrap$o
+    });
 
-    var createFocusTrap$n = focusTrap.createFocusTrap;
+    var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
+
+    var createFocusTrap$n = require$$0.createFocusTrap;
 
     var _default = function _default() {
       var container = document.getElementById('default');
@@ -976,7 +996,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$m = focusTrap.createFocusTrap;
+    var createFocusTrap$m = require$$0.createFocusTrap;
 
     var animatedDialog = function animatedDialog() {
       var container = document.getElementById('animated-dialog');
@@ -1017,7 +1037,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-animated-dialog').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$l = focusTrap.createFocusTrap;
+    var createFocusTrap$l = require$$0.createFocusTrap;
 
     var animatedTrigger = function animatedTrigger() {
       var container = document.getElementById('animated-trigger');
@@ -1060,7 +1080,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$k = focusTrap.createFocusTrap;
+    var createFocusTrap$k = require$$0.createFocusTrap;
 
     var escapeDeactivates = function escapeDeactivates() {
       var container = document.getElementById('escape-deactivates');
@@ -1084,7 +1104,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-escape-deactivates').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$j = focusTrap.createFocusTrap;
+    var createFocusTrap$j = require$$0.createFocusTrap;
 
     var initialElementNoEscape = function initialElementNoEscape() {
       var container = document.getElementById('iene');
@@ -1134,7 +1154,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$i = focusTrap.createFocusTrap;
+    var createFocusTrap$i = require$$0.createFocusTrap;
 
     var initiallyFocusedContainer = function initiallyFocusedContainer() {
       var container = document.getElementById('ifc');
@@ -1154,7 +1174,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-ifc').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$h = focusTrap.createFocusTrap;
+    var createFocusTrap$h = require$$0.createFocusTrap;
 
     var hiddenTreasures = function hiddenTreasures() {
       var container = document.getElementById('ht');
@@ -1176,7 +1196,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$g = focusTrap.createFocusTrap;
+    var createFocusTrap$g = require$$0.createFocusTrap;
 
     var nested = function nested() {
       var container = document.getElementById('nested');
@@ -1204,7 +1224,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('nested-deactivate-nested').addEventListener('click', nestedFocusTrap.deactivate);
     };
 
-    var createFocusTrap$f = focusTrap.createFocusTrap;
+    var createFocusTrap$f = require$$0.createFocusTrap;
 
     var sibling = function sibling() {
       var container = document.getElementById('sibling-first');
@@ -1233,7 +1253,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-second-sibling').addEventListener('click', secondFocusTrap.deactivate);
     };
 
-    var createFocusTrap$e = focusTrap.createFocusTrap;
+    var createFocusTrap$e = require$$0.createFocusTrap;
 
     var trickyInitialFocus = function trickyInitialFocus() {
       var container = document.getElementById('tif');
@@ -1257,7 +1277,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$d = focusTrap.createFocusTrap;
+    var createFocusTrap$d = require$$0.createFocusTrap;
 
     var inputActivation = function inputActivation() {
       var container = document.getElementById('input-activation');
@@ -1273,7 +1293,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-input-activation').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$c = focusTrap.createFocusTrap;
+    var createFocusTrap$c = require$$0.createFocusTrap;
     var container = document.getElementById('delay');
 
     var delay = function delay() {
@@ -1302,7 +1322,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('close-button-delay').addEventListener('click', hideContainer);
     };
 
-    var createFocusTrap$b = focusTrap.createFocusTrap;
+    var createFocusTrap$b = require$$0.createFocusTrap;
 
     var radio = function radio() {
       var container = document.getElementById('radio');
@@ -1318,7 +1338,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-radio').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$a = focusTrap.createFocusTrap;
+    var createFocusTrap$a = require$$0.createFocusTrap;
 
     var iframe = function iframe() {
       var container = document.getElementById('iframe');
@@ -1333,58 +1353,6 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('activate-iframe').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
     };
-
-    function _typeof(obj) {
-      "@babel/helpers - typeof";
-
-      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-        _typeof = function (obj) {
-          return typeof obj;
-        };
-      } else {
-        _typeof = function (obj) {
-          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-        };
-      }
-
-      return _typeof(obj);
-    }
-
-    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-      try {
-        var info = gen[key](arg);
-        var value = info.value;
-      } catch (error) {
-        reject(error);
-        return;
-      }
-
-      if (info.done) {
-        resolve(value);
-      } else {
-        Promise.resolve(value).then(_next, _throw);
-      }
-    }
-
-    function _asyncToGenerator(fn) {
-      return function () {
-        var self = this,
-            args = arguments;
-        return new Promise(function (resolve, reject) {
-          var gen = fn.apply(self, args);
-
-          function _next(value) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-          }
-
-          function _throw(err) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-          }
-
-          _next(undefined);
-        });
-      };
-    }
 
     var runtime = {exports: {}};
 
@@ -2106,7 +2074,7 @@ var focusTrapDemoBundle = (function () {
       }
     })(runtime);
 
-    var createFocusTrap$9 = focusTrap.createFocusTrap;
+    var createFocusTrap$9 = require$$0.createFocusTrap;
 
     var inIframe = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2163,7 +2131,7 @@ var focusTrapDemoBundle = (function () {
       };
     }();
 
-    var createFocusTrap$8 = focusTrap.createFocusTrap;
+    var createFocusTrap$8 = require$$0.createFocusTrap;
 
     var allowOutsideClick = function allowOutsideClick() {
       var container = document.getElementById('allowoutsideclick');
@@ -2219,7 +2187,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$7 = focusTrap.createFocusTrap;
+    var createFocusTrap$7 = require$$0.createFocusTrap;
 
     var clickOutsideDeactivates = function clickOutsideDeactivates() {
       var container = document.getElementById('clickoutsidedeactivates');
@@ -2283,7 +2251,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$6 = focusTrap.createFocusTrap;
+    var createFocusTrap$6 = require$$0.createFocusTrap;
 
     var setReturnFocus = function setReturnFocus() {
       var container = document.getElementById('setreturnfocus');
@@ -2300,7 +2268,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$5 = focusTrap.createFocusTrap;
+    var createFocusTrap$5 = require$$0.createFocusTrap;
 
     var setReturnFocusFunction = function setReturnFocusFunction() {
       var container = document.getElementById('setreturnfocus-function');
@@ -2344,7 +2312,7 @@ var focusTrapDemoBundle = (function () {
       document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
     };
 
-    var createFocusTrap$4 = focusTrap.createFocusTrap;
+    var createFocusTrap$4 = require$$0.createFocusTrap;
 
     var noDelay = function noDelay() {
       var container = document.getElementById('no-delay');
@@ -2375,7 +2343,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
     };
 
-    var createFocusTrap$3 = focusTrap.createFocusTrap;
+    var createFocusTrap$3 = require$$0.createFocusTrap;
 
     var multipleElements = function multipleElements() {
       var container = document.getElementById('multipleelements');
@@ -2403,7 +2371,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$2 = focusTrap.createFocusTrap;
+    var createFocusTrap$2 = require$$0.createFocusTrap;
 
     var multipleElementsDelete = function multipleElementsDelete() {
       var container = document.getElementById('multipleelements-delete');
@@ -2436,7 +2404,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$1 = focusTrap.createFocusTrap;
+    var createFocusTrap$1 = require$$0.createFocusTrap;
 
     var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
       var container = document.getElementById('multipleelements-delete-all');
@@ -2471,7 +2439,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap = focusTrap.createFocusTrap;
+    var createFocusTrap = require$$0.createFocusTrap;
 
     var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
       var container = document.getElementById('multipleelements-multipletraps');
@@ -2597,5 +2565,5 @@ var focusTrapDemoBundle = (function () {
 
     return js;
 
-}());
+})();
 //# sourceMappingURL=demo-bundle.js.map
