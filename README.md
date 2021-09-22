@@ -177,10 +177,10 @@ Returns the `trap`.
 
 Read code in `docs/` and [see how it works](http://focus-trap.github.io/focus-trap/).
 
-Here's what happens in `default.js` (the "default behavior" demo):
+Here's generally what happens in `default.js` (the "default behavior" demo):
 
 ```js
-const { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../index');
 
 const container = document.getElementById('default');
 

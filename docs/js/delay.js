@@ -1,4 +1,4 @@
-const { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../index');
 
 const container = document.getElementById('delay');
 module.exports = () => {

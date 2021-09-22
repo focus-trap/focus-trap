@@ -1,4 +1,4 @@
-const { createFocusTrap } = require('../../dist/focus-trap');
+const { createFocusTrap } = require('../../index');
 module.exports = () => {
   const container = document.getElementById('clickoutsidedeactivates');
   const trigger = document.getElementById('activate-clickoutsidedeactivates');
