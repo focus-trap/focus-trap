@@ -90,9 +90,10 @@ const getActualTarget = function (event) {
   //  then use its first element; otherwise, fall back to event.target (and
   //  this only works for an _open_ shadow DOM; otherwise,
   //  composedPath()[0] === event.target always).
-  return event.target.shadowRoot && typeof event.composedPath === 'function'
-    ? event.composedPath()[0]
-    : event.target;
+  return event.target; // DEBUG
+  // return event.target.shadowRoot && typeof event.composedPath === 'function'
+  //   ? event.composedPath()[0]
+  //   : event.target;
 };
 
 const createFocusTrap = function (elements, userOptions) {

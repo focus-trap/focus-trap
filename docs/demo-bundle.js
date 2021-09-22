@@ -6,7 +6,7 @@ var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -642,7 +642,10 @@ var focusTrapDemoBundle = (function () {
       //  then use its first element; otherwise, fall back to event.target (and
       //  this only works for an _open_ shadow DOM; otherwise,
       //  composedPath()[0] === event.target always).
-      return event.target.shadowRoot && typeof event.composedPath === 'function' ? event.composedPath()[0] : event.target;
+      return event.target; // DEBUG
+      // return event.target.shadowRoot && typeof event.composedPath === 'function'
+      //   ? event.composedPath()[0]
+      //   : event.target;
     };
 
     var createFocusTrap$q = function createFocusTrap(elements, userOptions) {

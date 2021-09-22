@@ -1397,7 +1397,7 @@ describe('focus-trap', () => {
     });
   });
 
-  describe('demo: multiple traps with multiple elements', () => {
+  describe.only('demo: multiple traps with multiple elements', () => { // DEBUG
     it('multiple traps with multiple elements works', () => {
       cy.get('#demo-multipleelements-multipletraps').as('testRoot');
 
@@ -1409,7 +1409,7 @@ describe('focus-trap', () => {
 
       // Focus should be in trap 1
       cy.get('@testRoot')
-        .findByRole('link', { name: 'with' })
+        .findByRole('link', { name: 'with' }) // trap 1 first group
         .should('be.focused')
         .tab()
         .should('have.text', 'some')
@@ -1418,7 +1418,7 @@ describe('focus-trap', () => {
         .should('have.text', 'focusable')
         .should('be.focused')
         .tab()
-        .should('have.text', 'See')
+        .should('have.text', 'See') // over to trap 1 second group
         .should('be.focused');
 
       // activate focus trap 2.  This should pause trap 1
@@ -1428,16 +1428,16 @@ describe('focus-trap', () => {
 
       // Focus should be in trap 2
       cy.get('@testRoot')
-        .findByRole('link', { name: 'something' })
+        .findByRole('link', { name: 'something' }) // trap 2 first group
         .should('be.focused')
         .tab()
-        .should('have.text', 'last')
+        .should('have.text', 'last') // over to trap 2 second group
         .should('be.focused')
         .tab()
         .should('have.text', 'area')
         .should('be.focused')
         .tab()
-        .should('have.text', 'something')
+        .should('have.text', 'something') // back to trap 2 first group
         .should('be.focused');
 
       // stop focus trap 2
@@ -1445,15 +1445,16 @@ describe('focus-trap', () => {
         .findByRole('button', { name: /^deactivate trap 2/ })
         .click();
 
-      // focus should resume back to trap 1
+      // focus should resume back to trap 1 second group with 'See' link focused
+      //  since it was the active element at the time trap 2 was activated
       cy.get('@testRoot')
-        .findByRole('link', { name: 'See' })
-        .should('be.focused')
-        .tab()
-        .should('have.text', 'how')
+        .findByRole('link', { name: 'See' }) // trap 1 second group
         .should('be.focused')
         .tab()
         .should('have.text', 'works')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'with') // over to trap 1 first group
         .should('be.focused');
 
       // focus can be transitioned freely when both traps are deactivated
