@@ -1397,7 +1397,7 @@ describe('focus-trap', () => {
     });
   });
 
-  describe.only('demo: multiple traps with multiple elements', () => { // DEBUG
+  describe('demo: multiple traps with multiple elements', () => {
     it('multiple traps with multiple elements works', () => {
       cy.get('#demo-multipleelements-multipletraps').as('testRoot');
 
@@ -1451,6 +1451,9 @@ describe('focus-trap', () => {
         .findByRole('link', { name: 'See' }) // trap 1 second group
         .should('be.focused')
         .tab()
+        .should('have.text', 'how')
+        .should('be.focused')
+        .tab()
         .should('have.text', 'works')
         .should('be.focused')
         .tab()
@@ -1471,7 +1474,7 @@ describe('focus-trap', () => {
     });
   });
 
-  describe('demo: in-open-shadow-dom', () => {
+  describe.only('demo: in-open-shadow-dom', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
       cy.get('#demo-in-open-shadow-dom').as('testRoot');
 
@@ -1482,7 +1485,9 @@ describe('focus-trap', () => {
         .click();
 
       // 1st element should be focused
-      cy.get('@testRoot')
+      cy.get('#in-open-shadow-dom-host') // NOTE: this ID is defined in /docs/js/in-open-shadow-dom.js
+        .as('shadowHost')
+        .shadow()
         .findByRole('link', { name: 'with' })
         .as('firstElementInTrap')
         .should('be.focused');
@@ -1496,7 +1501,7 @@ describe('focus-trap', () => {
       cy.get('@firstElementInTrap').should('be.focused');
 
       // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
-      cy.get('@firstElementInTrap')
+      cy.get('@firstElementInTrap', { includeShadowDom: true }) // DEBUG fails here
         .tab()
         .should('have.text', 'some')
         .should('be.focused')
@@ -1514,7 +1519,8 @@ describe('focus-trap', () => {
       cy.get('@lastElementInTrap').should('be.focused');
 
       // focus can be transitioned freely when trap is deactivated
-      cy.get('@testRoot')
+      cy.get('@shadowHost')
+        .shadow()
         .findByRole('button', { name: /^deactivate trap/ })
         .click();
       verifyFocusIsNotTrapped(
@@ -1532,7 +1538,8 @@ describe('focus-trap', () => {
         .click();
 
       // 1st element should be focused
-      cy.get('@testRoot')
+      cy.get('#in-open-shadow-dom', { includeShadowDom: true })
+        .as('trapRoot')
         .findByRole('link', { name: 'with' })
         .as('firstElementInTrap')
         .should('be.focused');

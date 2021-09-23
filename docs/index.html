@@ -541,6 +541,59 @@
       </p>
     </div>
 
+    <!--
+    NOTE: For reason I cannot explain, putting the HTML for this demo after the
+     HTML for the #demo-multipleelements-multipletraps demo will cause the deactivation
+     of the second trap in the #demo-multipleelements-multipletraps to fail, but
+     only when running under Cypress. A moment of silence for the hours lost on this...
+     ¯\_(ツ)_/¯
+    -->
+    <div id="demo-in-open-shadow-dom">
+      <h2 id="in-open-shadow-dom-heading">inside an open shadow dom</h2>
+      <p>
+        This focus trap is instantiated <em>inside</em> an <strong>open</strong>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM" target="blank" rel="noreferrer">Shadow DOM</a>.
+        Some users of this library use Web Components to create things like modal dialogs,
+        which means focus needs to be trapped inside the Shadow DOM instance.
+      </p>
+      <p>
+        When the mouse is clicked on an element inside an <strong>open</strong> Shadow DOM,
+        the target node in <code>event.target</code> is always the shadow host (the node to
+        which the shadow is attached). Fortunately, <code>event.composedPath()</code>, a
+        modern API on the event object, allows focus-trap to determine the actual node that
+        was clicked inside the shadow.
+      </p>
+      <p>
+        ⚠️ focus-trap is unable to work with closed Shadow DOMs because
+        <code>event.composedPath()</code> can't see inside it. In this case, both this
+        modern API and <code>event.target</code> point to the shadow host as the actual
+        element that was clicked, and focus-trap will always determine that the click was
+        outside the trap (and either prevent it, or always deactivate the trap when the
+        <code>clickOutsideDeactivates</code> option is true).
+      </p>
+      <p>
+        🚨 Beware that putting a focus-trap <strong>inside</strong> an open Shadow DOM
+        means you must either <strong>not use selector strings</strong> for options that
+        support these (because nodes inside Shadow DOMs, even open shadows, are not
+        visible via <code>document.querySelector()</code>) --OR-- you must
+        <strong>use the <code>document</code> option</strong> to configure the focus-trap
+        to use your <em>shadow host</em> element as its document (the downside being that
+        while selector queries on nodes inside your trap will now work, the trap will
+        <strong>not</strong> prevent focus from being set on nodes outside your
+        Shadow DOM, which is the same drawback as putting a focus-trap
+        <a href="#demo-in-iframe">inside an iframe</a>).
+      </p>
+      <p>
+        <button id="activate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">
+          activate trap
+        </button>
+      </p>
+      <focus-trap-modal></focus-trap-modal>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-open-shadow-dom.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-allowoutsideclick">
       <h2 id="allowoutsideclick-heading">allowOutsideClick option</h2>
       <p>
@@ -841,52 +894,6 @@
       </div>
       <p>
         <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-multiple-traps.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
-      </p>
-    </div>
-
-    <div id="demo-in-open-shadow-dom">
-      <h2 id="in-open-shadow-dom-heading">inside an open shadow dom</h2>
-      <p>
-        This focus trap is instantiated <em>inside</em> an <strong>open</strong>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM" target="blank" rel="noreferrer">Shadow DOM</a>.
-        Some users of this library use Web Components to create things like modal dialogs,
-        which means focus needs to be trapped inside the Shadow DOM instance.
-      </p>
-      <p>
-        When the mouse is clicked on an element inside an <strong>open</strong> Shadow DOM,
-        the target node in <code>event.target</code> is always the shadow host (the node to
-        which the shadow is attached). Fortunately, <code>event.composedPath()</code>, a
-        modern API on the event object, allows focus-trap to determine the actual node that
-        was clicked inside the shadow.
-      </p>
-      <p>
-        ⚠️ focus-trap is unable to work with closed Shadow DOMs because
-        <code>event.composedPath()</code> can't see inside it. In this case, both this
-        modern API and <code>event.target</code> point to the shadow host as the actual
-        element that was clicked, and focus-trap will always determine that the click was
-        outside the trap (and either prevent it, or always deactivate the trap when the
-        <code>clickOutsideDeactivates</code> option is true).
-      </p>
-      <p>
-        🚨 Beware that putting a focus-trap <strong>inside</strong> an open Shadow DOM
-        means you must either <strong>not use selector strings</strong> for options that
-        support these (because nodes inside Shadow DOMs, even open shadows, are not
-        visible via <code>document.querySelector()</code>) --OR-- you must
-        <strong>use the <code>document</code> option</strong> to configure the focus-trap
-        to use your <em>shadow host</em> element as its document (the downside being that
-        while selector queries on nodes inside your trap will now work, the trap will
-        <strong>not</strong> prevent focus from being set on nodes outside your
-        Shadow DOM, which is the same drawback as putting a focus-trap
-        <a href="#demo-in-iframe">inside an iframe</a>).
-      </p>
-      <p>
-        <button id="activate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">
-          activate trap
-        </button>
-      </p>
-      <focus-trap-modal></focus-trap-modal>
-      <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-open-shadow-dom.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
