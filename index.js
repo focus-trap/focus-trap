@@ -347,9 +347,8 @@ const createFocusTrap = function (elements, userOptions) {
       // make sure the target is actually contained in a group
       // NOTE: the target may also be the container itself if it's tabbable
       //  with tabIndex='-1' and was given initial focus
-      const containerIndex = findIndex(
-        state.tabbableGroups,
-        ({ container }) => container.contains(target)
+      const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
+        container.contains(target)
       );
 
       if (containerIndex < 0) {
