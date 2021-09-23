@@ -6,7 +6,7 @@ var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
+        const env = {"BUILD_ENV":"demo"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
