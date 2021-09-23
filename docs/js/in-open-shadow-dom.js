@@ -1,7 +1,5 @@
 const { createFocusTrap } = require('../../index');
 module.exports = () => {
-  // DEBUG TODO: add warnings in options in README that support selector strings
-  // DEBUG TODO: add node about shadow DOMs in document option in README
   class FocusTrapModal extends HTMLElement {
     constructor() {
       super();
@@ -13,7 +11,7 @@ module.exports = () => {
       modalEl.innerHTML = `
         <p>
           Here is a focus trap in an open Shadow DOM
-          <a data-text="with" href="#">with</a> <a data-text="some" href="#">some</a> <a data-text="focusable" href="#">focusable</a> parts.
+          <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
           <button id="deactivate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">

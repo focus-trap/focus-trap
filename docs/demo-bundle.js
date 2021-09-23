@@ -6,7 +6,7 @@ var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"ANY"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -789,7 +789,6 @@ var focusTrapDemoBundle = (function () {
         var target = getActualTarget(e);
 
         if (containersContain(target)) {
-          // DEBUG
           // allow the click since it ocurred inside the trap
           return;
         }
@@ -808,8 +807,7 @@ var focusTrapDemoBundle = (function () {
             //  that was clicked, whether it's focusable or not; by setting
             //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
             //  on activation (or the configured `setReturnFocus` node)
-            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target) // DEBUG
-
+            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target)
           });
           return;
         } // This is needed for mobile devices.
@@ -829,13 +827,11 @@ var focusTrapDemoBundle = (function () {
 
       var checkFocusIn = function checkFocusIn(e) {
         var target = getActualTarget(e);
-        var targetContained = containersContain(target); // DEBUG
-        // In Firefox when you Tab out of an iframe the Document is briefly focused.
+        var targetContained = containersContain(target); // In Firefox when you Tab out of an iframe the Document is briefly focused.
 
         if (targetContained || target instanceof Document) {
-          // DEBUG
           if (targetContained) {
-            state.mostRecentlyFocusedNode = target; // DEBUG
+            state.mostRecentlyFocusedNode = target;
           }
         } else {
           // escaped! pull it back in to where it just left
@@ -860,8 +856,7 @@ var focusTrapDemoBundle = (function () {
           var containerIndex = findIndex(state.tabbableGroups, function (_ref) {
             var container = _ref.container;
             return container.contains(target);
-          } // DEBUG
-          );
+          });
 
           if (containerIndex < 0) {
             // target not found in any group: quite possible focus has escaped the trap,
@@ -879,11 +874,9 @@ var focusTrapDemoBundle = (function () {
             var startOfGroupIndex = findIndex(state.tabbableGroups, function (_ref2) {
               var firstTabbableNode = _ref2.firstTabbableNode;
               return target === firstTabbableNode;
-            } // DEBUG
-            );
+            });
 
-            if (startOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target // DEBUG
-            ) {
+            if (startOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target) {
               // an exception case where the target is the container itself, in which
               //  case, we should handle shift+tab as if focus were on the container's
               //  first tabbable node, and go to the last tabbable node of the LAST group
@@ -904,11 +897,9 @@ var focusTrapDemoBundle = (function () {
             var lastOfGroupIndex = findIndex(state.tabbableGroups, function (_ref3) {
               var lastTabbableNode = _ref3.lastTabbableNode;
               return target === lastTabbableNode;
-            } // DEBUG
-            );
+            });
 
-            if (lastOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target // DEBUG
-            ) {
+            if (lastOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target) {
               // an exception case where the target is the container itself, in which
               //  case, we should handle tab as if focus were on the container's
               //  last tabbable node, and go to the first tabbable node of the FIRST group
@@ -958,7 +949,6 @@ var focusTrapDemoBundle = (function () {
         var target = getActualTarget(e);
 
         if (containersContain(target)) {
-          // DEBUG
           return;
         }
 
@@ -2701,8 +2691,6 @@ var focusTrapDemoBundle = (function () {
     var createFocusTrap = require$$0.createFocusTrap;
 
     var inOpenShadowDom = function inOpenShadowDom() {
-      // DEBUG TODO: add warnings in options in README that support selector strings
-      // DEBUG TODO: add node about shadow DOMs in document option in README
       var FocusTrapModal = /*#__PURE__*/function (_HTMLElement) {
         _inherits(FocusTrapModal, _HTMLElement);
 
@@ -2718,7 +2706,7 @@ var focusTrapDemoBundle = (function () {
           var modalEl = document.createElement('div');
           modalEl.id = 'in-open-shadow-dom-trap';
           modalEl.className = 'trap';
-          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a data-text=\"with\" href=\"#\">with</a> <a data-text=\"some\" href=\"#\">some</a> <a data-text=\"focusable\" href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      "; // use same styles as host
+          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      "; // use same styles as host
 
           var styleLinkEl = document.createElement('link');
           styleLinkEl.setAttribute('rel', 'stylesheet');

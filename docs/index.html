@@ -572,16 +572,11 @@
         <code>clickOutsideDeactivates</code> option is true).
       </p>
       <p>
-        🚨 Beware that putting a focus-trap <strong>inside</strong> an open Shadow DOM
-        means you must either <strong>not use selector strings</strong> for options that
-        support these (because nodes inside Shadow DOMs, even open shadows, are not
-        visible via <code>document.querySelector()</code>) --OR-- you must
-        <strong>use the <code>document</code> option</strong> to configure the focus-trap
-        to use your <em>shadow host</em> element as its document (the downside being that
-        while selector queries on nodes inside your trap will now work, the trap will
-        <strong>not</strong> prevent focus from being set on nodes outside your
-        Shadow DOM, which is the same drawback as putting a focus-trap
-        <a href="#demo-in-iframe">inside an iframe</a>).
+        ⚠️ See the
+        <a href="https://github.com/focus-trap/focus-trap#shadow-dom-and-selector-strings">
+          warning about selector string options
+        </a>
+        when putting a focus trap <strong>inside</strong> an open Shadow DOM.
       </p>
       <p>
         <button id="activate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">
