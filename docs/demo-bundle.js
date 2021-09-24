@@ -124,6 +124,12 @@ var focusTrapDemoBundle = (function () {
       };
     }
 
+    function _classCallCheck(instance, Constructor) {
+      if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+      }
+    }
+
     function _defineProperty(obj, key, value) {
       if (key in obj) {
         Object.defineProperty(obj, key, {
@@ -137,6 +143,142 @@ var focusTrapDemoBundle = (function () {
       }
 
       return obj;
+    }
+
+    function _inherits(subClass, superClass) {
+      if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function");
+      }
+
+      subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+          value: subClass,
+          writable: true,
+          configurable: true
+        }
+      });
+      if (superClass) _setPrototypeOf(subClass, superClass);
+    }
+
+    function _getPrototypeOf(o) {
+      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+      };
+      return _getPrototypeOf(o);
+    }
+
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+
+      return _setPrototypeOf(o, p);
+    }
+
+    function _isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+
+      try {
+        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function _construct(Parent, args, Class) {
+      if (_isNativeReflectConstruct()) {
+        _construct = Reflect.construct;
+      } else {
+        _construct = function _construct(Parent, args, Class) {
+          var a = [null];
+          a.push.apply(a, args);
+          var Constructor = Function.bind.apply(Parent, a);
+          var instance = new Constructor();
+          if (Class) _setPrototypeOf(instance, Class.prototype);
+          return instance;
+        };
+      }
+
+      return _construct.apply(null, arguments);
+    }
+
+    function _isNativeFunction(fn) {
+      return Function.toString.call(fn).indexOf("[native code]") !== -1;
+    }
+
+    function _wrapNativeSuper(Class) {
+      var _cache = typeof Map === "function" ? new Map() : undefined;
+
+      _wrapNativeSuper = function _wrapNativeSuper(Class) {
+        if (Class === null || !_isNativeFunction(Class)) return Class;
+
+        if (typeof Class !== "function") {
+          throw new TypeError("Super expression must either be null or a function");
+        }
+
+        if (typeof _cache !== "undefined") {
+          if (_cache.has(Class)) return _cache.get(Class);
+
+          _cache.set(Class, Wrapper);
+        }
+
+        function Wrapper() {
+          return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+        }
+
+        Wrapper.prototype = Object.create(Class.prototype, {
+          constructor: {
+            value: Wrapper,
+            enumerable: false,
+            writable: true,
+            configurable: true
+          }
+        });
+        return _setPrototypeOf(Wrapper, Class);
+      };
+
+      return _wrapNativeSuper(Class);
+    }
+
+    function _assertThisInitialized(self) {
+      if (self === void 0) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+      }
+
+      return self;
+    }
+
+    function _possibleConstructorReturn(self, call) {
+      if (call && (typeof call === "object" || typeof call === "function")) {
+        return call;
+      } else if (call !== void 0) {
+        throw new TypeError("Derived constructors may only return object or undefined");
+      }
+
+      return _assertThisInitialized(self);
+    }
+
+    function _createSuper(Derived) {
+      var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+      return function _createSuperInternal() {
+        var Super = _getPrototypeOf(Derived),
+            result;
+
+        if (hasNativeReflectConstruct) {
+          var NewTarget = _getPrototypeOf(this).constructor;
+
+          result = Reflect.construct(Super, arguments, NewTarget);
+        } else {
+          result = Super.apply(this, arguments);
+        }
+
+        return _possibleConstructorReturn(this, result);
+      };
     }
 
     /*!
@@ -464,7 +606,18 @@ var focusTrapDemoBundle = (function () {
       return typeof value === 'function' ? value.apply(void 0, params) : value;
     };
 
-    var createFocusTrap$o = function createFocusTrap(elements, userOptions) {
+    var getActualTarget = function getActualTarget(event) {
+      // NOTE: If the trap is _inside_ a shadow DOM, event.target will always be the
+      //  shadow host. However, event.target.composedPath() will be an array of
+      //  nodes "clicked" from inner-most (the actual element inside the shadow) to
+      //  outer-most (the host HTML document). If we have access to composedPath(),
+      //  then use its first element; otherwise, fall back to event.target (and
+      //  this only works for an _open_ shadow DOM; otherwise,
+      //  composedPath()[0] === event.target always).
+      return event.target.shadowRoot && typeof event.composedPath === 'function' ? event.composedPath()[0] : event.target;
+    };
+
+    var createFocusTrap$p = function createFocusTrap(elements, userOptions) {
       var doc = userOptions.document || document;
 
       var config = _objectSpread2({
@@ -499,9 +652,9 @@ var focusTrapDemoBundle = (function () {
       };
 
       var containersContain = function containersContain(element) {
-        return state.containers.some(function (container) {
+        return !!(element && state.containers.some(function (container) {
           return container.contains(element);
-        });
+        }));
       };
       /**
        * Gets the node for the given option, which is expected to be an option that
@@ -633,7 +786,9 @@ var focusTrapDemoBundle = (function () {
 
 
       var checkPointerDown = function checkPointerDown(e) {
-        if (containersContain(e.target)) {
+        var target = getActualTarget(e);
+
+        if (containersContain(target)) {
           // allow the click since it ocurred inside the trap
           return;
         }
@@ -652,7 +807,7 @@ var focusTrapDemoBundle = (function () {
             //  that was clicked, whether it's focusable or not; by setting
             //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
             //  on activation (or the configured `setReturnFocus` node)
-            returnFocus: config.returnFocusOnDeactivate && !isFocusable(e.target)
+            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target)
           });
           return;
         } // This is needed for mobile devices.
@@ -671,11 +826,12 @@ var focusTrapDemoBundle = (function () {
 
 
       var checkFocusIn = function checkFocusIn(e) {
-        var targetContained = containersContain(e.target); // In Firefox when you Tab out of an iframe the Document is briefly focused.
+        var target = getActualTarget(e);
+        var targetContained = containersContain(target); // In Firefox when you Tab out of an iframe the Document is briefly focused.
 
-        if (targetContained || e.target instanceof Document) {
+        if (targetContained || target instanceof Document) {
           if (targetContained) {
-            state.mostRecentlyFocusedNode = e.target;
+            state.mostRecentlyFocusedNode = target;
           }
         } else {
           // escaped! pull it back in to where it just left
@@ -689,6 +845,7 @@ var focusTrapDemoBundle = (function () {
 
 
       var checkTab = function checkTab(e) {
+        var target = getActualTarget(e);
         updateTabbableNodes();
         var destinationNode = null;
 
@@ -698,7 +855,7 @@ var focusTrapDemoBundle = (function () {
           //  with tabIndex='-1' and was given initial focus
           var containerIndex = findIndex(state.tabbableGroups, function (_ref) {
             var container = _ref.container;
-            return container.contains(e.target);
+            return container.contains(target);
           });
 
           if (containerIndex < 0) {
@@ -716,10 +873,10 @@ var focusTrapDemoBundle = (function () {
             // is the target the first tabbable node in a group?
             var startOfGroupIndex = findIndex(state.tabbableGroups, function (_ref2) {
               var firstTabbableNode = _ref2.firstTabbableNode;
-              return e.target === firstTabbableNode;
+              return target === firstTabbableNode;
             });
 
-            if (startOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === e.target) {
+            if (startOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target) {
               // an exception case where the target is the container itself, in which
               //  case, we should handle shift+tab as if focus were on the container's
               //  first tabbable node, and go to the last tabbable node of the LAST group
@@ -739,10 +896,10 @@ var focusTrapDemoBundle = (function () {
             // is the target the last tabbable node in a group?
             var lastOfGroupIndex = findIndex(state.tabbableGroups, function (_ref3) {
               var lastTabbableNode = _ref3.lastTabbableNode;
-              return e.target === lastTabbableNode;
+              return target === lastTabbableNode;
             });
 
-            if (lastOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === e.target) {
+            if (lastOfGroupIndex < 0 && state.tabbableGroups[containerIndex].container === target) {
               // an exception case where the target is the container itself, in which
               //  case, we should handle tab as if focus were on the container's
               //  last tabbable node, and go to the first tabbable node of the FIRST group
@@ -789,7 +946,9 @@ var focusTrapDemoBundle = (function () {
           return;
         }
 
-        if (containersContain(e.target)) {
+        var target = getActualTarget(e);
+
+        if (containersContain(target)) {
           return;
         }
 
@@ -975,16 +1134,16 @@ var focusTrapDemoBundle = (function () {
 
     var focusTrap = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        createFocusTrap: createFocusTrap$o
+        createFocusTrap: createFocusTrap$p
     });
 
     var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
 
-    var createFocusTrap$n = require$$0.createFocusTrap;
+    var createFocusTrap$o = require$$0.createFocusTrap;
 
     var _default = function _default() {
       var container = document.getElementById('default');
-      var focusTrap = createFocusTrap$n('#default', {
+      var focusTrap = createFocusTrap$o('#default', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -996,12 +1155,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$m = require$$0.createFocusTrap;
+    var createFocusTrap$n = require$$0.createFocusTrap;
 
     var animatedDialog = function animatedDialog() {
       var container = document.getElementById('animated-dialog');
       var activatedFlag = document.getElementById('animated-dialog-trap-activated');
-      var focusTrap = createFocusTrap$m('#animated-dialog', {
+      var focusTrap = createFocusTrap$n('#animated-dialog', {
         // Called before focus is sent
         onActivate: function onActivate() {
           return container.classList.add('is-active');
@@ -1037,14 +1196,14 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-animated-dialog').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$l = require$$0.createFocusTrap;
+    var createFocusTrap$m = require$$0.createFocusTrap;
 
     var animatedTrigger = function animatedTrigger() {
       var container = document.getElementById('animated-trigger');
       var trigger = document.getElementById('activate-animated-trigger');
       var deactivatedFlag = document.getElementById('animated-trigger-trap-deactivated');
       var returnFocusCheckbox = document.getElementById('animated-trigger-returnfocus');
-      var focusTrap = createFocusTrap$l('#animated-trigger', {
+      var focusTrap = createFocusTrap$m('#animated-trigger', {
         // Called before focus is sent
         onActivate: function onActivate() {
           container.classList.add('is-active');
@@ -1080,12 +1239,12 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$k = require$$0.createFocusTrap;
+    var createFocusTrap$l = require$$0.createFocusTrap;
 
     var escapeDeactivates = function escapeDeactivates() {
       var container = document.getElementById('escape-deactivates');
       var escapeDeactivatesOption = document.getElementById('escape-deactivates-option');
-      var focusTrap = createFocusTrap$k('#escape-deactivates', {
+      var focusTrap = createFocusTrap$l('#escape-deactivates', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1104,7 +1263,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-escape-deactivates').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$j = require$$0.createFocusTrap;
+    var createFocusTrap$k = require$$0.createFocusTrap;
 
     var initialElementNoEscape = function initialElementNoEscape() {
       var container = document.getElementById('iene');
@@ -1115,7 +1274,7 @@ var focusTrapDemoBundle = (function () {
       var initialize = function initialize(_ref) {
         var _ref$initialFocus = _ref.initialFocus,
             initialFocus = _ref$initialFocus === void 0 ? '#focused-input' : _ref$initialFocus;
-        return createFocusTrap$j(container, {
+        return createFocusTrap$k(container, {
           onActivate: function onActivate() {
             return container.classList.add('is-active');
           },
@@ -1154,11 +1313,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$i = require$$0.createFocusTrap;
+    var createFocusTrap$j = require$$0.createFocusTrap;
 
     var initiallyFocusedContainer = function initiallyFocusedContainer() {
       var container = document.getElementById('ifc');
-      var focusTrap = createFocusTrap$i('#ifc', {
+      var focusTrap = createFocusTrap$j('#ifc', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1174,12 +1333,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-ifc').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$h = require$$0.createFocusTrap;
+    var createFocusTrap$i = require$$0.createFocusTrap;
 
     var hiddenTreasures = function hiddenTreasures() {
       var container = document.getElementById('ht');
       var more = document.getElementById('ht-more');
-      var focusTrap = createFocusTrap$h(container, {
+      var focusTrap = createFocusTrap$i(container, {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1196,17 +1355,17 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$g = require$$0.createFocusTrap;
+    var createFocusTrap$h = require$$0.createFocusTrap;
 
     var nested = function nested() {
       var container = document.getElementById('nested');
       var nested = document.getElementById('nested-nested');
-      var primaryFocusTrap = createFocusTrap$g('#nested', {
+      var primaryFocusTrap = createFocusTrap$h('#nested', {
         onDeactivate: function onDeactivate() {
           return container.style.display = 'none';
         }
       });
-      var nestedFocusTrap = createFocusTrap$g('#nested-nested', {
+      var nestedFocusTrap = createFocusTrap$h('#nested-nested', {
         onDeactivate: function onDeactivate() {
           nested.style.display = 'none';
           primaryFocusTrap.unpause();
@@ -1224,17 +1383,17 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('nested-deactivate-nested').addEventListener('click', nestedFocusTrap.deactivate);
     };
 
-    var createFocusTrap$f = require$$0.createFocusTrap;
+    var createFocusTrap$g = require$$0.createFocusTrap;
 
     var sibling = function sibling() {
       var container = document.getElementById('sibling-first');
       var second = document.getElementById('sibling-second');
-      var firstFocusTrap = createFocusTrap$f('#sibling-first', {
+      var firstFocusTrap = createFocusTrap$g('#sibling-first', {
         onDeactivate: function onDeactivate() {
           return container.classList.remove('is-active');
         }
       });
-      var secondFocusTrap = createFocusTrap$f('#sibling-second', {
+      var secondFocusTrap = createFocusTrap$g('#sibling-second', {
         onDeactivate: function onDeactivate() {
           second.style.display = 'none';
           second.classList.remove('is-active');
@@ -1253,12 +1412,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-second-sibling').addEventListener('click', secondFocusTrap.deactivate);
     };
 
-    var createFocusTrap$e = require$$0.createFocusTrap;
+    var createFocusTrap$f = require$$0.createFocusTrap;
 
     var trickyInitialFocus = function trickyInitialFocus() {
       var container = document.getElementById('tif');
       var focusable = document.getElementById('tif-hide-focusable');
-      var focusTrap = createFocusTrap$e(container, {
+      var focusTrap = createFocusTrap$f(container, {
         fallbackFocus: container,
         onActivate: function onActivate() {
           return container.classList.add('is-active');
@@ -1277,11 +1436,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$d = require$$0.createFocusTrap;
+    var createFocusTrap$e = require$$0.createFocusTrap;
 
     var inputActivation = function inputActivation() {
       var container = document.getElementById('input-activation');
-      var focusTrap = createFocusTrap$d(container, {
+      var focusTrap = createFocusTrap$e(container, {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1293,11 +1452,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-input-activation').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$c = require$$0.createFocusTrap;
+    var createFocusTrap$d = require$$0.createFocusTrap;
     var container = document.getElementById('delay');
 
     var delay = function delay() {
-      var focusTrap = createFocusTrap$c(container, {
+      var focusTrap = createFocusTrap$d(container, {
         onActivate: function onActivate() {
           container.style.opacity = '1';
           container.classList.add('is-active');
@@ -1322,11 +1481,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('close-button-delay').addEventListener('click', hideContainer);
     };
 
-    var createFocusTrap$b = require$$0.createFocusTrap;
+    var createFocusTrap$c = require$$0.createFocusTrap;
 
     var radio = function radio() {
       var container = document.getElementById('radio');
-      var focusTrap = createFocusTrap$b('#radio', {
+      var focusTrap = createFocusTrap$c('#radio', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1338,11 +1497,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-radio').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$a = require$$0.createFocusTrap;
+    var createFocusTrap$b = require$$0.createFocusTrap;
 
     var iframe = function iframe() {
       var container = document.getElementById('iframe');
-      var focusTrap = createFocusTrap$a('#iframe', {
+      var focusTrap = createFocusTrap$b('#iframe', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2074,7 +2233,7 @@ var focusTrapDemoBundle = (function () {
       }
     })(runtime);
 
-    var createFocusTrap$9 = require$$0.createFocusTrap;
+    var createFocusTrap$a = require$$0.createFocusTrap;
 
     var inIframe = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2105,7 +2264,7 @@ var focusTrapDemoBundle = (function () {
 
                 if (targetDocument) {
                   trapWrapper = targetDocument.getElementById('in-iframe-trap');
-                  focusTrap = createFocusTrap$9('#in-iframe-trap', {
+                  focusTrap = createFocusTrap$a('#in-iframe-trap', {
                     document: targetDocument,
                     onActivate: function onActivate() {
                       return trapWrapper.classList.add('is-active');
@@ -2131,7 +2290,7 @@ var focusTrapDemoBundle = (function () {
       };
     }();
 
-    var createFocusTrap$8 = require$$0.createFocusTrap;
+    var createFocusTrap$9 = require$$0.createFocusTrap;
 
     var allowOutsideClick = function allowOutsideClick() {
       var container = document.getElementById('allowoutsideclick');
@@ -2140,7 +2299,7 @@ var focusTrapDemoBundle = (function () {
       var allowOutsideClick = true;
 
       function initialize() {
-        return createFocusTrap$8('#allowoutsideclick', {
+        return createFocusTrap$9('#allowoutsideclick', {
           allowOutsideClick: allowOutsideClick,
           escapeDeactivates: false,
           onActivate: function onActivate() {
@@ -2187,7 +2346,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$7 = require$$0.createFocusTrap;
+    var createFocusTrap$8 = require$$0.createFocusTrap;
 
     var clickOutsideDeactivates = function clickOutsideDeactivates() {
       var container = document.getElementById('clickoutsidedeactivates');
@@ -2201,7 +2360,7 @@ var focusTrapDemoBundle = (function () {
       notice.appendChild(document.createTextNode('-> Must click on checkbox to deactivate'));
 
       var initialize = function initialize() {
-        return createFocusTrap$7('#clickoutsidedeactivates', {
+        return createFocusTrap$8('#clickoutsidedeactivates', {
           returnFocusOnDeactivate: returnFocusOnDeactivate,
           clickOutsideDeactivates: clickOutsideDeactivates,
           escapeDeactivates: false,
@@ -2251,11 +2410,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$6 = require$$0.createFocusTrap;
+    var createFocusTrap$7 = require$$0.createFocusTrap;
 
     var setReturnFocus = function setReturnFocus() {
       var container = document.getElementById('setreturnfocus');
-      var focusTrap = createFocusTrap$6('#setreturnfocus', {
+      var focusTrap = createFocusTrap$7('#setreturnfocus', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2268,7 +2427,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$5 = require$$0.createFocusTrap;
+    var createFocusTrap$6 = require$$0.createFocusTrap;
 
     var setReturnFocusFunction = function setReturnFocusFunction() {
       var container = document.getElementById('setreturnfocus-function');
@@ -2288,7 +2447,7 @@ var focusTrapDemoBundle = (function () {
         return false;
       };
 
-      var focusTrap = createFocusTrap$5('#setreturnfocus-function', {
+      var focusTrap = createFocusTrap$6('#setreturnfocus-function', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2312,11 +2471,11 @@ var focusTrapDemoBundle = (function () {
       document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
     };
 
-    var createFocusTrap$4 = require$$0.createFocusTrap;
+    var createFocusTrap$5 = require$$0.createFocusTrap;
 
     var noDelay = function noDelay() {
       var container = document.getElementById('no-delay');
-      var focusTrap = createFocusTrap$4(container, {
+      var focusTrap = createFocusTrap$5(container, {
         delayInitialFocus: false,
         onActivate: function onActivate() {
           container.style.opacity = '1';
@@ -2343,12 +2502,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
     };
 
-    var createFocusTrap$3 = require$$0.createFocusTrap;
+    var createFocusTrap$4 = require$$0.createFocusTrap;
 
     var multipleElements = function multipleElements() {
       var container = document.getElementById('multipleelements');
       var selectors = ['#multipleelements-1', '#multipleelements-3'];
-      var focusTrap = createFocusTrap$3(selectors, {
+      var focusTrap = createFocusTrap$4(selectors, {
         clickOutsideDeactivates: true,
         onActivate: function onActivate() {
           container.classList.add('is-active');
@@ -2371,12 +2530,12 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$2 = require$$0.createFocusTrap;
+    var createFocusTrap$3 = require$$0.createFocusTrap;
 
     var multipleElementsDelete = function multipleElementsDelete() {
       var container = document.getElementById('multipleelements-delete');
       var selectors = ['#multipleelements-delete-1', '#multipleelements-delete-2'];
-      var focusTrap = createFocusTrap$2(selectors, {
+      var focusTrap = createFocusTrap$3(selectors, {
         allowOutsideClick: function allowOutsideClick(event) {
           return event.target.id === 'deactivate-multipleelements-delete';
         },
@@ -2404,12 +2563,12 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$1 = require$$0.createFocusTrap;
+    var createFocusTrap$2 = require$$0.createFocusTrap;
 
     var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
       var container = document.getElementById('multipleelements-delete-all');
       var selectors = ['#multipleelements-delete-all-1', '#multipleelements-delete-all-2'];
-      var focusTrap = createFocusTrap$1(selectors, {
+      var focusTrap = createFocusTrap$2(selectors, {
         fallbackFocus: '#deactivate-multipleelements-delete-all',
         allowOutsideClick: function allowOutsideClick(event) {
           return event.target.id === 'deactivate-multipleelements-delete-all';
@@ -2439,7 +2598,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap = require$$0.createFocusTrap;
+    var createFocusTrap$1 = require$$0.createFocusTrap;
 
     var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
       var container = document.getElementById('multipleelements-multipletraps');
@@ -2469,7 +2628,7 @@ var focusTrapDemoBundle = (function () {
 
       var trap1Selectors = ['#multipleelements-multipletraps-1', '#multipleelements-multipletraps-3'];
       var trap2Selectors = ['#multipleelements-multipletraps-2', '#multipleelements-multipletraps-4'];
-      var focusTrap1 = createFocusTrap(trap1Selectors, {
+      var focusTrap1 = createFocusTrap$1(trap1Selectors, {
         onActivate: function onActivate() {
           onActivateTrap();
 
@@ -2492,7 +2651,7 @@ var focusTrapDemoBundle = (function () {
         },
         allowOutsideClick: allowOutsideClick
       });
-      var focusTrap2 = createFocusTrap(trap2Selectors, {
+      var focusTrap2 = createFocusTrap$1(trap2Selectors, {
         onActivate: function onActivate() {
           onActivateTrap();
 
@@ -2529,6 +2688,56 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
+    var createFocusTrap = require$$0.createFocusTrap;
+
+    var inOpenShadowDom = function inOpenShadowDom() {
+      var FocusTrapModal = /*#__PURE__*/function (_HTMLElement) {
+        _inherits(FocusTrapModal, _HTMLElement);
+
+        var _super = _createSuper(FocusTrapModal);
+
+        function FocusTrapModal() {
+          var _this;
+
+          _classCallCheck(this, FocusTrapModal);
+
+          _this = _super.call(this);
+          _this.id = 'in-open-shadow-dom-host';
+          var modalEl = document.createElement('div');
+          modalEl.id = 'in-open-shadow-dom-trap';
+          modalEl.className = 'trap';
+          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      "; // use same styles as host
+
+          var styleLinkEl = document.createElement('link');
+          styleLinkEl.setAttribute('rel', 'stylesheet');
+          styleLinkEl.setAttribute('href', 'style.css');
+
+          var shadowEl = _this.attachShadow({
+            mode: 'open'
+          });
+
+          shadowEl.appendChild(styleLinkEl);
+          shadowEl.appendChild(modalEl);
+          var focusTrap = createFocusTrap(modalEl, {
+            onActivate: function onActivate() {
+              return modalEl.classList.add('is-active');
+            },
+            onDeactivate: function onDeactivate() {
+              return modalEl.classList.remove('is-active');
+            },
+            escapeDeactivates: true
+          });
+          document.getElementById('activate-in-open-shadow-dom').addEventListener('click', focusTrap.activate);
+          modalEl.querySelector('#deactivate-in-open-shadow-dom').addEventListener('click', focusTrap.deactivate);
+          return _this;
+        }
+
+        return FocusTrapModal;
+      }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
+
+      customElements.define('focus-trap-modal', FocusTrapModal);
+    };
+
     _default();
     animatedDialog();
     animatedTrigger();
@@ -2562,6 +2771,7 @@ var focusTrapDemoBundle = (function () {
     multipleElementsDelete();
     multipleElementsDeleteAll();
     multipleElementsMultipleTraps();
+    inOpenShadowDom();
 
     return js;
 

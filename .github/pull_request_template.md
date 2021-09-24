@@ -17,7 +17,7 @@ __Please leave this checklist in your PR.__
 - Issue being fixed is referenced.
 - Unit test coverage added/updated.
 - E2E (i.e. demos) test coverage added/updated.
-  - ⚠️ Non-covered demos (look for `IS_CYPRESS_ENV === ''` [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js)) __manually__ verified.
+  - ⚠️ Non-covered demos (look for `IS_CYPRESS_ENV === ''` [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js), as well as `in-open-shadow-dom.js` that can't be fully tested in Cypress) __manually__ verified.
 - Typings added/updated.
 - README updated (API changes, instructions, etc.).
 - Changes to dependencies explained.

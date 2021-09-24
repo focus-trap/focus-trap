@@ -1409,7 +1409,7 @@ describe('focus-trap', () => {
 
       // Focus should be in trap 1
       cy.get('@testRoot')
-        .findByRole('link', { name: 'with' })
+        .findByRole('link', { name: 'with' }) // trap 1 first group
         .should('be.focused')
         .tab()
         .should('have.text', 'some')
@@ -1418,7 +1418,7 @@ describe('focus-trap', () => {
         .should('have.text', 'focusable')
         .should('be.focused')
         .tab()
-        .should('have.text', 'See')
+        .should('have.text', 'See') // over to trap 1 second group
         .should('be.focused');
 
       // activate focus trap 2.  This should pause trap 1
@@ -1428,16 +1428,16 @@ describe('focus-trap', () => {
 
       // Focus should be in trap 2
       cy.get('@testRoot')
-        .findByRole('link', { name: 'something' })
+        .findByRole('link', { name: 'something' }) // trap 2 first group
         .should('be.focused')
         .tab()
-        .should('have.text', 'last')
+        .should('have.text', 'last') // over to trap 2 second group
         .should('be.focused')
         .tab()
         .should('have.text', 'area')
         .should('be.focused')
         .tab()
-        .should('have.text', 'something')
+        .should('have.text', 'something') // back to trap 2 first group
         .should('be.focused');
 
       // stop focus trap 2
@@ -1445,15 +1445,19 @@ describe('focus-trap', () => {
         .findByRole('button', { name: /^deactivate trap 2/ })
         .click();
 
-      // focus should resume back to trap 1
+      // focus should resume back to trap 1 second group with 'See' link focused
+      //  since it was the active element at the time trap 2 was activated
       cy.get('@testRoot')
-        .findByRole('link', { name: 'See' })
+        .findByRole('link', { name: 'See' }) // trap 1 second group
         .should('be.focused')
         .tab()
         .should('have.text', 'how')
         .should('be.focused')
         .tab()
         .should('have.text', 'works')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'with') // over to trap 1 first group
         .should('be.focused');
 
       // focus can be transitioned freely when both traps are deactivated
@@ -1467,6 +1471,63 @@ describe('focus-trap', () => {
         .as('outsideEl')
         .click();
       verifyFocusIsNotTrapped(cy.get('@outsideEl'));
+    });
+  });
+
+  describe('demo: in-open-shadow-dom', () => {
+    const getFirstElementInTrap = () =>
+      cy
+        .get('#in-open-shadow-dom-host') // NOTE: this ID is defined in /docs/js/in-open-shadow-dom.js
+        .as('shadowHost')
+        .shadow()
+        .findByRole('link', { name: 'with' });
+
+    const getLastElementInTrap = () =>
+      cy
+        .get('#in-open-shadow-dom-host') // NOTE: this ID is defined in /docs/js/in-open-shadow-dom.js
+        .as('shadowHost')
+        .shadow()
+        .findByRole('button', { name: /^deactivate trap/ });
+
+    it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
+      cy.get('#demo-in-open-shadow-dom').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // NOTE: Because of how Cypress interacts with Shadown DOMs, we can't use labels
+      //  on elements _inside_ the shadow host. When we click outside the trap and then
+      //  test if the labelled element is focused, Cypress says yes, but really, it
+      //  sees the shadow as a black box that has focus, so it's not the real test
+      //  we're wanting to check. Also, the cypress-plugin-tab will complain if we try
+      //  to .tab() from inside the shadow host saying it's not a tabbable element
+      //  because it doesn't appear to support shadow DOM.
+
+      // 1st element should be focused
+      getFirstElementInTrap().should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      getFirstElementInTrap().should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+      cy.get('#default-heading').click();
+      getFirstElementInTrap().should('be.focused');
+
+      // NOTE: We can't use cypress-plugin-tab to tab between elements in the trap
+      //  to check the tab sequence is constrained to the trap because the plugin
+      //  doesn't support Shadow DOM. It will keep crashing the test, claiming that
+      //  the focused element is not tabbable (because it doesn't see past the
+      //  shadow host).
+
+      // focus can be transitioned freely when trap is deactivated
+      getLastElementInTrap().click();
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
     });
   });
 });
