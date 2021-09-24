@@ -4,15 +4,14 @@
 
 ### Minor Changes
 
-- 893dd2c: Add document option to allow to work in iFrames
-- 244f0c1: Extend the setReturnFocus option to receive a reference to the element that had focus prior to the trap being activated when a function is specified. Additionally, the function can now return false to leave focus where it is at the time of deactivation.
-- 146bdc0: switch from browserify to rollup for demo
+- 893dd2c: Add `document` option to support focus traps inside `<iframe>` elements (#97)
+- 244f0c1: Extend the `setReturnFocus` option to receive a reference to the element that had focus prior to the trap being activated when a function is specified. Additionally, the function can now return `false` to leave focus where it is at the time of deactivation. (#485)
 
 ### Patch Changes
 
-- 60162eb: Fixed bug where KeyboardEvent was not being passed to `escapeDeactivates` option when it's a function (#498)
-- 7b6abfa: Fix how focus-trap determines the event's target, which is preventing traps inside open shadow DOMs from working properly
-- 14b0ee8: Fix initialFocus option not supporting function returning false as documented [#490]
+- 60162eb: Fix bug where `KeyboardEvent` was not being passed to `escapeDeactivates` option when it's a function (#498)
+- 7b6abfa: Fix how focus-trap determines the event's target, which was preventing traps inside open shadow DOMs from working properly (#496)
+- 14b0ee8: Fix `initialFocus` option not supporting function returning `false` as documented (#490)
 
 ## 6.6.1
 
