@@ -204,6 +204,15 @@
         "doc",
         "tool"
       ]
+    },
+    {
+      "login": "andersthorsen",
+      "name": "Anders Thorsen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/190081?v=4",
+      "profile": "https://github.com/andersthorsen",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
