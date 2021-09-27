@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.7.1
+
+### Patch Changes
+
+- 28a069f: Fix bug from #504 where it's no longer possible to create a trap without any options [#525]
+
 ## 6.7.0
 
 ### Minor Changes
