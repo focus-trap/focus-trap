@@ -96,7 +96,7 @@ const getActualTarget = function (event) {
 };
 
 const createFocusTrap = function (elements, userOptions) {
-  const doc = userOptions.document || document;
+  const doc = userOptions?.document || document;
 
   const config = {
     returnFocusOnDeactivate: true,
