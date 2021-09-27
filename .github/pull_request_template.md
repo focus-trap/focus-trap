@@ -19,6 +19,8 @@ __Please leave this checklist in your PR.__
 - E2E (i.e. demos) test coverage added/updated.
   - ⚠️ Non-covered demos (look for `IS_CYPRESS_ENV === ''` [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js), as well as `in-open-shadow-dom.js` that can't be fully tested in Cypress) __manually__ verified.
 - Typings added/updated.
+- Changes do not break SSR:
+  - Careful to test `typeof document/window !== 'undefined'` before using it in code that gets executed on load.
 - README updated (API changes, instructions, etc.).
 - Changes to dependencies explained.
 - Changeset added (run `yarn changeset` locally to add one, and follow the prompts).

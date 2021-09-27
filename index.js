@@ -96,6 +96,8 @@ const getActualTarget = function (event) {
 };
 
 const createFocusTrap = function (elements, userOptions) {
+  // SSR: a live trap shouldn't be created in this type of environment so this
+  //  should be safe code to execute if the `document` option isn't specified
   const doc = userOptions?.document || document;
 
   const config = {
