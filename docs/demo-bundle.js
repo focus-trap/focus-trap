@@ -1,5 +1,5 @@
 /*!
-* focus-trap 6.6.1
+* focus-trap 6.7.0
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -618,7 +618,7 @@ var focusTrapDemoBundle = (function () {
     };
 
     var createFocusTrap$p = function createFocusTrap(elements, userOptions) {
-      var doc = userOptions.document || document;
+      var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
 
       var config = _objectSpread2({
         returnFocusOnDeactivate: true,
