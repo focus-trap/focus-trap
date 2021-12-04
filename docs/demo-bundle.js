@@ -2753,14 +2753,14 @@ var focusTrapDemoBundle = (function () {
     inputActivation();
     delay();
     radio();
-    iframe(); // loading this a Cypress env causes Chrome to fail in GitHub CI (even with
+    iframe(); // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
     //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
     //  and causes FireFox to fail both locally and in CI due to security context
     //  violations; but it's still a good demo to have, and at least we can test
     //  it manually
-    // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef -- process is defined via Rollup
 
-    if (process.env.IS_CYPRESS_ENV === '') {
+    if (!process.env.IS_CYPRESS_ENV) {
       inIframe();
     }
 
