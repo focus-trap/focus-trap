@@ -1,4 +1,4 @@
-require('regenerator-runtime/runtime');
+require('regenerator-runtime/runtime'); // needed for the async function we export here
 
 const { createFocusTrap } = require('../../index');
 

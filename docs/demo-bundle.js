@@ -1,5 +1,5 @@
 /*!
-* focus-trap 6.7.0
+* focus-trap 6.7.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -618,6 +618,8 @@ var focusTrapDemoBundle = (function () {
     };
 
     var createFocusTrap$p = function createFocusTrap(elements, userOptions) {
+      // SSR: a live trap shouldn't be created in this type of environment so this
+      //  should be safe code to execute if the `document` option isn't specified
       var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
 
       var config = _objectSpread2({
