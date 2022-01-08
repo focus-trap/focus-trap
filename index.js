@@ -1,4 +1,4 @@
-import { tabbable, isFocusable } from 'tabbable';
+import { tabbable, isFocusable, isTabbable } from 'tabbable';
 
 const activeFocusTraps = (function () {
   const trapQueue = [];
@@ -347,7 +347,7 @@ const createFocusTrap = function (elements, userOptions) {
 
     if (state.tabbableGroups.length > 0) {
       // make sure the target is actually contained in a group
-      // NOTE: the target may also be the container itself if it's tabbable
+      // NOTE: the target may also be the container itself if it's focusable
       //  with tabIndex='-1' and was given initial focus
       const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
         container.contains(target)
@@ -376,9 +376,12 @@ const createFocusTrap = function (elements, userOptions) {
 
         if (
           startOfGroupIndex < 0 &&
-          state.tabbableGroups[containerIndex].container === target
+          (state.tabbableGroups[containerIndex].container === target ||
+            (isFocusable(target) && !isTabbable(target)))
         ) {
-          // an exception case where the target is the container itself, in which
+          // an exception case where the target is either the container itself, or
+          //  a non-tabbable node that was given focus (i.e. tabindex is negative
+          //  and user clicked on it or node was programmatically given focus), in which
           //  case, we should handle shift+tab as if focus were on the container's
           //  first tabbable node, and go to the last tabbable node of the LAST group
           startOfGroupIndex = containerIndex;
@@ -407,9 +410,12 @@ const createFocusTrap = function (elements, userOptions) {
 
         if (
           lastOfGroupIndex < 0 &&
-          state.tabbableGroups[containerIndex].container === target
+          (state.tabbableGroups[containerIndex].container === target ||
+            (isFocusable(target) && !isTabbable(target)))
         ) {
-          // an exception case where the target is the container itself, in which
+          // an exception case where the target is the container itself, or
+          //  a non-tabbable node that was given focus (i.e. tabindex is negative
+          //  and user clicked on it or node was programmatically given focus), in which
           //  case, we should handle tab as if focus were on the container's
           //  last tabbable node, and go to the first tabbable node of the FIRST group
           lastOfGroupIndex = containerIndex;

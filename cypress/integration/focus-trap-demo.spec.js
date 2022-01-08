@@ -1530,4 +1530,12 @@ describe('focus-trap', () => {
       );
     });
   });
+
+  // describe('demo: negative-tabindex', () => {
+  //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+  //    understand that a non-tabbable node can still be focusable and that it's possible
+  //    to tab away from it. As such, we can't test this demo because it requires setting
+  //    focus to an element with negative tabindex and tabbing away from it in one direction
+  //    or another.
+  // });
 });

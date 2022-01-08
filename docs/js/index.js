@@ -33,3 +33,4 @@ require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./in-open-shadow-dom')();
+require('./negative-tabindex')();

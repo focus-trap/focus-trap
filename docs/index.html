@@ -892,6 +892,42 @@
       </p>
     </div>
 
+    <div id="demo-negative-tabindex">
+      <h2 id="negative-tabindex-heading">Negative tabindex</h2>
+      <p>
+        This trap has an element with a negative tabindex, which means that element is
+        <em>focusable</em> but not <em>tabbable</em>. Use the mouse to set focus to it.
+        Once it has focus, you can still use the tab key to go forward or backward in
+        the normal tab order.
+      </p>
+      <p>
+        <button id="activate-negative-tabindex" aria-describedby="negative-tabindex-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="negative-tabindex" class="trap">
+        <p>
+          <button id="deactivate-negative-tabindex" aria-describedby="negative-tabindex-heading">
+            deactivate trap
+          </button>
+        </p>
+        <p>
+          <button>tabindex unset</button>
+          <button>tabindex unset</button>
+          <!--
+            NOTE: It's important that the negative tabindex button be LAST because there
+            was a bug that prevented forward tab movement once it had focus, but only
+            when it was last in tab order.
+            @see https://github.com/focus-trap/focus-trap/issues/565
+          -->
+          <button tabindex="-1">tabindex = -1</button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/negative-tabindex.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <p>
       <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
       <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
