@@ -1443,7 +1443,7 @@ describe('focus-trap', () => {
       // stop focus trap 2
       cy.get('@testRoot')
         .findByRole('button', { name: /^deactivate trap 2/ })
-        .click();
+        .click({ force: true }); // click fails without `force` option
 
       // focus should resume back to trap 1 second group with 'See' link focused
       //  since it was the active element at the time trap 2 was activated
@@ -1464,7 +1464,7 @@ describe('focus-trap', () => {
       cy.get('@testRoot')
         .findByRole('button', { name: /^deactivate trap 1/ })
         .as('lastButtonClicked')
-        .click();
+        .click({ force: true }); // click fails without `force` option
 
       // focus can be transitioned freely when trap is deactivated
       cy.findByRole('heading', { name: 'focus-trap demo' })
