@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.7.2
+
+### Patch Changes
+
+- c932330: Fixed bug where tabbing forward from an element with negative tabindex that is last in the trap would result in focus remaining on that element ([565](https://github.com/focus-trap/focus-trap/issues/565))
+
 ## 6.7.1
 
 ### Patch Changes
