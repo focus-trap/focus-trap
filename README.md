@@ -1,7 +1,7 @@
 # focus-trap [![CI](https://github.com/focus-trap/focus-trap/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/focus-trap/focus-trap/actions?query=workflow:CI+branch:master) [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-19-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-20-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Trap focus within a DOM node.
@@ -269,6 +269,7 @@ In alphabetical order:
     <td align="center"><a href="https://github.com/wandroll"><img src="https://avatars.githubusercontent.com/u/4492317?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Wandrille Verlut</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/commits?author=wandroll" title="Code">💻</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=wandroll" title="Tests">⚠️</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=wandroll" title="Documentation">📖</a> <a href="#tool-wandroll" title="Tools">🔧</a></td>
     <td align="center"><a href="http://willmruzek.com/"><img src="https://avatars.githubusercontent.com/u/108522?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Will Mruzek</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/commits?author=mruzekw" title="Code">💻</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=mruzekw" title="Documentation">📖</a> <a href="#example-mruzekw" title="Examples">💡</a> <a href="https://github.com/focus-trap/focus-trap/commits?author=mruzekw" title="Tests">⚠️</a> <a href="#question-mruzekw" title="Answering Questions">💬</a></td>
     <td align="center"><a href="https://github.com/zioth"><img src="https://avatars3.githubusercontent.com/u/945603?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Zioth</b></sub></a><br /><a href="#ideas-zioth" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/focus-trap/focus-trap/issues?q=author%3Azioth" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/jpveooys"><img src="https://avatars.githubusercontent.com/u/66470099?v=4?s=100" width="100px;" alt=""/><br /><sub><b>jpveooys</b></sub></a><br /><a href="https://github.com/focus-trap/focus-trap/issues?q=author%3Ajpveooys" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
