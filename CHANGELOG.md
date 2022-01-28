@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.8.0-beta.0
+
+- Adds new `tabbableOptions` configuration option, which allows specifically for the new `getShadowRoot` Tabbable configuration option: `focusTrap.createFocusTrap(rootElement, { tabbableOptions: { getShadowRoot: (node) => closedShadowRoot } })`, for example (where your code has the reference to `closedShadowRoot` previously created on `node` which Tabbable cannot find on its own).
+
 ## 6.7.3
 
 ### Patch Changes

@@ -678,6 +678,15 @@ var focusTrapDemoBundle = (function () {
       };
       var trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
+      /**
+       * Gets a configuration option value.
+       * @param {Object|undefined} configOverrideOptions If true, and option is defined in this set,
+       *  value will be taken from this object. Otherwise, value will be taken from base configuration.
+       * @param {string} optionName Name of the option whose value is sought.
+       * @param {string|undefined} [configOptionName] Name of option to use __instead of__ `optionName`
+       *  IIF `configOverrideOptions` is not defined. Otherwise, `optionName` is used.
+       */
+
       var getOption = function getOption(configOverrideOptions, optionName, configOptionName) {
         return configOverrideOptions && configOverrideOptions[optionName] !== undefined ? configOverrideOptions[optionName] : config[configOptionName || optionName];
       };
@@ -763,7 +772,11 @@ var focusTrapDemoBundle = (function () {
 
       var updateTabbableNodes = function updateTabbableNodes() {
         state.tabbableGroups = state.containers.map(function (container) {
-          var tabbableNodes = tabbable(container); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
+          var _config$tabbableOptio;
+
+          var tabbableNodes = tabbable(container, {
+            getShadowRoot: (_config$tabbableOptio = config.tabbableOptions) === null || _config$tabbableOptio === void 0 ? void 0 : _config$tabbableOptio.getShadowRoot
+          }); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
           //  are a superset of tabbable nodes
 
           var focusableNodes = focusable(container);

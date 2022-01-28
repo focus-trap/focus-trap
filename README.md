@@ -106,13 +106,21 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 - **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
 - **delayInitialFocus** `{boolean}`: Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 - **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This allows to use FocusTrap in an iFrame context.
+- **tabbableOptions**: (optional) Specific [tabbable](https://github.com/focus-trap/tabbable) options that are configurable on FocusTrap.
+    - **tabbableOptions.getShadowRoot**: See [getShadowRoot](https://github.com/focus-trap/tabbable#getshadowroot) on Tabbable for more details.
 
-#### Shadow DOM and selector strings
+#### Shadow DOM
+
+##### Selector strings
 
 ⚠️ Beware that putting a focus-trap **inside** an open Shadow DOM means you must either:
 
 - **Not use selector strings** for options that support these (because nodes inside Shadow DOMs, even open shadows, are not visible via `document.querySelector()`); OR
 - You must **use the `document` option** to configure the focus trap to use your *shadow host* element as its document. The downside of this option is that, while selector queries on nodes inside your trap will now work, the trap will not prevent focus from being set on nodes outside your Shadow DOM, which is the same drawback as putting a focus trap <a href="https://focus-trap.github.io/focus-trap/#demo-in-iframe">inside an iframe</a>.
+
+##### Closed shadows
+
+If you have closed shadow roots that you would like considered for tabbable/focusable nodes, use the `tabbableOptions.getShadowRoot` option to provide Tabbable (used internally) with a reference to a given node's shadow root so that it can be searched for candidates.
 
 ### trap.activate([activateOptions])
 
