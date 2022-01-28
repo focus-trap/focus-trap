@@ -1,3 +1,5 @@
+import { CheckOptions as TabbableCheckOptions } from 'tabbable';
+
 declare module 'focus-trap' {
   /**
    * A DOM node, a selector string (which will be passed to
@@ -15,6 +17,10 @@ declare module 'focus-trap' {
 
   type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
+
+  /** tabbable options supported by focus-trap. */
+  export interface FocusTrapTabbableOptions extends Pick<TabbableCheckOptions, 'getShadowRoot'> {
+  }
 
   export interface Options {
     /**
@@ -148,7 +154,12 @@ declare module 'focus-trap' {
      * Default: `window.document`. Document where the focus trap will be active.
      * This allows to use FocusTrap in an iFrame context.
      */
-     document?: Document;
+    document?: Document;
+
+    /**
+     * Specific tabbable options configurable on focus-trap.
+     */
+    tabbableOptions?: FocusTrapTabbableOptions;
   }
 
   type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;
