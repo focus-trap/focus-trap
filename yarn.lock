@@ -4449,10 +4449,10 @@ supports-color@^8.1.1:
   dependencies:
     has-flag "^4.0.0"
 
-tabbable@^5.2.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.1.tgz#e3fda7367ddbb172dcda9f871c0fdb36d1c4cd9c"
-  integrity sha512-40pEZ2mhjaZzK0BnI+QGNjJO8UYx9pP5v7BGe17SORTO0OEuuaAwQTkAp8whcZvqon44wKFOikD+Al11K3JICQ==
+tabbable@5.3.0-beta.0:
+  version "5.3.0-beta.0"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.3.0-beta.0.tgz#2840539883f236f2887312431fbfe07dc305bce5"
+  integrity sha512-zNNUKn79Qve4JNB3/tP38EdS8eA4Phjh6go1TQ1/o2QcQDoTBVbS4hDYwj6jF4242fCMseo1fLBfaeAQqVgOcA==
 
 term-size@^2.1.0:
   version "2.2.0"

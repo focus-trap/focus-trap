@@ -1,5 +1,5 @@
 /*!
-* focus-trap 6.7.2
+* focus-trap 6.7.3
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -678,6 +678,15 @@ var focusTrapDemoBundle = (function () {
       };
       var trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
+      /**
+       * Gets a configuration option value.
+       * @param {Object|undefined} configOverrideOptions If true, and option is defined in this set,
+       *  value will be taken from this object. Otherwise, value will be taken from base configuration.
+       * @param {string} optionName Name of the option whose value is sought.
+       * @param {string|undefined} [configOptionName] Name of option to use __instead of__ `optionName`
+       *  IIF `configOverrideOptions` is not defined. Otherwise, `optionName` is used.
+       */
+
       var getOption = function getOption(configOverrideOptions, optionName, configOptionName) {
         return configOverrideOptions && configOverrideOptions[optionName] !== undefined ? configOverrideOptions[optionName] : config[configOptionName || optionName];
       };
@@ -763,7 +772,11 @@ var focusTrapDemoBundle = (function () {
 
       var updateTabbableNodes = function updateTabbableNodes() {
         state.tabbableGroups = state.containers.map(function (container) {
-          var tabbableNodes = tabbable(container); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
+          var _config$tabbableOptio;
+
+          var tabbableNodes = tabbable(container, {
+            getShadowRoot: (_config$tabbableOptio = config.tabbableOptions) === null || _config$tabbableOptio === void 0 ? void 0 : _config$tabbableOptio.getShadowRoot
+          }); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
           //  are a superset of tabbable nodes
 
           var focusableNodes = focusable(container);
@@ -773,12 +786,6 @@ var focusTrapDemoBundle = (function () {
               container: container,
               firstTabbableNode: tabbableNodes[0],
               lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
-              // DEBUG TEST: what happens if tabindex is positive, in order to manipulate
-              //  the tab order separate from the DOM order? this may not work because the
-              //  list of focusableNodes, while it contains tabbable nodes, does not sort
-              //  its nodes in any order other than DOM order, because it can't... where
-              //  would you place focusable, but not tabbable, nodes in that order? they
-              //  have no order, because they aren't tabbale...
 
               /**
                * Finds the __tabbable__ node that follows the given node in the specified direction,
@@ -790,6 +797,16 @@ var focusTrapDemoBundle = (function () {
                */
               nextTabbableNode: function nextTabbableNode(node) {
                 var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+                // NOTE: If tabindex is positive (in order to manipulate the tab order separate
+                //  from the DOM order), this __will not work__ because the list of focusableNodes,
+                //  while it contains tabbable nodes, does not sort its nodes in any order other
+                //  than DOM order, because it can't: Where would you place focusable (but not
+                //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
+                // Support for positive tabindex is already broken and hard to manage (possibly
+                //  not supportable, TBD), so this isn't going to make things worse than they
+                //  already are, and at least makes things better for the majority of cases where
+                //  tabindex is either 0/unset or negative.
+                // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
                 var nodeIdx = focusableNodes.findIndex(function (n) {
                   return n === node;
                 });
