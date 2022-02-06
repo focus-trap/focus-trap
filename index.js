@@ -1,4 +1,4 @@
-import { tabbable, isFocusable, isTabbable } from 'tabbable';
+import { tabbable, focusable, isFocusable, isTabbable } from 'tabbable';
 
 const activeFocusTraps = (function () {
   const trapQueue = [];
@@ -117,7 +117,12 @@ const createFocusTrap = function (elements, userOptions) {
     //  is active, but the trap should never get to a state where there isn't at least one group
     //  with at least one tabbable node in it (that would lead to an error condition that would
     //  result in an error being thrown)
-    // @type {Array<{ container: HTMLElement, firstTabbableNode: HTMLElement|null, lastTabbableNode: HTMLElement|null }>}
+    // @type {Array<{
+    //   container: HTMLElement,
+    //   firstTabbableNode: HTMLElement|null,
+    //   lastTabbableNode: HTMLElement|null,
+    //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
+    // }>}
     tabbableGroups: [],
 
     nodeFocusedBeforeActivation: null,
@@ -227,11 +232,42 @@ const createFocusTrap = function (elements, userOptions) {
       .map((container) => {
         const tabbableNodes = tabbable(container);
 
+        // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
+        //  are a superset of tabbable nodes
+        const focusableNodes = focusable(container);
+
         if (tabbableNodes.length > 0) {
           return {
             container,
             firstTabbableNode: tabbableNodes[0],
             lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
+
+            // DEBUG TEST: what happens if tabindex is positive, in order to manipulate
+            //  the tab order separate from the DOM order? this may not work because the
+            //  list of focusableNodes, while it contains tabbable nodes, does not sort
+            //  its nodes in any order other than DOM order, because it can't... where
+            //  would you place focusable, but not tabbable, nodes in that order? they
+            //  have no order, because they aren't tabbale...
+            /**
+             * Finds the __tabbable__ node that follows the given node in the specified direction,
+             *  in this container, if any.
+             * @param {HTMLElement} node
+             * @param {boolean} [forward] True if going in forward tab order; false if going
+             *  in reverse.
+             * @returns {HTMLElement|undefined} The next tabbable node, if any.
+             */
+            nextTabbableNode(node, forward = true) {
+              const nodeIdx = focusableNodes.findIndex((n) => n === node);
+              if (forward) {
+                return focusableNodes
+                  .slice(nodeIdx + 1)
+                  .find((n) => isTabbable(n));
+              }
+              return focusableNodes
+                .slice(0, nodeIdx)
+                .reverse()
+                .find((n) => isTabbable(n));
+            },
           };
         }
 
@@ -352,6 +388,8 @@ const createFocusTrap = function (elements, userOptions) {
       const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
         container.contains(target)
       );
+      const containerGroup =
+        containerIndex >= 0 ? state.tabbableGroups[containerIndex] : undefined;
 
       if (containerIndex < 0) {
         // target not found in any group: quite possible focus has escaped the trap,
@@ -376,12 +414,15 @@ const createFocusTrap = function (elements, userOptions) {
 
         if (
           startOfGroupIndex < 0 &&
-          (state.tabbableGroups[containerIndex].container === target ||
-            (isFocusable(target) && !isTabbable(target)))
+          (containerGroup.container === target ||
+            (isFocusable(target) &&
+              !isTabbable(target) &&
+              !containerGroup.nextTabbableNode(target, false)))
         ) {
           // an exception case where the target is either the container itself, or
           //  a non-tabbable node that was given focus (i.e. tabindex is negative
-          //  and user clicked on it or node was programmatically given focus), in which
+          //  and user clicked on it or node was programmatically given focus)
+          //  and is not followed by any other tabbable node, in which
           //  case, we should handle shift+tab as if focus were on the container's
           //  first tabbable node, and go to the last tabbable node of the LAST group
           startOfGroupIndex = containerIndex;
@@ -410,12 +451,15 @@ const createFocusTrap = function (elements, userOptions) {
 
         if (
           lastOfGroupIndex < 0 &&
-          (state.tabbableGroups[containerIndex].container === target ||
-            (isFocusable(target) && !isTabbable(target)))
+          (containerGroup.container === target ||
+            (isFocusable(target) &&
+              !isTabbable(target) &&
+              !containerGroup.nextTabbableNode(target)))
         ) {
           // an exception case where the target is the container itself, or
           //  a non-tabbable node that was given focus (i.e. tabindex is negative
-          //  and user clicked on it or node was programmatically given focus), in which
+          //  and user clicked on it or node was programmatically given focus)
+          //  and is not followed by any other tabbable node, in which
           //  case, we should handle tab as if focus were on the container's
           //  last tabbable node, and go to the first tabbable node of the FIRST group
           lastOfGroupIndex = containerIndex;

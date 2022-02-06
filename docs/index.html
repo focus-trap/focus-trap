@@ -895,10 +895,10 @@
     <div id="demo-negative-tabindex">
       <h2 id="negative-tabindex-heading">Negative tabindex</h2>
       <p>
-        This trap has an element with a negative tabindex, which means that element is
-        <em>focusable</em> but not <em>tabbable</em>. Use the mouse to set focus to it.
-        Once it has focus, you can still use the tab key to go forward or backward in
-        the normal tab order.
+        This trap has an element with a negative tabindex <strong>in the middle</strong>,
+        which means that element is <em>focusable</em> but not <em>tabbable</em>. Use the mouse
+        to set focus to it. Once it has focus, you can still use the tab key to go forward or
+        backward in the normal tab order.
       </p>
       <p>
         <button id="activate-negative-tabindex" aria-describedby="negative-tabindex-heading">
@@ -913,7 +913,50 @@
         </p>
         <p>
           <button>tabindex unset</button>
+        </p>
+        <p>
+          <!--
+            NOTE: It's important that the negative tabindex button NOT be LAST because there
+            was a bug that prevented normal forward tab movement once it had focus.
+            @see https://github.com/focus-trap/focus-trap/issues/611
+          -->
+          <button tabindex="-1">tabindex = -1</button>
+        </p>
+        <p>
           <button>tabindex unset</button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/negative-tabindex.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
+    <div id="demo-negative-tabindex-last">
+      <h2 id="negative-tabindex-last-heading">Negative tabindex last</h2>
+      <p>
+        This trap has an element with a negative tabindex and it's the <strong>last element</strong>,
+        which means that element is <em>focusable</em> but not <em>tabbable</em>. Use the mouse to set
+        focus to it. Once it has focus, you can still use the tab key to go forward or backward in
+        the normal tab order.
+      </p>
+      <p>
+        <button id="activate-negative-tabindex-last" aria-describedby="negative-tabindex-last-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="negative-tabindex-last" class="trap">
+        <p>
+          <button id="deactivate-negative-tabindex-last" aria-describedby="negative-tabindex-last-heading">
+            deactivate trap
+          </button>
+        </p>
+        <p>
+          <button>tabindex unset</button>
+        </p>
+        <p>
+          <button>tabindex unset</button>
+        </p>
+        <p>
           <!--
             NOTE: It's important that the negative tabindex button be LAST because there
             was a bug that prevented forward tab movement once it had focus, but only
