@@ -222,6 +222,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "skriems",
+      "name": "Sebastian Kriems",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15573317?v=4",
+      "profile": "https://github.com/skriems",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
