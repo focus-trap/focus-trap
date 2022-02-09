@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.7.3
+
+### Patch Changes
+
+- ab20d3d: Fix issue with focusing negative tabindex node and then tabbing away when this node is _not_ the last node in the trap's container ((#611)[https://github.com/focus-trap/focus-trap/issues/611])
+
 ## 6.7.2
 
 ### Patch Changes
