@@ -1,5 +1,5 @@
 /*!
-* focus-trap 6.7.3
+* focus-trap 6.8.0-beta.0
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -286,13 +286,25 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 5.2.1
+    * tabbable 5.3.0-beta.0
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
 
-    var candidateSelectors = ['input', 'select', 'textarea', 'a[href]', 'button', '[tabindex]', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])', 'details>summary:first-of-type', 'details'];
+    var candidateSelectors = ['input', 'select', 'textarea', 'a[href]', 'button', '[tabindex]:not(slot)', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])', 'details>summary:first-of-type', 'details'];
     var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
-    var matches = typeof Element === 'undefined' ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    var NoElement = typeof Element === 'undefined';
+    var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    var getRootNode = !NoElement && Element.prototype.getRootNode ? function (element) {
+      return element.getRootNode();
+    } : function (element) {
+      return element.ownerDocument;
+    };
+    /**
+     * @param {Element} el container to check in
+     * @param {boolean} includeContainer add container to check
+     * @param {(node: Element) => boolean} filter filter candidates
+     * @returns {Element[]}
+     */
 
     var getCandidates = function getCandidates(el, includeContainer, filter) {
       var candidates = Array.prototype.slice.apply(el.querySelectorAll(candidateSelector));
@@ -304,12 +316,92 @@ var focusTrapDemoBundle = (function () {
       candidates = candidates.filter(filter);
       return candidates;
     };
+    /**
+     * @callback GetShadowRoot
+     * @param {Element} element to check for shadow root
+     * @returns {ShadowRoot|boolean} ShadowRoot if available or boolean indicating if a shadowRoot is attached but not available.
+     */
+
+    /**
+     * @typedef {Object} CandidatesScope
+     * @property {Element} scope contains inner candidates
+     * @property {Element[]} candidates
+     */
+
+    /**
+     * @typedef {Object} IterativeOptions
+     * @property {GetShadowRoot} getShadowRoot returns the shadow root of an element or a boolean stating if it has a shadow root
+     * @property {(node: Element) => boolean} filter filter candidates
+     * @property {boolean} flatten if true then result will flatten any CandidatesScope into the returned list
+     */
+
+    /**
+     * @param {Element[]} elements list of element containers to match candidates from
+     * @param {boolean} includeContainer add container list to check
+     * @param {IterativeOptions} options
+     * @returns {Array.<Element|CandidatesScope>}
+     */
+
+
+    var getCandidatesIteratively = function getCandidatesIteratively(elements, includeContainer, options) {
+      var candidates = [];
+      var elementsToCheck = Array.from(elements);
+
+      while (elementsToCheck.length) {
+        var element = elementsToCheck.shift();
+
+        if (element.tagName === 'SLOT') {
+          // add shadow dom slot scope (slot itself cannot be focusable)
+          var assigned = element.assignedElements();
+          var content = assigned.length ? assigned : element.children;
+          var nestedCandidates = getCandidatesIteratively(content, true, options);
+
+          if (options.flatten) {
+            candidates.push.apply(candidates, nestedCandidates);
+          } else {
+            candidates.push({
+              scope: element,
+              candidates: nestedCandidates
+            });
+          }
+        } else {
+          // check candidate element
+          var validCandidate = matches.call(element, candidateSelector);
+
+          if (validCandidate && options.filter(element) && (includeContainer || !elements.includes(element))) {
+            candidates.push(element);
+          } // iterate over content
+
+
+          var shadowRoot = element.shadowRoot || options.getShadowRoot(element);
+
+          if (shadowRoot) {
+            // add shadow dom scope
+            var _nestedCandidates = getCandidatesIteratively(shadowRoot === true ? element.children : shadowRoot.children, true, options);
+
+            if (options.flatten) {
+              candidates.push.apply(candidates, _nestedCandidates);
+            } else {
+              candidates.push({
+                scope: element,
+                candidates: _nestedCandidates
+              });
+            }
+          } else {
+            // add light dom scope
+            elementsToCheck.unshift.apply(elementsToCheck, element.children);
+          }
+        }
+      }
+
+      return candidates;
+    };
 
     var isContentEditable = function isContentEditable(node) {
       return node.contentEditable === 'true';
     };
 
-    var getTabindex = function getTabindex(node) {
+    var getTabindex = function getTabindex(node, isScope) {
       var tabindexAttr = parseInt(node.getAttribute('tabindex'), 10);
 
       if (!isNaN(tabindexAttr)) {
@@ -325,9 +417,13 @@ var focusTrapDemoBundle = (function () {
       //  yet they are still part of the regular tab order; in FF, they get a default
       //  `tabIndex` of 0; since Chrome still puts those elements in the regular tab
       //  order, consider their tab index to be 0.
+      //
+      // isScope is positive for custom element with shadow root or slot that by default
+      // have tabIndex -1, but need to be sorted by document order in order for their
+      // content to be inserted in the correct position
 
 
-      if ((node.nodeName === 'AUDIO' || node.nodeName === 'VIDEO' || node.nodeName === 'DETAILS') && node.getAttribute('tabindex') === null) {
+      if ((isScope || node.nodeName === 'AUDIO' || node.nodeName === 'VIDEO' || node.nodeName === 'DETAILS') && node.getAttribute('tabindex') === null) {
         return 0;
       }
 
@@ -366,7 +462,7 @@ var focusTrapDemoBundle = (function () {
         return true;
       }
 
-      var radioScope = node.form || node.ownerDocument;
+      var radioScope = node.form || getRootNode(node);
 
       var queryRadios = function queryRadios(name) {
         return radioScope.querySelectorAll('input[type="radio"][name="' + name + '"]');
@@ -398,7 +494,21 @@ var focusTrapDemoBundle = (function () {
       return isRadio(node) && !isTabbableRadio(node);
     };
 
-    var isHidden = function isHidden(node, displayCheck) {
+    var noop = function noop() {};
+
+    var isZeroArea = function isZeroArea(node) {
+      var _node$getBoundingClie = node.getBoundingClientRect(),
+          width = _node$getBoundingClie.width,
+          height = _node$getBoundingClie.height;
+
+      return width === 0 && height === 0;
+    };
+
+    var isHidden = function isHidden(node, _ref) {
+      var displayCheck = _ref.displayCheck,
+          _ref$getShadowRoot = _ref.getShadowRoot,
+          getShadowRoot = _ref$getShadowRoot === void 0 ? noop : _ref$getShadowRoot;
+
       if (getComputedStyle(node).visibility === 'hidden') {
         return true;
       }
@@ -416,14 +526,25 @@ var focusTrapDemoBundle = (function () {
             return true;
           }
 
-          node = node.parentElement;
+          var parentElement = node.parentElement;
+          var rootNode = getRootNode(node);
+
+          if (parentElement && !parentElement.shadowRoot && getShadowRoot(parentElement)) {
+            // fallback to zero area size for unreachable shadow dom
+            return isZeroArea(node);
+          } else if (node.assignedSlot) {
+            // iterate up slot
+            node = node.assignedSlot;
+          } else if (!parentElement && rootNode !== node.ownerDocument) {
+            // cross shadow boundary
+            node = rootNode.host;
+          } else {
+            // iterate up normal dom
+            node = parentElement;
+          }
         }
       } else if (displayCheck === 'non-zero-area') {
-        var _node$getBoundingClie = node.getBoundingClientRect(),
-            width = _node$getBoundingClie.width,
-            height = _node$getBoundingClie.height;
-
-        return width === 0 && height === 0;
+        return isZeroArea(node);
       }
 
       return false;
@@ -471,7 +592,7 @@ var focusTrapDemoBundle = (function () {
     };
 
     var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable(options, node) {
-      if (node.disabled || isHiddenInput(node) || isHidden(node, options.displayCheck) || // For a details element with a summary, the summary element gets the focus
+      if (node.disabled || isHiddenInput(node) || isHidden(node, options) || // For a details element with a summary, the summary element gets the focus
       isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
         return false;
       }
@@ -486,34 +607,70 @@ var focusTrapDemoBundle = (function () {
 
       return true;
     };
+    /**
+     * @param {Array.<Element|CandidatesScope>} candidates
+     * @returns Element[]
+     */
 
-    var tabbable = function tabbable(el, options) {
-      options = options || {};
+
+    var sortByOrder = function sortByOrder(candidates) {
       var regularTabbables = [];
       var orderedTabbables = [];
-      var candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
-      candidates.forEach(function (candidate, i) {
-        var candidateTabindex = getTabindex(candidate);
+      candidates.forEach(function (item, i) {
+        var isScope = !!item.scope;
+        var element = isScope ? item.scope : item;
+        var candidateTabindex = getTabindex(element, isScope);
+        var elements = isScope ? sortByOrder(item.candidates) : element;
 
         if (candidateTabindex === 0) {
-          regularTabbables.push(candidate);
+          isScope ? regularTabbables.push.apply(regularTabbables, elements) : regularTabbables.push(element);
         } else {
           orderedTabbables.push({
             documentOrder: i,
             tabIndex: candidateTabindex,
-            node: candidate
+            item: item,
+            isScope: isScope,
+            content: elements
           });
         }
       });
-      var tabbableNodes = orderedTabbables.sort(sortOrderedTabbables).map(function (a) {
-        return a.node;
-      }).concat(regularTabbables);
-      return tabbableNodes;
+      return orderedTabbables.sort(sortOrderedTabbables).reduce(function (acc, sortable) {
+        sortable.isScope ? acc.push.apply(acc, sortable.content) : acc.push(sortable.content);
+        return acc;
+      }, []).concat(regularTabbables);
+    };
+
+    var tabbable = function tabbable(el, options) {
+      options = options || {};
+      var candidates;
+
+      if (options.getShadowRoot) {
+        candidates = getCandidatesIteratively([el], options.includeContainer, {
+          filter: isNodeMatchingSelectorTabbable.bind(null, options),
+          flatten: false,
+          getShadowRoot: options.getShadowRoot
+        });
+      } else {
+        candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
+      }
+
+      return sortByOrder(candidates);
     };
 
     var focusable = function focusable(el, options) {
       options = options || {};
-      var candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
+      var candidates;
+
+      if (options.getShadowRoot) {
+        candidates = getCandidatesIteratively([el], options.includeContainer, {
+          filter: isNodeMatchingSelectorFocusable.bind(null, options),
+          flatten: true,
+          getShadowRoot: options.getShadowRoot
+        });
+      } else {
+        candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
+      }
+
       return candidates;
     };
 
