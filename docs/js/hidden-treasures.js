@@ -19,6 +19,10 @@ module.exports = () => {
     });
 
   document
+    .getElementById('deactivate-ht')
+    .addEventListener('click', focusTrap.deactivate);
+
+  document
     .getElementById('ht-show-less')
     .addEventListener('click', function () {
       more.style.display = 'none';

@@ -1,5 +1,5 @@
 /*!
-* focus-trap 6.7.2
+* focus-trap 6.7.3
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -773,12 +773,6 @@ var focusTrapDemoBundle = (function () {
               container: container,
               firstTabbableNode: tabbableNodes[0],
               lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
-              // DEBUG TEST: what happens if tabindex is positive, in order to manipulate
-              //  the tab order separate from the DOM order? this may not work because the
-              //  list of focusableNodes, while it contains tabbable nodes, does not sort
-              //  its nodes in any order other than DOM order, because it can't... where
-              //  would you place focusable, but not tabbable, nodes in that order? they
-              //  have no order, because they aren't tabbale...
 
               /**
                * Finds the __tabbable__ node that follows the given node in the specified direction,
@@ -790,6 +784,16 @@ var focusTrapDemoBundle = (function () {
                */
               nextTabbableNode: function nextTabbableNode(node) {
                 var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+                // NOTE: If tabindex is positive (in order to manipulate the tab order separate
+                //  from the DOM order), this __will not work__ because the list of focusableNodes,
+                //  while it contains tabbable nodes, does not sort its nodes in any order other
+                //  than DOM order, because it can't: Where would you place focusable (but not
+                //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
+                // Support for positive tabindex is already broken and hard to manage (possibly
+                //  not supportable, TBD), so this isn't going to make things worse than they
+                //  already are, and at least makes things better for the majority of cases where
+                //  tabindex is either 0/unset or negative.
+                // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
                 var nodeIdx = focusableNodes.findIndex(function (n) {
                   return n === node;
                 });
@@ -1422,6 +1426,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('ht-show-more').addEventListener('click', function () {
         more.style.display = 'block';
       });
+      document.getElementById('deactivate-ht').addEventListener('click', focusTrap.deactivate);
       document.getElementById('ht-show-less').addEventListener('click', function () {
         more.style.display = 'none';
       });
