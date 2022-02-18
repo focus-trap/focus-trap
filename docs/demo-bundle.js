@@ -1426,7 +1426,6 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('ht-show-more').addEventListener('click', function () {
         more.style.display = 'block';
       });
-      document.getElementById('deactivate-ht').addEventListener('click', focusTrap.deactivate);
       document.getElementById('ht-show-less').addEventListener('click', function () {
         more.style.display = 'none';
       });
