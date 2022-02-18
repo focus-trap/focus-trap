@@ -231,6 +231,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "DaviDevMod",
+      "name": "DaviDevMod",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98312056?v=4",
+      "profile": "https://github.com/DaviDevMod",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
