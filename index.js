@@ -155,6 +155,15 @@ const createFocusTrap = function (elements, userOptions) {
   const containersContain = function (element) {
     return !!(
       element &&
+      // DEBUG TODO: this doesn't look inside web components (even open ones),
+      //  which means if we're about to tab onto an element inside a web component,
+      //  even if we've found it via tabbable() with shadow DOM enabled, we're
+      //  going to think the elemene isn't contained, we're then going to bring
+      //  focus back into the trap (thinking it has escaped, because the fact we're
+      //  testing `element` means the browser moved focus to it) and it'll be to
+      //  the most recently focused node, which will make it look like the tab
+      //  key is stuck on the element just before the one in the web component...
+      //  See issue https://github.com/focus-trap/focus-trap/issues/643
       state.containers.some((container) => container.contains(element))
     );
   };
