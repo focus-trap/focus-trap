@@ -1538,4 +1538,90 @@ describe('focus-trap', () => {
   //    focus to an element with negative tabindex and tabbing away from it in one direction
   //    or another.
   // });
+
+  // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+  //  support web components, so we can't successfully run this test because it will skip
+  //  over the web component when tabbing from 'button 3', jumping to 'button 4' instead of
+  //  the expectation of going to the 'open-web-component' button. Remember that
+  //  cypress-plugin-tab using some other internal tabbable-like library to determine what
+  //  the tabbable nodes are and moves focus that way.
+  // describe('demo: with-open-web-component', () => {
+  //   it.only('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
+  //     cy.get('#demo-with-open-web-component').as('testRoot');
+  //
+  //     // activate trap
+  //     cy.get('@testRoot')
+  //       .findByRole('button', { name: /^activate trap/ })
+  //       .as('lastlyFocusedElementBeforeTrapIsActivated')
+  //       .click();
+  //
+  //     // 1st element should be focused
+  //     cy.get('@testRoot')
+  //       .findByRole('button', { name: 'button 1' })
+  //       .as('firstElementInTrap')
+  //       .should('be.focused');
+  //
+  //     // trap is active (keep focus in trap by blocking clicks on outside focusable element)
+  //     cy.get('#return-to-repo').click();
+  //     cy.get('@firstElementInTrap').should('be.focused');
+  //
+  //     // trap is active (keep focus in trap by blocking clicks on outside un-focusable element)
+  //     cy.get('#with-open-web-component-heading').click();
+  //     cy.get('@firstElementInTrap').should('be.focused');
+  //
+  //     // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+  //     cy.get('@firstElementInTrap')
+  //       .tab()
+  //       .should('have.text', 'button 2')
+  //       .should('be.focused')
+  //       .tab()
+  //       .should('have.text', 'button 3')
+  //       .should('be.focused')
+  //       .tab()
+  //       .should('have.text', 'open-web-component')
+  //       .should('be.focused')
+  //       .tab()
+  //       .should('have.text', 'button 4')
+  //       .should('be.focused')
+  //       .tab()
+  //       .should('have.text', 'button 5')
+  //       .should('be.focused')
+  //       .tab()
+  //       .as('lastElementInTrap')
+  //       .should('contain', 'deactivate trap')
+  //       .should('be.focused')
+  //       .tab();
+  //
+  //     // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+  //     cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+  //     cy.get('@lastElementInTrap')
+  //       .should('be.focused')
+  //       .tab({ shift: true })
+  //       .should('have.text', 'button 5')
+  //       .should('be.focused')
+  //       .tab({ shift: true })
+  //       .should('have.text', 'button 4')
+  //       .should('be.focused')
+  //       .tab({ shift: true })
+  //       .should('have.text', 'open-web-component')
+  //       .should('be.focused')
+  //       .tab({ shift: true })
+  //       .should('have.text', 'button 3')
+  //       .should('be.focused')
+  //       .tab({ shift: true })
+  //       .should('have.text', 'button 2')
+  //       .should('be.focused')
+  //       .tab({ shift: true });
+  //
+  //     cy.get('@firstElementInTrap').should('be.focused');
+  //
+  //     // focus can be transitioned freely when trap is deactivated
+  //     cy.get('@testRoot')
+  //       .findByRole('button', { name: /^deactivate trap/ })
+  //       .click();
+  //     verifyFocusIsNotTrapped(
+  //       cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+  //     );
+  //   });
+  // });
 });

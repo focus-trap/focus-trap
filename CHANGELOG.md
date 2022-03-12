@@ -1,8 +1,15 @@
 # Changelog
 
+## UNRELEASED
+
+- When updating tabbable nodes, make sure that `getShadowRoot` tabbable option is also passed to `focusable()`.
+- Fix bug where having a tabbable node inside a web component in the middle of a tab sequence would cause the tab key to seemingly stop working just before focus should move to it ((#643)[https://github.com/focus-trap/focus-trap/issues/643]).
+- Bumps tabbable to `v5.3.0-beta.1`
+
 ## 6.8.0-beta.0
 
 - Adds new `tabbableOptions` configuration option, which allows specifically for the new `getShadowRoot` Tabbable configuration option: `focusTrap.createFocusTrap(rootElement, { tabbableOptions: { getShadowRoot: (node) => closedShadowRoot } })`, for example (where your code has the reference to `closedShadowRoot` previously created on `node` which Tabbable cannot find on its own).
+- Bumps tabbable to `v5.3.0-beta.0`
 
 ## 6.7.3
 

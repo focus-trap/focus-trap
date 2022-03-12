@@ -38,6 +38,7 @@
     "test:chrome": "CYPRESS_BROWSER=chrome yarn test:cypress:ci",
     "test": "yarn format:check && yarn lint && yarn test:unit && yarn test:types && CYPRESS_BROWSER=chrome yarn test:cypress:ci",
     "prepare": "yarn build",
+    "prepublishOnly": "yarn test && yarn build",
     "release": "yarn build && changeset publish"
   },
   "repository": {
@@ -62,7 +63,7 @@
   },
   "homepage": "https://github.com/focus-trap/focus-trap#readme",
   "dependencies": {
-    "tabbable": "5.3.0-beta.0"
+    "tabbable": "5.3.0-beta.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",

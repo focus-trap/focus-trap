@@ -31,15 +31,10 @@ module.exports = () => {
     </p>
   `;
 
-  // DEBUG TODO: we need to cover this case (i.e. with a test) that you can just tab
-  //  through all buttons including the one inside the web component because this test
-  //  in focus-trap's index.js (currently lin 158) fails to find that a node is in one
-  //  of the containers, even if tabbable() found that node. The `Element.contains()` API
-  //  doesn't look in web-components: `state.containers.some((container) => container.contains(element))`
   const focusTrap = createFocusTrap('#with-open-web-component', {
     onActivate: () => container.classList.add('is-active'),
     onDeactivate: () => container.classList.remove('is-active'),
-    tabbableOptions: { getShadowRoot: () => true },
+    tabbableOptions: { getShadowRoot: true },
   });
 
   document
