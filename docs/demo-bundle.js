@@ -1,12 +1,12 @@
 /*!
-* focus-trap 6.8.0-beta.0
+* focus-trap 6.8.0-beta.2
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
+        const env = {"BUILD_ENV":"demo"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -989,13 +989,13 @@ var focusTrapDemoBundle = (function () {
             lastTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : null,
 
             /**
-              * Finds the __tabbable__ node that follows the given node in the specified direction,
-              *  in this container, if any.
-              * @param {HTMLElement} node
-              * @param {boolean} [forward] True if going in forward tab order; false if going
-              *  in reverse.
-              * @returns {HTMLElement|undefined} The next tabbable node, if any.
-              */
+             * Finds the __tabbable__ node that follows the given node in the specified direction,
+             *  in this container, if any.
+             * @param {HTMLElement} node
+             * @param {boolean} [forward] True if going in forward tab order; false if going
+             *  in reverse.
+             * @returns {HTMLElement|undefined} The next tabbable node, if any.
+             */
             nextTabbableNode: function nextTabbableNode(node) {
               var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
               // NOTE: If tabindex is positive (in order to manipulate the tab order separate
@@ -3085,12 +3085,7 @@ var focusTrapDemoBundle = (function () {
 
         return _class;
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement)));
-      container.innerHTML = "\n    <button>button 1</button>\n    <button>button 2</button>\n    <button>button 3</button>\n    <open-web-component></open-web-component>\n    <button>button 4</button>\n    <button>button 5</button>\n    <p>\n      <button id=\"deactivate-with-open-web-component\" aria-describedby=\"with-open-web-component-heading\">\n        deactivate trap\n      </button>\n    </p>\n  "; // DEBUG TODO: we need to cover this case (i.e. with a test) that you can just tab
-      //  through all buttons including the one inside the web component because this test
-      //  in focus-trap's index.js (currently lin 158) fails to find that a node is in one
-      //  of the containers, even if tabbable() found that node. The `Element.contains()` API
-      //  doesn't look in web-components: `state.containers.some((container) => container.contains(element))`
-
+      container.innerHTML = "\n    <button>button 1</button>\n    <button>button 2</button>\n    <button>button 3</button>\n    <open-web-component></open-web-component>\n    <button>button 4</button>\n    <button>button 5</button>\n    <p>\n      <button id=\"deactivate-with-open-web-component\" aria-describedby=\"with-open-web-component-heading\">\n        deactivate trap\n      </button>\n    </p>\n  ";
       var focusTrap = createFocusTrap('#with-open-web-component', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
