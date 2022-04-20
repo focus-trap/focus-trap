@@ -76,7 +76,7 @@
     "@testing-library/cypress": "^8.0.2",
     "@types/jquery": "^3.5.14",
     "all-contributors-cli": "^6.20.0",
-    "babel-loader": "^8.2.4",
+    "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "cypress": "^9.5.4",
     "cypress-plugin-tab": "^1.0.5",
