@@ -35,3 +35,5 @@ require('./multiple-elements-multiple-traps')();
 require('./in-open-shadow-dom')();
 require('./negative-tabindex')();
 require('./negative-tabindex-last')();
+
+require('./with-open-web-component')(); // TEST MANUALLY

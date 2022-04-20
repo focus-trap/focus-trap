@@ -1,5 +1,5 @@
 /*!
-* focus-trap 6.7.3
+* focus-trap 6.8.0-beta.2
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -286,13 +286,25 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 5.2.1
+    * tabbable 5.3.0
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
 
-    var candidateSelectors = ['input', 'select', 'textarea', 'a[href]', 'button', '[tabindex]', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])', 'details>summary:first-of-type', 'details'];
+    var candidateSelectors = ['input', 'select', 'textarea', 'a[href]', 'button', '[tabindex]:not(slot)', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])', 'details>summary:first-of-type', 'details'];
     var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
-    var matches = typeof Element === 'undefined' ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    var NoElement = typeof Element === 'undefined';
+    var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    var getRootNode = !NoElement && Element.prototype.getRootNode ? function (element) {
+      return element.getRootNode();
+    } : function (element) {
+      return element.ownerDocument;
+    };
+    /**
+     * @param {Element} el container to check in
+     * @param {boolean} includeContainer add container to check
+     * @param {(node: Element) => boolean} filter filter candidates
+     * @returns {Element[]}
+     */
 
     var getCandidates = function getCandidates(el, includeContainer, filter) {
       var candidates = Array.prototype.slice.apply(el.querySelectorAll(candidateSelector));
@@ -304,31 +316,112 @@ var focusTrapDemoBundle = (function () {
       candidates = candidates.filter(filter);
       return candidates;
     };
+    /**
+     * @callback GetShadowRoot
+     * @param {Element} element to check for shadow root
+     * @returns {ShadowRoot|boolean} ShadowRoot if available or boolean indicating if a shadowRoot is attached but not available.
+     */
 
-    var isContentEditable = function isContentEditable(node) {
-      return node.contentEditable === 'true';
+    /**
+     * @typedef {Object} CandidatesScope
+     * @property {Element} scope contains inner candidates
+     * @property {Element[]} candidates
+     */
+
+    /**
+     * @typedef {Object} IterativeOptions
+     * @property {GetShadowRoot|boolean} getShadowRoot true if shadow support is enabled; falsy if not;
+     *  if a function, implies shadow support is enabled and either returns the shadow root of an element
+     *  or a boolean stating if it has an undisclosed shadow root
+     * @property {(node: Element) => boolean} filter filter candidates
+     * @property {boolean} flatten if true then result will flatten any CandidatesScope into the returned list
+     */
+
+    /**
+     * @param {Element[]} elements list of element containers to match candidates from
+     * @param {boolean} includeContainer add container list to check
+     * @param {IterativeOptions} options
+     * @returns {Array.<Element|CandidatesScope>}
+     */
+
+
+    var getCandidatesIteratively = function getCandidatesIteratively(elements, includeContainer, options) {
+      var candidates = [];
+      var elementsToCheck = Array.from(elements);
+
+      while (elementsToCheck.length) {
+        var element = elementsToCheck.shift();
+
+        if (element.tagName === 'SLOT') {
+          // add shadow dom slot scope (slot itself cannot be focusable)
+          var assigned = element.assignedElements();
+          var content = assigned.length ? assigned : element.children;
+          var nestedCandidates = getCandidatesIteratively(content, true, options);
+
+          if (options.flatten) {
+            candidates.push.apply(candidates, nestedCandidates);
+          } else {
+            candidates.push({
+              scope: element,
+              candidates: nestedCandidates
+            });
+          }
+        } else {
+          // check candidate element
+          var validCandidate = matches.call(element, candidateSelector);
+
+          if (validCandidate && options.filter(element) && (includeContainer || !elements.includes(element))) {
+            candidates.push(element);
+          } // iterate over shadow content if possible
+
+
+          var shadowRoot = element.shadowRoot || // check for an undisclosed shadow
+          typeof options.getShadowRoot === 'function' && options.getShadowRoot(element);
+
+          if (shadowRoot) {
+            // add shadow dom scope IIF a shadow root node was given; otherwise, an undisclosed
+            //  shadow exists, so look at light dom children as fallback BUT create a scope for any
+            //  child candidates found because they're likely slotted elements (elements that are
+            //  children of the web component element (which has the shadow), in the light dom, but
+            //  slotted somewhere _inside_ the undisclosed shadow) -- the scope is created below,
+            //  _after_ we return from this recursive call
+            var _nestedCandidates = getCandidatesIteratively(shadowRoot === true ? element.children : shadowRoot.children, true, options);
+
+            if (options.flatten) {
+              candidates.push.apply(candidates, _nestedCandidates);
+            } else {
+              candidates.push({
+                scope: element,
+                candidates: _nestedCandidates
+              });
+            }
+          } else {
+            // there's not shadow so just dig into the element's (light dom) children
+            //  __without__ giving the element special scope treatment
+            elementsToCheck.unshift.apply(elementsToCheck, element.children);
+          }
+        }
+      }
+
+      return candidates;
     };
 
-    var getTabindex = function getTabindex(node) {
-      var tabindexAttr = parseInt(node.getAttribute('tabindex'), 10);
-
-      if (!isNaN(tabindexAttr)) {
-        return tabindexAttr;
-      } // Browsers do not return `tabIndex` correctly for contentEditable nodes;
-      // so if they don't have a tabindex attribute specifically set, assume it's 0.
-
-
-      if (isContentEditable(node)) {
-        return 0;
-      } // in Chrome, <details/>, <audio controls/> and <video controls/> elements get a default
-      //  `tabIndex` of -1 when the 'tabindex' attribute isn't specified in the DOM,
-      //  yet they are still part of the regular tab order; in FF, they get a default
-      //  `tabIndex` of 0; since Chrome still puts those elements in the regular tab
-      //  order, consider their tab index to be 0.
-
-
-      if ((node.nodeName === 'AUDIO' || node.nodeName === 'VIDEO' || node.nodeName === 'DETAILS') && node.getAttribute('tabindex') === null) {
-        return 0;
+    var getTabindex = function getTabindex(node, isScope) {
+      if (node.tabIndex < 0) {
+        // in Chrome, <details/>, <audio controls/> and <video controls/> elements get a default
+        // `tabIndex` of -1 when the 'tabindex' attribute isn't specified in the DOM,
+        // yet they are still part of the regular tab order; in FF, they get a default
+        // `tabIndex` of 0; since Chrome still puts those elements in the regular tab
+        // order, consider their tab index to be 0.
+        // Also browsers do not return `tabIndex` correctly for contentEditable nodes;
+        // so if they don't have a tabindex attribute specifically set, assume it's 0.
+        //
+        // isScope is positive for custom element with shadow root or slot that by default
+        // have tabIndex -1, but need to be sorted by document order in order for their
+        // content to be inserted in the correct position
+        if ((isScope || /^(AUDIO|VIDEO|DETAILS)$/.test(node.tagName) || node.isContentEditable) && isNaN(parseInt(node.getAttribute('tabindex'), 10))) {
+          return 0;
+        }
       }
 
       return node.tabIndex;
@@ -366,7 +459,7 @@ var focusTrapDemoBundle = (function () {
         return true;
       }
 
-      var radioScope = node.form || node.ownerDocument;
+      var radioScope = node.form || getRootNode(node);
 
       var queryRadios = function queryRadios(name) {
         return radioScope.querySelectorAll('input[type="radio"][name="' + name + '"]');
@@ -398,7 +491,18 @@ var focusTrapDemoBundle = (function () {
       return isRadio(node) && !isTabbableRadio(node);
     };
 
-    var isHidden = function isHidden(node, displayCheck) {
+    var isZeroArea = function isZeroArea(node) {
+      var _node$getBoundingClie = node.getBoundingClientRect(),
+          width = _node$getBoundingClie.width,
+          height = _node$getBoundingClie.height;
+
+      return width === 0 && height === 0;
+    };
+
+    var isHidden = function isHidden(node, _ref) {
+      var displayCheck = _ref.displayCheck,
+          getShadowRoot = _ref.getShadowRoot;
+
       if (getComputedStyle(node).visibility === 'hidden') {
         return true;
       }
@@ -411,19 +515,47 @@ var focusTrapDemoBundle = (function () {
       }
 
       if (!displayCheck || displayCheck === 'full') {
-        while (node) {
-          if (getComputedStyle(node).display === 'none') {
-            return true;
+        if (typeof getShadowRoot === 'function') {
+          // figure out if we should consider the node to be in an undisclosed shadow and use the
+          //  'non-zero-area' fallback
+          var originalNode = node;
+
+          while (node) {
+            var parentElement = node.parentElement;
+            var rootNode = getRootNode(node);
+
+            if (parentElement && !parentElement.shadowRoot && getShadowRoot(parentElement) === true // check if there's an undisclosed shadow
+            ) {
+              // node has an undisclosed shadow which means we can only treat it as a black box, so we
+              //  fall back to a non-zero-area test
+              return isZeroArea(node);
+            } else if (node.assignedSlot) {
+              // iterate up slot
+              node = node.assignedSlot;
+            } else if (!parentElement && rootNode !== node.ownerDocument) {
+              // cross shadow boundary
+              node = rootNode.host;
+            } else {
+              // iterate up normal dom
+              node = parentElement;
+            }
           }
 
-          node = node.parentElement;
-        }
-      } else if (displayCheck === 'non-zero-area') {
-        var _node$getBoundingClie = node.getBoundingClientRect(),
-            width = _node$getBoundingClie.width,
-            height = _node$getBoundingClie.height;
+          node = originalNode;
+        } // else, `getShadowRoot` might be true, but all that does is enable shadow DOM support
+        //  (i.e. it does not also presume that all nodes might have undisclosed shadows); or
+        //  it might be a falsy value, which means shadow DOM support is disabled
+        // didn't find it sitting in an undisclosed shadow (or shadows are disabled) so now we
+        //  can just test to see if it would normally be visible or not
+        // this works wherever the node is: if there's at least one client rect, it's
+        //  somehow displayed; it also covers the CSS 'display: contents' case where the
+        //  node itself is hidden in place of its contents; and there's no need to search
+        //  up the hierarchy either
 
-        return width === 0 && height === 0;
+
+        return !node.getClientRects().length;
+      } else if (displayCheck === 'non-zero-area') {
+        return isZeroArea(node);
       }
 
       return false;
@@ -433,29 +565,21 @@ var focusTrapDemoBundle = (function () {
 
 
     var isDisabledFromFieldset = function isDisabledFromFieldset(node) {
-      if (isInput(node) || node.tagName === 'SELECT' || node.tagName === 'TEXTAREA' || node.tagName === 'BUTTON') {
-        var parentNode = node.parentElement;
+      if (/^(INPUT|BUTTON|SELECT|TEXTAREA)$/.test(node.tagName)) {
+        var parentNode = node.parentElement; // check if `node` is contained in a disabled <fieldset>
 
         while (parentNode) {
           if (parentNode.tagName === 'FIELDSET' && parentNode.disabled) {
-            // look for the first <legend> as an immediate child of the disabled
-            //  <fieldset>: if the node is in that legend, it'll be enabled even
-            //  though the fieldset is disabled; otherwise, the node is in a
-            //  secondary/subsequent legend, or somewhere else within the fieldset
-            //  (however deep nested) and it'll be disabled
+            // look for the first <legend> among the children of the disabled <fieldset>
             for (var i = 0; i < parentNode.children.length; i++) {
-              var child = parentNode.children.item(i);
+              var child = parentNode.children.item(i); // when the first <legend> (in document order) is found
 
               if (child.tagName === 'LEGEND') {
-                if (child.contains(node)) {
-                  return false;
-                } // the node isn't in the first legend (in doc order), so no matter
-                //  where it is now, it'll be disabled
-
-
-                return true;
+                // if its parent <fieldset> is not nested in another disabled <fieldset>,
+                // return whether `node` is a descendant of its first <legend>
+                return matches.call(parentNode, 'fieldset[disabled] *') ? true : !child.contains(node);
               }
-            } // the node isn't in a legend, so no matter where it is now, it'll be disabled
+            } // the disabled <fieldset> containing `node` has no <legend>
 
 
             return true;
@@ -471,7 +595,7 @@ var focusTrapDemoBundle = (function () {
     };
 
     var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable(options, node) {
-      if (node.disabled || isHiddenInput(node) || isHidden(node, options.displayCheck) || // For a details element with a summary, the summary element gets the focus
+      if (node.disabled || isHiddenInput(node) || isHidden(node, options) || // For a details element with a summary, the summary element gets the focus
       isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
         return false;
       }
@@ -480,40 +604,76 @@ var focusTrapDemoBundle = (function () {
     };
 
     var isNodeMatchingSelectorTabbable = function isNodeMatchingSelectorTabbable(options, node) {
-      if (!isNodeMatchingSelectorFocusable(options, node) || isNonTabbableRadio(node) || getTabindex(node) < 0) {
+      if (isNonTabbableRadio(node) || getTabindex(node) < 0 || !isNodeMatchingSelectorFocusable(options, node)) {
         return false;
       }
 
       return true;
     };
+    /**
+     * @param {Array.<Element|CandidatesScope>} candidates
+     * @returns Element[]
+     */
 
-    var tabbable = function tabbable(el, options) {
-      options = options || {};
+
+    var sortByOrder = function sortByOrder(candidates) {
       var regularTabbables = [];
       var orderedTabbables = [];
-      var candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
-      candidates.forEach(function (candidate, i) {
-        var candidateTabindex = getTabindex(candidate);
+      candidates.forEach(function (item, i) {
+        var isScope = !!item.scope;
+        var element = isScope ? item.scope : item;
+        var candidateTabindex = getTabindex(element, isScope);
+        var elements = isScope ? sortByOrder(item.candidates) : element;
 
         if (candidateTabindex === 0) {
-          regularTabbables.push(candidate);
+          isScope ? regularTabbables.push.apply(regularTabbables, elements) : regularTabbables.push(element);
         } else {
           orderedTabbables.push({
             documentOrder: i,
             tabIndex: candidateTabindex,
-            node: candidate
+            item: item,
+            isScope: isScope,
+            content: elements
           });
         }
       });
-      var tabbableNodes = orderedTabbables.sort(sortOrderedTabbables).map(function (a) {
-        return a.node;
-      }).concat(regularTabbables);
-      return tabbableNodes;
+      return orderedTabbables.sort(sortOrderedTabbables).reduce(function (acc, sortable) {
+        sortable.isScope ? acc.push.apply(acc, sortable.content) : acc.push(sortable.content);
+        return acc;
+      }, []).concat(regularTabbables);
+    };
+
+    var tabbable = function tabbable(el, options) {
+      options = options || {};
+      var candidates;
+
+      if (options.getShadowRoot) {
+        candidates = getCandidatesIteratively([el], options.includeContainer, {
+          filter: isNodeMatchingSelectorTabbable.bind(null, options),
+          flatten: false,
+          getShadowRoot: options.getShadowRoot
+        });
+      } else {
+        candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
+      }
+
+      return sortByOrder(candidates);
     };
 
     var focusable = function focusable(el, options) {
       options = options || {};
-      var candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
+      var candidates;
+
+      if (options.getShadowRoot) {
+        candidates = getCandidatesIteratively([el], options.includeContainer, {
+          filter: isNodeMatchingSelectorFocusable.bind(null, options),
+          flatten: true,
+          getShadowRoot: options.getShadowRoot
+        });
+      } else {
+        candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
+      }
+
       return candidates;
     };
 
@@ -641,7 +801,7 @@ var focusTrapDemoBundle = (function () {
       return event.target.shadowRoot && typeof event.composedPath === 'function' ? event.composedPath()[0] : event.target;
     };
 
-    var createFocusTrap$r = function createFocusTrap(elements, userOptions) {
+    var createFocusTrap$s = function createFocusTrap(elements, userOptions) {
       // SSR: a live trap shouldn't be created in this type of environment so this
       //  should be safe code to execute if the `document` option isn't specified
       var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
@@ -653,20 +813,28 @@ var focusTrapDemoBundle = (function () {
       }, userOptions);
 
       var state = {
+        // containers given to createFocusTrap()
         // @type {Array<HTMLElement>}
         containers: [],
-        // list of objects identifying the first and last tabbable nodes in all containers/groups in
-        //  the trap
+        // list of objects identifying tabbable nodes in `containers` in the trap
         // NOTE: it's possible that a group has no tabbable nodes if nodes get removed while the trap
         //  is active, but the trap should never get to a state where there isn't at least one group
         //  with at least one tabbable node in it (that would lead to an error condition that would
         //  result in an error being thrown)
         // @type {Array<{
         //   container: HTMLElement,
+        //   tabbableNodes: Array<HTMLElement>, // empty if none
+        //   focusableNodes: Array<HTMLElement>, // empty if none
         //   firstTabbableNode: HTMLElement|null,
         //   lastTabbableNode: HTMLElement|null,
         //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
         // }>}
+        containerGroups: [],
+        // same order/length as `containers` list
+        // references to objects in `containerGroups`, but only those that actually have
+        //  tabbable nodes in them
+        // NOTE: same order as `containers` and `containerGroups`, but __not necessarily__
+        //  the same length
         tabbableGroups: [],
         nodeFocusedBeforeActivation: null,
         mostRecentlyFocusedNode: null,
@@ -678,14 +846,42 @@ var focusTrapDemoBundle = (function () {
       };
       var trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
+      /**
+       * Gets a configuration option value.
+       * @param {Object|undefined} configOverrideOptions If true, and option is defined in this set,
+       *  value will be taken from this object. Otherwise, value will be taken from base configuration.
+       * @param {string} optionName Name of the option whose value is sought.
+       * @param {string|undefined} [configOptionName] Name of option to use __instead of__ `optionName`
+       *  IIF `configOverrideOptions` is not defined. Otherwise, `optionName` is used.
+       */
+
       var getOption = function getOption(configOverrideOptions, optionName, configOptionName) {
         return configOverrideOptions && configOverrideOptions[optionName] !== undefined ? configOverrideOptions[optionName] : config[configOptionName || optionName];
       };
+      /**
+       * Finds the index of the container that contains the element.
+       * @param {HTMLElement} element
+       * @returns {number} Index of the container in either `state.containers` or
+       *  `state.containerGroups` (the order/length of these lists are the same); -1
+       *  if the element isn't found.
+       */
 
-      var containersContain = function containersContain(element) {
-        return !!(element && state.containers.some(function (container) {
-          return container.contains(element);
-        }));
+
+      var findContainerIndex = function findContainerIndex(element) {
+        // NOTE: search `containerGroups` because it's possible a group contains no tabbable
+        //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
+        //  and we still need to find the element in there
+        return state.containerGroups.findIndex(function (_ref) {
+          var container = _ref.container,
+              tabbableNodes = _ref.tabbableNodes;
+          return container.contains(element) || // fall back to explicit tabbable search which will take into consideration any
+          //  web components if the `tabbableOptions.getShadowRoot` option was used for
+          //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
+          //  look inside web components even if open)
+          tabbableNodes.find(function (node) {
+            return node === element;
+          });
+        });
       };
       /**
        * Gets the node for the given option, which is expected to be an option that
@@ -744,7 +940,7 @@ var focusTrapDemoBundle = (function () {
 
         if (node === undefined) {
           // option not specified: use fallback options
-          if (containersContain(doc.activeElement)) {
+          if (findContainerIndex(doc.activeElement) >= 0) {
             node = doc.activeElement;
           } else {
             var firstTabbableGroup = state.tabbableGroups[0];
@@ -762,60 +958,67 @@ var focusTrapDemoBundle = (function () {
       };
 
       var updateTabbableNodes = function updateTabbableNodes() {
-        state.tabbableGroups = state.containers.map(function (container) {
-          var tabbableNodes = tabbable(container); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
+        state.containerGroups = state.containers.map(function (container) {
+          var _config$tabbableOptio, _config$tabbableOptio2;
+
+          var tabbableNodes = tabbable(container, {
+            getShadowRoot: (_config$tabbableOptio = config.tabbableOptions) === null || _config$tabbableOptio === void 0 ? void 0 : _config$tabbableOptio.getShadowRoot
+          }); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
           //  are a superset of tabbable nodes
 
-          var focusableNodes = focusable(container);
+          var focusableNodes = focusable(container, {
+            getShadowRoot: (_config$tabbableOptio2 = config.tabbableOptions) === null || _config$tabbableOptio2 === void 0 ? void 0 : _config$tabbableOptio2.getShadowRoot
+          });
+          return {
+            container: container,
+            tabbableNodes: tabbableNodes,
+            focusableNodes: focusableNodes,
+            firstTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[0] : null,
+            lastTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : null,
 
-          if (tabbableNodes.length > 0) {
-            return {
-              container: container,
-              firstTabbableNode: tabbableNodes[0],
-              lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
+            /**
+             * Finds the __tabbable__ node that follows the given node in the specified direction,
+             *  in this container, if any.
+             * @param {HTMLElement} node
+             * @param {boolean} [forward] True if going in forward tab order; false if going
+             *  in reverse.
+             * @returns {HTMLElement|undefined} The next tabbable node, if any.
+             */
+            nextTabbableNode: function nextTabbableNode(node) {
+              var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+              // NOTE: If tabindex is positive (in order to manipulate the tab order separate
+              //  from the DOM order), this __will not work__ because the list of focusableNodes,
+              //  while it contains tabbable nodes, does not sort its nodes in any order other
+              //  than DOM order, because it can't: Where would you place focusable (but not
+              //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
+              // Support for positive tabindex is already broken and hard to manage (possibly
+              //  not supportable, TBD), so this isn't going to make things worse than they
+              //  already are, and at least makes things better for the majority of cases where
+              //  tabindex is either 0/unset or negative.
+              // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
+              var nodeIdx = focusableNodes.findIndex(function (n) {
+                return n === node;
+              });
 
-              /**
-               * Finds the __tabbable__ node that follows the given node in the specified direction,
-               *  in this container, if any.
-               * @param {HTMLElement} node
-               * @param {boolean} [forward] True if going in forward tab order; false if going
-               *  in reverse.
-               * @returns {HTMLElement|undefined} The next tabbable node, if any.
-               */
-              nextTabbableNode: function nextTabbableNode(node) {
-                var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-                // NOTE: If tabindex is positive (in order to manipulate the tab order separate
-                //  from the DOM order), this __will not work__ because the list of focusableNodes,
-                //  while it contains tabbable nodes, does not sort its nodes in any order other
-                //  than DOM order, because it can't: Where would you place focusable (but not
-                //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
-                // Support for positive tabindex is already broken and hard to manage (possibly
-                //  not supportable, TBD), so this isn't going to make things worse than they
-                //  already are, and at least makes things better for the majority of cases where
-                //  tabindex is either 0/unset or negative.
-                // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
-                var nodeIdx = focusableNodes.findIndex(function (n) {
-                  return n === node;
-                });
+              if (nodeIdx < 0) {
+                return undefined;
+              }
 
-                if (forward) {
-                  return focusableNodes.slice(nodeIdx + 1).find(function (n) {
-                    return isTabbable(n);
-                  });
-                }
-
-                return focusableNodes.slice(0, nodeIdx).reverse().find(function (n) {
+              if (forward) {
+                return focusableNodes.slice(nodeIdx + 1).find(function (n) {
                   return isTabbable(n);
                 });
               }
-            };
-          }
 
-          return undefined;
-        }).filter(function (group) {
-          return !!group;
-        }); // remove groups with no tabbable nodes
-        // throw if no groups have tabbable nodes and we don't have a fallback focus node either
+              return focusableNodes.slice(0, nodeIdx).reverse().find(function (n) {
+                return isTabbable(n);
+              });
+            }
+          };
+        });
+        state.tabbableGroups = state.containerGroups.filter(function (group) {
+          return group.tabbableNodes.length > 0;
+        }); // throw if no groups have tabbable nodes and we don't have a fallback focus node either
 
         if (state.tabbableGroups.length <= 0 && !getNodeForOption('fallbackFocus') // returning false not supported for this option
         ) {
@@ -857,7 +1060,7 @@ var focusTrapDemoBundle = (function () {
       var checkPointerDown = function checkPointerDown(e) {
         var target = getActualTarget(e);
 
-        if (containersContain(target)) {
+        if (findContainerIndex(target) >= 0) {
           // allow the click since it ocurred inside the trap
           return;
         }
@@ -896,7 +1099,7 @@ var focusTrapDemoBundle = (function () {
 
       var checkFocusIn = function checkFocusIn(e) {
         var target = getActualTarget(e);
-        var targetContained = containersContain(target); // In Firefox when you Tab out of an iframe the Document is briefly focused.
+        var targetContained = findContainerIndex(target) >= 0; // In Firefox when you Tab out of an iframe the Document is briefly focused.
 
         if (targetContained || target instanceof Document) {
           if (targetContained) {
@@ -922,11 +1125,8 @@ var focusTrapDemoBundle = (function () {
           // make sure the target is actually contained in a group
           // NOTE: the target may also be the container itself if it's focusable
           //  with tabIndex='-1' and was given initial focus
-          var containerIndex = findIndex(state.tabbableGroups, function (_ref) {
-            var container = _ref.container;
-            return container.contains(target);
-          });
-          var containerGroup = containerIndex >= 0 ? state.tabbableGroups[containerIndex] : undefined;
+          var containerIndex = findContainerIndex(target);
+          var containerGroup = containerIndex >= 0 ? state.containerGroups[containerIndex] : undefined;
 
           if (containerIndex < 0) {
             // target not found in any group: quite possible focus has escaped the trap,
@@ -1024,7 +1224,7 @@ var focusTrapDemoBundle = (function () {
 
         var target = getActualTarget(e);
 
-        if (containersContain(target)) {
+        if (findContainerIndex(target) >= 0) {
           return;
         }
 
@@ -1210,16 +1410,16 @@ var focusTrapDemoBundle = (function () {
 
     var focusTrap = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        createFocusTrap: createFocusTrap$r
+        createFocusTrap: createFocusTrap$s
     });
 
     var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
 
-    var createFocusTrap$q = require$$0.createFocusTrap;
+    var createFocusTrap$r = require$$0.createFocusTrap;
 
     var _default = function _default() {
       var container = document.getElementById('default');
-      var focusTrap = createFocusTrap$q('#default', {
+      var focusTrap = createFocusTrap$r('#default', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1231,12 +1431,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$p = require$$0.createFocusTrap;
+    var createFocusTrap$q = require$$0.createFocusTrap;
 
     var animatedDialog = function animatedDialog() {
       var container = document.getElementById('animated-dialog');
       var activatedFlag = document.getElementById('animated-dialog-trap-activated');
-      var focusTrap = createFocusTrap$p('#animated-dialog', {
+      var focusTrap = createFocusTrap$q('#animated-dialog', {
         // Called before focus is sent
         onActivate: function onActivate() {
           return container.classList.add('is-active');
@@ -1272,14 +1472,14 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-animated-dialog').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$o = require$$0.createFocusTrap;
+    var createFocusTrap$p = require$$0.createFocusTrap;
 
     var animatedTrigger = function animatedTrigger() {
       var container = document.getElementById('animated-trigger');
       var trigger = document.getElementById('activate-animated-trigger');
       var deactivatedFlag = document.getElementById('animated-trigger-trap-deactivated');
       var returnFocusCheckbox = document.getElementById('animated-trigger-returnfocus');
-      var focusTrap = createFocusTrap$o('#animated-trigger', {
+      var focusTrap = createFocusTrap$p('#animated-trigger', {
         // Called before focus is sent
         onActivate: function onActivate() {
           container.classList.add('is-active');
@@ -1315,12 +1515,12 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$n = require$$0.createFocusTrap;
+    var createFocusTrap$o = require$$0.createFocusTrap;
 
     var escapeDeactivates = function escapeDeactivates() {
       var container = document.getElementById('escape-deactivates');
       var escapeDeactivatesOption = document.getElementById('escape-deactivates-option');
-      var focusTrap = createFocusTrap$n('#escape-deactivates', {
+      var focusTrap = createFocusTrap$o('#escape-deactivates', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1339,7 +1539,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-escape-deactivates').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$m = require$$0.createFocusTrap;
+    var createFocusTrap$n = require$$0.createFocusTrap;
 
     var initialElementNoEscape = function initialElementNoEscape() {
       var container = document.getElementById('iene');
@@ -1350,7 +1550,7 @@ var focusTrapDemoBundle = (function () {
       var initialize = function initialize(_ref) {
         var _ref$initialFocus = _ref.initialFocus,
             initialFocus = _ref$initialFocus === void 0 ? '#focused-input' : _ref$initialFocus;
-        return createFocusTrap$m(container, {
+        return createFocusTrap$n(container, {
           onActivate: function onActivate() {
             return container.classList.add('is-active');
           },
@@ -1389,11 +1589,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$l = require$$0.createFocusTrap;
+    var createFocusTrap$m = require$$0.createFocusTrap;
 
     var initiallyFocusedContainer = function initiallyFocusedContainer() {
       var container = document.getElementById('ifc');
-      var focusTrap = createFocusTrap$l('#ifc', {
+      var focusTrap = createFocusTrap$m('#ifc', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1409,12 +1609,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-ifc').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$k = require$$0.createFocusTrap;
+    var createFocusTrap$l = require$$0.createFocusTrap;
 
     var hiddenTreasures = function hiddenTreasures() {
       var container = document.getElementById('ht');
       var more = document.getElementById('ht-more');
-      var focusTrap = createFocusTrap$k(container, {
+      var focusTrap = createFocusTrap$l(container, {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1431,17 +1631,17 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$j = require$$0.createFocusTrap;
+    var createFocusTrap$k = require$$0.createFocusTrap;
 
     var nested = function nested() {
       var container = document.getElementById('nested');
       var nested = document.getElementById('nested-nested');
-      var primaryFocusTrap = createFocusTrap$j('#nested', {
+      var primaryFocusTrap = createFocusTrap$k('#nested', {
         onDeactivate: function onDeactivate() {
           return container.style.display = 'none';
         }
       });
-      var nestedFocusTrap = createFocusTrap$j('#nested-nested', {
+      var nestedFocusTrap = createFocusTrap$k('#nested-nested', {
         onDeactivate: function onDeactivate() {
           nested.style.display = 'none';
           primaryFocusTrap.unpause();
@@ -1459,17 +1659,17 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('nested-deactivate-nested').addEventListener('click', nestedFocusTrap.deactivate);
     };
 
-    var createFocusTrap$i = require$$0.createFocusTrap;
+    var createFocusTrap$j = require$$0.createFocusTrap;
 
     var sibling = function sibling() {
       var container = document.getElementById('sibling-first');
       var second = document.getElementById('sibling-second');
-      var firstFocusTrap = createFocusTrap$i('#sibling-first', {
+      var firstFocusTrap = createFocusTrap$j('#sibling-first', {
         onDeactivate: function onDeactivate() {
           return container.classList.remove('is-active');
         }
       });
-      var secondFocusTrap = createFocusTrap$i('#sibling-second', {
+      var secondFocusTrap = createFocusTrap$j('#sibling-second', {
         onDeactivate: function onDeactivate() {
           second.style.display = 'none';
           second.classList.remove('is-active');
@@ -1488,12 +1688,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-second-sibling').addEventListener('click', secondFocusTrap.deactivate);
     };
 
-    var createFocusTrap$h = require$$0.createFocusTrap;
+    var createFocusTrap$i = require$$0.createFocusTrap;
 
     var trickyInitialFocus = function trickyInitialFocus() {
       var container = document.getElementById('tif');
       var focusable = document.getElementById('tif-hide-focusable');
-      var focusTrap = createFocusTrap$h(container, {
+      var focusTrap = createFocusTrap$i(container, {
         fallbackFocus: container,
         onActivate: function onActivate() {
           return container.classList.add('is-active');
@@ -1512,11 +1712,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$g = require$$0.createFocusTrap;
+    var createFocusTrap$h = require$$0.createFocusTrap;
 
     var inputActivation = function inputActivation() {
       var container = document.getElementById('input-activation');
-      var focusTrap = createFocusTrap$g(container, {
+      var focusTrap = createFocusTrap$h(container, {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1528,11 +1728,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-input-activation').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$f = require$$0.createFocusTrap;
+    var createFocusTrap$g = require$$0.createFocusTrap;
     var container = document.getElementById('delay');
 
     var delay = function delay() {
-      var focusTrap = createFocusTrap$f(container, {
+      var focusTrap = createFocusTrap$g(container, {
         onActivate: function onActivate() {
           container.style.opacity = '1';
           container.classList.add('is-active');
@@ -1557,11 +1757,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('close-button-delay').addEventListener('click', hideContainer);
     };
 
-    var createFocusTrap$e = require$$0.createFocusTrap;
+    var createFocusTrap$f = require$$0.createFocusTrap;
 
     var radio = function radio() {
       var container = document.getElementById('radio');
-      var focusTrap = createFocusTrap$e('#radio', {
+      var focusTrap = createFocusTrap$f('#radio', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1573,11 +1773,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-radio').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$d = require$$0.createFocusTrap;
+    var createFocusTrap$e = require$$0.createFocusTrap;
 
     var iframe = function iframe() {
       var container = document.getElementById('iframe');
-      var focusTrap = createFocusTrap$d('#iframe', {
+      var focusTrap = createFocusTrap$e('#iframe', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2309,7 +2509,7 @@ var focusTrapDemoBundle = (function () {
       }
     })(runtime);
 
-    var createFocusTrap$c = require$$0.createFocusTrap;
+    var createFocusTrap$d = require$$0.createFocusTrap;
 
     var inIframe = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2340,7 +2540,7 @@ var focusTrapDemoBundle = (function () {
 
                 if (targetDocument) {
                   trapWrapper = targetDocument.getElementById('in-iframe-trap');
-                  focusTrap = createFocusTrap$c('#in-iframe-trap', {
+                  focusTrap = createFocusTrap$d('#in-iframe-trap', {
                     document: targetDocument,
                     onActivate: function onActivate() {
                       return trapWrapper.classList.add('is-active');
@@ -2366,7 +2566,7 @@ var focusTrapDemoBundle = (function () {
       };
     }();
 
-    var createFocusTrap$b = require$$0.createFocusTrap;
+    var createFocusTrap$c = require$$0.createFocusTrap;
 
     var allowOutsideClick = function allowOutsideClick() {
       var container = document.getElementById('allowoutsideclick');
@@ -2375,7 +2575,7 @@ var focusTrapDemoBundle = (function () {
       var allowOutsideClick = true;
 
       function initialize() {
-        return createFocusTrap$b('#allowoutsideclick', {
+        return createFocusTrap$c('#allowoutsideclick', {
           allowOutsideClick: allowOutsideClick,
           escapeDeactivates: false,
           onActivate: function onActivate() {
@@ -2422,7 +2622,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$a = require$$0.createFocusTrap;
+    var createFocusTrap$b = require$$0.createFocusTrap;
 
     var clickOutsideDeactivates = function clickOutsideDeactivates() {
       var container = document.getElementById('clickoutsidedeactivates');
@@ -2436,7 +2636,7 @@ var focusTrapDemoBundle = (function () {
       notice.appendChild(document.createTextNode('-> Must click on checkbox to deactivate'));
 
       var initialize = function initialize() {
-        return createFocusTrap$a('#clickoutsidedeactivates', {
+        return createFocusTrap$b('#clickoutsidedeactivates', {
           returnFocusOnDeactivate: returnFocusOnDeactivate,
           clickOutsideDeactivates: clickOutsideDeactivates,
           escapeDeactivates: false,
@@ -2486,11 +2686,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$9 = require$$0.createFocusTrap;
+    var createFocusTrap$a = require$$0.createFocusTrap;
 
     var setReturnFocus = function setReturnFocus() {
       var container = document.getElementById('setreturnfocus');
-      var focusTrap = createFocusTrap$9('#setreturnfocus', {
+      var focusTrap = createFocusTrap$a('#setreturnfocus', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2503,7 +2703,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$8 = require$$0.createFocusTrap;
+    var createFocusTrap$9 = require$$0.createFocusTrap;
 
     var setReturnFocusFunction = function setReturnFocusFunction() {
       var container = document.getElementById('setreturnfocus-function');
@@ -2523,7 +2723,7 @@ var focusTrapDemoBundle = (function () {
         return false;
       };
 
-      var focusTrap = createFocusTrap$8('#setreturnfocus-function', {
+      var focusTrap = createFocusTrap$9('#setreturnfocus-function', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2547,11 +2747,11 @@ var focusTrapDemoBundle = (function () {
       document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
     };
 
-    var createFocusTrap$7 = require$$0.createFocusTrap;
+    var createFocusTrap$8 = require$$0.createFocusTrap;
 
     var noDelay = function noDelay() {
       var container = document.getElementById('no-delay');
-      var focusTrap = createFocusTrap$7(container, {
+      var focusTrap = createFocusTrap$8(container, {
         delayInitialFocus: false,
         onActivate: function onActivate() {
           container.style.opacity = '1';
@@ -2578,12 +2778,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
     };
 
-    var createFocusTrap$6 = require$$0.createFocusTrap;
+    var createFocusTrap$7 = require$$0.createFocusTrap;
 
     var multipleElements = function multipleElements() {
       var container = document.getElementById('multipleelements');
       var selectors = ['#multipleelements-1', '#multipleelements-3'];
-      var focusTrap = createFocusTrap$6(selectors, {
+      var focusTrap = createFocusTrap$7(selectors, {
         clickOutsideDeactivates: true,
         onActivate: function onActivate() {
           container.classList.add('is-active');
@@ -2606,12 +2806,12 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$5 = require$$0.createFocusTrap;
+    var createFocusTrap$6 = require$$0.createFocusTrap;
 
     var multipleElementsDelete = function multipleElementsDelete() {
       var container = document.getElementById('multipleelements-delete');
       var selectors = ['#multipleelements-delete-1', '#multipleelements-delete-2'];
-      var focusTrap = createFocusTrap$5(selectors, {
+      var focusTrap = createFocusTrap$6(selectors, {
         allowOutsideClick: function allowOutsideClick(event) {
           return event.target.id === 'deactivate-multipleelements-delete';
         },
@@ -2639,12 +2839,12 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$4 = require$$0.createFocusTrap;
+    var createFocusTrap$5 = require$$0.createFocusTrap;
 
     var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
       var container = document.getElementById('multipleelements-delete-all');
       var selectors = ['#multipleelements-delete-all-1', '#multipleelements-delete-all-2'];
-      var focusTrap = createFocusTrap$4(selectors, {
+      var focusTrap = createFocusTrap$5(selectors, {
         fallbackFocus: '#deactivate-multipleelements-delete-all',
         allowOutsideClick: function allowOutsideClick(event) {
           return event.target.id === 'deactivate-multipleelements-delete-all';
@@ -2674,7 +2874,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$3 = require$$0.createFocusTrap;
+    var createFocusTrap$4 = require$$0.createFocusTrap;
 
     var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
       var container = document.getElementById('multipleelements-multipletraps');
@@ -2704,7 +2904,7 @@ var focusTrapDemoBundle = (function () {
 
       var trap1Selectors = ['#multipleelements-multipletraps-1', '#multipleelements-multipletraps-3'];
       var trap2Selectors = ['#multipleelements-multipletraps-2', '#multipleelements-multipletraps-4'];
-      var focusTrap1 = createFocusTrap$3(trap1Selectors, {
+      var focusTrap1 = createFocusTrap$4(trap1Selectors, {
         onActivate: function onActivate() {
           onActivateTrap();
 
@@ -2727,7 +2927,7 @@ var focusTrapDemoBundle = (function () {
         },
         allowOutsideClick: allowOutsideClick
       });
-      var focusTrap2 = createFocusTrap$3(trap2Selectors, {
+      var focusTrap2 = createFocusTrap$4(trap2Selectors, {
         onActivate: function onActivate() {
           onActivateTrap();
 
@@ -2764,7 +2964,7 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$2 = require$$0.createFocusTrap;
+    var createFocusTrap$3 = require$$0.createFocusTrap;
 
     var inOpenShadowDom = function inOpenShadowDom() {
       var FocusTrapModal = /*#__PURE__*/function (_HTMLElement) {
@@ -2794,7 +2994,7 @@ var focusTrapDemoBundle = (function () {
 
           shadowEl.appendChild(styleLinkEl);
           shadowEl.appendChild(modalEl);
-          var focusTrap = createFocusTrap$2(modalEl, {
+          var focusTrap = createFocusTrap$3(modalEl, {
             onActivate: function onActivate() {
               return modalEl.classList.add('is-active');
             },
@@ -2814,11 +3014,11 @@ var focusTrapDemoBundle = (function () {
       customElements.define('focus-trap-modal', FocusTrapModal);
     };
 
-    var createFocusTrap$1 = require$$0.createFocusTrap;
+    var createFocusTrap$2 = require$$0.createFocusTrap;
 
     var negativeTabindex = function negativeTabindex() {
       var container = document.getElementById('negative-tabindex');
-      var focusTrap = createFocusTrap$1('#negative-tabindex', {
+      var focusTrap = createFocusTrap$2('#negative-tabindex', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2830,11 +3030,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-negative-tabindex').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap = require$$0.createFocusTrap;
+    var createFocusTrap$1 = require$$0.createFocusTrap;
 
     var negativeTabindexLast = function negativeTabindexLast() {
       var container = document.getElementById('negative-tabindex-last');
-      var focusTrap = createFocusTrap('#negative-tabindex-last', {
+      var focusTrap = createFocusTrap$1('#negative-tabindex-last', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2844,6 +3044,49 @@ var focusTrapDemoBundle = (function () {
       });
       document.getElementById('activate-negative-tabindex-last').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-negative-tabindex-last').addEventListener('click', focusTrap.deactivate);
+    };
+
+    var createFocusTrap = require$$0.createFocusTrap;
+
+    var withOpenWebComponent = function withOpenWebComponent() {
+      var container = document.getElementById('with-open-web-component');
+      customElements.define('open-web-component', /*#__PURE__*/function (_HTMLElement) {
+        _inherits(_class, _HTMLElement);
+
+        var _super = _createSuper(_class);
+
+        function _class() {
+          _classCallCheck(this, _class);
+
+          return _super.apply(this, arguments);
+        }
+
+        _createClass(_class, [{
+          key: "connectedCallback",
+          value: function connectedCallback() {
+            this.attachShadow({
+              mode: 'open'
+            });
+            this.shadowRoot.innerHTML = "\n          <p>\n            <button id=\"with-open-web-component-button\">open-web-component</button>\n          </p>\n        ";
+          }
+        }]);
+
+        return _class;
+      }( /*#__PURE__*/_wrapNativeSuper(HTMLElement)));
+      container.innerHTML = "\n    <button>button 1</button>\n    <button>button 2</button>\n    <button>button 3</button>\n    <open-web-component></open-web-component>\n    <button>button 4</button>\n    <button>button 5</button>\n    <p>\n      <button id=\"deactivate-with-open-web-component\" aria-describedby=\"with-open-web-component-heading\">\n        deactivate trap\n      </button>\n    </p>\n  ";
+      var focusTrap = createFocusTrap('#with-open-web-component', {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        },
+        tabbableOptions: {
+          getShadowRoot: true
+        }
+      });
+      document.getElementById('activate-with-open-web-component').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-with-open-web-component').addEventListener('click', focusTrap.deactivate);
     };
 
     _default();
@@ -2882,6 +3125,7 @@ var focusTrapDemoBundle = (function () {
     inOpenShadowDom();
     negativeTabindex();
     negativeTabindexLast();
+    withOpenWebComponent(); // TEST MANUALLY
 
     return js;
 

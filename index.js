@@ -108,21 +108,29 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const state = {
+    // containers given to createFocusTrap()
     // @type {Array<HTMLElement>}
     containers: [],
 
-    // list of objects identifying the first and last tabbable nodes in all containers/groups in
-    //  the trap
+    // list of objects identifying tabbable nodes in `containers` in the trap
     // NOTE: it's possible that a group has no tabbable nodes if nodes get removed while the trap
     //  is active, but the trap should never get to a state where there isn't at least one group
     //  with at least one tabbable node in it (that would lead to an error condition that would
     //  result in an error being thrown)
     // @type {Array<{
     //   container: HTMLElement,
+    //   tabbableNodes: Array<HTMLElement>, // empty if none
+    //   focusableNodes: Array<HTMLElement>, // empty if none
     //   firstTabbableNode: HTMLElement|null,
     //   lastTabbableNode: HTMLElement|null,
     //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
     // }>}
+    containerGroups: [], // same order/length as `containers` list
+
+    // references to objects in `containerGroups`, but only those that actually have
+    //  tabbable nodes in them
+    // NOTE: same order as `containers` and `containerGroups`, but __not necessarily__
+    //  the same length
     tabbableGroups: [],
 
     nodeFocusedBeforeActivation: null,
@@ -137,6 +145,14 @@ const createFocusTrap = function (elements, userOptions) {
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
 
+  /**
+   * Gets a configuration option value.
+   * @param {Object|undefined} configOverrideOptions If true, and option is defined in this set,
+   *  value will be taken from this object. Otherwise, value will be taken from base configuration.
+   * @param {string} optionName Name of the option whose value is sought.
+   * @param {string|undefined} [configOptionName] Name of option to use __instead of__ `optionName`
+   *  IIF `configOverrideOptions` is not defined. Otherwise, `optionName` is used.
+   */
   const getOption = (configOverrideOptions, optionName, configOptionName) => {
     return configOverrideOptions &&
       configOverrideOptions[optionName] !== undefined
@@ -144,10 +160,25 @@ const createFocusTrap = function (elements, userOptions) {
       : config[configOptionName || optionName];
   };
 
-  const containersContain = function (element) {
-    return !!(
-      element &&
-      state.containers.some((container) => container.contains(element))
+  /**
+   * Finds the index of the container that contains the element.
+   * @param {HTMLElement} element
+   * @returns {number} Index of the container in either `state.containers` or
+   *  `state.containerGroups` (the order/length of these lists are the same); -1
+   *  if the element isn't found.
+   */
+  const findContainerIndex = function (element) {
+    // NOTE: search `containerGroups` because it's possible a group contains no tabbable
+    //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
+    //  and we still need to find the element in there
+    return state.containerGroups.findIndex(
+      ({ container, tabbableNodes }) =>
+        container.contains(element) ||
+        // fall back to explicit tabbable search which will take into consideration any
+        //  web components if the `tabbableOptions.getShadowRoot` option was used for
+        //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
+        //  look inside web components even if open)
+        tabbableNodes.find((node) => node === element)
     );
   };
 
@@ -206,7 +237,7 @@ const createFocusTrap = function (elements, userOptions) {
 
     if (node === undefined) {
       // option not specified: use fallback options
-      if (containersContain(doc.activeElement)) {
+      if (findContainerIndex(doc.activeElement) >= 0) {
         node = doc.activeElement;
       } else {
         const firstTabbableGroup = state.tabbableGroups[0];
@@ -228,56 +259,66 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const updateTabbableNodes = function () {
-    state.tabbableGroups = state.containers
-      .map((container) => {
-        const tabbableNodes = tabbable(container);
+    state.containerGroups = state.containers.map((container) => {
+      const tabbableNodes = tabbable(container, {
+        getShadowRoot: config.tabbableOptions?.getShadowRoot,
+      });
 
-        // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
-        //  are a superset of tabbable nodes
-        const focusableNodes = focusable(container);
+      // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
+      //  are a superset of tabbable nodes
+      const focusableNodes = focusable(container, {
+        getShadowRoot: config.tabbableOptions?.getShadowRoot,
+      });
 
-        if (tabbableNodes.length > 0) {
-          return {
-            container,
-            firstTabbableNode: tabbableNodes[0],
-            lastTabbableNode: tabbableNodes[tabbableNodes.length - 1],
+      return {
+        container,
+        tabbableNodes,
+        focusableNodes,
+        firstTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[0] : null,
+        lastTabbableNode:
+          tabbableNodes.length > 0
+            ? tabbableNodes[tabbableNodes.length - 1]
+            : null,
 
-            /**
-             * Finds the __tabbable__ node that follows the given node in the specified direction,
-             *  in this container, if any.
-             * @param {HTMLElement} node
-             * @param {boolean} [forward] True if going in forward tab order; false if going
-             *  in reverse.
-             * @returns {HTMLElement|undefined} The next tabbable node, if any.
-             */
-            nextTabbableNode(node, forward = true) {
-              // NOTE: If tabindex is positive (in order to manipulate the tab order separate
-              //  from the DOM order), this __will not work__ because the list of focusableNodes,
-              //  while it contains tabbable nodes, does not sort its nodes in any order other
-              //  than DOM order, because it can't: Where would you place focusable (but not
-              //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
-              // Support for positive tabindex is already broken and hard to manage (possibly
-              //  not supportable, TBD), so this isn't going to make things worse than they
-              //  already are, and at least makes things better for the majority of cases where
-              //  tabindex is either 0/unset or negative.
-              // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
-              const nodeIdx = focusableNodes.findIndex((n) => n === node);
-              if (forward) {
-                return focusableNodes
-                  .slice(nodeIdx + 1)
-                  .find((n) => isTabbable(n));
-              }
-              return focusableNodes
-                .slice(0, nodeIdx)
-                .reverse()
-                .find((n) => isTabbable(n));
-            },
-          };
-        }
+        /**
+         * Finds the __tabbable__ node that follows the given node in the specified direction,
+         *  in this container, if any.
+         * @param {HTMLElement} node
+         * @param {boolean} [forward] True if going in forward tab order; false if going
+         *  in reverse.
+         * @returns {HTMLElement|undefined} The next tabbable node, if any.
+         */
+        nextTabbableNode(node, forward = true) {
+          // NOTE: If tabindex is positive (in order to manipulate the tab order separate
+          //  from the DOM order), this __will not work__ because the list of focusableNodes,
+          //  while it contains tabbable nodes, does not sort its nodes in any order other
+          //  than DOM order, because it can't: Where would you place focusable (but not
+          //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
+          // Support for positive tabindex is already broken and hard to manage (possibly
+          //  not supportable, TBD), so this isn't going to make things worse than they
+          //  already are, and at least makes things better for the majority of cases where
+          //  tabindex is either 0/unset or negative.
+          // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
+          const nodeIdx = focusableNodes.findIndex((n) => n === node);
+          if (nodeIdx < 0) {
+            return undefined;
+          }
 
-        return undefined;
-      })
-      .filter((group) => !!group); // remove groups with no tabbable nodes
+          if (forward) {
+            return focusableNodes.slice(nodeIdx + 1).find((n) => isTabbable(n));
+          }
+
+          return focusableNodes
+            .slice(0, nodeIdx)
+            .reverse()
+            .find((n) => isTabbable(n));
+        },
+      };
+    });
+
+    state.tabbableGroups = state.containerGroups.filter(
+      (group) => group.tabbableNodes.length > 0
+    );
 
     // throw if no groups have tabbable nodes and we don't have a fallback focus node either
     if (
@@ -322,7 +363,7 @@ const createFocusTrap = function (elements, userOptions) {
   const checkPointerDown = function (e) {
     const target = getActualTarget(e);
 
-    if (containersContain(target)) {
+    if (findContainerIndex(target) >= 0) {
       // allow the click since it ocurred inside the trap
       return;
     }
@@ -361,7 +402,7 @@ const createFocusTrap = function (elements, userOptions) {
   // In case focus escapes the trap for some strange reason, pull it back in.
   const checkFocusIn = function (e) {
     const target = getActualTarget(e);
-    const targetContained = containersContain(target);
+    const targetContained = findContainerIndex(target) >= 0;
 
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
     if (targetContained || target instanceof Document) {
@@ -389,11 +430,9 @@ const createFocusTrap = function (elements, userOptions) {
       // make sure the target is actually contained in a group
       // NOTE: the target may also be the container itself if it's focusable
       //  with tabIndex='-1' and was given initial focus
-      const containerIndex = findIndex(state.tabbableGroups, ({ container }) =>
-        container.contains(target)
-      );
+      const containerIndex = findContainerIndex(target);
       const containerGroup =
-        containerIndex >= 0 ? state.tabbableGroups[containerIndex] : undefined;
+        containerIndex >= 0 ? state.containerGroups[containerIndex] : undefined;
 
       if (containerIndex < 0) {
         // target not found in any group: quite possible focus has escaped the trap,
@@ -517,7 +556,7 @@ const createFocusTrap = function (elements, userOptions) {
 
     const target = getActualTarget(e);
 
-    if (containersContain(target)) {
+    if (findContainerIndex(target) >= 0) {
       return;
     }
 
