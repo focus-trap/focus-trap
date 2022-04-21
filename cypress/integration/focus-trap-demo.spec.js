@@ -1531,6 +1531,13 @@ describe('focus-trap', () => {
     });
   });
 
+  // describe('demo: with-shadow-dom', () => {
+  //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+  //    support Shadow DOM, and Cypress itself doesn't have great support for it either
+  //    (see comments for the 'in-open-shadow-dom' test above) so there's no point in writing
+  //    a test for this demo at this time.
+  // });
+
   // describe('demo: negative-tabindex', () => {
   //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //    understand that a non-tabbable node can still be focusable and that it's possible
