@@ -33,7 +33,8 @@ require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./in-open-shadow-dom')();
+require('./with-shadow-dom')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 require('./negative-tabindex')();
 require('./negative-tabindex-last')();
 
-require('./with-open-web-component')(); // TEST MANUALLY
+require('./with-open-web-component')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
