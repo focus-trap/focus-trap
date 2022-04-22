@@ -106,8 +106,8 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 - **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
 - **delayInitialFocus** `{boolean}`: Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 - **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This allows to use FocusTrap in an iFrame context.
-- **tabbableOptions**: (optional) Specific [tabbable](https://github.com/focus-trap/tabbable) options that are configurable on FocusTrap.
-    - **tabbableOptions.getShadowRoot**: See [getShadowRoot](https://github.com/focus-trap/tabbable#getshadowroot) on Tabbable for more details.
+- **tabbableOptions**: (optional) [tabbable options](https://github.com/focus-trap/tabbable#common-options) configurable on FocusTrap (all the _common options_).
+    - ⚠️ See notes about __[testing in JSDom](#testing-in-jsdom)__ (e.g. using Jest).
 
 #### Shadow DOM
 
@@ -240,6 +240,20 @@ If you find yourself in this situation, you should give you container `tabindex=
 ## Development
 
 Because of the nature of the functionality, involving keyboard and click and (especially) focus events, JavaScript unit tests don't make sense. After all, JSDom does not fully support focus events. Since the demo was developed to also be the test, we use Cypress to automate running through all demos in the demo page.
+
+## Help
+
+### Testing in JSDom
+
+> ⚠️ JSDom is not officially supported. Your mileage may vary, and tests may break from one release to the next (even a patch or minor release).
+>
+> This topic is just here to help with what we know may affect your tests.
+
+In general, a focus trap is best tested in a full browser environment such as Cypress, Playwright, or Nightwatch where a full DOM is available.
+
+Sometimes, that's not entirely desirable, and depending on what you're testing, you may be able to get away with using JSDom (e.g. via Jest), but you'll have to configure your traps using the `tabbableOptions.displayCheck: 'none'` option.
+
+See [Testing tabbable in JSDom](https://github.com/focus-trap/tabbable#testing-in-jsdom) for more details.
 
 # Contributing
 

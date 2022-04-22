@@ -260,15 +260,11 @@ const createFocusTrap = function (elements, userOptions) {
 
   const updateTabbableNodes = function () {
     state.containerGroups = state.containers.map((container) => {
-      const tabbableNodes = tabbable(container, {
-        getShadowRoot: config.tabbableOptions?.getShadowRoot,
-      });
+      const tabbableNodes = tabbable(container, config.tabbableOptions);
 
       // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
       //  are a superset of tabbable nodes
-      const focusableNodes = focusable(container, {
-        getShadowRoot: config.tabbableOptions?.getShadowRoot,
-      });
+      const focusableNodes = focusable(container, config.tabbableOptions);
 
       return {
         container,
@@ -305,13 +301,15 @@ const createFocusTrap = function (elements, userOptions) {
           }
 
           if (forward) {
-            return focusableNodes.slice(nodeIdx + 1).find((n) => isTabbable(n));
+            return focusableNodes
+              .slice(nodeIdx + 1)
+              .find((n) => isTabbable(n, config.tabbableOptions));
           }
 
           return focusableNodes
             .slice(0, nodeIdx)
             .reverse()
-            .find((n) => isTabbable(n));
+            .find((n) => isTabbable(n, config.tabbableOptions));
         },
       };
     });
@@ -382,7 +380,9 @@ const createFocusTrap = function (elements, userOptions) {
         //  that was clicked, whether it's focusable or not; by setting
         //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
         //  on activation (or the configured `setReturnFocus` node)
-        returnFocus: config.returnFocusOnDeactivate && !isFocusable(target),
+        returnFocus:
+          config.returnFocusOnDeactivate &&
+          !isFocusable(target, config.tabbableOptions),
       });
       return;
     }
@@ -458,8 +458,8 @@ const createFocusTrap = function (elements, userOptions) {
         if (
           startOfGroupIndex < 0 &&
           (containerGroup.container === target ||
-            (isFocusable(target) &&
-              !isTabbable(target) &&
+            (isFocusable(target, config.tabbableOptions) &&
+              !isTabbable(target, config.tabbableOptions) &&
               !containerGroup.nextTabbableNode(target, false)))
         ) {
           // an exception case where the target is either the container itself, or
@@ -495,8 +495,8 @@ const createFocusTrap = function (elements, userOptions) {
         if (
           lastOfGroupIndex < 0 &&
           (containerGroup.container === target ||
-            (isFocusable(target) &&
-              !isTabbable(target) &&
+            (isFocusable(target, config.tabbableOptions) &&
+              !isTabbable(target, config.tabbableOptions) &&
               !containerGroup.nextTabbableNode(target)))
         ) {
           // an exception case where the target is the container itself, or

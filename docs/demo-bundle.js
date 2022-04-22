@@ -1,12 +1,12 @@
 /*!
-* focus-trap 6.8.0-beta.2
+* focus-trap 6.8.0
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -286,7 +286,7 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 5.3.0
+    * tabbable 5.3.1
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
 
@@ -959,16 +959,10 @@ var focusTrapDemoBundle = (function () {
 
       var updateTabbableNodes = function updateTabbableNodes() {
         state.containerGroups = state.containers.map(function (container) {
-          var _config$tabbableOptio, _config$tabbableOptio2;
-
-          var tabbableNodes = tabbable(container, {
-            getShadowRoot: (_config$tabbableOptio = config.tabbableOptions) === null || _config$tabbableOptio === void 0 ? void 0 : _config$tabbableOptio.getShadowRoot
-          }); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
+          var tabbableNodes = tabbable(container, config.tabbableOptions); // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
           //  are a superset of tabbable nodes
 
-          var focusableNodes = focusable(container, {
-            getShadowRoot: (_config$tabbableOptio2 = config.tabbableOptions) === null || _config$tabbableOptio2 === void 0 ? void 0 : _config$tabbableOptio2.getShadowRoot
-          });
+          var focusableNodes = focusable(container, config.tabbableOptions);
           return {
             container: container,
             tabbableNodes: tabbableNodes,
@@ -1006,12 +1000,12 @@ var focusTrapDemoBundle = (function () {
 
               if (forward) {
                 return focusableNodes.slice(nodeIdx + 1).find(function (n) {
-                  return isTabbable(n);
+                  return isTabbable(n, config.tabbableOptions);
                 });
               }
 
               return focusableNodes.slice(0, nodeIdx).reverse().find(function (n) {
-                return isTabbable(n);
+                return isTabbable(n, config.tabbableOptions);
               });
             }
           };
@@ -1079,7 +1073,7 @@ var focusTrapDemoBundle = (function () {
             //  that was clicked, whether it's focusable or not; by setting
             //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
             //  on activation (or the configured `setReturnFocus` node)
-            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target)
+            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target, config.tabbableOptions)
           });
           return;
         } // This is needed for mobile devices.
@@ -1146,7 +1140,7 @@ var focusTrapDemoBundle = (function () {
               return target === firstTabbableNode;
             });
 
-            if (startOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target) && !isTabbable(target) && !containerGroup.nextTabbableNode(target, false))) {
+            if (startOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target, config.tabbableOptions) && !isTabbable(target, config.tabbableOptions) && !containerGroup.nextTabbableNode(target, false))) {
               // an exception case where the target is either the container itself, or
               //  a non-tabbable node that was given focus (i.e. tabindex is negative
               //  and user clicked on it or node was programmatically given focus)
@@ -1172,7 +1166,7 @@ var focusTrapDemoBundle = (function () {
               return target === lastTabbableNode;
             });
 
-            if (lastOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target) && !isTabbable(target) && !containerGroup.nextTabbableNode(target))) {
+            if (lastOfGroupIndex < 0 && (containerGroup.container === target || isFocusable(target, config.tabbableOptions) && !isTabbable(target, config.tabbableOptions) && !containerGroup.nextTabbableNode(target))) {
               // an exception case where the target is the container itself, or
               //  a non-tabbable node that was given focus (i.e. tabindex is negative
               //  and user clicked on it or node was programmatically given focus)
