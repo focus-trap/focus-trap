@@ -19,7 +19,7 @@ declare module 'focus-trap' {
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
 
   /** tabbable options supported by focus-trap. */
-  export interface FocusTrapTabbableOptions extends Pick<TabbableCheckOptions, 'getShadowRoot'> {
+  export interface FocusTrapTabbableOptions extends TabbableCheckOptions {
   }
 
   export interface Options {
