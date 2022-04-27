@@ -1,12 +1,12 @@
 /*!
-* focus-trap 6.8.0
+* focus-trap 6.8.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
+        const env = {"BUILD_ENV":"demo"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -1282,6 +1282,14 @@ var focusTrapDemoBundle = (function () {
 
 
       trap = {
+        get active() {
+          return state.active;
+        },
+
+        get paused() {
+          return state.paused;
+        },
+
         activate: function activate(activateOptions) {
           if (state.active) {
             return this;
