@@ -684,6 +684,13 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
+      const options = {
+        onDeactivate: config.onDeactivate,
+        onPostDeactivate: config.onPostDeactivate,
+        checkCanReturnFocus: config.checkCanReturnFocus,
+        ...deactivateOptions,
+      };
+
       clearTimeout(state.delayInitialFocusTimer); // noop if undefined
       state.delayInitialFocusTimer = undefined;
 
@@ -693,22 +700,18 @@ const createFocusTrap = function (elements, userOptions) {
 
       activeFocusTraps.deactivateTrap(trap);
 
-      const onDeactivate = getOption(deactivateOptions, 'onDeactivate');
-      const onPostDeactivate = getOption(deactivateOptions, 'onPostDeactivate');
-      const checkCanReturnFocus = getOption(
-        deactivateOptions,
-        'checkCanReturnFocus'
+      const onDeactivate = getOption(options, 'onDeactivate');
+      const onPostDeactivate = getOption(options, 'onPostDeactivate');
+      const checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
+      const returnFocus = getOption(
+        options,
+        'returnFocus',
+        'returnFocusOnDeactivate'
       );
 
       if (onDeactivate) {
         onDeactivate();
       }
-
-      const returnFocus = getOption(
-        deactivateOptions,
-        'returnFocus',
-        'returnFocusOnDeactivate'
-      );
 
       const finishDeactivation = () => {
         delay(() => {

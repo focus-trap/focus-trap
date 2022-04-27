@@ -1336,6 +1336,12 @@ var focusTrapDemoBundle = (function () {
             return this;
           }
 
+          var options = _objectSpread2({
+            onDeactivate: config.onDeactivate,
+            onPostDeactivate: config.onPostDeactivate,
+            checkCanReturnFocus: config.checkCanReturnFocus
+          }, deactivateOptions);
+
           clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 
           state.delayInitialFocusTimer = undefined;
@@ -1343,15 +1349,14 @@ var focusTrapDemoBundle = (function () {
           state.active = false;
           state.paused = false;
           activeFocusTraps.deactivateTrap(trap);
-          var onDeactivate = getOption(deactivateOptions, 'onDeactivate');
-          var onPostDeactivate = getOption(deactivateOptions, 'onPostDeactivate');
-          var checkCanReturnFocus = getOption(deactivateOptions, 'checkCanReturnFocus');
+          var onDeactivate = getOption(options, 'onDeactivate');
+          var onPostDeactivate = getOption(options, 'onPostDeactivate');
+          var checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
+          var returnFocus = getOption(options, 'returnFocus', 'returnFocusOnDeactivate');
 
           if (onDeactivate) {
             onDeactivate();
           }
-
-          var returnFocus = getOption(deactivateOptions, 'returnFocus', 'returnFocusOnDeactivate');
 
           var finishDeactivation = function finishDeactivation() {
             delay$1(function () {
