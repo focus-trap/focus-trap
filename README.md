@@ -122,7 +122,27 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 If you have closed shadow roots that you would like considered for tabbable/focusable nodes, use the `tabbableOptions.getShadowRoot` option to provide Tabbable (used internally) with a reference to a given node's shadow root so that it can be searched for candidates.
 
-### trap.activate([activateOptions])
+### trap.active
+
+```typescript
+trap.active: boolean
+```
+
+True if the trap is currently active.
+
+### trap.paused
+
+```typescript
+trap.paused: boolean
+```
+
+True if the trap is currently paused.
+
+### trap.activate()
+
+```typescript
+trap.activate([activateOptions]) => FocusTrap
+```
 
 Activates the focus trap, adding various event listeners to the document.
 
@@ -144,7 +164,11 @@ These options are used to override the focus trap's default behavior for this pa
 - **onPostActivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
 - **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
 
-### trap.deactivate([deactivateOptions])
+### trap.deactivate()
+
+```typescript
+trap.deactivate([deactivateOptions]) => FocusTrap
+```
 
 Deactivates the focus trap.
 
@@ -154,12 +178,16 @@ Returns the `trap`.
 
 These options are used to override the focus trap's default behavior for this particular deactivation.
 
-- **returnFocus** `{boolean}`: Default: whatever you chose for `createOptions.returnFocusOnDeactivate`. If `true`, then the `setReturnFocus` option (specified when the trap was created) is used to determine where focus will be returned.
-- **onDeactivate** `{() => void}`: Default: whatever you chose for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
-- **onPostDeactivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostDeactivate`. `null` or `false` are the equivalent of a `noop`.
-- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: Default: whatever you chose for `createOptions.checkCanReturnFocus`. Not called if the `returnFocus` option is falsy. `trigger` is either the originally focused node prior to activation, or the result of the `setReturnFocus` configuration option.
+- **returnFocus** `{boolean}`: Default: whatever you set for `createOptions.returnFocusOnDeactivate`. If `true`, then the `setReturnFocus` option (specified when the trap was created) is used to determine where focus will be returned.
+- **onDeactivate** `{() => void}`: Default: whatever you set for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **onPostDeactivate** `{() => void}`: Default: whatever you set for `createOptions.onPostDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: Default: whatever you set for `createOptions.checkCanReturnFocus`. Not called if the `returnFocus` option is falsy. `trigger` is either the originally focused node prior to activation, or the result of the `setReturnFocus` configuration option.
 
 ### trap.pause()
+
+```typescript
+trap.pause() => FocusTrap
+```
 
 Pause an active focus trap's event listening without deactivating the trap.
 
@@ -173,6 +201,10 @@ This is useful in various cases, one of which is when you want one focus trap wi
 
 ### trap.unpause()
 
+```typescript
+trap.unpause() => FocusTrap
+```
+
 Unpause an active focus trap. (See `pause()`, above.)
 
 Focus is forced into the trap just as described for `focusTrap.activate()`.
@@ -182,6 +214,10 @@ If the focus trap has not been activated or has not been paused, nothing happens
 Returns the `trap`.
 
 ### trap.updateContainerElements()
+
+```typescript
+trap.updateContainerElements() => FocusTrap
+```
 
 Update the element(s) that are used as containers for the focus trap.
 

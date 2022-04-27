@@ -628,6 +628,14 @@ const createFocusTrap = function (elements, userOptions) {
   //
 
   trap = {
+    get active() {
+      return state.active;
+    },
+
+    get paused() {
+      return state.paused;
+    },
+
     activate(activateOptions) {
       if (state.active) {
         return this;

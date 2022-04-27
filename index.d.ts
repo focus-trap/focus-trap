@@ -169,6 +169,8 @@ declare module 'focus-trap' {
   }
 
   export interface FocusTrap {
+    active: boolean,
+    paused: boolean,
     activate(activateOptions?: ActivateOptions): FocusTrap;
     deactivate(deactivateOptions?: DeactivateOptions): FocusTrap;
     pause(): FocusTrap;
