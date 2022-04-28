@@ -550,13 +550,13 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const checkClick = function (e) {
-    if (valueOrHandler(config.clickOutsideDeactivates, e)) {
-      return;
-    }
-
     const target = getActualTarget(e);
 
     if (findContainerIndex(target) >= 0) {
+      return;
+    }
+
+    if (valueOrHandler(config.clickOutsideDeactivates, e)) {
       return;
     }
 
