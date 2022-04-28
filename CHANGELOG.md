@@ -1,5 +1,16 @@
 # Changelog
 
+## 6.9.0
+
+### Minor Changes
+
+- 2a57e4b: Add new `trap.active` and `trap.paused` readonly state properties on the trap so that the trap's active/paused state can be queried.
+
+### Patch Changes
+
+- 8fd49df: Fixed bug where `clickOutsideDeactivate` handler would get called on the 'click' event even if the node clicked was in the trap. As with 'mousedown' and 'touchstart' events where this option is also used, the handler should only get called if the target node is _outside_ the trap.
+- c32c60a: Fixed: onDeactivate, onPostDeactivate, and checkCanReturnFocus options originally given to createFocusTrap() were not being used by default when calling `trap.deactivate({...})` with an option set even if that option set didn't specify any overrides of these options.
+
 ## 6.8.1
 
 ### Patch Changes
@@ -15,7 +26,7 @@
 ### Minor Changes
 
 - 21458c9: Bumps tabbable to v5.3.0 and includes all changes from the past v6.8.0 beta releases. The big new feature is opt-in Shadow DOM support in tabbable, and a new `getShadowRoot` tabbable option exposed in a new `tabbableOptions` focus-trap config option.
-  - ⚠️ This will likely break your tests __if you're using JSDom__ (e.g. with Jest). See [testing in JSDom](./README.md#testing-in-jsdom) for more info.
+  - ⚠️ This will likely break your tests **if you're using JSDom** (e.g. with Jest). See [testing in JSDom](./README.md#testing-in-jsdom) for more info.
 
 ## 6.8.0-beta.2
 
