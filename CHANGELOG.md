@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.9.1
+
+### Patch Changes
+
+- 83262a7: Bumps tabbable to v5.3.2 to pick-up a fix to `displayCheck=full` (default) option behavior that caused issues with detached nodes.
+
 ## 6.9.0
 
 ### Minor Changes
