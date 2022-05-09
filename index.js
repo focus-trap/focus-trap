@@ -202,6 +202,10 @@ const createFocusTrap = function (elements, userOptions) {
       optionValue = optionValue(...params);
     }
 
+    if (optionValue === true) {
+      optionValue = undefined; // use default value
+    }
+
     if (!optionValue) {
       if (optionValue === undefined || optionValue === false) {
         return optionValue;

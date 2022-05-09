@@ -1,12 +1,12 @@
 /*!
-* focus-trap 6.9.0
+* focus-trap 6.9.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -292,7 +292,7 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 5.3.1
+    * tabbable 5.3.2
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
 
@@ -507,7 +507,11 @@ var focusTrapDemoBundle = (function () {
 
     var isHidden = function isHidden(node, _ref) {
       var displayCheck = _ref.displayCheck,
-          getShadowRoot = _ref.getShadowRoot;
+          getShadowRoot = _ref.getShadowRoot; // NOTE: visibility will be `undefined` if node is detached from the document
+      //  (see notes about this further down), which means we will consider it visible
+      //  (this is legacy behavior from a very long way back)
+      // NOTE: we check this regardless of `displayCheck="none"` because this is a
+      //  _visibility_ check, not a _display_ check
 
       if (getComputedStyle(node).visibility === 'hidden') {
         return true;
@@ -518,7 +522,27 @@ var focusTrapDemoBundle = (function () {
 
       if (matches.call(nodeUnderDetails, 'details:not([open]) *')) {
         return true;
-      }
+      } // The root node is the shadow root if the node is in a shadow DOM; some document otherwise
+      //  (but NOT _the_ document; see second 'If' comment below for more).
+      // If rootNode is shadow root, it'll have a host, which is the element to which the shadow
+      //  is attached, and the one we need to check if it's in the document or not (because the
+      //  shadow, and all nodes it contains, is never considered in the document since shadows
+      //  behave like self-contained DOMs; but if the shadow's HOST, which is part of the document,
+      //  is hidden, or is not in the document itself but is detached, it will affect the shadow's
+      //  visibility, including all the nodes it contains). The host could be any normal node,
+      //  or a custom element (i.e. web component). Either way, that's the one that is considered
+      //  part of the document, not the shadow root, nor any of its children (i.e. the node being
+      //  tested).
+      // If rootNode is not a shadow root, it won't have a host, and so rootNode should be the
+      //  document (per the docs) and while it's a Document-type object, that document does not
+      //  appear to be the same as the node's `ownerDocument` for some reason, so it's safer
+      //  to ignore the rootNode at this point, and use `node.ownerDocument`. Otherwise,
+      //  using `rootNode.contains(node)` will _always_ be true we'll get false-positives when
+      //  node is actually detached.
+
+
+      var nodeRootHost = getRootNode(node).host;
+      var nodeIsAttached = (nodeRootHost === null || nodeRootHost === void 0 ? void 0 : nodeRootHost.ownerDocument.contains(nodeRootHost)) || node.ownerDocument.contains(node);
 
       if (!displayCheck || displayCheck === 'full') {
         if (typeof getShadowRoot === 'function') {
@@ -551,18 +575,42 @@ var focusTrapDemoBundle = (function () {
         } // else, `getShadowRoot` might be true, but all that does is enable shadow DOM support
         //  (i.e. it does not also presume that all nodes might have undisclosed shadows); or
         //  it might be a falsy value, which means shadow DOM support is disabled
-        // didn't find it sitting in an undisclosed shadow (or shadows are disabled) so now we
-        //  can just test to see if it would normally be visible or not
-        // this works wherever the node is: if there's at least one client rect, it's
-        //  somehow displayed; it also covers the CSS 'display: contents' case where the
-        //  node itself is hidden in place of its contents; and there's no need to search
-        //  up the hierarchy either
+        // Since we didn't find it sitting in an undisclosed shadow (or shadows are disabled)
+        //  now we can just test to see if it would normally be visible or not, provided it's
+        //  attached to the main document.
+        // NOTE: We must consider case where node is inside a shadow DOM and given directly to
+        //  `isTabbable()` or `isFocusable()` -- regardless of `getShadowRoot` option setting.
 
 
-        return !node.getClientRects().length;
+        if (nodeIsAttached) {
+          // this works wherever the node is: if there's at least one client rect, it's
+          //  somehow displayed; it also covers the CSS 'display: contents' case where the
+          //  node itself is hidden in place of its contents; and there's no need to search
+          //  up the hierarchy either
+          return !node.getClientRects().length;
+        } // Else, the node isn't attached to the document, which means the `getClientRects()`
+        //  API will __always__ return zero rects (this can happen, for example, if React
+        //  is used to render nodes onto a detached tree, as confirmed in this thread:
+        //  https://github.com/facebook/react/issues/9117#issuecomment-284228870)
+        //
+        // It also means that even window.getComputedStyle(node).display will return `undefined`
+        //  because styles are only computed for nodes that are in the document.
+        //
+        // NOTE: THIS HAS BEEN THE CASE FOR YEARS. It is not new, nor is it caused by tabbable
+        //  somehow. Though it was never stated officially, anyone who has ever used tabbable
+        //  APIs on nodes in detached containers has actually implicitly used tabbable in what
+        //  was later (as of v5.2.0 on Apr 9, 2021) called `displayCheck="none"` mode -- essentially
+        //  considering __everything__ to be visible because of the innability to determine styles.
+
       } else if (displayCheck === 'non-zero-area') {
+        // NOTE: Even though this tests that the node's client rect is non-zero to determine
+        //  whether it's displayed, and that a detached node will __always__ have a zero-area
+        //  client rect, we don't special-case for whether the node is attached or not. In
+        //  this mode, we do want to consider nodes that have a zero area to be hidden at all
+        //  times, and that includes attached or not.
         return isZeroArea(node);
-      }
+      } // visible, as far as we can tell, or per current `displayCheck` mode
+
 
       return false;
     }; // form fields (nested) inside a disabled fieldset are not focusable/tabbable
@@ -913,6 +961,10 @@ var focusTrapDemoBundle = (function () {
           }
 
           optionValue = optionValue.apply(void 0, params);
+        }
+
+        if (optionValue === true) {
+          optionValue = undefined; // use default value
         }
 
         if (!optionValue) {
