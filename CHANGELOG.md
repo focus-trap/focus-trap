@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.9.2
+
+### Patch Changes
+
+- ef0ce48: Handle unexpected param (true) passed as the value for the `initialFocus`, `fallbackFocus`, and `setReturnFocus` options: Ignore and perform default behavior.
+
 ## 6.9.1
 
 ### Patch Changes
