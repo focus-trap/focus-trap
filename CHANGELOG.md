@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.9.3
+
+### Patch Changes
+
+- 8a8b1f1: Bump tabbable to v5.3.3 to pick up a small bug fix to web component (shadow DOM) support.
+
 ## 6.9.2
 
 ### Patch Changes
