@@ -1,19 +1,22 @@
 import { CheckOptions as TabbableCheckOptions } from 'tabbable';
 
 declare module 'focus-trap' {
+  export type FocusTargetValue = HTMLElement | SVGElement | string;
+  export type FocusTargetValueOrFalse = FocusTargetValue | false;
+
   /**
    * A DOM node, a selector string (which will be passed to
    * `document.querySelector()` to find the DOM node), or a function that
    * returns a DOM node.
    */
-  export type FocusTarget = HTMLElement | SVGElement | string | (() => HTMLElement | SVGElement);
+  export type FocusTarget = FocusTargetValue | (() => FocusTargetValue);
 
   /**
    * A DOM node, a selector string (which will be passed to
    * `document.querySelector()` to find the DOM node), `false` to explicitly indicate
    * an opt-out, or a function that returns a DOM node or `false`.
    */
-  export type FocusTargetOrFalse = HTMLElement | SVGElement | string | false | (() => HTMLElement | SVGElement | false);
+  export type FocusTargetOrFalse = FocusTargetValueOrFalse | (() => FocusTargetValueOrFalse);
 
   type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
@@ -112,7 +115,7 @@ declare module 'focus-trap' {
      * By default, focus trap on deactivation will return to the element
      * that was focused before activation.
      */
-    setReturnFocus?: HTMLElement | SVGElement | string | false | ((nodeFocusedBeforeActivation: HTMLElement | SVGElement) => HTMLElement | SVGElement | false);
+    setReturnFocus?: FocusTargetValueOrFalse | ((nodeFocusedBeforeActivation: HTMLElement | SVGElement) => FocusTargetValueOrFalse);
     /**
      * Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
