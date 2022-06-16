@@ -20,7 +20,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['index.js', 'rollup.config.js', 'cypress/support/index.js'],
+      files: ['index.js', 'rollup.config.js', 'cypress/support/e2e.js'],
       parserOptions: {
         sourceType: 'module',
       },
