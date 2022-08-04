@@ -53,11 +53,17 @@ You can also use a UMD version published to `unpkg.com` as `dist/focus-trap.umd.
 
 ## Browser Support
 
-IE9+
+As old and as broad as _reasonably_ possible, excluding browsers that are out of support or have nearly no user base.
 
-Why?
-Because this module uses [`EventTarget.addEventListener()`](document.createElement('button')).
-And its only dependency, tabbable, uses [a couple of IE9+ functions](https://github.com/focus-trap/tabbable#browser-support).
+Focused on desktop browsers, particularly Chrome, Edge, FireFox, Safari, and Opera.
+
+Focus-trap is not officially tested on any mobile browsers or devices.
+
+> ⚠️ Microsoft [no longer supports](https://blogs.windows.com/windowsexperience/2022/06/15/internet-explorer-11-has-retired-and-is-officially-out-of-support-what-you-need-to-know/) any version of IE, so IE is no longer supported by this library.
+
+> 💬 Focus-trap relies on tabbable so its browser support is at least [what tabbable supports](https://github.com/focus-trap/tabbable#browser-support).
+
+> 💬 Keep in mind that performance optimization and old browser support are often at odds, so tabbable may not always be able to use the most optimal (typically modern) APIs in all cases.
 
 ## Usage
 
@@ -85,10 +91,10 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 - **onActivate** `{() => void}`: A function that will be called **before** sending focus to the target element upon activation.
 - **onPostActivate** `{() => void}`: A function that will be called **after** sending focus to the target element upon activation.
-- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option). Due to the lack of Promise support, `checkCanFocusTrap` is not supported in IE unless you provide a Promise polyfill.
+- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option).
 - **onDeactivate** `{() => void}`: A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
 - **onPostDeactivate** `{() => void}`: A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
-- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: An animated trigger button will have a small delay between when `onDeactivate` is called and when the focus is able to be sent back to the trigger. `checkCanReturnFocus` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to to the node that had focus prior to the activation of the trap (or the node configured in the `setReturnFocus` option). Due to the lack of Promise support, `checkCanReturnFocus` is not supported in IE unless you provide a Promise polyfill.
+- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: An animated trigger button will have a small delay between when `onDeactivate` is called and when the focus is able to be sent back to the trigger. `checkCanReturnFocus` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to to the node that had focus prior to the activation of the trap (or the node configured in the `setReturnFocus` option).
 - **initialFocus** `{HTMLElement | SVGElement | string | false | (() => HTMLElement | SVGElement | string | false)}`: By default, when a focus trap is activated the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these. You can also set this option to `false` (or to a function that returns `false`) to prevent any initial focus at all when the trap activates.
   - 💬 Setting this option to `false` (or a function that returns `false`) will prevent the `fallbackFocus` option from being used.
   - ⚠️ See warning below about **Shadow DOM** and selector strings.
