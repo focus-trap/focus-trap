@@ -21,7 +21,7 @@ jobs:
           echo "::set-output name=yarn_cache::$(yarn cache dir)"
 
       - name: Setup Node
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v3
         with:
           node-version: 18
           check-latest: true
