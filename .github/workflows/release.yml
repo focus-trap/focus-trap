@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@master
         with:
-          node-version: 12
+          node-version: 18
           check-latest: true
 
       - name: Yarn cache
