@@ -11,14 +11,14 @@ jobs:
     env:
       CI: true
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Setup environment
         id: setups
         run: |-
-          echo "::set-output name=yarn_cache::$(yarn cache dir)"
+          echo "::set-output name=yarn_cache_dir::$(yarn cache dir)"
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -27,10 +27,13 @@ jobs:
           check-latest: true
 
       - name: Yarn cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         with:
-          path: ${{ steps.setups.outputs.yarn_cache }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}-node-12
+          path: ${{ steps.setups.outputs.yarn_cache_dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       - name: Install packages
         run: yarn --frozen-lockfile
