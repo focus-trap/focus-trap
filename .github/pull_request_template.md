@@ -17,7 +17,7 @@ __Please leave this checklist in your PR.__
 - Issue being fixed is referenced.
 - Unit test coverage added/updated.
 - E2E (i.e. demos) test coverage added/updated.
-  - ⚠️ Non-covered demos (look for `IS_CYPRESS_ENV === ''` [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js), as well as `in-open-shadow-dom.js` and `negative-tabindex.js` that can't be fully tested in Cypress) __manually__ verified.
+  - ⚠️ Non-covered demos (look for `// TEST MANUALLY` comments [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js)) that can't be fully tested in Cypress have been __manually__ verified.
 - Typings added/updated.
 - Changes do not break SSR:
   - Careful to test `typeof document/window !== 'undefined'` before using it in code that gets executed on load.
