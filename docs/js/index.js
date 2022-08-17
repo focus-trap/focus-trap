@@ -20,7 +20,7 @@ require('./iframe')();
 //  it manually
 // eslint-disable-next-line no-undef -- process is defined via Rollup
 if (!process.env.IS_CYPRESS_ENV) {
-  require('./in-iframe')();
+  require('./in-iframe')(); // TEST MANUALLY (causes Cypress to fail due to security context violations)
 }
 
 require('./allow-outside-click')();
@@ -36,5 +36,4 @@ require('./in-open-shadow-dom')();
 require('./with-shadow-dom')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 require('./negative-tabindex')();
 require('./negative-tabindex-last')();
-
 require('./with-open-web-component')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
