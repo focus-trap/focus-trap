@@ -70,7 +70,7 @@
     "@babel/core": "^7.18.13",
     "@babel/eslint-parser": "^7.18.9",
     "@babel/preset-env": "^7.18.10",
-    "@changesets/cli": "^2.24.3",
+    "@changesets/cli": "^2.24.4",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
