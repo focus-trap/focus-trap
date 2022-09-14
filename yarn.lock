@@ -1421,10 +1421,10 @@
     magic-string "^0.25.7"
     resolve "^1.17.0"
 
-"@rollup/plugin-node-resolve@^14.0.0":
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-14.0.0.tgz#373c1a00e7fb3e2a7d2ee109c5b03a5e608f3b8f"
-  integrity sha512-XkWfpgp/zGiFu8LS+JAiQeZN4oYYA4/ViFJiZhwQegTg5ZbzKTvM9YyKXVBNnmZ8Et76WnlVgwRUu1rhKF4ayw==
+"@rollup/plugin-node-resolve@^14.1.0":
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/@rollup/plugin-node-resolve/-/plugin-node-resolve-14.1.0.tgz#f2fa475405cd7fed6420bf438fe393f988a9bc96"
+  integrity sha512-5G2niJroNCz/1zqwXtk0t9+twOSDlG00k1Wfd7bkbbXmwg8H8dvgHdIWAun53Ps/rckfvOC7scDBjuGFg5OaWw==
   dependencies:
     "@rollup/pluginutils" "^3.1.0"
     "@types/resolve" "1.17.1"
