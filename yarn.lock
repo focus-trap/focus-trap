@@ -968,10 +968,10 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4":
-  version "7.14.8"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.8.tgz#7119a56f421018852694290b9f9148097391b446"
-  integrity sha512-twj3L8Og5SaCRCErB4x4ajbvBIVV77CGeFglHpeg5WC5FF8TZzBWXtTJ4MqaD9QszLYTtr+IsaAL2rEUevb+eg==
+"@babel/runtime@^7.10.2", "@babel/runtime@^7.10.4", "@babel/runtime@^7.12.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.18.9", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4":
+  version "7.19.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.19.0.tgz#22b11c037b094d27a8a2504ea4dcff00f50e2259"
+  integrity sha512-eR8Lo9hnDS7tqkO7NsV+mKvCmv5boaXFSZ70DnfhcgiEne8hv9oCEd36Klw74EtizEqLsy4YnW8UWwpBVolHZA==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -1689,17 +1689,17 @@ ajv@^6.10.0, ajv@^6.12.2, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-all-contributors-cli@^6.20.0:
-  version "6.20.0"
-  resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-6.20.0.tgz#9bc98dda38cb29cfe8afc8a78c004e14af25d2f6"
-  integrity sha512-trEQlL1s1u8FSWSwY2w9uL4GCG7Fo9HIW5rm5LtlE0SQHSolfXQBzJib07Qes5j52/t72wjuE6sEKkuRrwiuuQ==
+all-contributors-cli@^6.20.4:
+  version "6.20.4"
+  resolved "https://registry.yarnpkg.com/all-contributors-cli/-/all-contributors-cli-6.20.4.tgz#de69d243206cb821f8c33ef0b57e9f511ceb7e25"
+  integrity sha512-oLOrCGh1LjR/EkaESbLe7faTX1tq8TP4pcR6CvkKED5O9E7Yahk5DiexR8roghluljwI20m2JX2I6UTYV7/tLg==
   dependencies:
     "@babel/runtime" "^7.7.6"
-    async "^3.0.1"
+    async "^3.1.0"
     chalk "^4.0.0"
     didyoumean "^1.2.1"
-    inquirer "^7.0.4"
-    json-fixer "^1.5.1"
+    inquirer "^7.3.3"
+    json-fixer "^1.6.8"
     lodash "^4.11.2"
     node-fetch "^2.6.0"
     pify "^5.0.0"
@@ -1840,10 +1840,10 @@ astral-regex@^2.0.0:
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
 
-async@^3.0.1, async@^3.2.0:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/async/-/async-3.2.3.tgz#ac53dafd3f4720ee9e8a160628f18ea91df196c9"
-  integrity sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==
+async@^3.1.0, async@^3.2.0:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.4.tgz#2d22e00f8cddeb5fde5dd33522b56d1cf569a81c"
+  integrity sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -3326,7 +3326,7 @@ ini@2.0.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-2.0.0.tgz#e5fd556ecdd5726be978fa1001862eacb0a94bc5"
   integrity sha512-7PnF4oN3CvZF23ADhA5wRaYEQpJ8qygSkbtTXWBeXWXmEVRXK+1ITciHWwHhsjv1TmW0MgacIv6hEi5pX5NQdA==
 
-inquirer@^7.0.4:
+inquirer@^7.3.3:
   version "7.3.3"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.3.3.tgz#04d176b2af04afc157a83fd7c100e98ee0aad003"
   integrity sha512-JG3eIAj5V9CwcGvuOmoo6LB9kbAYT8HXffUl6memuszlwDC/qvFAJw49XJ5NROSFNPxp3iQg1GqkFhaY/CR0IA==
@@ -3601,13 +3601,13 @@ jsesc@~0.5.0:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha1-597mbjXW/Bb3EP6R1c9p9w8IkR0=
 
-json-fixer@^1.5.1:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/json-fixer/-/json-fixer-1.6.3.tgz#1beaf69b137ed3588b8fdb5a5a507f4b3f276fe4"
-  integrity sha512-JSjfJJaKCQpSNEh+Tw1lX2L8MnDjIxfBpPTWUO/XN0JUY87nHJiFBy5i0Tm8o7/841LWfMDbqhn7UjhkjrZKkw==
+json-fixer@^1.6.8:
+  version "1.6.15"
+  resolved "https://registry.yarnpkg.com/json-fixer/-/json-fixer-1.6.15.tgz#f1f03b6771fcb383695d458c53e50b10999fba7f"
+  integrity sha512-TuDuZ5KrgyjoCIppdPXBMqiGfota55+odM+j2cQ5rt/XKyKmqGB3Whz1F8SN8+60yYGy/Nu5lbRZ+rx8kBIvBw==
   dependencies:
-    "@babel/runtime" "^7.11.0"
-    chalk "^4.1.0"
+    "@babel/runtime" "^7.18.9"
+    chalk "^4.1.2"
     pegjs "^0.10.0"
 
 json-parse-even-better-errors@^2.3.0:
