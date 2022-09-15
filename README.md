@@ -59,6 +59,8 @@ Focused on desktop browsers, particularly Chrome, Edge, FireFox, Safari, and Ope
 
 Focus-trap is not officially tested on any mobile browsers or devices.
 
+> ❗️ __Safari__: By default, Safari does not tab through all elements on a page, which alters the normal DOM-based tab order expected by focus-trap. If you use or support Safari with this library, make sure you and your users know they __must enable__ the `Preferences > Advanced > Press Tab to highlight each item on a webpage` feature. Otherwise, your traps [will not work the way you expect them to](https://github.com/focus-trap/focus-trap/issues/783).
+
 > ⚠️ Microsoft [no longer supports](https://blogs.windows.com/windowsexperience/2022/06/15/internet-explorer-11-has-retired-and-is-officially-out-of-support-what-you-need-to-know/) any version of IE, so IE is no longer supported by this library.
 
 > 💬 Focus-trap relies on tabbable so its browser support is at least [what tabbable supports](https://github.com/focus-trap/tabbable#browser-support).
