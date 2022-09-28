@@ -76,7 +76,7 @@
     "@rollup/plugin-node-resolve": "^14.1.0",
     "@testing-library/cypress": "^8.0.3",
     "@types/jquery": "^3.5.14",
-    "all-contributors-cli": "^6.20.4",
+    "all-contributors-cli": "^6.21.0",
     "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "cypress": "^10.9.0",
