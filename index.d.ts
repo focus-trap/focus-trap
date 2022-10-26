@@ -21,6 +21,11 @@ declare module 'focus-trap' {
   type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
 
+  interface ActiveFocusTraps {
+    activateTrap(trap: FocusTrap): void;
+    deactivateTrap(trap: FocusTrap): void;
+  }
+
   /** tabbable options supported by focus-trap. */
   export interface FocusTrapTabbableOptions extends TabbableCheckOptions {
   }
@@ -36,7 +41,7 @@ declare module 'focus-trap' {
      * A function that will be called **after** focus has been sent to the
      * target element upon activation.
      */
-    onPostActivate?: () => void
+    onPostActivate?: () => void;
 
     /**
      * A function for determining if it is safe to send focus to the focus trap
@@ -49,7 +54,9 @@ declare module 'focus-trap' {
      * dialogs that fade in and out. When a dialog fades in, there is a brief delay
      * between the activation of the trap and the trap element being focusable.
      */
-    checkCanFocusTrap?: (containers: Array<HTMLElement | SVGElement>) => Promise<void>
+    checkCanFocusTrap?: (
+      containers: Array<HTMLElement | SVGElement>
+    ) => Promise<void>;
 
     /**
      * A function that will be called **before** sending focus to the
@@ -62,7 +69,7 @@ declare module 'focus-trap' {
      * If `returnFocus` was set, it will be called **after** focus has been sent to the trigger
      * element upon deactivation; otherwise, it will be called after deactivation completes.
      */
-    onPostDeactivate?: () => void
+    onPostDeactivate?: () => void;
     /**
      * A function for determining if it is safe to send focus back to the `trigger` element.
      *
@@ -78,7 +85,7 @@ declare module 'focus-trap' {
      * This handler is **not** called if the `returnFocusOnDeactivate` configuration option
      * (or the `returnFocus` deactivation option) is falsy.
      */
-    checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>
+    checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>;
 
     /**
      * By default, when a focus trap is activated the first element in the
@@ -115,7 +122,11 @@ declare module 'focus-trap' {
      * By default, focus trap on deactivation will return to the element
      * that was focused before activation.
      */
-    setReturnFocus?: FocusTargetValueOrFalse | ((nodeFocusedBeforeActivation: HTMLElement | SVGElement) => FocusTargetValueOrFalse);
+    setReturnFocus?:
+      | FocusTargetValueOrFalse
+      | ((
+          nodeFocusedBeforeActivation: HTMLElement | SVGElement
+        ) => FocusTargetValueOrFalse);
     /**
      * Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger
      * deactivation of the focus trap. This can be useful if you want
@@ -163,6 +174,11 @@ declare module 'focus-trap' {
      * Specific tabbable options configurable on focus-trap.
      */
     tabbableOptions?: FocusTrapTabbableOptions;
+
+    /**
+     * Define custom activeFocusTraps
+     */
+    activeFocusTraps?: ActiveFocusTraps;
   }
 
   type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;

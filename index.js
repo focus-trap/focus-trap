@@ -1,6 +1,6 @@
 import { tabbable, focusable, isFocusable, isTabbable } from 'tabbable';
 
-const activeFocusTraps = (function () {
+const rootActiveFocusTraps = (function () {
   const trapQueue = [];
   return {
     activateTrap(trap) {
@@ -99,6 +99,9 @@ const createFocusTrap = function (elements, userOptions) {
   // SSR: a live trap shouldn't be created in this type of environment so this
   //  should be safe code to execute if the `document` option isn't specified
   const doc = userOptions?.document || document;
+
+  const activeFocusTraps =
+    userOptions?.activeFocusTraps || rootActiveFocusTraps;
 
   const config = {
     returnFocusOnDeactivate: true,
