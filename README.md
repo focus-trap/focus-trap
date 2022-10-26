@@ -118,7 +118,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 - **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
 - **delayInitialFocus** `{boolean}`: Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 - **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This allows to use FocusTrap in an iFrame context.
-- **activeFocusTraps**: (optional) `{ activateTrap(trap: FocusTrap) => void, deactivateTrap(trap: FocusTrap) => void }` Enables to manualy handle multiple focus-trap instances.
+- **activeFocusTraps**: (optional) `{ activateTrap(trap: FocusTrap) => void, deactivateTrap(trap: FocusTrap) => void }` Enables to manually handle multiple focus-trap instances.
 - **tabbableOptions**: (optional) [tabbable options](https://github.com/focus-trap/tabbable#common-options) configurable on FocusTrap (all the *common options*).
   - ⚠️ See notes about **[testing in JSDom](#testing-in-jsdom)** (e.g. using Jest).
 
