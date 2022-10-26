@@ -1,4 +1,5 @@
 require('./default')();
+require('./custom-active-focus-traps')();
 require('./animated-dialog')();
 require('./animated-trigger')();
 require('./escape-deactivates')();
