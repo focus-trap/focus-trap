@@ -1,38 +1,37 @@
 import { tabbable, focusable, isFocusable, isTabbable } from 'tabbable';
 
-const activeFocusTraps = (function () {
-  const trapQueue = [];
-  return {
-    activateTrap(trap) {
-      if (trapQueue.length > 0) {
-        const activeTrap = trapQueue[trapQueue.length - 1];
-        if (activeTrap !== trap) {
-          activeTrap.pause();
-        }
-      }
+const rooTrapStack = [];
 
-      const trapIndex = trapQueue.indexOf(trap);
-      if (trapIndex === -1) {
-        trapQueue.push(trap);
-      } else {
-        // move this existing trap to the front of the queue
-        trapQueue.splice(trapIndex, 1);
-        trapQueue.push(trap);
+const activeFocusTraps = {
+  activateTrap(trapStack, trap) {
+    if (trapStack.length > 0) {
+      const activeTrap = trapStack[trapStack.length - 1];
+      if (activeTrap !== trap) {
+        activeTrap.pause();
       }
-    },
+    }
 
-    deactivateTrap(trap) {
-      const trapIndex = trapQueue.indexOf(trap);
-      if (trapIndex !== -1) {
-        trapQueue.splice(trapIndex, 1);
-      }
+    const trapIndex = trapStack.indexOf(trap);
+    if (trapIndex === -1) {
+      trapStack.push(trap);
+    } else {
+      // move this existing trap to the front of the queue
+      trapStack.splice(trapIndex, 1);
+      trapStack.push(trap);
+    }
+  },
 
-      if (trapQueue.length > 0) {
-        trapQueue[trapQueue.length - 1].unpause();
-      }
-    },
-  };
-})();
+  deactivateTrap(trapStack, trap) {
+    const trapIndex = trapStack.indexOf(trap);
+    if (trapIndex !== -1) {
+      trapStack.splice(trapIndex, 1);
+    }
+
+    if (trapStack.length > 0) {
+      trapStack[trapStack.length - 1].unpause();
+    }
+  },
+};
 
 const isSelectableInput = function (node) {
   return (
@@ -99,6 +98,8 @@ const createFocusTrap = function (elements, userOptions) {
   // SSR: a live trap shouldn't be created in this type of environment so this
   //  should be safe code to execute if the `document` option isn't specified
   const doc = userOptions?.document || document;
+
+  const trapStack = userOptions?.trapStack || rooTrapStack;
 
   const config = {
     returnFocusOnDeactivate: true,
@@ -582,7 +583,7 @@ const createFocusTrap = function (elements, userOptions) {
     }
 
     // There can be only one listening focus trap at a time
-    activeFocusTraps.activateTrap(trap);
+    activeFocusTraps.activateTrap(trapStack, trap);
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
@@ -702,7 +703,7 @@ const createFocusTrap = function (elements, userOptions) {
       state.active = false;
       state.paused = false;
 
-      activeFocusTraps.deactivateTrap(trap);
+      activeFocusTraps.deactivateTrap(trapStack, trap);
 
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
