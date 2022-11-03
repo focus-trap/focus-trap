@@ -1,4 +1,5 @@
 require('./default')();
+require('./global-trap-stack')();
 require('./animated-dialog')();
 require('./animated-trigger')();
 require('./escape-deactivates')();
