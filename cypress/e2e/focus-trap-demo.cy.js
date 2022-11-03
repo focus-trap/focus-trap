@@ -1531,6 +1531,71 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: global trap stack', () => {
+    it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
+      cy.get('#demo-global-trap-stack').as('testRoot');
+
+      cy.get('@testRoot')
+        .find('.counter')
+        .should('have.text', '')
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+
+      cy.get('@testRoot')
+        .find('.counter')
+        .should('have.text', '1')
+
+      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+      cy.get('#global-trap-stack-heading').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'deactivate trap')
+        .should('be.focused')
+        .tab();
+
+      // trap is active(keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .click();
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
+
+      cy.get('@testRoot')
+        .find('.counter')
+        .should('have.text', '0')
+    });
+  });
+
   // describe('demo: with-shadow-dom', () => {
   //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //    support Shadow DOM, and Cypress itself doesn't have great support for it either
