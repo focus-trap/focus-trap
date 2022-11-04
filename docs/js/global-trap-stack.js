@@ -3,17 +3,17 @@ const { createFocusTrap } = require('../../index');
 module.exports = () => {
   const container = document.getElementById('global-trap-stack');
   const counter = container.querySelector('.counter');
-  const trapStack = []
+  const trapStack = [];
 
   const focusTrap = createFocusTrap('#global-trap-stack', {
     trapStack,
     onPostActivate: () => {
-      container.classList.add('is-active')
-      counter.innerHTML = trapStack.length
+      container.classList.add('is-active');
+      counter.innerHTML = trapStack.length;
     },
     onPostDeactivate: () => {
-      container.classList.remove('is-active')
-      counter.innerHTML = trapStack.length
+      container.classList.remove('is-active');
+      counter.innerHTML = trapStack.length;
     },
   });
 
