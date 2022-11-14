@@ -170,6 +170,14 @@ declare module 'focus-trap' {
      */
     tabbableOptions?: FocusTrapTabbableOptions;
 
+    /**
+     * Define the global trap stack. This makes it possible to share the same stack
+     * in multiple instances of `focus-trap` in the same page such that
+     * auto-activation/pausing of traps is properly coordinated among all instances
+     * as activating a trap when another is already active should result in the other
+     * being auto-paused. By default, each instance will have its own internal stack,
+     * leading to conflicts if they each try to trap the focus at the same time.
+     */
     trapStack?: Array<FocusTrap>;
   }
 
