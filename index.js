@@ -1,7 +1,5 @@
 import { tabbable, focusable, isFocusable, isTabbable } from 'tabbable';
 
-const rooTrapStack = [];
-
 const activeFocusTraps = {
   activateTrap(trapStack, trap) {
     if (trapStack.length > 0) {
@@ -94,12 +92,16 @@ const getActualTarget = function (event) {
     : event.target;
 };
 
+// NOTE: this must be _outside_ `createFocusTrap()` to make sure all traps in this
+//  current instance use the same stack if `userOptions.trapStack` isn't specified
+const internalTrapStack = [];
+
 const createFocusTrap = function (elements, userOptions) {
   // SSR: a live trap shouldn't be created in this type of environment so this
   //  should be safe code to execute if the `document` option isn't specified
   const doc = userOptions?.document || document;
 
-  const trapStack = userOptions?.trapStack || rooTrapStack;
+  const trapStack = userOptions?.trapStack || internalTrapStack;
 
   const config = {
     returnFocusOnDeactivate: true,
