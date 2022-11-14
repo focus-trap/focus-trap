@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.1.0
+
+### Minor Changes
+
+- 88cc9bc: Provide new `trapStack` option to make it possible to coordinate auto-activation/pausing between multiple `focus-trap` instances on the same page.
+
+### Patch Changes
+
+- 4f97b38: Bump tabbable to v6.0.1 for a bug fix. See tabbable's changelog for more details.
+- f13de76: Mention special Safari setting to enable normal DOM-based tab order in README. [#783](https://github.com/focus-trap/focus-trap/issues/783)
+
 ## 7.0.0
 
 ### Major Changes
