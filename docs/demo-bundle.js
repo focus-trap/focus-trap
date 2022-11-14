@@ -1,12 +1,12 @@
 /*!
-* focus-trap 6.9.4
+* focus-trap 7.0.0
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -1154,41 +1154,39 @@ var focusTrapDemoBundle = (function () {
       return isNodeMatchingSelectorFocusable(options, node);
     };
 
-    var activeFocusTraps = function () {
-      var trapQueue = [];
-      return {
-        activateTrap: function activateTrap(trap) {
-          if (trapQueue.length > 0) {
-            var activeTrap = trapQueue[trapQueue.length - 1];
+    var rooTrapStack = [];
+    var activeFocusTraps = {
+      activateTrap: function activateTrap(trapStack, trap) {
+        if (trapStack.length > 0) {
+          var activeTrap = trapStack[trapStack.length - 1];
 
-            if (activeTrap !== trap) {
-              activeTrap.pause();
-            }
-          }
-
-          var trapIndex = trapQueue.indexOf(trap);
-
-          if (trapIndex === -1) {
-            trapQueue.push(trap);
-          } else {
-            // move this existing trap to the front of the queue
-            trapQueue.splice(trapIndex, 1);
-            trapQueue.push(trap);
-          }
-        },
-        deactivateTrap: function deactivateTrap(trap) {
-          var trapIndex = trapQueue.indexOf(trap);
-
-          if (trapIndex !== -1) {
-            trapQueue.splice(trapIndex, 1);
-          }
-
-          if (trapQueue.length > 0) {
-            trapQueue[trapQueue.length - 1].unpause();
+          if (activeTrap !== trap) {
+            activeTrap.pause();
           }
         }
-      };
-    }();
+
+        var trapIndex = trapStack.indexOf(trap);
+
+        if (trapIndex === -1) {
+          trapStack.push(trap);
+        } else {
+          // move this existing trap to the front of the queue
+          trapStack.splice(trapIndex, 1);
+          trapStack.push(trap);
+        }
+      },
+      deactivateTrap: function deactivateTrap(trapStack, trap) {
+        var trapIndex = trapStack.indexOf(trap);
+
+        if (trapIndex !== -1) {
+          trapStack.splice(trapIndex, 1);
+        }
+
+        if (trapStack.length > 0) {
+          trapStack[trapStack.length - 1].unpause();
+        }
+      }
+    };
 
     var isSelectableInput = function isSelectableInput(node) {
       return node.tagName && node.tagName.toLowerCase() === 'input' && typeof node.select === 'function';
@@ -1248,10 +1246,11 @@ var focusTrapDemoBundle = (function () {
       return event.target.shadowRoot && typeof event.composedPath === 'function' ? event.composedPath()[0] : event.target;
     };
 
-    var createFocusTrap$s = function createFocusTrap(elements, userOptions) {
+    var createFocusTrap$t = function createFocusTrap(elements, userOptions) {
       // SSR: a live trap shouldn't be created in this type of environment so this
       //  should be safe code to execute if the `document` option isn't specified
       var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
+      var trapStack = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.trapStack) || rooTrapStack;
 
       var config = _objectSpread2({
         returnFocusOnDeactivate: true,
@@ -1690,7 +1689,7 @@ var focusTrapDemoBundle = (function () {
         } // There can be only one listening focus trap at a time
 
 
-        activeFocusTraps.activateTrap(trap); // Delay ensures that the focused element doesn't capture the event
+        activeFocusTraps.activateTrap(trapStack, trap); // Delay ensures that the focused element doesn't capture the event
         // that caused the focus trap activation.
 
         state.delayInitialFocusTimer = config.delayInitialFocus ? delay$1(function () {
@@ -1799,7 +1798,7 @@ var focusTrapDemoBundle = (function () {
           removeListeners();
           state.active = false;
           state.paused = false;
-          activeFocusTraps.deactivateTrap(trap);
+          activeFocusTraps.deactivateTrap(trapStack, trap);
           var onDeactivate = getOption(options, 'onDeactivate');
           var onPostDeactivate = getOption(options, 'onPostDeactivate');
           var checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
@@ -1868,16 +1867,16 @@ var focusTrapDemoBundle = (function () {
 
     var focusTrap = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        createFocusTrap: createFocusTrap$s
+        createFocusTrap: createFocusTrap$t
     });
 
     var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
 
-    var createFocusTrap$r = require$$0.createFocusTrap;
+    var createFocusTrap$s = require$$0.createFocusTrap;
 
     var _default = function _default() {
       var container = document.getElementById('default');
-      var focusTrap = createFocusTrap$r('#default', {
+      var focusTrap = createFocusTrap$s('#default', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -1887,6 +1886,33 @@ var focusTrapDemoBundle = (function () {
       });
       document.getElementById('activate-default').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
+    };
+
+    var createFocusTrap$r = require$$0.createFocusTrap;
+
+    var globalTrapStack = function globalTrapStack() {
+      var container = document.getElementById('global-trap-stack');
+      var counter = container.querySelector('.counter');
+      window.__trapStack = [];
+
+      var updateCounter = function updateCounter() {
+        counter.innerHTML = window.__trapStack.length;
+      };
+
+      var focusTrap = createFocusTrap$r('#global-trap-stack', {
+        trapStack: window.__trapStack,
+        onPostActivate: function onPostActivate() {
+          container.classList.add('is-active');
+          updateCounter();
+        },
+        onPostDeactivate: function onPostDeactivate() {
+          container.classList.remove('is-active');
+          updateCounter();
+        }
+      });
+      updateCounter();
+      document.getElementById('activate-global-trap-stack').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-global-trap-stack').addEventListener('click', focusTrap.deactivate);
     };
 
     var createFocusTrap$q = require$$0.createFocusTrap;
@@ -3651,6 +3677,7 @@ var focusTrapDemoBundle = (function () {
     };
 
     _default();
+    globalTrapStack();
     animatedDialog();
     animatedTrigger();
     escapeDeactivates();
