@@ -250,6 +250,15 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "skjnldsv",
+      "name": "John Molakvoæ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14975046?v=4",
+      "profile": "https://github.com/skjnldsv",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
