@@ -1535,7 +1535,9 @@ describe('focus-trap', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
       cy.get('#demo-global-trap-stack').as('testRoot');
 
-      cy.get('@testRoot').find('.counter').should('have.text', '');
+      cy.get('@testRoot').find('.counter').should('have.text', '0');
+
+      cy.window().its('__trapStack.length').should('equal', 0);
 
       // activate trap
       cy.get('@testRoot')
@@ -1550,6 +1552,8 @@ describe('focus-trap', () => {
         .should('be.focused');
 
       cy.get('@testRoot').find('.counter').should('have.text', '1');
+
+      cy.window().its('__trapStack.length').should('equal', 1);
 
       // trap is active(keep focus in trap by blocking clicks on outside focusable element)
       cy.get('#return-to-repo').click();
@@ -1586,6 +1590,8 @@ describe('focus-trap', () => {
       );
 
       cy.get('@testRoot').find('.counter').should('have.text', '0');
+
+      cy.window().its('__trapStack.length').should('equal', 0);
     });
   });
 
