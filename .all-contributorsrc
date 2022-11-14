@@ -259,6 +259,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "nickvergessen",
+      "name": "Joas Schilling",
+      "avatar_url": "https://avatars.githubusercontent.com/u/213943?v=4",
+      "profile": "https://www.schilljs.com/",
+      "contributions": [
+        "review"
+      ]
     }
   ],
   "contributorsPerLine": 7,
