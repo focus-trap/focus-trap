@@ -240,6 +240,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "vinicius73",
+      "name": "Vinicius Reis",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1561347?v=4",
+      "profile": "https://vinicius73.dev/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
