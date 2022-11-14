@@ -2,11 +2,12 @@
 * focus-trap 7.0.0
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":""};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -1865,12 +1866,12 @@ var focusTrapDemoBundle = (function () {
       return trap;
     };
 
-    var focusTrap = /*#__PURE__*/Object.freeze({
+    var vinicius_FocusTrap = /*#__PURE__*/Object.freeze({
         __proto__: null,
         createFocusTrap: createFocusTrap$t
     });
 
-    var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
+    var require$$0 = /*@__PURE__*/getAugmentedNamespace(vinicius_FocusTrap);
 
     var createFocusTrap$s = require$$0.createFocusTrap;
 
