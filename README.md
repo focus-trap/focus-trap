@@ -120,6 +120,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 - **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This allows to use FocusTrap in an iFrame context.
 - **tabbableOptions**: (optional) [tabbable options](https://github.com/focus-trap/tabbable#common-options) configurable on FocusTrap (all the *common options*).
   - ⚠️ See notes about **[testing in JSDom](#testing-in-jsdom)** (e.g. using Jest).
+- **trapStack** (optional) `{Array<FocusTrap>}`: Define internal trap stack. This allows to share the same stack in multiple references of `focus-trap` in the same page.
 
 #### Shadow DOM
 
