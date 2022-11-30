@@ -179,6 +179,22 @@ declare module 'focus-trap' {
      * leading to conflicts if they each try to trap the focus at the same time.
      */
     trapStack?: Array<FocusTrap>;
+
+    /**
+     * Determines if the given keyboard event is a "tab forward" event that will move
+     * the focus to the next trapped element in tab order. Defaults to the `TAB` key.
+     * Use this to override the trap's behavior if you want to use arrow keys to control
+     * keyboard navigation within the trap, for example. Also see `isKeyBackward()` option.
+     */
+    isKeyForward?: KeyboardEventToBoolean;
+
+    /**
+     * Determines if the given keyboard event is a "tab backward" event that will move
+     * the focus to the previous trapped element in tab order. Defaults to the `SHIFT+TAB` key.
+     * Use this to override the trap's behavior if you want to use arrow keys to control
+     * keyboard navigation within the trap, for example. Also see `isKeyForward()` option.
+     */
+    isKeyBackward?: KeyboardEventToBoolean;
   }
 
   type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;

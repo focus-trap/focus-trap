@@ -47,6 +47,16 @@ const isTabEvent = function (e) {
   return e.key === 'Tab' || e.keyCode === 9;
 };
 
+// checks for TAB by default
+const isKeyForward = function (e) {
+  return isTabEvent(e) && !e.shiftKey;
+};
+
+// checks for SHIFT+TAB by default
+const isKeyBackward = function (e) {
+  return isTabEvent(e) && e.shiftKey;
+};
+
 const delay = function (fn) {
   return setTimeout(fn, 0);
 };
@@ -107,6 +117,8 @@ const createFocusTrap = function (elements, userOptions) {
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
+    isKeyForward,
+    isKeyBackward,
     ...userOptions,
   };
 
@@ -423,12 +435,12 @@ const createFocusTrap = function (elements, userOptions) {
     }
   };
 
-  // Hijack Tab events on the first and last focusable nodes of the trap,
+  // Hijack key nav events on the first and last focusable nodes of the trap,
   // in order to prevent focus from escaping. If it escapes for even a
   // moment it can end up scrolling the page and causing confusion so we
   // kind of need to capture the action at the keydown phase.
-  const checkTab = function (e) {
-    const target = getActualTarget(e);
+  const checkKeyNav = function (event, isBackward = false) {
+    const target = getActualTarget(event);
     updateTabbableNodes();
 
     let destinationNode = null;
@@ -443,8 +455,8 @@ const createFocusTrap = function (elements, userOptions) {
 
       if (containerIndex < 0) {
         // target not found in any group: quite possible focus has escaped the trap,
-        //  so bring it back in to...
-        if (e.shiftKey) {
+        //  so bring it back into...
+        if (isBackward) {
           // ...the last node in the last group
           destinationNode =
             state.tabbableGroups[state.tabbableGroups.length - 1]
@@ -453,7 +465,7 @@ const createFocusTrap = function (elements, userOptions) {
           // ...the first node in the first group
           destinationNode = state.tabbableGroups[0].firstTabbableNode;
         }
-      } else if (e.shiftKey) {
+      } else if (isBackward) {
         // REVERSE
 
         // is the target the first tabbable node in a group?
@@ -489,6 +501,10 @@ const createFocusTrap = function (elements, userOptions) {
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
           destinationNode = destinationGroup.lastTabbableNode;
+        } else if (!isTabEvent(event)) {
+          // user must have customized the nav keys so we have to move focus manually _within_
+          //  the active group: do this based on the order determined by tabbable()
+          destinationNode = containerGroup.nextTabbableNode(target, false);
         }
       } else {
         // FORWARD
@@ -526,33 +542,43 @@ const createFocusTrap = function (elements, userOptions) {
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
           destinationNode = destinationGroup.firstTabbableNode;
+        } else if (!isTabEvent(event)) {
+          // user must have customized the nav keys so we have to move focus manually _within_
+          //  the active group: do this based on the order determined by tabbable()
+          destinationNode = containerGroup.nextTabbableNode(target);
         }
       }
     } else {
+      // no groups available
       // NOTE: the fallbackFocus option does not support returning false to opt-out
       destinationNode = getNodeForOption('fallbackFocus');
     }
 
     if (destinationNode) {
-      e.preventDefault();
+      if (isTabEvent(event)) {
+        // since tab natively moves focus, we wouldn't have a destination node unless we
+        //  were on the edge of a container and had to move to the next/previous edge, in
+        //  which case we want to prevent default to keep the browser from moving focus
+        //  to where it normally would
+        event.preventDefault();
+      }
       tryFocus(destinationNode);
     }
     // else, let the browser take care of [shift+]tab and move the focus
   };
 
-  const checkKey = function (e) {
+  const checkKey = function (event) {
     if (
-      isEscapeEvent(e) &&
-      valueOrHandler(config.escapeDeactivates, e) !== false
+      isEscapeEvent(event) &&
+      valueOrHandler(config.escapeDeactivates, event) !== false
     ) {
-      e.preventDefault();
+      event.preventDefault();
       trap.deactivate();
       return;
     }
 
-    if (isTabEvent(e)) {
-      checkTab(e);
-      return;
+    if (config.isKeyForward(event) || config.isKeyBackward(event)) {
+      checkKeyNav(event, config.isKeyBackward(event));
     }
   };
 
