@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.2.0
+
+### Minor Changes
+
+- b0482af: Add new `isKeyForward()` and `isKeyBackward()` options ([#612](https://github.com/focus-trap/focus-trap/issues/612))
+
 ## 7.1.0
 
 ### Minor Changes
