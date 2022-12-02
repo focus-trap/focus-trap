@@ -35,6 +35,7 @@ require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./in-open-shadow-dom')();
 require('./with-shadow-dom')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
-require('./negative-tabindex')();
-require('./negative-tabindex-last')();
+require('./negative-tabindex')(); // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+require('./negative-tabindex-last')(); // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
 require('./with-open-web-component')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+require('./arrow-keys')();
