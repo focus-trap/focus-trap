@@ -22,15 +22,16 @@ describe('focus-trap', () => {
    * @param cyWrapper Cypress object of outside focused element yielded from `cy.get/contains/findByRole...etc`
    */
   function verifyFocusIsNotTrapped(cyWrapper) {
-    const outsideFocusedElAlias = 'outsideFocusedEl';
-    cyWrapper.as(outsideFocusedElAlias).should('be.focused');
+    cyWrapper.should('be.focused');
+
     // focus can be transitioned freely when trap is unmounted
     let previousFocusedEl;
-    cy.get(`@${outsideFocusedElAlias}`)
+    cy.focused()
       .then(([lastlyFocusedEl]) => {
         return (previousFocusedEl = lastlyFocusedEl);
       })
       .tab();
+
     cy.focused().should(([nextFocusedEl]) =>
       expect(nextFocusedEl).not.equal(previousFocusedEl)
     );
@@ -478,7 +479,7 @@ describe('focus-trap', () => {
       // focus element outside trap
       cy.get('#activate-iene').focus();
 
-      // ensure focus was broght back to manually focused element
+      // ensure focus was brought back to manually focused element
       cy.get('@secondElementInTrap').should('be.focused');
     });
 
@@ -626,7 +627,9 @@ describe('focus-trap', () => {
       //  hidden buttons disappear is, for some reason, deemed non-tabbable and therefore
       //  the cypress-plugin-tab plugin throws an error, so we have to set focus to the
       //  'nothing' button in order to continue testing in FF at this point
-      cy.get('@firstTabbableElInTrap').focus();
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^nothing$/ })
+        .focus();
 
       // focus can be transitioned freely when trap is deactivated
       cy.focused().type('{esc}');
