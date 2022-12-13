@@ -429,6 +429,10 @@ const createFocusTrap = function (elements, userOptions) {
         state.mostRecentlyFocusedNode = target;
       }
     } else {
+      //this will stop the focus from returning back to the modal dialog when the sibling is opened inside the dialog.
+      if (state.containers[0].nextSibling) {
+          return;
+      }
       // escaped! pull it back in to where it just left
       e.stopImmediatePropagation();
       tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
