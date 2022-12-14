@@ -627,7 +627,7 @@
         This focus trap can be closed also by clicking a button outside of the trap <strong>that is able to control the trap</strong> (which is the "activate trap" button in this example). ESC is <strong>disabled</strong> for this trap.
       </p>
       <p>
-        NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take place on the "activate trap" button, whose click event handler will programmatically deactivate the trap.
+        NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take place on the "activate/deactivate trap" button, whose click event handler will programmatically deactivate the trap.
       </p>
       <p>
         <label>
@@ -640,7 +640,7 @@
       </p>
       <p>
         <button id="activate-allowoutsideclick" aria-describedby="allowoutsideclick-heading">
-          activate trap
+          activate/deactivate trap
         </button>
       </p>
       <div id="allowoutsideclick" class="trap">

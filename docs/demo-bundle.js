@@ -2816,12 +2816,10 @@ var focusTrapDemoBundle = (function () {
       function activate() {
         focusTrap.activate();
         active = true;
-        trigger.innerText = 'deactivate trap';
       }
       function deactivate() {
         focusTrap.deactivate();
         active = false;
-        trigger.innerText = 'activate trap';
       }
       trigger.addEventListener('click', function () {
         if (active) {

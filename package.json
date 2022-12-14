@@ -74,7 +74,7 @@
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^23.0.4",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@testing-library/cypress": "^8.0.7",
+    "@testing-library/cypress": "^9.0.0",
     "@types/jquery": "^3.5.14",
     "all-contributors-cli": "^6.24.0",
     "babel-loader": "^9.1.0",
