@@ -1,6 +1,6 @@
 {
   "name": "@wavemaker/focus-trap",
-  "version": "7.2.1",
+  "version": "1.0.0",
   "description": "Trap focus within a DOM node.",
   "main": "dist/focus-trap.js",
   "module": "dist/focus-trap.esm.js",
