@@ -910,9 +910,11 @@ describe('focus-trap', () => {
   });
 
   describe('Click outside go through', () => {
-    const activateTrap = function () {
+    const activateTrap = function (buttonName = 'activate trap') {
       cy.get('@testRoot')
-        .findByRole('button', { name: /^activate trap/ })
+        .findByRole('button', {
+          name: new RegExp(`^${buttonName.replace(/\//g, '\\/')}`),
+        })
         .as('lastlyFocusedElementBeforeTrapIsActivated')
         .click();
     };
@@ -948,7 +950,7 @@ describe('focus-trap', () => {
         cy.get('#demo-allowoutsideclick').as('testRoot');
 
         // activate trap and element trap should be focused
-        activateTrap();
+        activateTrap('activate/deactivate trap');
         checkTrap('deactivate trap');
 
         // click on outside element goes through. In this case, the click deactivates the trap
@@ -967,7 +969,7 @@ describe('focus-trap', () => {
           .select('function');
 
         // activate trap and element trap should be focused
-        activateTrap();
+        activateTrap('activate/deactivate trap');
         checkTrap('deactivate trap');
 
         // click on outside element goes through. In this case, the click deactivates the trap
