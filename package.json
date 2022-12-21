@@ -84,7 +84,7 @@
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
-    "eslint-plugin-jest": "^27.1.6",
+    "eslint-plugin-jest": "^27.1.7",
     "onchange": "^7.1.0",
     "prettier": "^2.8.1",
     "rollup": "^2.79.1",
