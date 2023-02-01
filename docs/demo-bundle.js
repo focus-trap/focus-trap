@@ -1,12 +1,12 @@
 /*!
-* focus-trap 7.2.1-tabbable-i905.1
+* focus-trap 7.2.1-tabbable-i905.2
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
