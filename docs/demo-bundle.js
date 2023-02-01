@@ -1,5 +1,5 @@
 /*!
-* focus-trap 7.2.0
+* focus-trap 7.2.1-tabbable-i905.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -18,6 +18,7 @@ var focusTrapDemoBundle = (function () {
     })();
 
     function getAugmentedNamespace(n) {
+      if (n.__esModule) return n;
       var f = n.default;
     	if (typeof f == "function") {
     		var a = function a () {
@@ -571,7 +572,7 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 6.0.1
+    * tabbable 6.0.2-tabbable-i905.2
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
     var candidateSelectors = ['input', 'select', 'textarea', 'a[href]', 'button', '[tabindex]:not(slot)', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])', 'details>summary:first-of-type', 'details'];
@@ -579,9 +580,10 @@ var focusTrapDemoBundle = (function () {
     var NoElement = typeof Element === 'undefined';
     var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
     var getRootNode = !NoElement && Element.prototype.getRootNode ? function (element) {
-      return element.getRootNode();
+      var _element$getRootNode;
+      return element === null || element === void 0 ? void 0 : (_element$getRootNode = element.getRootNode) === null || _element$getRootNode === void 0 ? void 0 : _element$getRootNode.call(element);
     } : function (element) {
-      return element.ownerDocument;
+      return element === null || element === void 0 ? void 0 : element.ownerDocument;
     };
 
     /**
@@ -761,7 +763,7 @@ var focusTrapDemoBundle = (function () {
 
     // determines if a node is ultimately attached to the window's document
     var isNodeAttached = function isNodeAttached(node) {
-      var _nodeRootHost;
+      var _nodeRoot;
       // The root node is the shadow root if the node is in a shadow DOM; some document otherwise
       //  (but NOT _the_ document; see second 'If' comment below for more).
       // If rootNode is shadow root, it'll have a host, which is the element to which the shadow
@@ -781,15 +783,28 @@ var focusTrapDemoBundle = (function () {
       //  to ignore the rootNode at this point, and use `node.ownerDocument`. Otherwise,
       //  using `rootNode.contains(node)` will _always_ be true we'll get false-positives when
       //  node is actually detached.
-      var nodeRootHost = getRootNode(node).host;
-      var attached = !!((_nodeRootHost = nodeRootHost) !== null && _nodeRootHost !== void 0 && _nodeRootHost.ownerDocument.contains(nodeRootHost) || node.ownerDocument.contains(node));
-      while (!attached && nodeRootHost) {
-        var _nodeRootHost2;
-        // since it's not attached and we have a root host, the node MUST be in a nested shadow DOM,
-        //  which means we need to get the host's host and check if that parent host is contained
-        //  in (i.e. attached to) the document
-        nodeRootHost = getRootNode(nodeRootHost).host;
-        attached = !!((_nodeRootHost2 = nodeRootHost) !== null && _nodeRootHost2 !== void 0 && _nodeRootHost2.ownerDocument.contains(nodeRootHost));
+      // NOTE: If `nodeRootHost` or `node` happens to be the `document` itself (which is possible
+      //  if a tabbable/focusable node was quickly added to the DOM, focused, and then removed
+      //  from the DOM as in https://github.com/focus-trap/focus-trap-react/issues/905), then
+      //  `ownerDocument` will be `null`, hence the optional chaining on it.
+      var nodeRoot = node && getRootNode(node);
+      var nodeRootHost = (_nodeRoot = nodeRoot) === null || _nodeRoot === void 0 ? void 0 : _nodeRoot.host;
+
+      // in some cases, a detached node will return itself as the root instead of a document or
+      //  shadow root object, in which case, we shouldn't try to look further up the host chain
+      var attached = false;
+      if (nodeRoot && nodeRoot !== node) {
+        var _nodeRootHost, _nodeRootHost$ownerDo, _node$ownerDocument;
+        attached = !!((_nodeRootHost = nodeRootHost) !== null && _nodeRootHost !== void 0 && (_nodeRootHost$ownerDo = _nodeRootHost.ownerDocument) !== null && _nodeRootHost$ownerDo !== void 0 && _nodeRootHost$ownerDo.contains(nodeRootHost) || node !== null && node !== void 0 && (_node$ownerDocument = node.ownerDocument) !== null && _node$ownerDocument !== void 0 && _node$ownerDocument.contains(node));
+        while (!attached && nodeRootHost) {
+          var _nodeRoot2, _nodeRootHost2, _nodeRootHost2$ownerD;
+          // since it's not attached and we have a root host, the node MUST be in a nested shadow DOM,
+          //  which means we need to get the host's host and check if that parent host is contained
+          //  in (i.e. attached to) the document
+          nodeRoot = getRootNode(nodeRootHost);
+          nodeRootHost = (_nodeRoot2 = nodeRoot) === null || _nodeRoot2 === void 0 ? void 0 : _nodeRoot2.host;
+          attached = !!((_nodeRootHost2 = nodeRootHost) !== null && _nodeRootHost2 !== void 0 && (_nodeRootHost2$ownerD = _nodeRootHost2.ownerDocument) !== null && _nodeRootHost2$ownerD !== void 0 && _nodeRootHost2$ownerD.contains(nodeRootHost));
+        }
       }
       return attached;
     };
@@ -2087,17 +2102,24 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
     };
 
-    var runtime = {exports: {}};
+    var runtimeExports = {};
+    var runtime = {
+      get exports(){ return runtimeExports; },
+      set exports(v){ runtimeExports = v; },
+    };
 
     var hasRequiredRuntime;
     function requireRuntime() {
-      if (hasRequiredRuntime) return runtime.exports;
+      if (hasRequiredRuntime) return runtimeExports;
       hasRequiredRuntime = 1;
       (function (module) {
         var runtime = function (exports) {
 
           var Op = Object.prototype;
           var hasOwn = Op.hasOwnProperty;
+          var defineProperty = Object.defineProperty || function (obj, key, desc) {
+            obj[key] = desc.value;
+          };
           var undefined$1; // More compressible than void 0.
           var $Symbol = typeof Symbol === "function" ? Symbol : {};
           var iteratorSymbol = $Symbol.iterator || "@@iterator";
@@ -2128,7 +2150,9 @@ var focusTrapDemoBundle = (function () {
 
             // The ._invoke method unifies the implementations of the .next,
             // .throw, and .return methods.
-            generator._invoke = makeInvokeMethod(innerFn, self, context);
+            defineProperty(generator, "_invoke", {
+              value: makeInvokeMethod(innerFn, self, context)
+            });
             return generator;
           }
           exports.wrap = wrap;
@@ -2176,9 +2200,9 @@ var focusTrapDemoBundle = (function () {
           // This is a polyfill for %IteratorPrototype% for environments that
           // don't natively support it.
           var IteratorPrototype = {};
-          IteratorPrototype[iteratorSymbol] = function () {
+          define(IteratorPrototype, iteratorSymbol, function () {
             return this;
-          };
+          });
           var getProto = Object.getPrototypeOf;
           var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
           if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
@@ -2187,8 +2211,15 @@ var focusTrapDemoBundle = (function () {
             IteratorPrototype = NativeIteratorPrototype;
           }
           var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
-          GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-          GeneratorFunctionPrototype.constructor = GeneratorFunction;
+          GeneratorFunction.prototype = GeneratorFunctionPrototype;
+          defineProperty(Gp, "constructor", {
+            value: GeneratorFunctionPrototype,
+            configurable: true
+          });
+          defineProperty(GeneratorFunctionPrototype, "constructor", {
+            value: GeneratorFunction,
+            configurable: true
+          });
           GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction");
 
           // Helper for defining the .next, .throw, and .return methods of the
@@ -2283,12 +2314,14 @@ var focusTrapDemoBundle = (function () {
 
             // Define the unified helper method that is used to implement .next,
             // .throw, and .return (see defineIteratorMethods).
-            this._invoke = enqueue;
+            defineProperty(this, "_invoke", {
+              value: enqueue
+            });
           }
           defineIteratorMethods(AsyncIterator.prototype);
-          AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+          define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
             return this;
-          };
+          });
           exports.AsyncIterator = AsyncIterator;
 
           // Note that simple async functions are implemented on top of
@@ -2370,27 +2403,30 @@ var focusTrapDemoBundle = (function () {
           // delegate iterator, or by modifying context.method and context.arg,
           // setting context.delegate to null, and returning the ContinueSentinel.
           function maybeInvokeDelegate(delegate, context) {
-            var method = delegate.iterator[context.method];
+            var methodName = context.method;
+            var method = delegate.iterator[methodName];
             if (method === undefined$1) {
               // A .throw or .return when the delegate iterator has no .throw
-              // method always terminates the yield* loop.
+              // method, or a missing .next mehtod, always terminate the
+              // yield* loop.
               context.delegate = null;
-              if (context.method === "throw") {
-                // Note: ["return"] must be used for ES3 parsing compatibility.
-                if (delegate.iterator["return"]) {
-                  // If the delegate iterator has a return method, give it a
-                  // chance to clean up.
-                  context.method = "return";
-                  context.arg = undefined$1;
-                  maybeInvokeDelegate(delegate, context);
-                  if (context.method === "throw") {
-                    // If maybeInvokeDelegate(context) changed context.method from
-                    // "return" to "throw", let that override the TypeError below.
-                    return ContinueSentinel;
-                  }
+
+              // Note: ["return"] must be used for ES3 parsing compatibility.
+              if (methodName === "throw" && delegate.iterator["return"]) {
+                // If the delegate iterator has a return method, give it a
+                // chance to clean up.
+                context.method = "return";
+                context.arg = undefined$1;
+                maybeInvokeDelegate(delegate, context);
+                if (context.method === "throw") {
+                  // If maybeInvokeDelegate(context) changed context.method from
+                  // "return" to "throw", let that override the TypeError below.
+                  return ContinueSentinel;
                 }
+              }
+              if (methodName !== "return") {
                 context.method = "throw";
-                context.arg = new TypeError("The iterator does not provide a 'throw' method");
+                context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method");
               }
               return ContinueSentinel;
             }
@@ -2447,12 +2483,12 @@ var focusTrapDemoBundle = (function () {
           // iterator prototype chain incorrectly implement this, causing the Generator
           // object to not be returned from this call. This ensures that doesn't happen.
           // See https://github.com/facebook/regenerator/issues/274 for more details.
-          Gp[iteratorSymbol] = function () {
+          define(Gp, iteratorSymbol, function () {
             return this;
-          };
-          Gp.toString = function () {
+          });
+          define(Gp, "toString", function () {
             return "[object Generator]";
-          };
+          });
           function pushTryEntry(locs) {
             var entry = {
               tryLoc: locs[0]
@@ -2482,7 +2518,8 @@ var focusTrapDemoBundle = (function () {
             tryLocsList.forEach(pushTryEntry, this);
             this.reset(true);
           }
-          exports.keys = function (object) {
+          exports.keys = function (val) {
+            var object = Object(val);
             var keys = [];
             for (var key in object) {
               keys.push(key);
@@ -2723,17 +2760,22 @@ var focusTrapDemoBundle = (function () {
         } catch (accidentalStrictMode) {
           // This module should not be running in strict mode, so the above
           // assignment should always work unless something is misconfigured. Just
-          // in case runtime.js accidentally runs in strict mode, we can escape
+          // in case runtime.js accidentally runs in strict mode, in modern engines
+          // we can explicitly access globalThis. In older engines we can escape
           // strict mode using a global Function call. This could conceivably fail
           // if a Content Security Policy forbids using Function, but in that case
           // the proper solution is to fix the accidental strict mode problem. If
           // you've misconfigured your bundler to force strict mode and applied a
           // CSP to forbid Function, and you're not willing to fix either of those
           // problems, please detail your unique predicament in a GitHub issue.
-          Function("r", "regeneratorRuntime = r")(runtime);
+          if ((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) === "object") {
+            globalThis.regeneratorRuntime = runtime;
+          } else {
+            Function("r", "regeneratorRuntime = r")(runtime);
+          }
         }
       })(runtime);
-      return runtime.exports;
+      return runtimeExports;
     }
 
     var inIframe;

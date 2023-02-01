@@ -63,7 +63,7 @@
   },
   "homepage": "https://github.com/focus-trap/focus-trap#readme",
   "dependencies": {
-    "tabbable": "6.0.2-tabbable-i905.1"
+    "tabbable": "6.0.2-tabbable-i905.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.20.7",
