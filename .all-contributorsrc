@@ -268,6 +268,15 @@
       "contributions": [
         "review"
       ]
+    },
+    {
+      "login": "vasiliki-b",
+      "name": "Vasiliki Boutas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98032598?v=4",
+      "profile": "https://github.com/vasiliki-b",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
