@@ -18,6 +18,7 @@ var focusTrapDemoBundle = (function () {
     })();
 
     function getAugmentedNamespace(n) {
+      if (n.__esModule) return n;
       var f = n.default;
     	if (typeof f == "function") {
     		var a = function a () {
@@ -1366,18 +1367,13 @@ var focusTrapDemoBundle = (function () {
         if (valueOrHandler(config.clickOutsideDeactivates, e)) {
           // immediately deactivate the trap
           trap.deactivate({
-            // if, on deactivation, we should return focus to the node originally-focused
-            //  when the trap was activated (or the configured `setReturnFocus` node),
-            //  then assume it's also OK to return focus to the outside node that was
-            //  just clicked, causing deactivation, as long as that node is focusable;
-            //  if it isn't focusable, then return focus to the original node focused
-            //  on activation (or the configured `setReturnFocus` node)
             // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
             //  which will result in the outside click setting focus to the node
-            //  that was clicked, whether it's focusable or not; by setting
+            //  that was clicked (and if not focusable, to "nothing"); by setting
             //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
-            //  on activation (or the configured `setReturnFocus` node)
-            returnFocus: config.returnFocusOnDeactivate && !isFocusable(target, config.tabbableOptions)
+            //  on activation (or the configured `setReturnFocus` node), whether the
+            //  outside click was on a focusable node or not
+            returnFocus: config.returnFocusOnDeactivate
           });
           return;
         }
@@ -2087,17 +2083,24 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
     };
 
-    var runtime = {exports: {}};
+    var runtimeExports = {};
+    var runtime = {
+      get exports(){ return runtimeExports; },
+      set exports(v){ runtimeExports = v; },
+    };
 
     var hasRequiredRuntime;
     function requireRuntime() {
-      if (hasRequiredRuntime) return runtime.exports;
+      if (hasRequiredRuntime) return runtimeExports;
       hasRequiredRuntime = 1;
       (function (module) {
         var runtime = function (exports) {
 
           var Op = Object.prototype;
           var hasOwn = Op.hasOwnProperty;
+          var defineProperty = Object.defineProperty || function (obj, key, desc) {
+            obj[key] = desc.value;
+          };
           var undefined$1; // More compressible than void 0.
           var $Symbol = typeof Symbol === "function" ? Symbol : {};
           var iteratorSymbol = $Symbol.iterator || "@@iterator";
@@ -2128,7 +2131,9 @@ var focusTrapDemoBundle = (function () {
 
             // The ._invoke method unifies the implementations of the .next,
             // .throw, and .return methods.
-            generator._invoke = makeInvokeMethod(innerFn, self, context);
+            defineProperty(generator, "_invoke", {
+              value: makeInvokeMethod(innerFn, self, context)
+            });
             return generator;
           }
           exports.wrap = wrap;
@@ -2176,9 +2181,9 @@ var focusTrapDemoBundle = (function () {
           // This is a polyfill for %IteratorPrototype% for environments that
           // don't natively support it.
           var IteratorPrototype = {};
-          IteratorPrototype[iteratorSymbol] = function () {
+          define(IteratorPrototype, iteratorSymbol, function () {
             return this;
-          };
+          });
           var getProto = Object.getPrototypeOf;
           var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
           if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
@@ -2187,8 +2192,15 @@ var focusTrapDemoBundle = (function () {
             IteratorPrototype = NativeIteratorPrototype;
           }
           var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
-          GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-          GeneratorFunctionPrototype.constructor = GeneratorFunction;
+          GeneratorFunction.prototype = GeneratorFunctionPrototype;
+          defineProperty(Gp, "constructor", {
+            value: GeneratorFunctionPrototype,
+            configurable: true
+          });
+          defineProperty(GeneratorFunctionPrototype, "constructor", {
+            value: GeneratorFunction,
+            configurable: true
+          });
           GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction");
 
           // Helper for defining the .next, .throw, and .return methods of the
@@ -2283,12 +2295,14 @@ var focusTrapDemoBundle = (function () {
 
             // Define the unified helper method that is used to implement .next,
             // .throw, and .return (see defineIteratorMethods).
-            this._invoke = enqueue;
+            defineProperty(this, "_invoke", {
+              value: enqueue
+            });
           }
           defineIteratorMethods(AsyncIterator.prototype);
-          AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+          define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
             return this;
-          };
+          });
           exports.AsyncIterator = AsyncIterator;
 
           // Note that simple async functions are implemented on top of
@@ -2370,27 +2384,30 @@ var focusTrapDemoBundle = (function () {
           // delegate iterator, or by modifying context.method and context.arg,
           // setting context.delegate to null, and returning the ContinueSentinel.
           function maybeInvokeDelegate(delegate, context) {
-            var method = delegate.iterator[context.method];
+            var methodName = context.method;
+            var method = delegate.iterator[methodName];
             if (method === undefined$1) {
               // A .throw or .return when the delegate iterator has no .throw
-              // method always terminates the yield* loop.
+              // method, or a missing .next mehtod, always terminate the
+              // yield* loop.
               context.delegate = null;
-              if (context.method === "throw") {
-                // Note: ["return"] must be used for ES3 parsing compatibility.
-                if (delegate.iterator["return"]) {
-                  // If the delegate iterator has a return method, give it a
-                  // chance to clean up.
-                  context.method = "return";
-                  context.arg = undefined$1;
-                  maybeInvokeDelegate(delegate, context);
-                  if (context.method === "throw") {
-                    // If maybeInvokeDelegate(context) changed context.method from
-                    // "return" to "throw", let that override the TypeError below.
-                    return ContinueSentinel;
-                  }
+
+              // Note: ["return"] must be used for ES3 parsing compatibility.
+              if (methodName === "throw" && delegate.iterator["return"]) {
+                // If the delegate iterator has a return method, give it a
+                // chance to clean up.
+                context.method = "return";
+                context.arg = undefined$1;
+                maybeInvokeDelegate(delegate, context);
+                if (context.method === "throw") {
+                  // If maybeInvokeDelegate(context) changed context.method from
+                  // "return" to "throw", let that override the TypeError below.
+                  return ContinueSentinel;
                 }
+              }
+              if (methodName !== "return") {
                 context.method = "throw";
-                context.arg = new TypeError("The iterator does not provide a 'throw' method");
+                context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method");
               }
               return ContinueSentinel;
             }
@@ -2447,12 +2464,12 @@ var focusTrapDemoBundle = (function () {
           // iterator prototype chain incorrectly implement this, causing the Generator
           // object to not be returned from this call. This ensures that doesn't happen.
           // See https://github.com/facebook/regenerator/issues/274 for more details.
-          Gp[iteratorSymbol] = function () {
+          define(Gp, iteratorSymbol, function () {
             return this;
-          };
-          Gp.toString = function () {
+          });
+          define(Gp, "toString", function () {
             return "[object Generator]";
-          };
+          });
           function pushTryEntry(locs) {
             var entry = {
               tryLoc: locs[0]
@@ -2482,7 +2499,8 @@ var focusTrapDemoBundle = (function () {
             tryLocsList.forEach(pushTryEntry, this);
             this.reset(true);
           }
-          exports.keys = function (object) {
+          exports.keys = function (val) {
+            var object = Object(val);
             var keys = [];
             for (var key in object) {
               keys.push(key);
@@ -2723,17 +2741,22 @@ var focusTrapDemoBundle = (function () {
         } catch (accidentalStrictMode) {
           // This module should not be running in strict mode, so the above
           // assignment should always work unless something is misconfigured. Just
-          // in case runtime.js accidentally runs in strict mode, we can escape
+          // in case runtime.js accidentally runs in strict mode, in modern engines
+          // we can explicitly access globalThis. In older engines we can escape
           // strict mode using a global Function call. This could conceivably fail
           // if a Content Security Policy forbids using Function, but in that case
           // the proper solution is to fix the accidental strict mode problem. If
           // you've misconfigured your bundler to force strict mode and applied a
           // CSP to forbid Function, and you're not willing to fix either of those
           // problems, please detail your unique predicament in a GitHub issue.
-          Function("r", "regeneratorRuntime = r")(runtime);
+          if ((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) === "object") {
+            globalThis.regeneratorRuntime = runtime;
+          } else {
+            Function("r", "regeneratorRuntime = r")(runtime);
+          }
         }
       })(runtime);
-      return runtime.exports;
+      return runtimeExports;
     }
 
     var inIframe;
@@ -3378,9 +3401,10 @@ var focusTrapDemoBundle = (function () {
     //  it manually
     // eslint-disable-next-line no-undef -- process is defined via Rollup
     if (!process.env.IS_CYPRESS_ENV) {
-      requireInIframe()(); // TEST MANUALLY (causes Cypress to fail due to security context violations)
+      // TEST MANUALLY (causes Cypress to fail due to security context violations)
+      // http://localhost:9966/#demo-in-iframe
+      requireInIframe()();
     }
-
     allowOutsideClick();
     clickOutsideDeactivates();
     setReturnFocus();
@@ -3391,10 +3415,22 @@ var focusTrapDemoBundle = (function () {
     multipleElementsDeleteAll();
     multipleElementsMultipleTraps();
     inOpenShadowDom();
-    withShadowDom(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
-    negativeTabindex(); // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
-    negativeTabindexLast(); // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
-    withOpenWebComponent(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+
+    // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+    // http://localhost:9966/#demo-with-shadow-dom
+    withShadowDom();
+
+    // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+    // http://localhost:9966/#demo-negative-tabindex
+    negativeTabindex();
+
+    // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+    // http://localhost:9966/#demo-negative-tabindex-last
+    negativeTabindexLast();
+
+    // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+    // http://localhost:9966/#demo-with-open-web-component
+    withOpenWebComponent();
     arrowKeys();
 
     return js;

@@ -388,20 +388,13 @@ const createFocusTrap = function (elements, userOptions) {
     if (valueOrHandler(config.clickOutsideDeactivates, e)) {
       // immediately deactivate the trap
       trap.deactivate({
-        // if, on deactivation, we should return focus to the node originally-focused
-        //  when the trap was activated (or the configured `setReturnFocus` node),
-        //  then assume it's also OK to return focus to the outside node that was
-        //  just clicked, causing deactivation, as long as that node is focusable;
-        //  if it isn't focusable, then return focus to the original node focused
-        //  on activation (or the configured `setReturnFocus` node)
         // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
         //  which will result in the outside click setting focus to the node
-        //  that was clicked, whether it's focusable or not; by setting
+        //  that was clicked (and if not focusable, to "nothing"); by setting
         //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
-        //  on activation (or the configured `setReturnFocus` node)
-        returnFocus:
-          config.returnFocusOnDeactivate &&
-          !isFocusable(target, config.tabbableOptions),
+        //  on activation (or the configured `setReturnFocus` node), whether the
+        //  outside click was on a focusable node or not
+        returnFocus: config.returnFocusOnDeactivate,
       });
       return;
     }

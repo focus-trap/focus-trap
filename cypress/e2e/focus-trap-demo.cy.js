@@ -506,6 +506,7 @@ describe('focus-trap', () => {
     });
   });
 
+  // initially-focused-container
   describe('demo: ifc', () => {
     beforeEach(() => {
       cy.get('#demo-ifc').as('testRoot');
@@ -515,6 +516,7 @@ describe('focus-trap', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
         .click();
 
       // instead of next tab-order element being focused, initial focus element should be focused
@@ -537,19 +539,23 @@ describe('focus-trap', () => {
       cy.get('@firstTabbableElInTrap').should('be.focused');
 
       // click on outside element deactivates this trap
-      cy.findByRole('heading', { name: 'focus-trap demo' })
-        .as('outsideFocusedEl')
-        .click();
+      cy.findByRole('heading', { name: 'focus-trap demo' }).click();
       cy.get('@firstTabbableElInTrap').should('be.not.focused');
 
       // focus can be transitioned freely when trap is deactivated
-      verifyFocusIsNotTrapped(cy.get('@outsideFocusedEl'));
+      // NOTE: a heading is NOT focusable, and this demo uses the default option of
+      //  `returnFocusOnDeactivate=true`, so that means focus will return to the node
+      //  that had focus just before activation
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
     });
 
     it('specify element to be focused (even with attribute tabindex="-1") after focus trap activation, and use reverse tab order', () => {
       // activate trap
       cy.get('@testRoot')
         .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
         .click();
 
       // instead of next tab-order element being focused, initial focus element should be focused
@@ -577,13 +583,16 @@ describe('focus-trap', () => {
       cy.get('@firstTabbableElInTrap').should('be.focused');
 
       // click on outside element deactivates this trap
-      cy.findByRole('heading', { name: 'focus-trap demo' })
-        .as('outsideFocusedEl')
-        .click();
+      cy.findByRole('heading', { name: 'focus-trap demo' }).click();
       cy.get('@firstTabbableElInTrap').should('be.not.focused');
 
       // focus can be transitioned freely when trap is deactivated
-      verifyFocusIsNotTrapped(cy.get('@outsideFocusedEl'));
+      // NOTE: a heading is NOT focusable, and this demo uses the default option of
+      //  `returnFocusOnDeactivate=true`, so that means focus will return to the node
+      //  that had focus just before activation
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
     });
   });
 
@@ -996,13 +1005,19 @@ describe('focus-trap', () => {
         cy.get('#checkbox-clickoutsidedeactivates').click();
         cy.get('#checkbox-clickoutsidedeactivates').should('be.checked');
 
-        // implies trap no longer active since checkbox is outside trap
-        cy.get('#checkbox-clickoutsidedeactivates').should('be.focused');
+        // implies trap no longer active since checkbox is outside trap, but note that since
+        //  returnFocusOnDeactivate=TRUE, focus will be on the element focused just before
+        //  activation, not the checkbox, even though the checkbox is focusable
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should(
+          'be.focused'
+        );
 
         cy.get('@lastElementInTrap').should('not.be.focused');
 
         // focus can be transitioned freely when trap is deactivated
-        verifyFocusIsNotTrapped(cy.get('#checkbox-clickoutsidedeactivates'));
+        verifyFocusIsNotTrapped(
+          cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+        );
       });
 
       it('traps focus, deactivates on outside click on checkbox and checkbox focused, clickOutsideDeactivates=Function, returnFocusOnDeactivate=true', () => {
@@ -1025,13 +1040,19 @@ describe('focus-trap', () => {
         cy.get('#checkbox-clickoutsidedeactivates').click();
         cy.get('#checkbox-clickoutsidedeactivates').should('be.checked');
 
-        // implies trap no longer active since checkbox is outside trap
-        cy.get('#checkbox-clickoutsidedeactivates').should('be.focused');
+        // implies trap no longer active since checkbox is outside trap, but note that since
+        //  returnFocusOnDeactivate=TRUE, focus will be on the element focused just before
+        //  activation, not the checkbox, even though the checkbox is focusable
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should(
+          'be.focused'
+        );
 
         cy.get('@lastElementInTrap').should('not.be.focused');
 
         // focus can be transitioned freely when trap is deactivated
-        verifyFocusIsNotTrapped(cy.get('#checkbox-clickoutsidedeactivates'));
+        verifyFocusIsNotTrapped(
+          cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+        );
       });
 
       it('traps focus, deactivates on outside click on document and "activate trap" button focused', () => {
@@ -1074,7 +1095,8 @@ describe('focus-trap', () => {
         cy.get('#checkbox-clickoutsidedeactivates').click();
         cy.get('#checkbox-clickoutsidedeactivates').should('be.checked');
 
-        // implies trap no longer active since checkbox is outside trap
+        // implies trap no longer active since checkbox is outside trap, and since
+        //  returnFocusOnDeactivate=FALSE, focus remains on the focusable checkbox
         cy.get('#checkbox-clickoutsidedeactivates').should('be.focused');
 
         cy.get('@lastElementInTrap').should('not.be.focused');
