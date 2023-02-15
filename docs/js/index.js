@@ -54,3 +54,7 @@ require('./negative-tabindex-last')();
 require('./with-open-web-component')();
 
 require('./arrow-keys')();
+
+// TEST MANUALLY (cypress-plugin-tab doesn't support inert)
+// http://localhost:9966/#demo-inert
+require('./inert')();
