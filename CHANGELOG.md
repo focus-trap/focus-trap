@@ -1,5 +1,15 @@
 # Changelog
 
+## 7.3.0
+
+### Minor Changes
+
+- ae7129d: Bump tabbable to v6.1.0 adding support for the new HTML `inert` attribute in browsers that support it (NOTE: FireFox does not support it at this time). Also fixes a bug. See tabbable CHANGELOG for more info.
+
+### Patch Changes
+
+- a27ad58: Fix incorrect behavior of `returnFocusOnDeactivate` option when set to true (or defaulted to true) along with `clickOutsideDeactivates=true` and the outside click that deactivates is on a focusable node. Focus was remaining on that node instead of returning to the node focused just prior to activation. ([#893](https://github.com/focus-trap/focus-trap/issues/893))
+
 ## 7.2.0
 
 ### Minor Changes
