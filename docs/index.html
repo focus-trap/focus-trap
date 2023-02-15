@@ -21,6 +21,21 @@
     <p>
       When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, pressing the <kbd>Escape</kbd> key.
     </p>
+    <p class="macos-keyboard-warning">
+      Before you try the demos, if you're using <strong>macOS</strong>, make sure you
+      have enabled <strong>keyboard navigation</strong> in order to use the Tab key to
+      move focus between <strong>all controls</strong>.
+    </p>
+    <p>
+      In Ventura (v13), you'll find this under <code>System Settings &gt; Keyboard</code>.
+      Prior to Ventura, it may have been under <code>System Settings &gt; General</code>.
+    </p>
+    <p>
+      FireFox and Safari, for example, respect this setting and without it enabled, you won't
+      get a good experience. Chrome appears to ignore it (at least in v109). While focus-trap
+      will still trap all the right nodes, the browser/OS will not let you access all tabbable
+      nodes on the page, nor in any traps you activate, while using the Tab key.
+    </p>
 
     <div id="demo-default">
       <h2 id="default-heading">default behavior</h2>

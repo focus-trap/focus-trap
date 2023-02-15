@@ -1,5 +1,5 @@
 /*!
-* focus-trap 7.2.0
+* focus-trap 7.3.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
@@ -572,12 +572,15 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 6.1.0
+    * tabbable 6.1.1
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
-    // separate `:not()` selectors has broader browser support than the newer
+    // NOTE: separate `:not()` selectors has broader browser support than the newer
     //  `:not([inert], [inert] *)` (Feb 2023)
-    var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
+    // CAREFUL: JSDom does not support `:not([inert] *)` as a selector; using it causes
+    //  the entire query to fail, resulting in no nodes found, which will break a lot
+    //  of things... so we have to rely on JS to identify nodes inside an inert container
+    var candidateSelectors = ['input:not([inert])', 'select:not([inert])', 'textarea:not([inert])', 'a[href]:not([inert])', 'button:not([inert])', '[tabindex]:not(slot):not([inert])', 'audio[controls]:not([inert])', 'video[controls]:not([inert])', '[contenteditable]:not([contenteditable="false"]):not([inert])', 'details>summary:first-of-type:not([inert])', 'details:not([inert])'];
     var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
     var NoElement = typeof Element === 'undefined';
     var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
@@ -590,20 +593,45 @@ var focusTrapDemoBundle = (function () {
 
     /**
      * Determines if a node is inert or in an inert ancestor.
-     * @param {Element} node
+     * @param {Element} [node]
      * @param {boolean} [lookUp] If true and `node` is not inert, looks up at ancestors to
      *  see if any of them are inert. If false, only `node` itself is considered.
      * @returns {boolean} True if inert itself or by way of being in an inert ancestor.
      *  False if `node` is falsy.
      */
     var isInert = function isInert(node, lookUp) {
+      var _node$getAttribute;
       if (lookUp === void 0) {
         lookUp = true;
       }
+      // CAREFUL: JSDom does not support inert at all, so we can't use the `HTMLElement.inert`
+      //  JS API property; we have to check the attribute, which can either be empty or 'true';
+      //  if it's `null` (not specified) or 'false', it's an active element
+      var inertAtt = node === null || node === void 0 ? void 0 : (_node$getAttribute = node.getAttribute) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.call(node, 'inert');
+      var inert = inertAtt === '' || inertAtt === 'true';
+
       // NOTE: this could also be handled with `node.matches('[inert], :is([inert] *)')`
       //  if it weren't for `matches()` not being a function on shadow roots; the following
       //  code works for any kind of node
-      return !!(node !== null && node !== void 0 && node.inert || lookUp && node && isInert(node.parentNode)); // recursive
+      // CAREFUL: JSDom does not appear to support certain selectors like `:not([inert] *)`
+      //  so it likely would not support `:is([inert] *)` either...
+      var result = inert || lookUp && node && isInert(node.parentNode); // recursive
+
+      return result;
+    };
+
+    /**
+     * Determines if a node's content is editable.
+     * @param {Element} [node]
+     * @returns True if it's content-editable; false if it's not or `node` is falsy.
+     */
+    var isContentEditable = function isContentEditable(node) {
+      var _node$getAttribute2;
+      // CAREFUL: JSDom does not support the `HTMLElement.isContentEditable` API so we have
+      //  to use the attribute directly to check for this, which can either be empty or 'true';
+      //  if it's `null` (not specified) or 'false', it's a non-editable element
+      var attValue = node === null || node === void 0 ? void 0 : (_node$getAttribute2 = node.getAttribute) === null || _node$getAttribute2 === void 0 ? void 0 : _node$getAttribute2.call(node, 'contenteditable');
+      return attValue === '' || attValue === 'true';
     };
 
     /**
@@ -613,6 +641,8 @@ var focusTrapDemoBundle = (function () {
      * @returns {Element[]}
      */
     var getCandidates = function getCandidates(el, includeContainer, filter) {
+      // even if `includeContainer=false`, we still have to check it for inertness because
+      //  if it's inert, all its children are inert
       if (isInert(el)) {
         return [];
       }
@@ -735,7 +765,7 @@ var focusTrapDemoBundle = (function () {
         // isScope is positive for custom element with shadow root or slot that by default
         // have tabIndex -1, but need to be sorted by document order in order for their
         // content to be inserted in the correct position
-        if ((isScope || /^(AUDIO|VIDEO|DETAILS)$/.test(node.tagName) || node.isContentEditable) && isNaN(parseInt(node.getAttribute('tabindex'), 10))) {
+        if ((isScope || /^(AUDIO|VIDEO|DETAILS)$/.test(node.tagName) || isContentEditable(node)) && isNaN(parseInt(node.getAttribute('tabindex'), 10))) {
           return 0;
         }
       }
@@ -972,10 +1002,10 @@ var focusTrapDemoBundle = (function () {
     };
     var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable(options, node) {
       if (node.disabled ||
-      // no inert look up: we should have looked up from the container already and
-      //  the `candidateSelector` results should have also filtered out any elements
-      //  inside an inert ancestor
-      isInert(node, false) || isHiddenInput(node) || isHidden(node, options) ||
+      // we must do an inert look up to filter out any elements inside an inert ancestor
+      //  because we're limited in the type of selectors we can use in JSDom (see related
+      //  note related to `candidateSelectors`)
+      isInert(node) || isHiddenInput(node) || isHidden(node, options) ||
       // For a details element with a summary, the summary element gets the focus
       isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
         return false;
@@ -1066,7 +1096,7 @@ var focusTrapDemoBundle = (function () {
       }
       return isNodeMatchingSelectorTabbable(options, node);
     };
-    var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe:not([inert] *)').join(',');
+    var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe').join(',');
     var isFocusable = function isFocusable(node, options) {
       options = options || {};
       if (!node) {

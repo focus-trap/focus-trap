@@ -12,6 +12,12 @@ body {
   padding: 10px;
 }
 
+.macos-keyboard-warning {
+  background-color: yellow;
+  padding: 8px;
+  text-align: center;
+}
+
 *:focus {
   outline: 5px solid lightblue;
 }
@@ -71,7 +77,6 @@ kbd {
 .is-hidden {
   display: none;
 }
-
 
 .demo-iframe {
   height: 250px;
