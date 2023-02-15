@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.3.1
+
+### Patch Changes
+
+- a00cfa5: Bump tabbable to v6.1.1 for JSDom fixes
+
 ## 7.3.0
 
 ### Minor Changes
