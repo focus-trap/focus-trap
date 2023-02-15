@@ -1675,6 +1675,12 @@ describe('focus-trap', () => {
     });
   });
 
+  // describe('demo: inert', () => {
+  //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+  //    support the `inert` attribute so there's no point in writing a test for this demo at
+  //    this time.
+  // });
+
   // describe('demo: with-shadow-dom', () => {
   //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //    support Shadow DOM, and Cypress itself doesn't have great support for it either

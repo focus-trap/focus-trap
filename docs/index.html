@@ -1084,6 +1084,43 @@
       </p>
     </div>
 
+    <div id="demo-inert">
+      <h2 id="inert-heading">works with inert elements</h2>
+      <p>
+        This trap contains an
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert" target="_blank">inert</a>
+        button. Browsers that support this new HTML attribute will render it completely non-interactive,
+        and focus-trap will ignore it too.
+      </p>
+      <p>
+        ⚠️ Check the
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert#browser_compatibility" target="_blank">browser compatibility</a>
+        for the browser you're using right now before trying this demo. It will not work properly
+        if your browser doesn't support the <code>inert</code> attribute.
+      </p>
+      <p>
+        <button id="activate-inert" aria-describedby="inert-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="inert" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          It will avoid this inert button: <button inert>inert</button>
+        </p>
+        <p>
+          <button id="deactivate-inert" aria-describedby="inert-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/default.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <p>
       <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
       <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>

@@ -4966,10 +4966,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tabbable@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.0.1.tgz#427a09b13c83ae41eed3e88abb76a4af28bde1a6"
-  integrity sha512-SYJSIgeyXW7EuX1ytdneO5e8jip42oHWg9xl/o3oTYhmXusZVgiA+VlPvjIN+kHii9v90AmzTZEBcsEvuAY+TA==
+tabbable@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-6.1.0.tgz#9ba344968e4cecaa32164edcc77edce5e23029a7"
+  integrity sha512-m5u+3rSOjiNAgWTzEwPMLNZt26gzb1K7B5Nofszpfx4MMJ1QnEwJJMgGf630TbXssgWfKNtu5UsOakHeK7dN7Q==
 
 term-size@^2.1.0:
   version "2.2.0"
