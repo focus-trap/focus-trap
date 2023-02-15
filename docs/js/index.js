@@ -21,7 +21,9 @@ require('./iframe')();
 //  it manually
 // eslint-disable-next-line no-undef -- process is defined via Rollup
 if (!process.env.IS_CYPRESS_ENV) {
-  require('./in-iframe')(); // TEST MANUALLY (causes Cypress to fail due to security context violations)
+  // TEST MANUALLY (causes Cypress to fail due to security context violations)
+  // http://localhost:9966/#demo-in-iframe
+  require('./in-iframe')();
 }
 
 require('./allow-outside-click')();
@@ -34,8 +36,21 @@ require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./in-open-shadow-dom')();
-require('./with-shadow-dom')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
-require('./negative-tabindex')(); // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
-require('./negative-tabindex-last')(); // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
-require('./with-open-web-component')(); // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+
+// TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+// http://localhost:9966/#demo-with-shadow-dom
+require('./with-shadow-dom')();
+
+// TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+// http://localhost:9966/#demo-negative-tabindex
+require('./negative-tabindex')();
+
+// TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+// http://localhost:9966/#demo-negative-tabindex-last
+require('./negative-tabindex-last')();
+
+// TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+// http://localhost:9966/#demo-with-open-web-component
+require('./with-open-web-component')();
+
 require('./arrow-keys')();
