@@ -664,12 +664,11 @@
         This focus trap can be closed simply by <strong>clicking anywhere outside</strong>, and the click outside will also go through and do what it was intentionally dispatched to do (like toggling the checkbox). ESC is <strong>disabled</strong> for this trap.
       </p>
       <p>
-        The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused element when the trap was activated (the "activate trap" button) or not -- IIF what you click on outside the trap is <strong>not</strong> focusable:
+        The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused element when the trap was activated (the "activate trap" button in this demo) or not:
       </p>
       <ul>
-        <li>If this option is <code>true</code> (the default behavior) but you click on a focusable node outside the trap (like the checkbox), the click will go through, the checkbox will be toggled, and focus will remain on the checkbox.</li>
-        <li>If <code>true</code> but you click on something <strong>not</strong> focusable (like the page/document), then focus will return to the "activate trap" button (since that was the last-focused node before the trap was activate).</li>
-        <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document).</li>
+        <li>If this option is <code>true</code> (the default behavior), <em>even if</em> you click on a focusable node outside the trap (like the checkbox), while the click will go through to toggle the checkbox, it will <strong>not</strong> be focused once the trap is fully deactivated. Focus will return to the "activate trap" button.</li>
+        <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document or a heading). So if you click on the checkbox, it will remain focused once the trap is fully deactivated.</li>
       </ul>
       <p>
         <label>
