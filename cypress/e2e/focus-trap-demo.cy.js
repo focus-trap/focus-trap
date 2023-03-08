@@ -662,6 +662,29 @@ describe('focus-trap', () => {
 
       verifyCrucialFocusTrapOnClicking('@firstTabbableElInOuterTrap');
 
+      // primary trap should not have been paused/unpaused yet
+      cy.get('#nested').as('primaryTrap');
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-pause-called-times',
+        '0'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-post-pause-called-times',
+        '0'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-unpause-called-times',
+        '0'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-post-unpause-called-times',
+        '0'
+      );
+
       // activate inner trap and element in inner trap should be focused
       cy.get('@testRoot')
         .findByRole('button', { name: /^activate inner trap/ })
@@ -675,6 +698,28 @@ describe('focus-trap', () => {
 
       verifyCrucialFocusTrapOnClicking('@focusedElInInnerTrap');
 
+      // primary trap was paused
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-pause-called-times',
+        '1'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-post-pause-called-times',
+        '1'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-unpause-called-times',
+        '0'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-post-unpause-called-times',
+        '0'
+      );
+
       // only element in the innermost active trap can be focused
       cy.get('@firstTabbableElInOuterTrap').click().should('not.be.focused');
 
@@ -683,6 +728,28 @@ describe('focus-trap', () => {
         name: /^deactivate and close inner trap/,
       }).click();
       cy.get('@lastlyFocusedElInOuterTrap').should('be.focused');
+
+      // primary trap was unpaused
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-pause-called-times',
+        '1'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-post-pause-called-times',
+        '1'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-unpause-called-times',
+        '1'
+      );
+      cy.get('@primaryTrap').should(
+        'have.attr',
+        'data-ft-test-primary-on-post-unpause-called-times',
+        '1'
+      );
 
       // focus can be transitioned freely when trap is deactivated
       cy.get('@firstTabbableElInOuterTrap').click();

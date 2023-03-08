@@ -2,11 +2,12 @@
 * focus-trap 7.3.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":""};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -1686,17 +1687,13 @@ var focusTrapDemoBundle = (function () {
           state.active = true;
           state.paused = false;
           state.nodeFocusedBeforeActivation = doc.activeElement;
-          if (onActivate) {
-            onActivate();
-          }
+          onActivate === null || onActivate === void 0 ? void 0 : onActivate();
           var finishActivation = function finishActivation() {
             if (checkCanFocusTrap) {
               updateTabbableNodes();
             }
             addListeners();
-            if (onPostActivate) {
-              onPostActivate();
-            }
+            onPostActivate === null || onPostActivate === void 0 ? void 0 : onPostActivate();
           };
           if (checkCanFocusTrap) {
             checkCanFocusTrap(state.containers.concat()).then(finishActivation, finishActivation);
@@ -1724,17 +1721,13 @@ var focusTrapDemoBundle = (function () {
           var onPostDeactivate = getOption(options, 'onPostDeactivate');
           var checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
           var returnFocus = getOption(options, 'returnFocus', 'returnFocusOnDeactivate');
-          if (onDeactivate) {
-            onDeactivate();
-          }
+          onDeactivate === null || onDeactivate === void 0 ? void 0 : onDeactivate();
           var finishDeactivation = function finishDeactivation() {
             delay$1(function () {
               if (returnFocus) {
                 tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
               }
-              if (onPostDeactivate) {
-                onPostDeactivate();
-              }
+              onPostDeactivate === null || onPostDeactivate === void 0 ? void 0 : onPostDeactivate();
             });
           };
           if (returnFocus && checkCanReturnFocus) {
@@ -1744,21 +1737,29 @@ var focusTrapDemoBundle = (function () {
           finishDeactivation();
           return this;
         },
-        pause: function pause() {
+        pause: function pause(pauseOptions) {
           if (state.paused || !state.active) {
             return this;
           }
+          var onPause = getOption(pauseOptions, 'onPause');
+          var onPostPause = getOption(pauseOptions, 'onPostPause');
           state.paused = true;
+          onPause === null || onPause === void 0 ? void 0 : onPause();
           removeListeners();
+          onPostPause === null || onPostPause === void 0 ? void 0 : onPostPause();
           return this;
         },
-        unpause: function unpause() {
+        unpause: function unpause(unpauseOptions) {
           if (!state.paused || !state.active) {
             return this;
           }
+          var onUnpause = getOption(unpauseOptions, 'onUnpause');
+          var onPostUnpause = getOption(unpauseOptions, 'onPostUnpause');
           state.paused = false;
+          onUnpause === null || onUnpause === void 0 ? void 0 : onUnpause();
           updateTabbableNodes();
           addListeners();
+          onPostUnpause === null || onPostUnpause === void 0 ? void 0 : onPostUnpause();
           return this;
         },
         updateContainerElements: function updateContainerElements(containerElements) {
@@ -2017,21 +2018,38 @@ var focusTrapDemoBundle = (function () {
 
     var createFocusTrap$m = require$$0.createFocusTrap;
     var nested = function nested() {
-      var container = document.getElementById('nested');
+      var primary = document.getElementById('nested');
       var nested = document.getElementById('nested-nested');
+
+      // for e2e test purposes
+      primary.dataset.ftTestPrimaryOnPauseCalledTimes = 0;
+      primary.dataset.ftTestPrimaryOnPostPauseCalledTimes = 0;
+      primary.dataset.ftTestPrimaryOnUnpauseCalledTimes = 0;
+      primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes = 0;
       var primaryFocusTrap = createFocusTrap$m('#nested', {
         onDeactivate: function onDeactivate() {
-          return container.style.display = 'none';
+          return primary.style.display = 'none';
+        },
+        onPause: function onPause() {
+          return primary.dataset.ftTestPrimaryOnPauseCalledTimes++;
+        },
+        onPostPause: function onPostPause() {
+          return primary.dataset.ftTestPrimaryOnPostPauseCalledTimes++;
+        },
+        onUnpause: function onUnpause() {
+          return primary.dataset.ftTestPrimaryOnUnpauseCalledTimes++;
+        },
+        onPostUnpause: function onPostUnpause() {
+          return primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes++;
         }
       });
       var nestedFocusTrap = createFocusTrap$m('#nested-nested', {
         onDeactivate: function onDeactivate() {
           nested.style.display = 'none';
-          primaryFocusTrap.unpause();
         }
       });
       document.getElementById('activate-nested').addEventListener('click', function () {
-        container.style.display = 'block';
+        primary.style.display = 'block';
         primaryFocusTrap.activate();
       });
       document.getElementById('deactivate-nested').addEventListener('click', primaryFocusTrap.deactivate);

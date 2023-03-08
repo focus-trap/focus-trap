@@ -1,23 +1,33 @@
 const { createFocusTrap } = require('../../index');
 module.exports = () => {
-  const container = document.getElementById('nested');
+  const primary = document.getElementById('nested');
   const nested = document.getElementById('nested-nested');
 
+  // for e2e test purposes
+  primary.dataset.ftTestPrimaryOnPauseCalledTimes = 0;
+  primary.dataset.ftTestPrimaryOnPostPauseCalledTimes = 0;
+  primary.dataset.ftTestPrimaryOnUnpauseCalledTimes = 0;
+  primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes = 0;
+
   const primaryFocusTrap = createFocusTrap('#nested', {
-    onDeactivate: () => (container.style.display = 'none'),
+    onDeactivate: () => (primary.style.display = 'none'),
+    onPause: () => primary.dataset.ftTestPrimaryOnPauseCalledTimes++,
+    onPostPause: () => primary.dataset.ftTestPrimaryOnPostPauseCalledTimes++,
+    onUnpause: () => primary.dataset.ftTestPrimaryOnUnpauseCalledTimes++,
+    onPostUnpause: () =>
+      primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes++,
   });
 
   const nestedFocusTrap = createFocusTrap('#nested-nested', {
     onDeactivate: function () {
       nested.style.display = 'none';
-      primaryFocusTrap.unpause();
     },
   });
 
   document
     .getElementById('activate-nested')
     .addEventListener('click', function () {
-      container.style.display = 'block';
+      primary.style.display = 'block';
       primaryFocusTrap.activate();
     });
 

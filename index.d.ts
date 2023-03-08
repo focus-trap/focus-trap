@@ -39,6 +39,30 @@ declare module 'focus-trap' {
     onPostActivate?: () => void;
 
     /**
+     * A function that will be called immediately after the trap's state is updated to be paused.
+     */
+    onPause?: () => void;
+
+    /**
+     * A function that will be called after the trap has been completely paused and is no longer
+     *  managing/trapping focus.
+     */
+    onPostPause?: () => void;
+
+    /**
+     * A function that will be called immediately after the trap's state is updated to be active
+     *  again, but prior to updating its knowledge of what nodes are tabbable within its containers,
+     *  and prior to actively managing/trapping focus.
+     */
+    onUnpause?: () => void;
+
+    /**
+     * A function that will be called after the trap has been completely unpaused and is once
+     *  again managing/trapping focus.
+     */
+    onPostUnpause?: () => void;
+
+    /**
      * A function for determining if it is safe to send focus to the focus trap
      * or not.
      *
@@ -198,6 +222,8 @@ declare module 'focus-trap' {
   }
 
   type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;
+  type PauseOptions = Pick<Options, 'onPause' | 'onPostPause'>;
+  type UnpauseOptions = Pick<Options, 'onUnpause' | 'onPostUnpause'>;
 
   interface DeactivateOptions extends Pick<Options, 'onDeactivate' | 'onPostDeactivate' | 'checkCanReturnFocus'> {
     returnFocus?: boolean;
@@ -208,8 +234,8 @@ declare module 'focus-trap' {
     paused: boolean,
     activate(activateOptions?: ActivateOptions): FocusTrap;
     deactivate(deactivateOptions?: DeactivateOptions): FocusTrap;
-    pause(): FocusTrap;
-    unpause(): FocusTrap;
+    pause(pauseOptions?: PauseOptions): FocusTrap;
+    unpause(unpauseOptions?: UnpauseOptions): FocusTrap;
     updateContainerElements(containerElements: HTMLElement | SVGElement | string | Array<HTMLElement | SVGElement | string>): FocusTrap;
   }
 
