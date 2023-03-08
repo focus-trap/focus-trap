@@ -679,18 +679,14 @@ const createFocusTrap = function (elements, userOptions) {
       state.paused = false;
       state.nodeFocusedBeforeActivation = doc.activeElement;
 
-      if (onActivate) {
-        onActivate();
-      }
+      onActivate?.();
 
       const finishActivation = () => {
         if (checkCanFocusTrap) {
           updateTabbableNodes();
         }
         addListeners();
-        if (onPostActivate) {
-          onPostActivate();
-        }
+        onPostActivate?.();
       };
 
       if (checkCanFocusTrap) {
@@ -735,18 +731,14 @@ const createFocusTrap = function (elements, userOptions) {
         'returnFocusOnDeactivate'
       );
 
-      if (onDeactivate) {
-        onDeactivate();
-      }
+      onDeactivate?.();
 
       const finishDeactivation = () => {
         delay(() => {
           if (returnFocus) {
             tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
           }
-          if (onPostDeactivate) {
-            onPostDeactivate();
-          }
+          onPostDeactivate?.();
         });
       };
 
@@ -761,26 +753,38 @@ const createFocusTrap = function (elements, userOptions) {
       return this;
     },
 
-    pause() {
+    pause(pauseOptions) {
       if (state.paused || !state.active) {
         return this;
       }
 
+      const onPause = getOption(pauseOptions, 'onPause');
+      const onPostPause = getOption(pauseOptions, 'onPostPause');
+
       state.paused = true;
+      onPause?.();
+
       removeListeners();
 
+      onPostPause?.();
       return this;
     },
 
-    unpause() {
+    unpause(unpauseOptions) {
       if (!state.paused || !state.active) {
         return this;
       }
 
+      const onUnpause = getOption(unpauseOptions, 'onUnpause');
+      const onPostUnpause = getOption(unpauseOptions, 'onPostUnpause');
+
       state.paused = false;
+      onUnpause?.();
+
       updateTabbableNodes();
       addListeners();
 
+      onPostUnpause?.();
       return this;
     },
 

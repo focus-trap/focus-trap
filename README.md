@@ -93,6 +93,10 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 - **onActivate** `{() => void}`: A function that will be called **before** sending focus to the target element upon activation.
 - **onPostActivate** `{() => void}`: A function that will be called **after** sending focus to the target element upon activation.
+- **onPause** `{() => void}`: A function that will be called immediately after the trap's state is updated to be paused.
+- **onPostPause** `{() => void}`: A function that will be called after the trap has been completely paused and is no longer managing/trapping focus.
+- **onUnpause** `{() => void}`: A function that will be called immediately after the trap's state is updated to be active again, but prior to updating its knowledge of what nodes are tabbable within its containers, and prior to actively managing/trapping focus.
+- **onPostUnpause** `{() => void}`: A function that will be called after the trap has been completely unpaused and is once again managing/trapping focus.
 - **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option).
 - **onDeactivate** `{() => void}`: A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
 - **onPostDeactivate** `{() => void}`: A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
@@ -206,7 +210,7 @@ These options are used to override the focus trap's default behavior for this pa
 ### trap.pause()
 
 ```typescript
-trap.pause() => FocusTrap
+trap.pause([pauseOptions]) => FocusTrap
 ```
 
 Pause an active focus trap's event listening without deactivating the trap.
@@ -219,10 +223,17 @@ Any `onDeactivate` callback will not be called, and focus will not return to the
 
 This is useful in various cases, one of which is when you want one focus trap within another. `demo-six` exemplifies how you can implement this.
 
+`pauseOptions`:
+
+These options are used to override the focus trap's default behavior for this particular pausing.
+
+- **onPause** `{() => void}`: Default: whatever you chose for `createOptions.onPause`. `null` or `false` are the equivalent of a `noop`.
+- **onPostPause** `{() => void}`: Default: whatever you chose for `createOptions.onPostPause`. `null` or `false` are the equivalent of a `noop`.
+
 ### trap.unpause()
 
 ```typescript
-trap.unpause() => FocusTrap
+trap.unpause([unpauseOptions]) => FocusTrap
 ```
 
 Unpause an active focus trap. (See `pause()`, above.)
@@ -232,6 +243,13 @@ Focus is forced into the trap just as described for `focusTrap.activate()`.
 If the focus trap has not been activated or has not been paused, nothing happens.
 
 Returns the `trap`.
+
+`unpauseOptions`:
+
+These options are used to override the focus trap's default behavior for this particular unpausing.
+
+- **onUnpause** `{() => void}`: Default: whatever you chose for `createOptions.onUnpause`. `null` or `false` are the equivalent of a `noop`.
+- **onPostUnpause** `{() => void}`: Default: whatever you chose for `createOptions.onPostUnpause`. `null` or `false` are the equivalent of a `noop`.
 
 ### trap.updateContainerElements()
 
