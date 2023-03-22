@@ -79,7 +79,7 @@
     "all-contributors-cli": "^6.24.0",
     "babel-loader": "^9.1.2",
     "cross-env": "^7.0.3",
-    "cypress": "^12.8.0",
+    "cypress": "^12.8.1",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
