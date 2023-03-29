@@ -30,17 +30,22 @@ jobs:
           node-version: ${{ matrix.node }}
           check-latest: true
 
-      - name: Check for NPM cache
-        uses: actions/cache@v3
-        id: npm-cache
-        with:
-          path: ${{ steps.setup.outputs.npm-cache-dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      # TODO: this does work (it'll find the cache) but it appears it's not putting the cache
+      #  back into ./node_modules because skipping the install step results in subsequent
+      #  steps failing with messages like `prettier not found`, which implies there's no
+      #  node_modules directory there with Prettier installed in it...
+      #
+      # - name: NPM cache check
+      #   uses: actions/cache@v3
+      #   id: npm-cache
+      #   with:
+      #     path: ${{ steps.setup.outputs.npm-cache-dir }}
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-
 
       - name: Install packages
-        if: steps.npm-cache.outputs.cache-hit != 'true'
+        # if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Lint
