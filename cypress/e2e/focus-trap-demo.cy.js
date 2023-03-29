@@ -490,8 +490,8 @@ describe('focus-trap', () => {
       cy.get('@testRoot')
         .findByRole('textbox', { name: 'Initially focused input' })
         .as('trapChild')
-        .focus()
-        .type('{esc}');
+        .focus();
+      cy.get('@trapChild').type('{esc}');
 
       // ESC does not deactivate the trap
       cy.get('@trapChild').should('exist').should('be.focused');
@@ -721,7 +721,8 @@ describe('focus-trap', () => {
       );
 
       // only element in the innermost active trap can be focused
-      cy.get('@firstTabbableElInOuterTrap').click().should('not.be.focused');
+      cy.get('@firstTabbableElInOuterTrap').click();
+      cy.get('@firstTabbableElInOuterTrap').should('not.be.focused');
 
       // deactivate inner trap and outer trap element can be focused again
       cy.findByRole('button', {
@@ -924,8 +925,8 @@ describe('focus-trap', () => {
       cy.get('@testRoot')
         .findByRole('radio', { name: 'c' })
         .as('radioC')
-        .check()
-        .should('be.checked');
+        .check();
+      cy.get('@radioC').should('be.checked');
 
       // 'Tab' in trap should only focus the checked radio item without changing radio group value
       cy.get('@radioC').focus();
@@ -1246,23 +1247,26 @@ describe('focus-trap', () => {
 
       cy.get('@testRoot')
         .findByRole('button', { name: /^deactivate and focus this/ })
-        .click()
-        .should('be.focused');
+        .as('deactivateAndFocusThis')
+        .click();
+      cy.get('@deactivateAndFocusThis').should('be.focused');
 
       cy.get('@lastlyFocusedElBeforeTrapIsActivated').click();
 
       cy.get('@testRoot')
         .findByRole('button', { name: /^deactivate and focus 'activate trap'/ })
-        .click()
-        .should('not.be.focused');
+        .as('deactivateAndFocusActivateTrap')
+        .click();
+      cy.get('@deactivateAndFocusActivateTrap').should('not.be.focused');
 
       cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
 
       cy.get('@lastlyFocusedElBeforeTrapIsActivated').click();
       cy.get('@testRoot')
         .findByRole('button', { name: /^deactivate and no change in focus/ })
-        .click()
-        .should('not.be.focused');
+        .as('deactivateAndNoChangeInFocus')
+        .click();
+      cy.get('@deactivateAndNoChangeInFocus').should('not.be.focused');
 
       cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('not.be.focused');
     });
