@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "demo-bundle": "yarn compile:demo",
+    "demo-bundle": "npm run compile:demo",
     "format": "prettier --write \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:check": "prettier --check \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\"",
     "format:watch": "onchange \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|yml)\" -- prettier --write {{changed}}",
@@ -27,19 +27,19 @@
     "compile:cjs": "cross-env BUILD_ENV=cjs BABEL_ENV=es5 rollup -c",
     "compile:umd": "cross-env BUILD_ENV=umd BABEL_ENV=es5 rollup -c",
     "compile:demo": "cross-env BUILD_ENV=demo BABEL_ENV=es5 rollup -c",
-    "compile": "yarn compile:esm && yarn compile:cjs && yarn compile:umd",
-    "build": "yarn clean && yarn compile",
-    "start": "yarn compile:demo --watch --environment SERVE,RELOAD,IS_CYPRESS_ENV:''",
-    "start:cypress": "yarn compile:demo --environment SERVE,IS_CYPRESS_ENV:\"$CYPRESS_BROWSER\"",
+    "compile": "npm run compile:esm && npm run compile:cjs && npm run compile:umd",
+    "build": "npm run clean && npm run compile",
+    "start": "npm run compile:demo -- --watch --environment SERVE,RELOAD,IS_CYPRESS_ENV:''",
+    "start:cypress": "npm run compile:demo -- --environment SERVE,IS_CYPRESS_ENV:\"$CYPRESS_BROWSER\"",
     "test:types": "tsc index.d.ts",
     "test:unit": "echo \"No unit tests to run!\"",
     "test:e2e": "ELECTRON_ENABLE_LOGGING=1 start-server-and-test start:cypress 9966 'cypress run --browser $CYPRESS_BROWSER --headless'",
-    "test:e2e:chrome": "CYPRESS_BROWSER=chrome yarn test:e2e",
+    "test:e2e:chrome": "CYPRESS_BROWSER=chrome npm run test:e2e",
     "test:e2e:dev": "ELECTRON_ENABLE_LOGGING=1 start-server-and-test start:cypress 9966 'cypress open'",
-    "test": "yarn format:check && yarn lint && yarn test:unit && yarn test:types && yarn test:e2e:chrome",
-    "prepare": "yarn build",
-    "prepublishOnly": "yarn test && yarn build",
-    "release": "yarn build && changeset publish"
+    "test": "npm run format:check && npm run lint && npm run test:unit && npm run test:types && npm run test:e2e:chrome",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run build",
+    "release": "npm run build && changeset publish"
   },
   "repository": {
     "type": "git",
