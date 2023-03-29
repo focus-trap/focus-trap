@@ -20,9 +20,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup environment
-        id: setups
+        id: setup
         run: |-
-          echo "::set-output name=yarn_cache_dir::$(yarn cache dir)"
+          echo "npm-cache-dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Setup Node ${{ matrix.node }}
         uses: actions/setup-node@master
@@ -30,30 +30,31 @@ jobs:
           node-version: ${{ matrix.node }}
           check-latest: true
 
-      - name: Yarn cache
+      - name: Check for NPM cache
         uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        id: npm-cache
         with:
-          path: ${{ steps.setups.outputs.yarn_cache_dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.setup.outputs.npm-cache-dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-
 
       - name: Install packages
-        run: yarn --frozen-lockfile
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
 
       - name: Lint
         run: |-
-          yarn format:check;
-          yarn lint;
+          npm run format:check;
+          npm run lint;
 
       - name: Test
         run: |-
-          yarn test:unit;
-          yarn test:types;
+          npm run test:unit;
+          npm run test:types;
 
       - name: Build # Tests to see if a build can succeed
-        run: yarn build
+        run: npm run build
 
   e2e:
     runs-on: ubuntu-22.04
@@ -67,7 +68,7 @@ jobs:
       image: cypress/browsers:node18.12.0-chrome106-ff106
       options: --user 1001 --shm-size=2g # @see https://github.com/cypress-io/github-action/issues/104#issuecomment-666047965
     env:
-      CYPRESS_BROWSER: ${{ matrix.browser }} # yarn start:cypress needs this
+      CYPRESS_BROWSER: ${{ matrix.browser }} # `npm run start:cypress` needs this
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -77,5 +78,5 @@ jobs:
         # https://github.com/cypress-io/code-coverage
         uses: cypress-io/github-action@v5 # will run all tests found per cypress.config.js
         with:
-          start: yarn start:cypress
+          start: npm run start:cypress
           browser: ${{ matrix.browser }}

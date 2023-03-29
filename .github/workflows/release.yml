@@ -16,9 +16,9 @@ jobs:
           fetch-depth: 0
 
       - name: Setup environment
-        id: setups
+        id: setup
         run: |-
-          echo "::set-output name=yarn_cache_dir::$(yarn cache dir)"
+          echo "npm-cache-dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -26,26 +26,27 @@ jobs:
           node-version: 18
           check-latest: true
 
-      - name: Yarn cache
+      - name: Check for NPM cache
         uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        id: npm-cache
         with:
-          path: ${{ steps.setups.outputs.yarn_cache_dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.setup.outputs.npm-cache-dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-
 
       - name: Install packages
-        run: yarn --frozen-lockfile
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm ci
 
       - name: Test All
-        run: yarn test
+        run: npm run test
 
       - name: Create Release or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: yarn release
+          publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

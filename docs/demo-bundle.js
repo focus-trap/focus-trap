@@ -2868,42 +2868,40 @@ var focusTrapDemoBundle = (function () {
         var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
           var contextIframe, targetDocument, trapWrapper, focusTrap;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  contextIframe = document.getElementById('in-iframe'); // wait for iFrame DOM to completely load
-                case 1:
-                  if (contextIframe.contentWindow.document.getElementById('in-iframe-trap')) {
-                    _context.next = 6;
-                    break;
-                  }
-                  _context.next = 4;
-                  return new Promise(function (r) {
-                    return setTimeout(r, 500);
-                  });
-                case 4:
-                  _context.next = 1;
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                contextIframe = document.getElementById('in-iframe'); // wait for iFrame DOM to completely load
+              case 1:
+                if (contextIframe.contentWindow.document.getElementById('in-iframe-trap')) {
+                  _context.next = 6;
                   break;
-                case 6:
-                  targetDocument = contextIframe.contentWindow.document;
-                  if (targetDocument) {
-                    trapWrapper = targetDocument.getElementById('in-iframe-trap');
-                    focusTrap = createFocusTrap('#in-iframe-trap', {
-                      document: targetDocument,
-                      onActivate: function onActivate() {
-                        return trapWrapper.classList.add('is-active');
-                      },
-                      onDeactivate: function onDeactivate() {
-                        return trapWrapper.classList.remove('is-active');
-                      }
-                    });
-                    document.getElementById('activate-in-iframe').addEventListener('click', focusTrap.activate);
-                    targetDocument.getElementById('deactivate-in-iframe').addEventListener('click', focusTrap.deactivate);
-                  }
-                case 8:
-                case "end":
-                  return _context.stop();
-              }
+                }
+                _context.next = 4;
+                return new Promise(function (r) {
+                  return setTimeout(r, 500);
+                });
+              case 4:
+                _context.next = 1;
+                break;
+              case 6:
+                targetDocument = contextIframe.contentWindow.document;
+                if (targetDocument) {
+                  trapWrapper = targetDocument.getElementById('in-iframe-trap');
+                  focusTrap = createFocusTrap('#in-iframe-trap', {
+                    document: targetDocument,
+                    onActivate: function onActivate() {
+                      return trapWrapper.classList.add('is-active');
+                    },
+                    onDeactivate: function onDeactivate() {
+                      return trapWrapper.classList.remove('is-active');
+                    }
+                  });
+                  document.getElementById('activate-in-iframe').addEventListener('click', focusTrap.activate);
+                  targetDocument.getElementById('deactivate-in-iframe').addEventListener('click', focusTrap.deactivate);
+                }
+              case 8:
+              case "end":
+                return _context.stop();
             }
           }, _callee);
         }));
