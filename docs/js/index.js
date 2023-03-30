@@ -59,3 +59,5 @@ require('./with-open-web-component')();
 // TEST MANUALLY (cypress-plugin-tab doesn't support inert)
 // http://localhost:9966/#demo-inert
 require('./inert')();
+
+require('./dom-remove')();
