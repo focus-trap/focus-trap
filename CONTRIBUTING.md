@@ -16,7 +16,7 @@ Then open your browser to http://localhost:9966
 
 ## Testing
 
-When you're done with your changes, be sure to run `npm run format` to have Prettier format your code, and use `npm run lint` to check for syntax issues. `npm run test:cypress` will run e2e tests in interactive mode.
+When you're done with your changes, be sure to run `npm run format` to have Prettier format your code, and use `npm run lint` to check for syntax issues. `npm run test:e2e:dev` will run e2e tests in interactive mode.
 
 You can also simply run `npm test` to check all of the above.
 
@@ -26,7 +26,7 @@ If you added/removed options in the API, please remember to update the docs in t
 
 ## Changeset
 
-Before posting your PR, please add a changeset by running `npm run changeset` and following the prompts. This will help us quickly make a release with your enhancements.
+Before posting your PR, please add a changeset by running `npx changeset` and following the prompts. This will help us quickly make a release with your enhancements.
 
 If your changes don't affect the source or typings, then a changeset is not needed (and you can ignore the bot's automated comment on your PR about not finding one as part of your changes).
 
