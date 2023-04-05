@@ -73,7 +73,7 @@
     "@changesets/cli": "^2.26.1",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@testing-library/cypress": "^9.0.0",
     "@types/jquery": "^3.5.16",
     "all-contributors-cli": "^6.24.0",
