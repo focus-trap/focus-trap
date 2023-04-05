@@ -16,7 +16,7 @@ Then open your browser to http://localhost:9966
 
 ## Testing
 
-When you're done with your changes, be sure to run `npm run format` to have Prettier format your code, and use `npm run lint` to check for syntax issues. `npm run test:cypress` will run e2e tests in interactive mode.
+When you're done with your changes, be sure to run `npm run format` to have Prettier format your code, and use `npm run lint` to check for syntax issues. `npm run test:e2e:dev` will run e2e tests in interactive mode.
 
 You can also simply run `npm test` to check all of the above.
 
