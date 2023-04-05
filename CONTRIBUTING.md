@@ -26,7 +26,7 @@ If you added/removed options in the API, please remember to update the docs in t
 
 ## Changeset
 
-Before posting your PR, please add a changeset by running `npm run changeset` and following the prompts. This will help us quickly make a release with your enhancements.
+Before posting your PR, please add a changeset by running `npx changeset` and following the prompts. This will help us quickly make a release with your enhancements.
 
 If your changes don't affect the source or typings, then a changeset is not needed (and you can ignore the bot's automated comment on your PR about not finding one as part of your changes).
 
