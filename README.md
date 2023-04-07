@@ -333,7 +333,7 @@ See [Testing tabbable in JSDom](https://github.com/focus-trap/tabbable#testing-i
 
 This error happens when the containers you specified when you [setup](#createfocustrapelement-createoptions) your focus trap do not have -- or no longer have -- any tabbable elements in them, which means that focus will inevitably escape your trap because focus __must__ always go _somewhere_.
 
-You will hit this error if your trap does not have (or no longer has) any [tabbable](https://github.com/focus-trap/tabbable#readme) (and therefore focusable) elements in it, and it was not configured with a backup element (see the `fallbackFocus` [option](#createoptions) -- which must still be in the trap, but does not necessarily have to be tabbable (i.e. it could have `tabindex="-1"`, making it focusable, but not tabbable).
+You will hit this error if your trap does not have (or no longer has) any [tabbable](https://github.com/focus-trap/tabbable#readme) (and therefore focusable) elements in it, and it was not configured with a backup element (see the `fallbackFocus` [option](#createoptions) -- which must still be in the trap, but does not necessarily have to be tabbable, i.e. it could have `tabindex="-1"`, making it focusable, but not tabbable).
 
 This often happens when traps are related to elements that appear and disappear dynamically. Typically, the error will fire either as the element is being shown (because the trap gets created before the trapped children have been inserted into the DOM), or as it's being hidden (because the trapped children are destroyed before the trap is either destroyed or disabled).
 
