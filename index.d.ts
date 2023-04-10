@@ -185,9 +185,9 @@ declare module 'focus-trap' {
     delayInitialFocus?: boolean;
     /**
      * Default: `window.document`. Document where the focus trap will be active.
-     * This allows to use FocusTrap in an iFrame context.
+     * This allows to use FocusTrap in an iFrame context or to configure the focus trap to use your shadow host element as its document.
      */
-    document?: Document;
+    document?: Document | HTMLElement;
 
     /**
      * Specific tabbable options configurable on focus-trap.
