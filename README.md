@@ -124,7 +124,8 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
   - ⚠️ See warning below about **Shadow DOM** and selector strings.
 - **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
 - **delayInitialFocus** `{boolean}`: Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
-- **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This allows to use FocusTrap in an iFrame context.
+- **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This enables the use of FocusTrap [inside an iFrame](https://focus-trap.github.io/focus-trap/#demo-in-iframe).
+    - ⚠️ Note that FocusTrap will be unable to trap focus outside the iFrame if you configure this option to be the iFrame's document. It will only trap focus _inside_ of it (as the demo shows). If you want to trap focus _outside_ as well, then your FocusTrap must be configured on an element that [contains the iFrame](https://focus-trap.github.io/focus-trap/#demo-iframe).
 - **tabbableOptions**: (optional) [tabbable options](https://github.com/focus-trap/tabbable#common-options) configurable on FocusTrap (all the *common options*).
   - ⚠️ See notes about **[testing in JSDom](#testing-in-jsdom)** (e.g. using Jest).
 - **trapStack** (optional) `{Array<FocusTrap>}`: Define the global trap stack. This makes it possible to share the same stack in multiple instances of `focus-trap` in the same page such that auto-activation/pausing of traps is properly coordinated among all instances as activating a trap when another is already active should result in the other being auto-paused. By default, each instance will have its own internal stack, leading to conflicts if they each try to trap the focus at the same time.
@@ -137,10 +138,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 ##### Selector strings
 
-⚠️ Beware that putting a focus-trap **inside** an open Shadow DOM means you must either:
-
-- **Not use selector strings** for options that support these (because nodes inside Shadow DOMs, even open shadows, are not visible via `document.querySelector()`); OR
-- You must **use the `document` option** to configure the focus trap to use your *shadow host* element as its document. The downside of this option is that, while selector queries on nodes inside your trap will now work, the trap will not prevent focus from being set on nodes outside your Shadow DOM, which is the same drawback as putting a focus trap [inside an iframe](https://focus-trap.github.io/focus-trap/#demo-in-iframe).
+⚠️ Beware that putting a focus-trap **inside** an open Shadow DOM means you must **not use selector strings** for options that support these (because nodes inside Shadow DOMs, even open shadows, are not visible via `document.querySelector()`).
 
 ##### Closed shadows
 
@@ -254,12 +252,12 @@ These options are used to override the focus trap's default behavior for this pa
 ### trap.updateContainerElements()
 
 ```typescript
-trap.updateContainerElements() => FocusTrap
+trap.updateContainerElements(HTMLElement | SVGElement | string | Array<HTMLElement | SVGElement | string>) => FocusTrap
 ```
 
 Update the element(s) that are used as containers for the focus trap.
 
-When you call the function `createFocusTrap`, you pass in an element (or selector), or an array of elements (or selectors) to keep the focus within.  This method simply allows you to update which elements to keep the focus within.
+When you call `createFocusTrap()`, you give it an element (or selector), or an array of elements (or selectors) to keep the focus within. This method simply allows you to update which elements to keep the focus within even while the trap is active.
 
 A use case for this is found in focus-trap-react, where React `ref`'s may not be initialized yet, but when they are you want to have them be a container element.
 
