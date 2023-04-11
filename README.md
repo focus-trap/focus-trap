@@ -69,7 +69,7 @@ Focus-trap is not officially tested on any mobile browsers or devices.
 
 ## Usage
 
-### createFocusTrap(element[, createOptions])
+### createFocusTrap()
 
 ```javascript
 import * as focusTrap from 'focus-trap'; // ESM
@@ -119,7 +119,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
   - 💬 When using this option in conjunction with `clickOutsideDeactivates=true`:
     - If `returnFocusOnDeactivate=true` and the outside click causing deactivation is on a focusable element, focus will __not__ return to that element; instead, it will return to the node focused just before activation.
     - If `returnFocusOnDeactivate=false` and the outside click is on a focusable node, focus will __remain__ on that node instead of the node focused just before activation. If the outside click is on a non-focusable node, then "nothing" will have focus post-deactivation.
-- **setReturnFocus** `{HTMLElement | SVGElement | string | (previousActiveElement: HTMLElement | SVGElement) => HTMLElement | SVGElement | string | false}`: By default, on **deactivation**, if `returnFocusOnDeactivate=true` (or if `returnFocus=true` in the [deactivation options](#trapdeactivatedeactivateoptions)), focus will be returned to the element that was focused just before activation. With this option, you can specify another element to programmatically receive focus after deactivation. It can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node **upon deactivation**), or a function that returns any of these to call **upon deactivation** (i.e. the selector and function options are only executed at the time the trap is deactivated). Can also be `false` (or return `false`) to leave focus where it is at the time of deactivation.
+- **setReturnFocus** `{HTMLElement | SVGElement | string | (previousActiveElement: HTMLElement | SVGElement) => HTMLElement | SVGElement | string | false}`: By default, on **deactivation**, if `returnFocusOnDeactivate=true` (or if `returnFocus=true` in the [deactivation options](#trapdeactivate)), focus will be returned to the element that was focused just before activation. With this option, you can specify another element to programmatically receive focus after deactivation. It can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node **upon deactivation**), or a function that returns any of these to call **upon deactivation** (i.e. the selector and function options are only executed at the time the trap is deactivated). Can also be `false` (or return `false`) to leave focus where it is at the time of deactivation.
   - 💬 Using the selector or function options is a good way to return focus to a DOM node that may not exist at the time the trap is activated.
   - ⚠️ See warning below about **Shadow DOM** and selector strings.
 - **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
@@ -329,7 +329,7 @@ See [Testing tabbable in JSDom](https://github.com/focus-trap/tabbable#testing-i
 
 ### ERROR: Your focus-trap must have at least one container with at least one tabbable node in it at all times
 
-This error happens when the containers you specified when you [setup](#createfocustrapelement-createoptions) your focus trap do not have -- or no longer have -- any tabbable elements in them, which means that focus will inevitably escape your trap because focus __must__ always go _somewhere_.
+This error happens when the containers you specified when you [setup](#createfocustrap) your focus trap do not have -- or no longer have -- any tabbable elements in them, which means that focus will inevitably escape your trap because focus __must__ always go _somewhere_.
 
 You will hit this error if your trap does not have (or no longer has) any [tabbable](https://github.com/focus-trap/tabbable#readme) (and therefore focusable) elements in it, and it was not configured with a backup element (see the `fallbackFocus` [option](#createoptions) -- which must still be in the trap, but does not necessarily have to be tabbable, i.e. it could have `tabindex="-1"`, making it focusable, but not tabbable).
 
