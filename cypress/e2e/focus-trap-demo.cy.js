@@ -1714,7 +1714,7 @@ describe('focus-trap', () => {
       // when the focused element is removed, focus is transitioned to the first
       // focusable element in the trap
       cy.get('@testRoot').findByRole('button', { name: 'remove' }).click();
-      cy.focused().should.have.text('with');
+      cy.focused().should('not.be.undefined').and('have.text', 'with');
 
       // focus can be transitioned freely when trap is deactivated
       cy.get('@testRoot')
