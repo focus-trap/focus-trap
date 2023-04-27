@@ -156,6 +156,10 @@ const createFocusTrap = function (elements, userOptions) {
     // timer ID for when delayInitialFocus is true and initial focus in this trap
     //  has been delayed during activation
     delayInitialFocusTimer: undefined,
+
+    // MutationObserver to detect whether the currently focused element has been
+    // removed from the DOM.
+    mutationObserver: undefined,
   };
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
@@ -260,8 +264,8 @@ const createFocusTrap = function (elements, userOptions) {
       return false;
     }
 
-    if (node === undefined) {
-      // option not specified: use fallback options
+    if (node === undefined || !node.isConnected) {
+      // option not specified nor connected to DOM: use fallback options
       if (findContainerIndex(doc.activeElement) >= 0) {
         node = doc.activeElement;
       } else {
@@ -600,6 +604,21 @@ const createFocusTrap = function (elements, userOptions) {
     e.stopImmediatePropagation();
   };
 
+  const checkDomRemoval = function (mutations) {
+    const isFocusedNodeRemoved = mutations.some(function (mutation) {
+      const removedNodes = Array.from(mutation.removedNodes);
+      return removedNodes.some(function (node) {
+        return node === state.mostRecentlyFocusedNode;
+      });
+    });
+
+    // If the currently focused is removed then browsers will move focus to the
+    // <body> element. If this happens, try to move focus back into the trap.
+    if (isFocusedNodeRemoved) {
+      tryFocus(getInitialFocusNode());
+    }
+  };
+
   //
   // EVENT LISTENERS
   //
@@ -638,6 +657,16 @@ const createFocusTrap = function (elements, userOptions) {
       passive: false,
     });
 
+    if ('MutationObserver' in window) {
+      state.mutationObserver = new MutationObserver(checkDomRemoval);
+      state.containers.map(function (container) {
+        state.mutationObserver.observe(container, {
+          subtree: true,
+          childList: true,
+        });
+      });
+    }
+
     return trap;
   };
 
@@ -651,6 +680,8 @@ const createFocusTrap = function (elements, userOptions) {
     doc.removeEventListener('touchstart', checkPointerDown, true);
     doc.removeEventListener('click', checkClick, true);
     doc.removeEventListener('keydown', checkKey, true);
+
+    state.mutationObserver && state.mutationObserver.disconnect();
 
     return trap;
   };
