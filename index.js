@@ -657,7 +657,8 @@ const createFocusTrap = function (elements, userOptions) {
       passive: false,
     });
 
-    if ('MutationObserver' in window) {
+    // Use MutationObserver - if supported - to check if focused node is removed
+    if (typeof window !== 'undefined' && 'MutationObserver' in window) {
       state.mutationObserver = new MutationObserver(checkDomRemoval);
       state.containers.map(function (container) {
         state.mutationObserver.observe(container, {
