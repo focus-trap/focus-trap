@@ -264,8 +264,8 @@ const createFocusTrap = function (elements, userOptions) {
       return false;
     }
 
-    if (node === undefined || !node.isConnected) {
-      // option not specified nor connected to DOM: use fallback options
+    if (node === undefined || !isFocusable(node, config.tabbableOptions)) {
+      // option not specified nor focusable: use fallback options
       if (findContainerIndex(doc.activeElement) >= 0) {
         node = doc.activeElement;
       } else {
