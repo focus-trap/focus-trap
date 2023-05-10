@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.4.1
+
+### Patch Changes
+
+- 4f720ff: Bump tabbable to v6.1.2 for nwsapi patch
+
 ## 7.4.0
 
 ### Minor Changes
