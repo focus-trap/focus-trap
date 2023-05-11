@@ -1,5 +1,13 @@
 const { createFocusTrap } = require('../../index');
 module.exports = () => {
+  class CustomButton extends HTMLElement {
+    constructor() {
+      super();
+
+      this.attachShadow({ mode: 'open' }).innerHTML = '<button><slot></slot></button>';
+    }
+  }
+
   class FocusTrapModal extends HTMLElement {
     constructor() {
       super();
@@ -14,6 +22,8 @@ module.exports = () => {
           <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
+          <custom-button>Shadow Button</custom-button>
+          <button>Light DOM Button</button>
           <button id="deactivate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">
             deactivate trap
           </button>
@@ -32,7 +42,8 @@ module.exports = () => {
       const focusTrap = createFocusTrap(modalEl, {
         onActivate: () => modalEl.classList.add('is-active'),
         onDeactivate: () => modalEl.classList.remove('is-active'),
-        escapeDeactivates: true,
+        clickOutsideDeactivates: true,
+        escapeDeactivates: false,
       });
 
       document
@@ -45,4 +56,5 @@ module.exports = () => {
   }
 
   customElements.define('focus-trap-modal', FocusTrapModal);
+  customElements.define('custom-button', CustomButton);
 };
