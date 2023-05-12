@@ -8,6 +8,14 @@ module.exports = () => {
     }
   }
 
+  class CustomSpan extends HTMLElement {
+    constructor() {
+      super();
+
+      this.attachShadow({ mode: 'open' }).innerHTML = '<span><slot></span></button>';
+    }
+  }
+
   class FocusTrapModal extends HTMLElement {
     constructor() {
       super();
@@ -24,6 +32,7 @@ module.exports = () => {
         <p>
           <custom-button>Shadow Button</custom-button>
           <button>Light DOM Button</button>
+          <custom-span>Shadow Span</custom-span>
           <button id="deactivate-in-open-shadow-dom" aria-describedby="in-open-shadow-dom-heading">
             deactivate trap
           </button>
@@ -57,4 +66,5 @@ module.exports = () => {
 
   customElements.define('focus-trap-modal', FocusTrapModal);
   customElements.define('custom-button', CustomButton);
+  customElements.define('custom-span', CustomSpan);
 };
