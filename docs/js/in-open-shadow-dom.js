@@ -4,7 +4,7 @@ module.exports = () => {
     constructor() {
       super();
 
-      this.attachShadow({ mode: 'open' }).innerHTML = '<button><slot></slot></button>';
+      this.attachShadow({ mode: 'open' }).innerHTML = '<button id="button-inside-custom-button"><slot></slot></button>';
     }
   }
 
@@ -12,7 +12,7 @@ module.exports = () => {
     constructor() {
       super();
 
-      this.attachShadow({ mode: 'open' }).innerHTML = '<span><slot></span></button>';
+      this.attachShadow({ mode: 'open' }).innerHTML = '<span id="span-inside-custom-span"><slot></span></button>';
     }
   }
 
@@ -51,6 +51,9 @@ module.exports = () => {
       const focusTrap = createFocusTrap(modalEl, {
         onActivate: () => modalEl.classList.add('is-active'),
         onDeactivate: () => modalEl.classList.remove('is-active'),
+        tabbableOptions: {
+          getShadowRoot: true
+        },
         clickOutsideDeactivates: true,
         escapeDeactivates: false,
       });
