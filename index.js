@@ -182,7 +182,7 @@ const createFocusTrap = function (elements, userOptions) {
    *  `state.containerGroups` (the order/length of these lists are the same); -1
    *  if the element isn't found.
    */
-  const findContainerIndex = function (element) {
+  const findContainerIndex = function (element, composedPath) {
     // NOTE: search `containerGroups` because it's possible a group contains no tabbable
     //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
     //  and we still need to find the element in there
@@ -193,7 +193,8 @@ const createFocusTrap = function (elements, userOptions) {
         //  web components if the `tabbableOptions.getShadowRoot` option was used for
         //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
         //  look inside web components even if open)
-        tabbableNodes.find((node) => node === element)
+        tabbableNodes.find((node) => node === element) ||
+        composedPath && composedPath.find((node) => node === element)
     );
   };
 
@@ -380,9 +381,8 @@ const createFocusTrap = function (elements, userOptions) {
   const checkPointerDown = function (e) {
     const target = getActualTarget(e);
     const composedPath = typeof e.composedPath === 'function' && e.composedPath();
-    const clickedInsideContainer = composedPath && state.containers.some(container => composedPath.includes(container));
 
-    if (findContainerIndex(target) >= 0 || clickedInsideContainer) {
+    if (findContainerIndex(target, composedPath) >= 0) {
       // allow the click since it ocurred inside the trap
       return;
     }
