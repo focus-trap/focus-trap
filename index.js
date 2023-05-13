@@ -178,6 +178,7 @@ const createFocusTrap = function (elements, userOptions) {
   /**
    * Finds the index of the container that contains the element.
    * @param {HTMLElement} element
+   * @param {EventTarget[]} [composedPath]
    * @returns {number} Index of the container in either `state.containers` or
    *  `state.containerGroups` (the order/length of these lists are the same); -1
    *  if the element isn't found.
