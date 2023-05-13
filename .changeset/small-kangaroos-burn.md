@@ -2,4 +2,4 @@
 'focus-trap': patch
 ---
 
-clicking on open shadowDOM components within a focus trap should not deactivate the focus trap
+Clicking on open shadowDOM components within a focus trap's container when `clickOutsideDeactivates=true` should not deactivate the focus trap. #959
