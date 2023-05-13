@@ -12,7 +12,7 @@ module.exports = () => {
     constructor() {
       super();
 
-      this.attachShadow({ mode: 'open' }).innerHTML = '<span id="span-inside-custom-span"><slot></span></button>';
+      this.attachShadow({ mode: 'open' }).innerHTML = '<span id="span-inside-custom-span"><slot></slot></span></button>';
     }
   }
 

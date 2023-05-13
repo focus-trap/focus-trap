@@ -379,8 +379,10 @@ const createFocusTrap = function (elements, userOptions) {
   // so that it precedes the focus event.
   const checkPointerDown = function (e) {
     const target = getActualTarget(e);
+    const composedPath = typeof e.composedPath === 'function' && e.composedPath();
+    const clickedInsideContainer = composedPath && state.containers.some(container => composedPath.includes(container));
 
-    if (findContainerIndex(target) >= 0) {
+    if (findContainerIndex(target) >= 0 || clickedInsideContainer) {
       // allow the click since it ocurred inside the trap
       return;
     }
