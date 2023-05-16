@@ -184,7 +184,7 @@ const createFocusTrap = function (elements, userOptions) {
    *  if the element isn't found.
    */
   const findContainerIndex = function (element, event) {
-    const composedPath = event && typeof event.composedPath === 'function' && event.composedPath();
+    const composedPath = typeof event?.composedPath === 'function' && event.composedPath();
     // NOTE: search `containerGroups` because it's possible a group contains no tabbable
     //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
     //  and we still need to find the element in there
@@ -196,7 +196,7 @@ const createFocusTrap = function (elements, userOptions) {
         //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
         //  look inside web components even if open)
         tabbableNodes.find((node) => node === element) ||
-        composedPath && composedPath.find((node) => node === element)
+        composedPath?.includes(container)
     );
   };
 
