@@ -195,8 +195,8 @@ const createFocusTrap = function (elements, userOptions) {
         //  web components if the `tabbableOptions.getShadowRoot` option was used for
         //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
         //  look inside web components even if open)
-        tabbableNodes.find((node) => node === element) ||
-        composedPath?.includes(container)
+        composedPath?.includes(container) ||
+        tabbableNodes.find((node) => node === element)
     );
   };
 
