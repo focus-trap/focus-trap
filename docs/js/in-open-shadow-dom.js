@@ -14,7 +14,7 @@ module.exports = () => {
       super();
 
       this.attachShadow({ mode: 'open' }).innerHTML =
-        '<span id="span-inside-custom-span"><slot></slot></span></button>';
+        '<span id="span-inside-custom-span"><slot></slot></span>';
     }
   }
 

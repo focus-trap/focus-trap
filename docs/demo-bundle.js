@@ -2,11 +2,12 @@
 * focus-trap 7.4.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo"};
+        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":""};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -3289,7 +3290,7 @@ var focusTrapDemoBundle = (function () {
           _this2 = _super2.call(this);
           _this2.attachShadow({
             mode: 'open'
-          }).innerHTML = '<span id="span-inside-custom-span"><slot></slot></span></button>';
+          }).innerHTML = '<span id="span-inside-custom-span"><slot></slot></span>';
           return _this2;
         }
         return _createClass(CustomSpan);
