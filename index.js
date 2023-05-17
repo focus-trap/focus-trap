@@ -184,7 +184,10 @@ const createFocusTrap = function (elements, userOptions) {
    *  if the element isn't found.
    */
   const findContainerIndex = function (element, event) {
-    const composedPath = typeof event?.composedPath === 'function' ? event.composedPath() : undefined;
+    const composedPath =
+      typeof event?.composedPath === 'function'
+        ? event.composedPath()
+        : undefined;
     // NOTE: search `containerGroups` because it's possible a group contains no tabbable
     //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
     //  and we still need to find the element in there

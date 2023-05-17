@@ -4,7 +4,8 @@ module.exports = () => {
     constructor() {
       super();
 
-      this.attachShadow({ mode: 'open' }).innerHTML = '<button id="button-inside-custom-button"><slot></slot></button>';
+      this.attachShadow({ mode: 'open' }).innerHTML =
+        '<button id="button-inside-custom-button"><slot></slot></button>';
     }
   }
 
@@ -12,7 +13,8 @@ module.exports = () => {
     constructor() {
       super();
 
-      this.attachShadow({ mode: 'open' }).innerHTML = '<span id="span-inside-custom-span"><slot></slot></span></button>';
+      this.attachShadow({ mode: 'open' }).innerHTML =
+        '<span id="span-inside-custom-span"><slot></slot></span></button>';
     }
   }
 
@@ -53,9 +55,9 @@ module.exports = () => {
         onDeactivate: () => modalEl.classList.remove('is-active'),
         escapeDeactivates: true,
         tabbableOptions: {
-          getShadowRoot: true
+          getShadowRoot: true,
         },
-        clickOutsideDeactivates: true
+        clickOutsideDeactivates: true,
       });
 
       document
