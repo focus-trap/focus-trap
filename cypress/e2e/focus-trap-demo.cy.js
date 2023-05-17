@@ -1,5 +1,5 @@
 describe('focus-trap', () => {
-  beforeEach(() => cy.visit('index.html'));
+  beforeEach(() => cy.visit('index.html?bundle=cypress'));
 
   /**
    * Verify focus trap is **trapping** focus by clicking outside element
@@ -914,9 +914,7 @@ describe('focus-trap', () => {
       cy.get('@testRoot').findByRole('radio', { name: 'b' }).as('radioB');
       verifyCrucialFocusTrapOnClicking('@radioB');
 
-      /*
-       radio group value can be changed
-      */
+      //// radio group value can be changed
 
       // Cypress limitation to radio group value change: keyboard arrow keys can't change value
       // so forcibly change the value by `check` command
@@ -1572,63 +1570,6 @@ describe('focus-trap', () => {
     });
   });
 
-  describe('demo: in-open-shadow-dom', () => {
-    const getFirstElementInTrap = () =>
-      cy
-        .get('#in-open-shadow-dom-host') // NOTE: this ID is defined in /docs/js/in-open-shadow-dom.js
-        .as('shadowHost')
-        .shadow()
-        .findByRole('link', { name: 'with' });
-
-    const getLastElementInTrap = () =>
-      cy
-        .get('#in-open-shadow-dom-host') // NOTE: this ID is defined in /docs/js/in-open-shadow-dom.js
-        .as('shadowHost')
-        .shadow()
-        .findByRole('button', { name: /^deactivate trap/ });
-
-    it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
-      cy.get('#demo-in-open-shadow-dom').as('testRoot');
-
-      // activate trap
-      cy.get('@testRoot')
-        .findByRole('button', { name: /^activate trap/ })
-        .as('lastlyFocusedElementBeforeTrapIsActivated')
-        .click();
-
-      // NOTE: Because of how Cypress interacts with Shadown DOMs, we can't use labels
-      //  on elements _inside_ the shadow host. When we click outside the trap and then
-      //  test if the labelled element is focused, Cypress says yes, but really, it
-      //  sees the shadow as a black box that has focus, so it's not the real test
-      //  we're wanting to check. Also, the cypress-plugin-tab will complain if we try
-      //  to .tab() from inside the shadow host saying it's not a tabbable element
-      //  because it doesn't appear to support shadow DOM.
-
-      // 1st element should be focused
-      getFirstElementInTrap().should('be.focused');
-
-      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
-      cy.get('#return-to-repo').click();
-      getFirstElementInTrap().should('be.focused');
-
-      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
-      cy.get('#default-heading').click();
-      getFirstElementInTrap().should('be.focused');
-
-      // NOTE: We can't use cypress-plugin-tab to tab between elements in the trap
-      //  to check the tab sequence is constrained to the trap because the plugin
-      //  doesn't support Shadow DOM. It will keep crashing the test, claiming that
-      //  the focused element is not tabbable (because it doesn't see past the
-      //  shadow host).
-
-      // focus can be transitioned freely when trap is deactivated
-      getLastElementInTrap().click();
-      verifyFocusIsNotTrapped(
-        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
-      );
-    });
-  });
-
   describe('demo: global trap stack', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
       cy.get('#demo-global-trap-stack').as('testRoot');
@@ -1757,6 +1698,26 @@ describe('focus-trap', () => {
   //    support Shadow DOM, and Cypress itself doesn't have great support for it either
   //    (see comments for the 'in-open-shadow-dom' test above) so there's no point in writing
   //    a test for this demo at this time.
+  // });
+
+  // describe('demo: in-open-shadow-dom', () => {
+  //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+  //    support Shadow DOM, and Cypress itself doesn't have great support for it either
+  //    so there's no point in writing a test for this demo at this time.
+  //
+  //   Because of how Cypress interacts with Shadown DOMs, we can't use labels
+  //    on elements _inside_ the shadow host. When we click outside the trap and then
+  //    test if the labelled element is focused, Cypress says yes, but really, it
+  //    sees the shadow as a black box that has focus, so it's not the real test
+  //    we're wanting to check. Also, the cypress-plugin-tab will complain if we try
+  //    to .tab() from inside the shadow host saying it's not a tabbable element
+  //    because it doesn't appear to support shadow DOM.
+  //
+  //   We can't use cypress-plugin-tab to tab between elements in the trap
+  //    to check the tab sequence is constrained to the trap because the plugin
+  //    doesn't support Shadow DOM. It will keep crashing the test, claiming that
+  //    the focused element is not tabbable (because it doesn't see past the
+  //    shadow host).
   // });
 
   // describe('demo: negative-tabindex', () => {

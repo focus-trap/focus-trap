@@ -32,6 +32,10 @@ module.exports = () => {
           <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
+          💬 Clicking anywhere outside the trap will deactivate it, but clicking on any element
+          inside it, including those in nested shadow DOMs, will not.
+        </p>
+        <p>
           <custom-button>Shadow Button</custom-button>
           <button>Light DOM Button</button>
           <custom-span>Shadow Span</custom-span>

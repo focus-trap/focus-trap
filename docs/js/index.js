@@ -13,6 +13,16 @@ require('./input-activation')();
 require('./delay')();
 require('./radio')();
 require('./iframe')();
+require('./allow-outside-click')();
+require('./click-outside-deactivates')();
+require('./set-return-focus')();
+require('./set-return-focus-function')();
+require('./no-delay')();
+require('./multiple-elements')();
+require('./multiple-elements-delete')();
+require('./multiple-elements-delete-all')();
+require('./multiple-elements-multiple-traps')();
+require('./arrow-keys')();
 
 // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
 //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
@@ -26,17 +36,8 @@ if (!process.env.IS_CYPRESS_ENV) {
   require('./in-iframe')();
 }
 
-require('./allow-outside-click')();
-require('./click-outside-deactivates')();
-require('./set-return-focus')();
-require('./set-return-focus-function')();
-require('./no-delay')();
-require('./multiple-elements')();
-require('./multiple-elements-delete')();
-require('./multiple-elements-delete-all')();
-require('./multiple-elements-multiple-traps')();
-
 // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+// http://localhost:9966/#demo-in-open-shadow-dom
 require('./in-open-shadow-dom')();
 
 // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
@@ -54,8 +55,6 @@ require('./negative-tabindex-last')();
 // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 // http://localhost:9966/#demo-with-open-web-component
 require('./with-open-web-component')();
-
-require('./arrow-keys')();
 
 // TEST MANUALLY (cypress-plugin-tab doesn't support inert)
 // http://localhost:9966/#demo-inert

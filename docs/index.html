@@ -1140,6 +1140,17 @@
       <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
     </p>
   </main>
-  <script src="demo-bundle.js"></script>
+  <script>
+    const url = new URL(window.location);
+    // 'cypress', or null, depending on rollup.config.js `serve().openPage` config
+    const bundleType = url.searchParams.get('bundle');
+    // file names are dependent upon rollup.config.js `output.file` config, which depends on
+    //  `process.env` at the time the bundle was built
+    const bundleName = `demo-bundle${['cypress'].includes(bundleType) ? `-${bundleType}` : ''}.js`;
+
+    const scriptEl = document.createElement('script');
+    scriptEl.src = bundleName;
+    document.body.appendChild(scriptEl);
+  </script>
 </body>
 </html>

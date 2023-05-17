@@ -29,7 +29,7 @@
     "compile:demo": "cross-env BUILD_ENV=demo BABEL_ENV=es5 rollup -c",
     "compile": "npm run compile:esm && npm run compile:cjs && npm run compile:umd",
     "build": "npm run clean && npm run compile",
-    "start": "npm run compile:demo -- --watch --environment SERVE,RELOAD,IS_CYPRESS_ENV:''",
+    "start": "npm run compile:demo -- --watch --environment SERVE,RELOAD",
     "start:cypress": "npm run compile:demo -- --environment SERVE,IS_CYPRESS_ENV:\"$CYPRESS_BROWSER\"",
     "test:types": "tsc index.d.ts",
     "test:unit": "echo \"No unit tests to run!\"",
