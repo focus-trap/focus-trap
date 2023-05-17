@@ -50,46 +50,22 @@ module.exports = () => {
       shadowEl.appendChild(styleLinkEl);
       shadowEl.appendChild(modalEl);
 
-      let clickOutsideDeactivates = false;
-
-      const initialize = function () {
-        return createFocusTrap(modalEl, {
-          onActivate: () => modalEl.classList.add('is-active'),
-          onDeactivate: () => modalEl.classList.remove('is-active'),
-          clickOutsideDeactivates,
-          escapeDeactivates: true,
-          tabbableOptions: {
-            getShadowRoot: true,
-          },
-        });
-      };
-
-      let focusTrap = initialize();
-
-      const checkbox = document.getElementById(
-        'checkbox-clickoutsidedeactivates-in-open-shadow'
-      );
-
-      checkbox.addEventListener('change', function () {
-        clickOutsideDeactivates = checkbox.checked;
-        focusTrap.deactivate();
-        focusTrap = initialize();
+      const focusTrap = createFocusTrap(modalEl, {
+        onActivate: () => modalEl.classList.add('is-active'),
+        onDeactivate: () => modalEl.classList.remove('is-active'),
+        escapeDeactivates: true,
+        tabbableOptions: {
+          getShadowRoot: true,
+        },
+        clickOutsideDeactivates: true,
       });
-
-      const activate = function () {
-        focusTrap.activate();
-      };
-
-      const deactivate = function () {
-        focusTrap.deactivate();
-      };
 
       document
         .getElementById('activate-in-open-shadow-dom')
-        .addEventListener('click', activate);
+        .addEventListener('click', focusTrap.activate);
       modalEl
         .querySelector('#deactivate-in-open-shadow-dom')
-        .addEventListener('click', deactivate);
+        .addEventListener('click', focusTrap.deactivate);
     }
   }
 
