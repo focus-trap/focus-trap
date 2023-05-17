@@ -2,7 +2,6 @@
 * focus-trap 7.4.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
@@ -2182,6 +2181,381 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
     };
 
+    var createFocusTrap$f = require$$0.createFocusTrap;
+    var allowOutsideClick = function allowOutsideClick() {
+      var container = document.getElementById('allowoutsideclick');
+      var trigger = document.getElementById('activate-allowoutsideclick');
+      var active = false;
+      var allowOutsideClick = true;
+      function initialize() {
+        return createFocusTrap$f('#allowoutsideclick', {
+          allowOutsideClick: allowOutsideClick,
+          escapeDeactivates: false,
+          onActivate: function onActivate() {
+            return container.classList.add('is-active');
+          },
+          onDeactivate: function onDeactivate() {
+            return container.classList.remove('is-active');
+          }
+        });
+      }
+      var focusTrap = initialize();
+      function activate() {
+        focusTrap.activate();
+        active = true;
+      }
+      function deactivate() {
+        focusTrap.deactivate();
+        active = false;
+      }
+      trigger.addEventListener('click', function () {
+        if (active) {
+          deactivate();
+        } else {
+          activate();
+        }
+      });
+      document.getElementById('deactivate-allowoutsideclick').addEventListener('click', deactivate);
+      document.getElementById('select-allowoutsideclick').addEventListener('change', function (event) {
+        allowOutsideClick = {
+          "boolean": true,
+          "function": function _function(e) {
+            if (e.target === trigger) {
+              return true;
+            }
+          }
+        }[event.target.value];
+        focusTrap = initialize();
+      });
+    };
+
+    var createFocusTrap$e = require$$0.createFocusTrap;
+    var clickOutsideDeactivates = function clickOutsideDeactivates() {
+      var container = document.getElementById('clickoutsidedeactivates');
+      var trigger = document.getElementById('activate-clickoutsidedeactivates');
+      var select = document.getElementById('select-clickoutsidedeactivates');
+      var checkbox = document.getElementById('checkbox-clickoutsidedeactivates');
+      var active = false;
+      var clickOutsideDeactivates = true;
+      var returnFocusOnDeactivate = true;
+      var notice = document.createElement('span');
+      notice.appendChild(document.createTextNode('-> Must click on checkbox to deactivate'));
+      var initialize = function initialize() {
+        return createFocusTrap$e('#clickoutsidedeactivates', {
+          returnFocusOnDeactivate: returnFocusOnDeactivate,
+          clickOutsideDeactivates: clickOutsideDeactivates,
+          escapeDeactivates: false,
+          onActivate: function onActivate() {
+            return container.classList.add('is-active');
+          },
+          onDeactivate: function onDeactivate() {
+            active = false;
+            container.classList.remove('is-active');
+          }
+        });
+      };
+      var focusTrap = initialize();
+      var activate = function activate() {
+        active = true;
+        focusTrap.activate();
+      };
+      trigger.addEventListener('click', function () {
+        if (!active) {
+          activate();
+        }
+      });
+      document.getElementById('select-returnfocusondeactivate-clickoutsidedeactivates').addEventListener('change', function (event) {
+        returnFocusOnDeactivate = event.target.value === 'true';
+        focusTrap = initialize();
+      });
+      select.addEventListener('change', function (event) {
+        clickOutsideDeactivates = {
+          "boolean": true,
+          // deactivate when click on anything
+          "function": function _function(e) {
+            // only deactivate when click on checkbox
+            return e.target === checkbox;
+          }
+        }[event.target.value];
+        if (event.target.value === 'function') {
+          select.parentNode.append(notice);
+        } else {
+          select.parentNode.removeChild(notice);
+        }
+        focusTrap = initialize();
+      });
+    };
+
+    var createFocusTrap$d = require$$0.createFocusTrap;
+    var setReturnFocus = function setReturnFocus() {
+      var container = document.getElementById('setreturnfocus');
+      var focusTrap = createFocusTrap$d('#setreturnfocus', {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        },
+        setReturnFocus: '#overwritten-element'
+      });
+      document.getElementById('activate-setreturnfocus').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
+    };
+
+    var createFocusTrap$c = require$$0.createFocusTrap;
+    var setReturnFocusFunction = function setReturnFocusFunction() {
+      var container = document.getElementById('setreturnfocus-function');
+      var clickedElement;
+      var isAllowedTarget = function isAllowedTarget(e) {
+        return e.target.id === 'focus-this' || e.target.id === 'focus-initial' || e.target.id === 'no-focus';
+      };
+      var setReturnFocus = function setReturnFocus(previousActiveElement) {
+        if (clickedElement && clickedElement.id === 'focus-this') {
+          return clickedElement;
+        } else if (clickedElement && clickedElement.id === 'focus-initial') {
+          return previousActiveElement;
+        }
+        return false;
+      };
+      var focusTrap = createFocusTrap$c('#setreturnfocus-function', {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        },
+        setReturnFocus: setReturnFocus,
+        allowOutsideClick: function allowOutsideClick(e) {
+          return isAllowedTarget(e);
+        }
+      });
+      var handleDeactivate = function handleDeactivate(e) {
+        clickedElement = e.target;
+        focusTrap.deactivate();
+      };
+      document.getElementById('activate-setreturnfocus-function').addEventListener('click', focusTrap.activate);
+      document.querySelector('#deactivate-setreturnfocus-function > #focus-this').addEventListener('click', handleDeactivate);
+      document.querySelector('#deactivate-setreturnfocus-function > #focus-initial').addEventListener('click', handleDeactivate);
+      document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
+    };
+
+    var createFocusTrap$b = require$$0.createFocusTrap;
+    var noDelay = function noDelay() {
+      var container = document.getElementById('no-delay');
+      var focusTrap = createFocusTrap$b(container, {
+        delayInitialFocus: false,
+        onActivate: function onActivate() {
+          container.style.opacity = '1';
+          container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          container.style.opacity = '0.2';
+          container.classList.remove('is-active');
+        }
+      });
+      var showContainer = function showContainer(e) {
+        if (e.keyCode === 13) {
+          e.preventDefault();
+          focusTrap.activate();
+        }
+      };
+      var hideContainer = function hideContainer() {
+        focusTrap.deactivate();
+      };
+      document.getElementById('activate-no-delay').addEventListener('keydown', showContainer);
+      document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
+    };
+
+    var createFocusTrap$a = require$$0.createFocusTrap;
+    var multipleElements = function multipleElements() {
+      var container = document.getElementById('multipleelements');
+      var selectors = ['#multipleelements-1', '#multipleelements-3'];
+      var focusTrap = createFocusTrap$a(selectors, {
+        clickOutsideDeactivates: true,
+        onActivate: function onActivate() {
+          container.classList.add('is-active');
+          selectors.forEach(function (selector) {
+            return document.querySelector(selector).className = 'is-active-nested';
+          });
+        },
+        onDeactivate: function onDeactivate() {
+          container.classList.remove('is-active');
+          selectors.forEach(function (selector) {
+            return document.querySelector(selector).className = null;
+          });
+        }
+      });
+      document.getElementById('activate-multipleelements').addEventListener('click', function () {
+        focusTrap.activate();
+      });
+      document.getElementById('deactivate-multipleelements').addEventListener('click', function () {
+        focusTrap.deactivate();
+      });
+    };
+
+    var createFocusTrap$9 = require$$0.createFocusTrap;
+    var multipleElementsDelete = function multipleElementsDelete() {
+      var container = document.getElementById('multipleelements-delete');
+      var selectors = ['#multipleelements-delete-1', '#multipleelements-delete-2'];
+      var focusTrap = createFocusTrap$9(selectors, {
+        allowOutsideClick: function allowOutsideClick(event) {
+          return event.target.id === 'deactivate-multipleelements-delete';
+        },
+        onActivate: function onActivate() {
+          container.classList.add('is-active');
+          selectors.forEach(function (selector) {
+            return document.querySelector(selector).className = 'is-active-nested';
+          });
+        },
+        onDeactivate: function onDeactivate() {
+          container.classList.remove('is-active');
+          selectors.forEach(function (selector) {
+            return document.querySelector(selector).className = null;
+          });
+        }
+      });
+      document.getElementById('activate-multipleelements-delete').addEventListener('click', function () {
+        focusTrap.activate();
+      });
+      document.getElementById('deactivate-multipleelements-delete').addEventListener('click', function () {
+        focusTrap.deactivate();
+      });
+      document.getElementById('multipleelements-delete-remove').addEventListener('click', function () {
+        document.getElementById('multipleelements-delete-removed-node').remove();
+      });
+    };
+
+    var createFocusTrap$8 = require$$0.createFocusTrap;
+    var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
+      var container = document.getElementById('multipleelements-delete-all');
+      var selectors = ['#multipleelements-delete-all-1', '#multipleelements-delete-all-2'];
+      var focusTrap = createFocusTrap$8(selectors, {
+        fallbackFocus: '#deactivate-multipleelements-delete-all',
+        allowOutsideClick: function allowOutsideClick(event) {
+          return event.target.id === 'deactivate-multipleelements-delete-all';
+        },
+        onActivate: function onActivate() {
+          container.classList.add('is-active');
+          selectors.forEach(function (selector) {
+            return document.querySelector(selector).className = 'is-active-nested';
+          });
+        },
+        onDeactivate: function onDeactivate() {
+          container.classList.remove('is-active');
+          selectors.forEach(function (selector) {
+            return document.querySelector(selector).className = null;
+          });
+        }
+      });
+      document.getElementById('activate-multipleelements-delete-all').addEventListener('click', function () {
+        focusTrap.activate();
+      });
+      document.getElementById('deactivate-multipleelements-delete-all').addEventListener('click', function () {
+        focusTrap.deactivate();
+      });
+      document.getElementById('multipleelements-delete-all-remove').addEventListener('click', function (event) {
+        document.getElementById('multipleelements-delete-all-removed-node').remove();
+        event.target.remove();
+      });
+    };
+
+    var createFocusTrap$7 = require$$0.createFocusTrap;
+    var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
+      var container = document.getElementById('multipleelements-multipletraps');
+      var isTrap1Active = false;
+      var isTrap2Active = false;
+      var onActivateTrap = function onActivateTrap() {
+        container.classList.add('is-active');
+      };
+      var onDeactivateTrap = function onDeactivateTrap() {
+        if (!isTrap1Active && !isTrap2Active) {
+          container.classList.remove('is-active');
+        }
+      };
+      var allowOutsideClick = function allowOutsideClick(e) {
+        return e.target.className === 'enable-outside';
+      };
+      var setActive = function setActive(selectors) {
+        var isActive = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+        selectors.forEach(function (selector) {
+          return document.querySelector(selector).className = isActive ? 'is-active-nested' : null;
+        });
+      };
+      var trap1Selectors = ['#multipleelements-multipletraps-1', '#multipleelements-multipletraps-3'];
+      var trap2Selectors = ['#multipleelements-multipletraps-2', '#multipleelements-multipletraps-4'];
+      var focusTrap1 = createFocusTrap$7(trap1Selectors, {
+        onActivate: function onActivate() {
+          onActivateTrap();
+          if (isTrap2Active) {
+            setActive(trap2Selectors, false);
+          }
+          setActive(trap1Selectors);
+          isTrap1Active = true;
+        },
+        onDeactivate: function onDeactivate() {
+          setActive(trap1Selectors, false);
+          if (isTrap2Active) {
+            setActive(trap2Selectors);
+          }
+          isTrap1Active = false;
+          onDeactivateTrap();
+        },
+        allowOutsideClick: allowOutsideClick
+      });
+      var focusTrap2 = createFocusTrap$7(trap2Selectors, {
+        onActivate: function onActivate() {
+          onActivateTrap();
+          if (isTrap1Active) {
+            setActive(trap1Selectors, false);
+          }
+          setActive(trap2Selectors);
+          isTrap2Active = true;
+        },
+        onDeactivate: function onDeactivate() {
+          setActive(trap2Selectors, false);
+          if (isTrap1Active) {
+            setActive(trap1Selectors);
+          }
+          isTrap2Active = false;
+          onDeactivateTrap();
+        },
+        allowOutsideClick: allowOutsideClick
+      });
+      document.getElementById('activate-multipleelements-multipletraps-1').addEventListener('click', function () {
+        focusTrap1.activate();
+      });
+      document.getElementById('deactivate-multipleelements-multipletraps-1').addEventListener('click', function () {
+        focusTrap1.deactivate();
+      });
+      document.getElementById('activate-multipleelements-multipletraps-2').addEventListener('click', function () {
+        focusTrap2.activate();
+      });
+      document.getElementById('deactivate-multipleelements-multipletraps-2').addEventListener('click', function () {
+        focusTrap2.deactivate();
+      });
+    };
+
+    var createFocusTrap$6 = require$$0.createFocusTrap;
+    var arrowKeys = function arrowKeys() {
+      var container = document.getElementById('arrow-keys');
+      var focusTrap = createFocusTrap$6('#arrow-keys', {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        },
+        isKeyForward: function isKeyForward(event) {
+          return event.key === 'k';
+        },
+        isKeyBackward: function isKeyBackward(event) {
+          return event.key === 'j';
+        }
+      });
+      document.getElementById('activate-arrow-keys').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-arrow-keys').addEventListener('click', focusTrap.deactivate);
+    };
+
     var runtime = {exports: {}};
 
     runtime.exports;
@@ -2911,361 +3285,7 @@ var focusTrapDemoBundle = (function () {
       return inIframe;
     }
 
-    var createFocusTrap$f = require$$0.createFocusTrap;
-    var allowOutsideClick = function allowOutsideClick() {
-      var container = document.getElementById('allowoutsideclick');
-      var trigger = document.getElementById('activate-allowoutsideclick');
-      var active = false;
-      var allowOutsideClick = true;
-      function initialize() {
-        return createFocusTrap$f('#allowoutsideclick', {
-          allowOutsideClick: allowOutsideClick,
-          escapeDeactivates: false,
-          onActivate: function onActivate() {
-            return container.classList.add('is-active');
-          },
-          onDeactivate: function onDeactivate() {
-            return container.classList.remove('is-active');
-          }
-        });
-      }
-      var focusTrap = initialize();
-      function activate() {
-        focusTrap.activate();
-        active = true;
-      }
-      function deactivate() {
-        focusTrap.deactivate();
-        active = false;
-      }
-      trigger.addEventListener('click', function () {
-        if (active) {
-          deactivate();
-        } else {
-          activate();
-        }
-      });
-      document.getElementById('deactivate-allowoutsideclick').addEventListener('click', deactivate);
-      document.getElementById('select-allowoutsideclick').addEventListener('change', function (event) {
-        allowOutsideClick = {
-          "boolean": true,
-          "function": function _function(e) {
-            if (e.target === trigger) {
-              return true;
-            }
-          }
-        }[event.target.value];
-        focusTrap = initialize();
-      });
-    };
-
-    var createFocusTrap$e = require$$0.createFocusTrap;
-    var clickOutsideDeactivates = function clickOutsideDeactivates() {
-      var container = document.getElementById('clickoutsidedeactivates');
-      var trigger = document.getElementById('activate-clickoutsidedeactivates');
-      var select = document.getElementById('select-clickoutsidedeactivates');
-      var checkbox = document.getElementById('checkbox-clickoutsidedeactivates');
-      var active = false;
-      var clickOutsideDeactivates = true;
-      var returnFocusOnDeactivate = true;
-      var notice = document.createElement('span');
-      notice.appendChild(document.createTextNode('-> Must click on checkbox to deactivate'));
-      var initialize = function initialize() {
-        return createFocusTrap$e('#clickoutsidedeactivates', {
-          returnFocusOnDeactivate: returnFocusOnDeactivate,
-          clickOutsideDeactivates: clickOutsideDeactivates,
-          escapeDeactivates: false,
-          onActivate: function onActivate() {
-            return container.classList.add('is-active');
-          },
-          onDeactivate: function onDeactivate() {
-            active = false;
-            container.classList.remove('is-active');
-          }
-        });
-      };
-      var focusTrap = initialize();
-      var activate = function activate() {
-        active = true;
-        focusTrap.activate();
-      };
-      trigger.addEventListener('click', function () {
-        if (!active) {
-          activate();
-        }
-      });
-      document.getElementById('select-returnfocusondeactivate-clickoutsidedeactivates').addEventListener('change', function (event) {
-        returnFocusOnDeactivate = event.target.value === 'true';
-        focusTrap = initialize();
-      });
-      select.addEventListener('change', function (event) {
-        clickOutsideDeactivates = {
-          "boolean": true,
-          // deactivate when click on anything
-          "function": function _function(e) {
-            // only deactivate when click on checkbox
-            return e.target === checkbox;
-          }
-        }[event.target.value];
-        if (event.target.value === 'function') {
-          select.parentNode.append(notice);
-        } else {
-          select.parentNode.removeChild(notice);
-        }
-        focusTrap = initialize();
-      });
-    };
-
-    var createFocusTrap$d = require$$0.createFocusTrap;
-    var setReturnFocus = function setReturnFocus() {
-      var container = document.getElementById('setreturnfocus');
-      var focusTrap = createFocusTrap$d('#setreturnfocus', {
-        onActivate: function onActivate() {
-          return container.classList.add('is-active');
-        },
-        onDeactivate: function onDeactivate() {
-          return container.classList.remove('is-active');
-        },
-        setReturnFocus: '#overwritten-element'
-      });
-      document.getElementById('activate-setreturnfocus').addEventListener('click', focusTrap.activate);
-      document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
-    };
-
-    var createFocusTrap$c = require$$0.createFocusTrap;
-    var setReturnFocusFunction = function setReturnFocusFunction() {
-      var container = document.getElementById('setreturnfocus-function');
-      var clickedElement;
-      var isAllowedTarget = function isAllowedTarget(e) {
-        return e.target.id === 'focus-this' || e.target.id === 'focus-initial' || e.target.id === 'no-focus';
-      };
-      var setReturnFocus = function setReturnFocus(previousActiveElement) {
-        if (clickedElement && clickedElement.id === 'focus-this') {
-          return clickedElement;
-        } else if (clickedElement && clickedElement.id === 'focus-initial') {
-          return previousActiveElement;
-        }
-        return false;
-      };
-      var focusTrap = createFocusTrap$c('#setreturnfocus-function', {
-        onActivate: function onActivate() {
-          return container.classList.add('is-active');
-        },
-        onDeactivate: function onDeactivate() {
-          return container.classList.remove('is-active');
-        },
-        setReturnFocus: setReturnFocus,
-        allowOutsideClick: function allowOutsideClick(e) {
-          return isAllowedTarget(e);
-        }
-      });
-      var handleDeactivate = function handleDeactivate(e) {
-        clickedElement = e.target;
-        focusTrap.deactivate();
-      };
-      document.getElementById('activate-setreturnfocus-function').addEventListener('click', focusTrap.activate);
-      document.querySelector('#deactivate-setreturnfocus-function > #focus-this').addEventListener('click', handleDeactivate);
-      document.querySelector('#deactivate-setreturnfocus-function > #focus-initial').addEventListener('click', handleDeactivate);
-      document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
-    };
-
-    var createFocusTrap$b = require$$0.createFocusTrap;
-    var noDelay = function noDelay() {
-      var container = document.getElementById('no-delay');
-      var focusTrap = createFocusTrap$b(container, {
-        delayInitialFocus: false,
-        onActivate: function onActivate() {
-          container.style.opacity = '1';
-          container.classList.add('is-active');
-        },
-        onDeactivate: function onDeactivate() {
-          container.style.opacity = '0.2';
-          container.classList.remove('is-active');
-        }
-      });
-      var showContainer = function showContainer(e) {
-        if (e.keyCode === 13) {
-          e.preventDefault();
-          focusTrap.activate();
-        }
-      };
-      var hideContainer = function hideContainer() {
-        focusTrap.deactivate();
-      };
-      document.getElementById('activate-no-delay').addEventListener('keydown', showContainer);
-      document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
-    };
-
-    var createFocusTrap$a = require$$0.createFocusTrap;
-    var multipleElements = function multipleElements() {
-      var container = document.getElementById('multipleelements');
-      var selectors = ['#multipleelements-1', '#multipleelements-3'];
-      var focusTrap = createFocusTrap$a(selectors, {
-        clickOutsideDeactivates: true,
-        onActivate: function onActivate() {
-          container.classList.add('is-active');
-          selectors.forEach(function (selector) {
-            return document.querySelector(selector).className = 'is-active-nested';
-          });
-        },
-        onDeactivate: function onDeactivate() {
-          container.classList.remove('is-active');
-          selectors.forEach(function (selector) {
-            return document.querySelector(selector).className = null;
-          });
-        }
-      });
-      document.getElementById('activate-multipleelements').addEventListener('click', function () {
-        focusTrap.activate();
-      });
-      document.getElementById('deactivate-multipleelements').addEventListener('click', function () {
-        focusTrap.deactivate();
-      });
-    };
-
-    var createFocusTrap$9 = require$$0.createFocusTrap;
-    var multipleElementsDelete = function multipleElementsDelete() {
-      var container = document.getElementById('multipleelements-delete');
-      var selectors = ['#multipleelements-delete-1', '#multipleelements-delete-2'];
-      var focusTrap = createFocusTrap$9(selectors, {
-        allowOutsideClick: function allowOutsideClick(event) {
-          return event.target.id === 'deactivate-multipleelements-delete';
-        },
-        onActivate: function onActivate() {
-          container.classList.add('is-active');
-          selectors.forEach(function (selector) {
-            return document.querySelector(selector).className = 'is-active-nested';
-          });
-        },
-        onDeactivate: function onDeactivate() {
-          container.classList.remove('is-active');
-          selectors.forEach(function (selector) {
-            return document.querySelector(selector).className = null;
-          });
-        }
-      });
-      document.getElementById('activate-multipleelements-delete').addEventListener('click', function () {
-        focusTrap.activate();
-      });
-      document.getElementById('deactivate-multipleelements-delete').addEventListener('click', function () {
-        focusTrap.deactivate();
-      });
-      document.getElementById('multipleelements-delete-remove').addEventListener('click', function () {
-        document.getElementById('multipleelements-delete-removed-node').remove();
-      });
-    };
-
-    var createFocusTrap$8 = require$$0.createFocusTrap;
-    var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
-      var container = document.getElementById('multipleelements-delete-all');
-      var selectors = ['#multipleelements-delete-all-1', '#multipleelements-delete-all-2'];
-      var focusTrap = createFocusTrap$8(selectors, {
-        fallbackFocus: '#deactivate-multipleelements-delete-all',
-        allowOutsideClick: function allowOutsideClick(event) {
-          return event.target.id === 'deactivate-multipleelements-delete-all';
-        },
-        onActivate: function onActivate() {
-          container.classList.add('is-active');
-          selectors.forEach(function (selector) {
-            return document.querySelector(selector).className = 'is-active-nested';
-          });
-        },
-        onDeactivate: function onDeactivate() {
-          container.classList.remove('is-active');
-          selectors.forEach(function (selector) {
-            return document.querySelector(selector).className = null;
-          });
-        }
-      });
-      document.getElementById('activate-multipleelements-delete-all').addEventListener('click', function () {
-        focusTrap.activate();
-      });
-      document.getElementById('deactivate-multipleelements-delete-all').addEventListener('click', function () {
-        focusTrap.deactivate();
-      });
-      document.getElementById('multipleelements-delete-all-remove').addEventListener('click', function (event) {
-        document.getElementById('multipleelements-delete-all-removed-node').remove();
-        event.target.remove();
-      });
-    };
-
-    var createFocusTrap$7 = require$$0.createFocusTrap;
-    var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
-      var container = document.getElementById('multipleelements-multipletraps');
-      var isTrap1Active = false;
-      var isTrap2Active = false;
-      var onActivateTrap = function onActivateTrap() {
-        container.classList.add('is-active');
-      };
-      var onDeactivateTrap = function onDeactivateTrap() {
-        if (!isTrap1Active && !isTrap2Active) {
-          container.classList.remove('is-active');
-        }
-      };
-      var allowOutsideClick = function allowOutsideClick(e) {
-        return e.target.className === 'enable-outside';
-      };
-      var setActive = function setActive(selectors) {
-        var isActive = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-        selectors.forEach(function (selector) {
-          return document.querySelector(selector).className = isActive ? 'is-active-nested' : null;
-        });
-      };
-      var trap1Selectors = ['#multipleelements-multipletraps-1', '#multipleelements-multipletraps-3'];
-      var trap2Selectors = ['#multipleelements-multipletraps-2', '#multipleelements-multipletraps-4'];
-      var focusTrap1 = createFocusTrap$7(trap1Selectors, {
-        onActivate: function onActivate() {
-          onActivateTrap();
-          if (isTrap2Active) {
-            setActive(trap2Selectors, false);
-          }
-          setActive(trap1Selectors);
-          isTrap1Active = true;
-        },
-        onDeactivate: function onDeactivate() {
-          setActive(trap1Selectors, false);
-          if (isTrap2Active) {
-            setActive(trap2Selectors);
-          }
-          isTrap1Active = false;
-          onDeactivateTrap();
-        },
-        allowOutsideClick: allowOutsideClick
-      });
-      var focusTrap2 = createFocusTrap$7(trap2Selectors, {
-        onActivate: function onActivate() {
-          onActivateTrap();
-          if (isTrap1Active) {
-            setActive(trap1Selectors, false);
-          }
-          setActive(trap2Selectors);
-          isTrap2Active = true;
-        },
-        onDeactivate: function onDeactivate() {
-          setActive(trap2Selectors, false);
-          if (isTrap1Active) {
-            setActive(trap1Selectors);
-          }
-          isTrap2Active = false;
-          onDeactivateTrap();
-        },
-        allowOutsideClick: allowOutsideClick
-      });
-      document.getElementById('activate-multipleelements-multipletraps-1').addEventListener('click', function () {
-        focusTrap1.activate();
-      });
-      document.getElementById('deactivate-multipleelements-multipletraps-1').addEventListener('click', function () {
-        focusTrap1.deactivate();
-      });
-      document.getElementById('activate-multipleelements-multipletraps-2').addEventListener('click', function () {
-        focusTrap2.activate();
-      });
-      document.getElementById('deactivate-multipleelements-multipletraps-2').addEventListener('click', function () {
-        focusTrap2.deactivate();
-      });
-    };
-
-    var createFocusTrap$6 = require$$0.createFocusTrap;
+    var createFocusTrap$5 = require$$0.createFocusTrap;
     var inOpenShadowDom = function inOpenShadowDom() {
       var CustomButton = /*#__PURE__*/function (_HTMLElement) {
         _inherits(CustomButton, _HTMLElement);
@@ -3306,7 +3326,7 @@ var focusTrapDemoBundle = (function () {
           var modalEl = document.createElement('div');
           modalEl.id = 'in-open-shadow-dom-trap';
           modalEl.className = 'trap';
-          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <custom-button>Shadow Button</custom-button>\n          <button>Light DOM Button</button>\n          <custom-span>Shadow Span</custom-span>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      ";
+          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          \uD83D\uDCAC Clicking anywhere outside the trap will deactivate it, but clicking on any element\n          inside it, including those in nested shadow DOMs, will not.\n        </p>\n        <p>\n          <custom-button>Shadow Button</custom-button>\n          <button>Light DOM Button</button>\n          <custom-span>Shadow Span</custom-span>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      ";
 
           // use same styles as host
           var styleLinkEl = document.createElement('link');
@@ -3317,7 +3337,7 @@ var focusTrapDemoBundle = (function () {
           });
           shadowEl.appendChild(styleLinkEl);
           shadowEl.appendChild(modalEl);
-          var focusTrap = createFocusTrap$6(modalEl, {
+          var focusTrap = createFocusTrap$5(modalEl, {
             onActivate: function onActivate() {
               return modalEl.classList.add('is-active');
             },
@@ -3343,7 +3363,7 @@ var focusTrapDemoBundle = (function () {
       customElements.define('custom-span', CustomSpan);
     };
 
-    var createFocusTrap$5 = require$$0.createFocusTrap;
+    var createFocusTrap$4 = require$$0.createFocusTrap;
     var withShadowDom = function withShadowDom() {
       var OpenShadowTest = /*#__PURE__*/function (_HTMLElement) {
         _inherits(OpenShadowTest, _HTMLElement);
@@ -3401,7 +3421,7 @@ var focusTrapDemoBundle = (function () {
       var closedShadowHostEl = document.getElementById('with-shadow-dom-closed-shadow');
       var closedShadowEl = createClosedShadow(closedShadowHostEl);
       var containerEl = document.getElementById('with-shadow-dom');
-      var focusTrap = createFocusTrap$5('#with-shadow-dom', {
+      var focusTrap = createFocusTrap$4('#with-shadow-dom', {
         onActivate: function onActivate() {
           return containerEl.classList.add('is-active');
         },
@@ -3420,10 +3440,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-with-shadow-dom').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$4 = require$$0.createFocusTrap;
+    var createFocusTrap$3 = require$$0.createFocusTrap;
     var negativeTabindex = function negativeTabindex() {
       var container = document.getElementById('negative-tabindex');
-      var focusTrap = createFocusTrap$4('#negative-tabindex', {
+      var focusTrap = createFocusTrap$3('#negative-tabindex', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3435,10 +3455,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-negative-tabindex').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$3 = require$$0.createFocusTrap;
+    var createFocusTrap$2 = require$$0.createFocusTrap;
     var negativeTabindexLast = function negativeTabindexLast() {
       var container = document.getElementById('negative-tabindex-last');
-      var focusTrap = createFocusTrap$3('#negative-tabindex-last', {
+      var focusTrap = createFocusTrap$2('#negative-tabindex-last', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3450,7 +3470,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-negative-tabindex-last').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$2 = require$$0.createFocusTrap;
+    var createFocusTrap$1 = require$$0.createFocusTrap;
     var withOpenWebComponent = function withOpenWebComponent() {
       var container = document.getElementById('with-open-web-component');
       customElements.define('open-web-component', /*#__PURE__*/function (_HTMLElement) {
@@ -3472,7 +3492,7 @@ var focusTrapDemoBundle = (function () {
         return _class;
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement)));
       container.innerHTML = "\n    <button>button 1</button>\n    <button>button 2</button>\n    <button>button 3</button>\n    <open-web-component></open-web-component>\n    <button>button 4</button>\n    <button>button 5</button>\n    <p>\n      <button id=\"deactivate-with-open-web-component\" aria-describedby=\"with-open-web-component-heading\">\n        deactivate trap\n      </button>\n    </p>\n  ";
-      var focusTrap = createFocusTrap$2('#with-open-web-component', {
+      var focusTrap = createFocusTrap$1('#with-open-web-component', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3485,27 +3505,6 @@ var focusTrapDemoBundle = (function () {
       });
       document.getElementById('activate-with-open-web-component').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-with-open-web-component').addEventListener('click', focusTrap.deactivate);
-    };
-
-    var createFocusTrap$1 = require$$0.createFocusTrap;
-    var arrowKeys = function arrowKeys() {
-      var container = document.getElementById('arrow-keys');
-      var focusTrap = createFocusTrap$1('#arrow-keys', {
-        onActivate: function onActivate() {
-          return container.classList.add('is-active');
-        },
-        onDeactivate: function onDeactivate() {
-          return container.classList.remove('is-active');
-        },
-        isKeyForward: function isKeyForward(event) {
-          return event.key === 'k';
-        },
-        isKeyBackward: function isKeyBackward(event) {
-          return event.key === 'j';
-        }
-      });
-      document.getElementById('activate-arrow-keys').addEventListener('click', focusTrap.activate);
-      document.getElementById('deactivate-arrow-keys').addEventListener('click', focusTrap.deactivate);
     };
 
     var createFocusTrap = require$$0.createFocusTrap;
@@ -3538,6 +3537,16 @@ var focusTrapDemoBundle = (function () {
     delay();
     radio();
     iframe();
+    allowOutsideClick();
+    clickOutsideDeactivates();
+    setReturnFocus();
+    setReturnFocusFunction();
+    noDelay();
+    multipleElements();
+    multipleElementsDelete();
+    multipleElementsDeleteAll();
+    multipleElementsMultipleTraps();
+    arrowKeys();
 
     // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
     //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
@@ -3549,21 +3558,10 @@ var focusTrapDemoBundle = (function () {
       // TEST MANUALLY (causes Cypress to fail due to security context violations)
       // http://localhost:9966/#demo-in-iframe
       requireInIframe()();
-    } else {
-      throw new Error('FOOBAR'); // DEBUG REMOVE
     }
 
-    allowOutsideClick();
-    clickOutsideDeactivates();
-    setReturnFocus();
-    setReturnFocusFunction();
-    noDelay();
-    multipleElements();
-    multipleElementsDelete();
-    multipleElementsDeleteAll();
-    multipleElementsMultipleTraps();
-
     // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+    // http://localhost:9966/#demo-in-open-shadow-dom
     inOpenShadowDom();
 
     // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
@@ -3581,7 +3579,6 @@ var focusTrapDemoBundle = (function () {
     // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
     // http://localhost:9966/#demo-with-open-web-component
     withOpenWebComponent();
-    arrowKeys();
 
     // TEST MANUALLY (cypress-plugin-tab doesn't support inert)
     // http://localhost:9966/#demo-inert
