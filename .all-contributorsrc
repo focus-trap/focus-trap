@@ -286,6 +286,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "driskull",
+      "name": "Matt Driscoll",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1231455?v=4",
+      "profile": "http://blogs.esri.com/esri/arcgis/",
+      "contributions": [
+        "bug",
+        "code",
+        "tutorial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
