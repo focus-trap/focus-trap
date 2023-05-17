@@ -53,11 +53,11 @@ module.exports = () => {
       const focusTrap = createFocusTrap(modalEl, {
         onActivate: () => modalEl.classList.add('is-active'),
         onDeactivate: () => modalEl.classList.remove('is-active'),
+        //clickOutsideDeactivates: true,
         escapeDeactivates: true,
         tabbableOptions: {
           getShadowRoot: true,
         },
-        clickOutsideDeactivates: true,
       });
 
       document
