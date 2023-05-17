@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -8,18 +9,22 @@
   <link rel="stylesheet" href="style.css">
   <meta name="description" content="A demo of focus-trap">
 </head>
+
 <body>
   <main>
     <h1 tabindex="0">focus-trap demo</h1>
     <p>
       <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
-      <a id="return-to-repo" href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
+      <a id="return-to-repo" href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to
+        the repository</a>
     </p>
     <p>
-      In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also be able to tell because it will trap your focus!
+      In the demos below, you'll be able to tell that a focus trap is active because it will turn pink. You should also
+      be able to tell because it will trap your focus!
     </p>
     <p>
-      When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, pressing the <kbd>Escape</kbd> key.
+      When a trap is active, you can deactivate it by pushing its deactivate button or, if the demo allows, pressing the
+      <kbd>Escape</kbd> key.
     </p>
     <p class="macos-keyboard-warning">
       Before you try the demos, if you're using <strong>macOS</strong>, make sure you
@@ -55,7 +60,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/default.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/default.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -85,19 +91,24 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/animated-dialog.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/animated-dialog.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-animated-trigger">
       <h2 id="animated-trigger-heading">animated trigger</h2>
-      <p>The activation button for this focus trap will fade out when the trap activates and fade in when the trap deactivates.</p>
+      <p>The activation button for this focus trap will fade out when the trap activates and fade in when the trap
+        deactivates.</p>
 
-      <p>If the <code>returnFocus</code> option is <code>true</code>, the activation button will receive focus after the trap deactivates.</p>
+      <p>If the <code>returnFocus</code> option is <code>true</code>, the activation button will receive focus after the
+        trap deactivates.</p>
 
-      <p>If the <code>returnFocus</code> option is <code>false</code>, the Deactivate button will retain focus after deactivation because that is the last element that was clicked prior to deactivation.</p>
+      <p>If the <code>returnFocus</code> option is <code>false</code>, the Deactivate button will retain focus after
+        deactivation because that is the last element that was clicked prior to deactivation.</p>
 
-      <p>Once the trap has been deactivated (i.e. <code>onPostDeactivate</code>), a "trap deactivated" message appears next to the "returnFocus" option.</p>
+      <p>Once the trap has been deactivated (i.e. <code>onPostDeactivate</code>), a "trap deactivated" message appears
+        next to the "returnFocus" option.</p>
 
       <p>Note that the fade animation needs to be written yourself, it is not built into the library.</p>
       <p>
@@ -123,7 +134,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/animated-trigger.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/animated-trigger.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -159,17 +171,20 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/escape-deactivates.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/escape-deactivates.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-iene">
       <h2 id="iene-heading">initial element, no escape</h2>
       <p>
-        If <code>initialFocus</code> is a selector or DOM node, focus will jump to that specified element when the trap activates.
+        If <code>initialFocus</code> is a selector or DOM node, focus will jump to that specified element when the trap
+        activates.
       </p>
       <p>
-        If <code>initialFocus</code> is <code>false</code> (or a function that returns <code>false</code>), no element will be given focus when the trap activates.
+        If <code>initialFocus</code> is <code>false</code> (or a function that returns <code>false</code>), no element
+        will be given focus when the trap activates.
       </p>
       <p><code>initialFocus</code> is set to the first tabbable element by default.</p>
       <p>
@@ -207,14 +222,16 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/initial-element-no-escape.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/initial-element-no-escape.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-ifc">
       <h2 id="ifc-heading">initially focused container</h2>
       <p>
-        When this focus trap activates, initial focus is on the containing element (which has <code>tabindex="-1"</code> and is therefore not tabbable).
+        When this focus trap activates, initial focus is on the containing element (which has <code>tabindex="-1"</code>
+        and is therefore not tabbable).
         When you tab through the trap, focus does not return to the containing element.
       </p>
       <p>
@@ -243,7 +260,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/initially-focused-container.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/initially-focused-container.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -285,7 +303,8 @@
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/hidden-treasures.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/hidden-treasures.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -324,7 +343,8 @@
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/nested.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/nested.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -358,16 +378,19 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/sibling.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/sibling.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-tif">
       <h2 id="tif-heading">tricky initial focus</h2>
       <p>
-        In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).
+        In this focus trap, the single focusable button is hidden (the ones you see at first have
+        <code>tabindex="-1"</code>).
         If you activate the trap in this state, the <code>fallbackFocus</code> option is used to focus the container.
-        If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
+        If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that
+        button will receive focus when you activate the trap.
       </p>
       <p>
         <button id="activate-tif" aria-describedby="tif-heading">
@@ -392,14 +415,16 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/tricky-initial-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/tricky-initial-focus.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-input-activation">
       <h2 id="input-activation-heading">input activation</h2>
       <p>
-        Any change to the input content triggers automatic activation of the focus trap, without changing selection within the input.
+        Any change to the input content triggers automatic activation of the focus trap, without changing selection
+        within the input.
       </p>
       <div id="input-activation" class="trap">
         <p>
@@ -418,14 +443,17 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/input-activation.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/input-activation.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-delay">
       <h2 id="delay-heading">delay</h2>
       <p>
-        focus-trap ensure that the placement of focus within the trap is slightly delayed, so the focused element does not capture the event that originated the activation of the focus trap. For example, the same <kbd>Enter</kbd> keystroke won't open <em>and</em> close this trap.
+        focus-trap ensure that the placement of focus within the trap is slightly delayed, so the focused element does
+        not capture the event that originated the activation of the focus trap. For example, the same <kbd>Enter</kbd>
+        keystroke won't open <em>and</em> close this trap.
       </p>
       <p>
         <button id="activate-delay" aria-describedby="delay-heading">
@@ -441,14 +469,16 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/delay.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/delay.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-no-delay">
       <h2 id="delay-heading-explicit">No delay</h2>
       <p>
-        focus-trap ensure that the placement of focus within the trap is not delayed, so the focused element captures the event that originated the activation of the focus trap.
+        focus-trap ensure that the placement of focus within the trap is not delayed, so the focused element captures
+        the event that originated the activation of the focus trap.
       </p>
       <p>
         <button id="activate-no-delay" aria-describedby="delay-heading-explicit">
@@ -464,14 +494,17 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/no-delay.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/no-delay.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-radio">
       <h2 id="radio-heading">radio group</h2>
       <p>
-        A default focus trap that contains a radio group. You should be able to change the radio group with the arrow keys, but <kbd>Tab</kbd> should only focus the active radio. (Notice that you need a checked radio in the group for things to work as expected.)
+        A default focus trap that contains a radio group. You should be able to change the radio group with the arrow
+        keys, but <kbd>Tab</kbd> should only focus the active radio. (Notice that you need a checked radio in the group
+        for things to work as expected.)
       </p>
       <p>
         <button id="activate-radio" aria-describedby="radio-heading">
@@ -483,9 +516,11 @@
           <legend>Radio group</legend>
           <div>
             <input type="radio" name="radio-set" id="radio-a" value="radio-a"> <label for="radio-a">a</label>
-          </div><div>
+          </div>
+          <div>
             <input type="radio" name="radio-set" id="radio-b" value="radio-b" checked> <label for="radio-b">b</label>
-          </div><div>
+          </div>
+          <div>
             <input type="radio" name="radio-set" id="radio-c" value="radio-c"> <label for="radio-c">c</label>
           </div>
         </fieldset>
@@ -496,14 +531,16 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/radio.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/radio.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-iframe">
       <h2 id="iframe-heading">iframe</h2>
       <p>
-        This focus trap contains an iframe. You should be able to tab into and out of the iframe. But you need to have a focusable element before and after the iframe for things to work as expected.
+        This focus trap contains an iframe. You should be able to tab into and out of the iframe. But you need to have a
+        focusable element before and after the iframe for things to work as expected.
       </p>
       <p>
         <button id="activate-iframe" aria-describedby="iframe-heading">
@@ -524,7 +561,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/iframe.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/iframe.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -545,17 +583,11 @@
           activate trap
         </button>
       </p>
-      <iframe
-        id="in-iframe"
-        src="./in-iframe-content.html"
-        class="demo-iframe"
-        aria-describedby="iframe-heading"
-      ></iframe>
+      <iframe id="in-iframe" src="./in-iframe-content.html" class="demo-iframe"
+        aria-describedby="iframe-heading"></iframe>
       <p>
-        <a
-          href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-iframe.js"
-          >View demo source <span aria-hidden="true">&gt;&gt;</span></a
-        >
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-iframe.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -570,7 +602,8 @@
       <h2 id="in-open-shadow-dom-heading">inside an open shadow dom</h2>
       <p>
         This focus trap is instantiated <em>inside</em> an <strong>open</strong>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM" target="blank" rel="noreferrer">Shadow DOM</a>.
+        <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM" target="blank"
+          rel="noreferrer">Shadow DOM</a>.
         Some users of this library use Web Components to create things like modal dialogs,
         which means focus needs to be trapped inside the Shadow DOM instance.
       </p>
@@ -601,9 +634,16 @@
           activate trap
         </button>
       </p>
+      <p>
+        <label>
+          Clicking outside deactivates:
+          <input type="checkbox" id="checkbox-clickoutsidedeactivates-in-open-shadow" />
+        </label>
+      </p>
       <focus-trap-modal></focus-trap-modal>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-open-shadow-dom.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/in-open-shadow-dom.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -632,17 +672,23 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/with-shadow-dom.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/with-shadow-dom.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-allowoutsideclick">
       <h2 id="allowoutsideclick-heading">allowOutsideClick option</h2>
       <p>
-        This focus trap can be closed also by clicking a button outside of the trap <strong>that is able to control the trap</strong> (which is the "activate trap" button in this example). ESC is <strong>disabled</strong> for this trap.
+        This focus trap can be closed also by clicking a button outside of the trap <strong>that is able to control the
+          trap</strong> (which is the "activate trap" button in this example). ESC is <strong>disabled</strong> for this
+        trap.
       </p>
       <p>
-        NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take place on the "activate/deactivate trap" button, whose click event handler will programmatically deactivate the trap.
+        NOTE: This is different from the <a href="#clickoutsidedeactivates-heading">clickOutsideDeactivates</a> where
+        merely clicking outside the trap would cause it to be deactivated. In this example, the outside click must take
+        place on the "activate/deactivate trap" button, whose click event handler will programmatically deactivate the
+        trap.
       </p>
       <p>
         <label>
@@ -669,21 +715,32 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/allow-outside-click.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/allow-outside-click.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-clickoutsidedeactivates">
       <h2 id="clickoutsidedeactivates-heading">clickOutsideDeactivates option</h2>
       <p>
-        This focus trap can be closed simply by <strong>clicking anywhere outside</strong>, and the click outside will also go through and do what it was intentionally dispatched to do (like toggling the checkbox). ESC is <strong>disabled</strong> for this trap.
+        This focus trap can be closed simply by <strong>clicking anywhere outside</strong>, and the click outside will
+        also go through and do what it was intentionally dispatched to do (like toggling the checkbox). ESC is
+        <strong>disabled</strong> for this trap.
       </p>
       <p>
-        The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused element when the trap was activated (the "activate trap" button in this demo) or not:
+        The <code>returnFocusOnDeactivate</code> option controls whether focus should be returned to the last-focused
+        element when the trap was activated (the "activate trap" button in this demo) or not:
       </p>
       <ul>
-        <li>If this option is <code>true</code> (the default behavior), <em>even if</em> you click on a focusable node outside the trap (like the checkbox), while the click will go through to toggle the checkbox, it will <strong>not</strong> be focused once the trap is fully deactivated. Focus will return to the "activate trap" button.</li>
-        <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document or a heading). So if you click on the checkbox, it will remain focused once the trap is fully deactivated.</li>
+        <li>If this option is <code>true</code> (the default behavior), <em>even if</em> you click on a focusable node
+          outside the trap (like the checkbox), while the click will go through to toggle the checkbox, it will
+          <strong>not</strong> be focused once the trap is fully deactivated. Focus will return to the "activate trap"
+          button.
+        </li>
+        <li>If <code>false</code>, then it doesn't matter what you click on (focusable or not), focus will go away from
+          the trap to where you clicked, or to nowhere if you clicked on something not focusable (like the page/document
+          or a heading). So if you click on the checkbox, it will remain focused once the trap is fully deactivated.
+        </li>
       </ul>
       <p>
         <label>
@@ -725,7 +782,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/click-outside-deactivates.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/click-outside-deactivates.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -752,33 +810,36 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/set-return-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/set-return-focus.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-setreturnfocus-function">
       <h2 id="setreturnfocus-function-heading">setReturnFocus as function</h2>
       <p>
-        As the function is executed in the process of deactivation, it allows you to dynamically specify which element should be focused after deactivation.
+        As the function is executed in the process of deactivation, it allows you to dynamically specify which element
+        should be focused after deactivation.
       </p>
       <p>
-        Once the trap is activated, you can still click on one of the 3 deactivate buttons below in order to deactivate the trap.
+        Once the trap is activated, you can still click on one of the 3 deactivate buttons below in order to deactivate
+        the trap.
       </p>
       <p>
         <button id="activate-setreturnfocus-function" aria-describedby="setreturnfocus-function-heading">
           activate trap
         </button>
-        <p id="deactivate-setreturnfocus-function">
-          <button id="focus-this">
-            deactivate and focus this
-          </button>
-          <button id="focus-initial">
-            deactivate and focus 'activate trap'
-          </button>
-          <button id="no-focus">
-            deactivate and no change in focus
-          </button>
-        </p>
+      <p id="deactivate-setreturnfocus-function">
+        <button id="focus-this">
+          deactivate and focus this
+        </button>
+        <button id="focus-initial">
+          deactivate and focus 'activate trap'
+        </button>
+        <button id="no-focus">
+          deactivate and no change in focus
+        </button>
+      </p>
       </p>
       <div id="setreturnfocus-function" class="trap">
         <p>
@@ -787,8 +848,8 @@
         </p>
       </div>
       <p>
-        <a
-          href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/set-return-focus-function.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/set-return-focus-function.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
     <div id="demo-multipleelements">
@@ -821,7 +882,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -857,7 +919,8 @@
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-delete.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-delete.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -890,7 +953,8 @@
         </div>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-delete-all.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-delete-all.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -902,10 +966,12 @@
         and deactivate trap buttons is allowed.
       </p>
       <p>
-        <button id="activate-multipleelements-multipletraps-1" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
+        <button id="activate-multipleelements-multipletraps-1" class="enable-outside"
+          aria-describedby="multipleelements-multipletraps-heading">
           activate trap 1
         </button>
-        <button id="activate-multipleelements-multipletraps-2" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
+        <button id="activate-multipleelements-multipletraps-2" class="enable-outside"
+          aria-describedby="multipleelements-multipletraps-heading">
           activate trap 2
         </button>
       </p>
@@ -925,16 +991,19 @@
           Here is the <a href="#">last</a> trap <a href="#">area</a>.
         </p>
         <p>
-          <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
+          <button id="deactivate-multipleelements-multipletraps-1" class="enable-outside"
+            aria-describedby="multipleelements-multipletraps-heading">
             deactivate trap 1
           </button>
-          <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside" aria-describedby="multipleelements-multipletraps-heading">
+          <button id="deactivate-multipleelements-multipletraps-2" class="enable-outside"
+            aria-describedby="multipleelements-multipletraps-heading">
             deactivate trap 2
           </button>
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-multiple-traps.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-elements-multiple-traps.js">View
+          demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -973,7 +1042,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/negative-tabindex.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/negative-tabindex.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -1013,7 +1083,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/negative-tabindex.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/negative-tabindex.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -1028,18 +1099,21 @@
           activate trap
         </button>
       </p>
+
       <div id="with-open-web-component" class="trap">
         <!-- content generated from JavaScript -->
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/with-open-web-component.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/with-open-web-component.js">View demo
+          source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
     <div id="demo-global-trap-stack">
       <h2 id="global-trap-stack-heading">Global trap stack</h2>
       <p>
-        Use window to have access to trap stack. This allows to have more than one focus-trap library version in the same page.
+        Use window to have access to trap stack. This allows to have more than one focus-trap library version in the
+        same page.
       </p>
       <p>
         <button id="activate-global-trap-stack" aria-describedby="global-trap-stack-heading">
@@ -1060,7 +1134,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/global-trap-stack.js.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/global-trap-stack.js.js">View demo source
+          <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -1094,7 +1169,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/arrow-keys.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/arrow-keys.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -1108,7 +1184,8 @@
       </p>
       <p>
         ⚠️ Check the
-        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert#browser_compatibility" target="_blank">browser compatibility</a>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inert#browser_compatibility"
+          target="_blank">browser compatibility</a>
         for the browser you're using right now before trying this demo. It will not work properly
         if your browser doesn't support the <code>inert</code> attribute.
       </p>
@@ -1131,7 +1208,8 @@
         </p>
       </div>
       <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/default.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/default.js">View demo source <span
+            aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 
@@ -1142,4 +1220,5 @@
   </main>
   <script src="demo-bundle.js"></script>
 </body>
+
 </html>

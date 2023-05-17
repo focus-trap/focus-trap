@@ -2,12 +2,11 @@
 * focus-trap 7.4.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":""};
+        const env = {"BUILD_ENV":"demo"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -3317,21 +3316,37 @@ var focusTrapDemoBundle = (function () {
           });
           shadowEl.appendChild(styleLinkEl);
           shadowEl.appendChild(modalEl);
-          var focusTrap = createFocusTrap$6(modalEl, {
-            onActivate: function onActivate() {
-              return modalEl.classList.add('is-active');
-            },
-            onDeactivate: function onDeactivate() {
-              return modalEl.classList.remove('is-active');
-            },
-            escapeDeactivates: true,
-            tabbableOptions: {
-              getShadowRoot: true
-            },
-            clickOutsideDeactivates: true
+          var clickOutsideDeactivates = false;
+          var initialize = function initialize() {
+            return createFocusTrap$6(modalEl, {
+              onActivate: function onActivate() {
+                return modalEl.classList.add('is-active');
+              },
+              onDeactivate: function onDeactivate() {
+                return modalEl.classList.remove('is-active');
+              },
+              clickOutsideDeactivates: clickOutsideDeactivates,
+              escapeDeactivates: true,
+              tabbableOptions: {
+                getShadowRoot: true
+              }
+            });
+          };
+          var focusTrap = initialize();
+          var checkbox = document.getElementById('checkbox-clickoutsidedeactivates-in-open-shadow');
+          checkbox.addEventListener('change', function () {
+            clickOutsideDeactivates = checkbox.checked;
+            focusTrap.deactivate();
+            focusTrap = initialize();
           });
-          document.getElementById('activate-in-open-shadow-dom').addEventListener('click', focusTrap.activate);
-          modalEl.querySelector('#deactivate-in-open-shadow-dom').addEventListener('click', focusTrap.deactivate);
+          var activate = function activate() {
+            focusTrap.activate();
+          };
+          var deactivate = function deactivate() {
+            focusTrap.deactivate();
+          };
+          document.getElementById('activate-in-open-shadow-dom').addEventListener('click', activate);
+          modalEl.querySelector('#deactivate-in-open-shadow-dom').addEventListener('click', deactivate);
           return _this3;
         }
         return _createClass(FocusTrapModal);
