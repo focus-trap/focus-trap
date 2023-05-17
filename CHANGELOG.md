@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.4.2
+
+### Patch Changes
+
+- db62ce3: Clicking on open shadowDOM components within a focus trap's container when `clickOutsideDeactivates=true` should not deactivate the focus trap. ([#959](https://github.com/focus-trap/focus-trap/issues/959))
+
 ## 7.4.1
 
 ### Patch Changes
