@@ -2,6 +2,7 @@
 * focus-trap 7.4.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
@@ -3323,8 +3324,9 @@ var focusTrapDemoBundle = (function () {
             onDeactivate: function onDeactivate() {
               return modalEl.classList.remove('is-active');
             },
-            clickOutsideDeactivates: false,
-            // set to true to verify clicking on shadowDOM components within a focus trap's container should not deactivate the focus trap.
+            // allow outside clicks to deactivate to verify clicking on shadowDOM components within
+            //  a focus trap's container should not deactivate the focus trap (#959)
+            clickOutsideDeactivates: true,
             escapeDeactivates: true,
             tabbableOptions: {
               getShadowRoot: true
@@ -3547,7 +3549,10 @@ var focusTrapDemoBundle = (function () {
       // TEST MANUALLY (causes Cypress to fail due to security context violations)
       // http://localhost:9966/#demo-in-iframe
       requireInIframe()();
+    } else {
+      throw new Error('FOOBAR'); // DEBUG REMOVE
     }
+
     allowOutsideClick();
     clickOutsideDeactivates();
     setReturnFocus();

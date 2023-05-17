@@ -1,5 +1,5 @@
 describe('focus-trap', () => {
-  beforeEach(() => cy.visit('index.html'));
+  beforeEach(() => cy.visit('index.html?bundle=cypress'));
 
   /**
    * Verify focus trap is **trapping** focus by clicking outside element

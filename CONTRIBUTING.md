@@ -44,6 +44,6 @@ Please feel free to use the bot on your own issue or PR to add yourself as a con
 
 The docs are published at http://focus-trap.github.io/focus-trap/ and served from the `/docs` directory in the repo.
 
-Simply run `npm run demo-bundle` locally, commit the updated `/docs/demo-bundle.*` files, and open a PR to updated it.
+Simply run `npm run demo-bundle` locally, commit the updated `/docs/demo-bundle.*` files (note that other `/docs/demo-bundle-[debug,cypress].*` bundles may exist, but they are _git-ignored_ and should not be committed), and open a PR to updated it.
 
 Ideally, this is done within any PR that modifies anything under `/docs`, or the library code itself.

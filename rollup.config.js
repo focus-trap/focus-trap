@@ -146,12 +146,14 @@ const umd = [
 
 const isDevServer = process.env.SERVE === 'true';
 const isLiveReload = process.env.RELOAD === 'true';
+const isCypressRun =
+  isDevServer && !isLiveReload && !!process.env.IS_CYPRESS_ENV;
 const demo = {
   input: './docs/js/index.js',
   output: {
     name: 'focusTrapDemoBundle',
     preserveModules: false,
-    file: 'docs/demo-bundle.js',
+    file: `docs/demo-bundle${isCypressRun ? '-cypress' : ''}.js`,
     format: 'iife', // immediately-invoked function expression — suitable for <script> tags
     sourcemap: true,
     banner,
@@ -168,6 +170,7 @@ const demo = {
       serve({
         port: 9966,
         contentBase: 'docs',
+        openPage: `/index.html${isCypressRun ? '?bundle=cypress' : ''}`,
       }), // index.html should be in root of project
     isLiveReload && livereload({ port: 9966, watch: 'docs' }),
   ],
