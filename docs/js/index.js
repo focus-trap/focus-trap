@@ -35,6 +35,8 @@ require('./multiple-elements')();
 require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
+
+// TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 require('./in-open-shadow-dom')();
 
 // TEST MANUALLY (Cypress doesn't support Shadow DOM well)

@@ -1,12 +1,12 @@
 /*!
-* focus-trap 7.4.0
+* focus-trap 7.4.1
 * @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
 
     (function() {
-        const env = {"BUILD_ENV":"demo","IS_CYPRESS_ENV":"chrome"};
+        const env = {"BUILD_ENV":"demo"};
         try {
             if (process) {
                 process.env = Object.assign({}, process.env);
@@ -572,7 +572,7 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 6.1.1
+    * tabbable 6.1.2
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
     // NOTE: separate `:not()` selectors has broader browser support than the newer
@@ -1263,23 +1263,24 @@ var focusTrapDemoBundle = (function () {
       /**
        * Finds the index of the container that contains the element.
        * @param {HTMLElement} element
+       * @param {Event} [event]
        * @returns {number} Index of the container in either `state.containers` or
        *  `state.containerGroups` (the order/length of these lists are the same); -1
        *  if the element isn't found.
        */
-      var findContainerIndex = function findContainerIndex(element) {
+      var findContainerIndex = function findContainerIndex(element, event) {
+        var composedPath = typeof (event === null || event === void 0 ? void 0 : event.composedPath) === 'function' ? event.composedPath() : undefined;
         // NOTE: search `containerGroups` because it's possible a group contains no tabbable
         //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
         //  and we still need to find the element in there
         return state.containerGroups.findIndex(function (_ref) {
           var container = _ref.container,
             tabbableNodes = _ref.tabbableNodes;
-          return container.contains(element) ||
-          // fall back to explicit tabbable search which will take into consideration any
+          return container.contains(element) || ( // fall back to explicit tabbable search which will take into consideration any
           //  web components if the `tabbableOptions.getShadowRoot` option was used for
           //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
           //  look inside web components even if open)
-          tabbableNodes.find(function (node) {
+          composedPath === null || composedPath === void 0 ? void 0 : composedPath.includes(container)) || tabbableNodes.find(function (node) {
             return node === element;
           });
         });
@@ -1440,7 +1441,7 @@ var focusTrapDemoBundle = (function () {
       // so that it precedes the focus event.
       var checkPointerDown = function checkPointerDown(e) {
         var target = getActualTarget(e);
-        if (findContainerIndex(target) >= 0) {
+        if (findContainerIndex(target, e) >= 0) {
           // allow the click since it ocurred inside the trap
           return;
         }
@@ -1473,7 +1474,7 @@ var focusTrapDemoBundle = (function () {
       // In case focus escapes the trap for some strange reason, pull it back in.
       var checkFocusIn = function checkFocusIn(e) {
         var target = getActualTarget(e);
-        var targetContained = findContainerIndex(target) >= 0;
+        var targetContained = findContainerIndex(target, e) >= 0;
 
         // In Firefox when you Tab out of an iframe the Document is briefly focused.
         if (targetContained || target instanceof Document) {
@@ -1500,7 +1501,7 @@ var focusTrapDemoBundle = (function () {
           // make sure the target is actually contained in a group
           // NOTE: the target may also be the container itself if it's focusable
           //  with tabIndex='-1' and was given initial focus
-          var containerIndex = findContainerIndex(target);
+          var containerIndex = findContainerIndex(target, event);
           var containerGroup = containerIndex >= 0 ? state.containerGroups[containerIndex] : undefined;
           if (containerIndex < 0) {
             // target not found in any group: quite possible focus has escaped the trap,
@@ -1601,7 +1602,7 @@ var focusTrapDemoBundle = (function () {
       };
       var checkClick = function checkClick(e) {
         var target = getActualTarget(e);
-        if (findContainerIndex(target) >= 0) {
+        if (findContainerIndex(target, e) >= 0) {
           return;
         }
         if (valueOrHandler(config.clickOutsideDeactivates, e)) {
@@ -2180,15 +2181,12 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
     };
 
-    var runtimeExports = {};
-    var runtime = {
-      get exports(){ return runtimeExports; },
-      set exports(v){ runtimeExports = v; },
-    };
+    var runtime = {exports: {}};
 
+    runtime.exports;
     var hasRequiredRuntime;
     function requireRuntime() {
-      if (hasRequiredRuntime) return runtimeExports;
+      if (hasRequiredRuntime) return runtime.exports;
       hasRequiredRuntime = 1;
       (function (module) {
         var runtime = function (exports) {
@@ -2853,7 +2851,7 @@ var focusTrapDemoBundle = (function () {
           }
         }
       })(runtime);
-      return runtimeExports;
+      return runtime.exports;
     }
 
     var inIframe;
@@ -3268,24 +3266,52 @@ var focusTrapDemoBundle = (function () {
 
     var createFocusTrap$6 = require$$0.createFocusTrap;
     var inOpenShadowDom = function inOpenShadowDom() {
-      var FocusTrapModal = /*#__PURE__*/function (_HTMLElement) {
-        _inherits(FocusTrapModal, _HTMLElement);
-        var _super = _createSuper(FocusTrapModal);
-        function FocusTrapModal() {
+      var CustomButton = /*#__PURE__*/function (_HTMLElement) {
+        _inherits(CustomButton, _HTMLElement);
+        var _super = _createSuper(CustomButton);
+        function CustomButton() {
           var _this;
-          _classCallCheck(this, FocusTrapModal);
+          _classCallCheck(this, CustomButton);
           _this = _super.call(this);
-          _this.id = 'in-open-shadow-dom-host';
+          _this.attachShadow({
+            mode: 'open'
+          }).innerHTML = '<button id="button-inside-custom-button"><slot></slot></button>';
+          return _this;
+        }
+        return _createClass(CustomButton);
+      }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
+      var CustomSpan = /*#__PURE__*/function (_HTMLElement2) {
+        _inherits(CustomSpan, _HTMLElement2);
+        var _super2 = _createSuper(CustomSpan);
+        function CustomSpan() {
+          var _this2;
+          _classCallCheck(this, CustomSpan);
+          _this2 = _super2.call(this);
+          _this2.attachShadow({
+            mode: 'open'
+          }).innerHTML = '<span id="span-inside-custom-span"><slot></slot></span>';
+          return _this2;
+        }
+        return _createClass(CustomSpan);
+      }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
+      var FocusTrapModal = /*#__PURE__*/function (_HTMLElement3) {
+        _inherits(FocusTrapModal, _HTMLElement3);
+        var _super3 = _createSuper(FocusTrapModal);
+        function FocusTrapModal() {
+          var _this3;
+          _classCallCheck(this, FocusTrapModal);
+          _this3 = _super3.call(this);
+          _this3.id = 'in-open-shadow-dom-host';
           var modalEl = document.createElement('div');
           modalEl.id = 'in-open-shadow-dom-trap';
           modalEl.className = 'trap';
-          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      ";
+          modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          <custom-button>Shadow Button</custom-button>\n          <button>Light DOM Button</button>\n          <custom-span>Shadow Span</custom-span>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      ";
 
           // use same styles as host
           var styleLinkEl = document.createElement('link');
           styleLinkEl.setAttribute('rel', 'stylesheet');
           styleLinkEl.setAttribute('href', 'style.css');
-          var shadowEl = _this.attachShadow({
+          var shadowEl = _this3.attachShadow({
             mode: 'open'
           });
           shadowEl.appendChild(styleLinkEl);
@@ -3297,15 +3323,22 @@ var focusTrapDemoBundle = (function () {
             onDeactivate: function onDeactivate() {
               return modalEl.classList.remove('is-active');
             },
-            escapeDeactivates: true
+            clickOutsideDeactivates: false,
+            // set to true to verify clicking on shadowDOM components within a focus trap's container should not deactivate the focus trap.
+            escapeDeactivates: true,
+            tabbableOptions: {
+              getShadowRoot: true
+            }
           });
           document.getElementById('activate-in-open-shadow-dom').addEventListener('click', focusTrap.activate);
           modalEl.querySelector('#deactivate-in-open-shadow-dom').addEventListener('click', focusTrap.deactivate);
-          return _this;
+          return _this3;
         }
         return _createClass(FocusTrapModal);
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
       customElements.define('focus-trap-modal', FocusTrapModal);
+      customElements.define('custom-button', CustomButton);
+      customElements.define('custom-span', CustomSpan);
     };
 
     var createFocusTrap$5 = require$$0.createFocusTrap;
@@ -3524,6 +3557,8 @@ var focusTrapDemoBundle = (function () {
     multipleElementsDelete();
     multipleElementsDeleteAll();
     multipleElementsMultipleTraps();
+
+    // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
     inOpenShadowDom();
 
     // TEST MANUALLY (Cypress doesn't support Shadow DOM well)

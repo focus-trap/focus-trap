@@ -178,11 +178,16 @@ const createFocusTrap = function (elements, userOptions) {
   /**
    * Finds the index of the container that contains the element.
    * @param {HTMLElement} element
+   * @param {Event} [event]
    * @returns {number} Index of the container in either `state.containers` or
    *  `state.containerGroups` (the order/length of these lists are the same); -1
    *  if the element isn't found.
    */
-  const findContainerIndex = function (element) {
+  const findContainerIndex = function (element, event) {
+    const composedPath =
+      typeof event?.composedPath === 'function'
+        ? event.composedPath()
+        : undefined;
     // NOTE: search `containerGroups` because it's possible a group contains no tabbable
     //  nodes, but still contains focusable nodes (e.g. if they all have `tabindex=-1`)
     //  and we still need to find the element in there
@@ -193,6 +198,7 @@ const createFocusTrap = function (elements, userOptions) {
         //  web components if the `tabbableOptions.getShadowRoot` option was used for
         //  the trap, enabling shadow DOM support in tabbable (`Node.contains()` doesn't
         //  look inside web components even if open)
+        composedPath?.includes(container) ||
         tabbableNodes.find((node) => node === element)
     );
   };
@@ -380,7 +386,7 @@ const createFocusTrap = function (elements, userOptions) {
   const checkPointerDown = function (e) {
     const target = getActualTarget(e);
 
-    if (findContainerIndex(target) >= 0) {
+    if (findContainerIndex(target, e) >= 0) {
       // allow the click since it ocurred inside the trap
       return;
     }
@@ -414,7 +420,7 @@ const createFocusTrap = function (elements, userOptions) {
   // In case focus escapes the trap for some strange reason, pull it back in.
   const checkFocusIn = function (e) {
     const target = getActualTarget(e);
-    const targetContained = findContainerIndex(target) >= 0;
+    const targetContained = findContainerIndex(target, e) >= 0;
 
     // In Firefox when you Tab out of an iframe the Document is briefly focused.
     if (targetContained || target instanceof Document) {
@@ -442,7 +448,7 @@ const createFocusTrap = function (elements, userOptions) {
       // make sure the target is actually contained in a group
       // NOTE: the target may also be the container itself if it's focusable
       //  with tabIndex='-1' and was given initial focus
-      const containerIndex = findContainerIndex(target);
+      const containerIndex = findContainerIndex(target, event);
       const containerGroup =
         containerIndex >= 0 ? state.containerGroups[containerIndex] : undefined;
 
@@ -578,7 +584,7 @@ const createFocusTrap = function (elements, userOptions) {
   const checkClick = function (e) {
     const target = getActualTarget(e);
 
-    if (findContainerIndex(target) >= 0) {
+    if (findContainerIndex(target, e) >= 0) {
       return;
     }
 
