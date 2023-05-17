@@ -148,6 +148,10 @@ const isDevServer = process.env.SERVE === 'true';
 const isLiveReload = process.env.RELOAD === 'true';
 const isCypressRun =
   isDevServer && !isLiveReload && !!process.env.IS_CYPRESS_ENV;
+const demoBanner = `/*!
+* ${pkg.name} demo bundle${isCypressRun ? ' (cypress)' : ''}
+*/`;
+
 const demo = {
   input: './docs/js/index.js',
   output: {
@@ -156,7 +160,7 @@ const demo = {
     file: `docs/demo-bundle${isCypressRun ? '-cypress' : ''}.js`,
     format: 'iife', // immediately-invoked function expression — suitable for <script> tags
     sourcemap: true,
-    banner,
+    banner: demoBanner,
   },
   plugins: [
     resolve(),

@@ -1,6 +1,5 @@
 /*!
-* focus-trap 7.4.1
-* @license MIT, https://github.com/focus-trap/focus-trap/blob/master/LICENSE
+* focus-trap demo bundle
 */
 var focusTrapDemoBundle = (function () {
     'use strict';
