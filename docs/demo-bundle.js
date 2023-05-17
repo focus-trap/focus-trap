@@ -3323,7 +3323,8 @@ var focusTrapDemoBundle = (function () {
             onDeactivate: function onDeactivate() {
               return modalEl.classList.remove('is-active');
             },
-            //clickOutsideDeactivates: true,
+            clickOutsideDeactivates: false,
+            // set to true to verify clicking on shadowDOM components within a focus trap's container should not deactivate the focus trap.
             escapeDeactivates: true,
             tabbableOptions: {
               getShadowRoot: true

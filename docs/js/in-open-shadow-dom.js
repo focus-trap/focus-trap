@@ -53,7 +53,7 @@ module.exports = () => {
       const focusTrap = createFocusTrap(modalEl, {
         onActivate: () => modalEl.classList.add('is-active'),
         onDeactivate: () => modalEl.classList.remove('is-active'),
-        //clickOutsideDeactivates: true,
+        clickOutsideDeactivates: false, // set to true to verify clicking on shadowDOM components within a focus trap's container should not deactivate the focus trap.
         escapeDeactivates: true,
         tabbableOptions: {
           getShadowRoot: true,
