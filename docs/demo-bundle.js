@@ -571,7 +571,7 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 6.1.1
+    * tabbable 6.1.2
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
     // NOTE: separate `:not()` selectors has broader browser support than the newer
@@ -2597,15 +2597,30 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-arrow-keys').addEventListener('click', focusTrap.deactivate);
     };
 
-    var runtimeExports = {};
-    var runtime = {
-      get exports(){ return runtimeExports; },
-      set exports(v){ runtimeExports = v; },
+    var createFocusTrap$6 = require$$0.createFocusTrap;
+    var domRemove = function domRemove() {
+      var container = document.getElementById('dom-remove');
+      document.getElementById('dom-remove-button').addEventListener('click', function (event) {
+        event.target.remove();
+      });
+      var focusTrap = createFocusTrap$6('#dom-remove', {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        }
+      });
+      document.getElementById('activate-dom-remove').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-dom-remove').addEventListener('click', focusTrap.deactivate);
     };
 
+    var runtime = {exports: {}};
+
+    runtime.exports;
     var hasRequiredRuntime;
     function requireRuntime() {
-      if (hasRequiredRuntime) return runtimeExports;
+      if (hasRequiredRuntime) return runtime.exports;
       hasRequiredRuntime = 1;
       (function (module) {
         var runtime = function (exports) {
@@ -3270,7 +3285,7 @@ var focusTrapDemoBundle = (function () {
           }
         }
       })(runtime);
-      return runtimeExports;
+      return runtime.exports;
     }
 
     var inIframe;
@@ -3329,7 +3344,7 @@ var focusTrapDemoBundle = (function () {
       return inIframe;
     }
 
-    var createFocusTrap$6 = require$$0.createFocusTrap;
+    var createFocusTrap$5 = require$$0.createFocusTrap;
     var inOpenShadowDom = function inOpenShadowDom() {
       var CustomButton = /*#__PURE__*/function (_HTMLElement) {
         _inherits(CustomButton, _HTMLElement);
@@ -3381,7 +3396,7 @@ var focusTrapDemoBundle = (function () {
           });
           shadowEl.appendChild(styleLinkEl);
           shadowEl.appendChild(modalEl);
-          var focusTrap = createFocusTrap$6(modalEl, {
+          var focusTrap = createFocusTrap$5(modalEl, {
             onActivate: function onActivate() {
               return modalEl.classList.add('is-active');
             },
@@ -3407,7 +3422,7 @@ var focusTrapDemoBundle = (function () {
       customElements.define('custom-span', CustomSpan);
     };
 
-    var createFocusTrap$5 = require$$0.createFocusTrap;
+    var createFocusTrap$4 = require$$0.createFocusTrap;
     var withShadowDom = function withShadowDom() {
       var OpenShadowTest = /*#__PURE__*/function (_HTMLElement) {
         _inherits(OpenShadowTest, _HTMLElement);
@@ -3465,7 +3480,7 @@ var focusTrapDemoBundle = (function () {
       var closedShadowHostEl = document.getElementById('with-shadow-dom-closed-shadow');
       var closedShadowEl = createClosedShadow(closedShadowHostEl);
       var containerEl = document.getElementById('with-shadow-dom');
-      var focusTrap = createFocusTrap$5('#with-shadow-dom', {
+      var focusTrap = createFocusTrap$4('#with-shadow-dom', {
         onActivate: function onActivate() {
           return containerEl.classList.add('is-active');
         },
@@ -3484,10 +3499,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-with-shadow-dom').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$4 = require$$0.createFocusTrap;
+    var createFocusTrap$3 = require$$0.createFocusTrap;
     var negativeTabindex = function negativeTabindex() {
       var container = document.getElementById('negative-tabindex');
-      var focusTrap = createFocusTrap$4('#negative-tabindex', {
+      var focusTrap = createFocusTrap$3('#negative-tabindex', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3499,10 +3514,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-negative-tabindex').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$3 = require$$0.createFocusTrap;
+    var createFocusTrap$2 = require$$0.createFocusTrap;
     var negativeTabindexLast = function negativeTabindexLast() {
       var container = document.getElementById('negative-tabindex-last');
-      var focusTrap = createFocusTrap$3('#negative-tabindex-last', {
+      var focusTrap = createFocusTrap$2('#negative-tabindex-last', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3514,7 +3529,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-negative-tabindex-last').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$2 = require$$0.createFocusTrap;
+    var createFocusTrap$1 = require$$0.createFocusTrap;
     var withOpenWebComponent = function withOpenWebComponent() {
       var container = document.getElementById('with-open-web-component');
       customElements.define('open-web-component', /*#__PURE__*/function (_HTMLElement) {
@@ -3536,7 +3551,7 @@ var focusTrapDemoBundle = (function () {
         return _class;
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement)));
       container.innerHTML = "\n    <button>button 1</button>\n    <button>button 2</button>\n    <button>button 3</button>\n    <open-web-component></open-web-component>\n    <button>button 4</button>\n    <button>button 5</button>\n    <p>\n      <button id=\"deactivate-with-open-web-component\" aria-describedby=\"with-open-web-component-heading\">\n        deactivate trap\n      </button>\n    </p>\n  ";
-      var focusTrap = createFocusTrap$2('#with-open-web-component', {
+      var focusTrap = createFocusTrap$1('#with-open-web-component', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3551,10 +3566,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-with-open-web-component').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$1 = require$$0.createFocusTrap;
+    var createFocusTrap = require$$0.createFocusTrap;
     var inert = function inert() {
       var container = document.getElementById('inert');
-      var focusTrap = createFocusTrap$1('#inert', {
+      var focusTrap = createFocusTrap('#inert', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3564,24 +3579,6 @@ var focusTrapDemoBundle = (function () {
       });
       document.getElementById('activate-inert').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-inert').addEventListener('click', focusTrap.deactivate);
-    };
-
-    var createFocusTrap = require$$0.createFocusTrap;
-    var domRemove = function domRemove() {
-      var container = document.getElementById('dom-remove');
-      document.getElementById('dom-remove-button').addEventListener('click', function (event) {
-        event.target.remove();
-      });
-      var focusTrap = createFocusTrap('#dom-remove', {
-        onActivate: function onActivate() {
-          return container.classList.add('is-active');
-        },
-        onDeactivate: function onDeactivate() {
-          return container.classList.remove('is-active');
-        }
-      });
-      document.getElementById('activate-dom-remove').addEventListener('click', focusTrap.activate);
-      document.getElementById('deactivate-dom-remove').addEventListener('click', focusTrap.deactivate);
     };
 
     _default();
@@ -3609,6 +3606,7 @@ var focusTrapDemoBundle = (function () {
     multipleElementsDeleteAll();
     multipleElementsMultipleTraps();
     arrowKeys();
+    domRemove();
 
     // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
     //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
@@ -3645,7 +3643,6 @@ var focusTrapDemoBundle = (function () {
     // TEST MANUALLY (cypress-plugin-tab doesn't support inert)
     // http://localhost:9966/#demo-inert
     inert();
-    domRemove();
 
     return js;
 

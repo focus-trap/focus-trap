@@ -23,6 +23,7 @@ require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./arrow-keys')();
+require('./dom-remove')();
 
 // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
 //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
@@ -59,5 +60,3 @@ require('./with-open-web-component')();
 // TEST MANUALLY (cypress-plugin-tab doesn't support inert)
 // http://localhost:9966/#demo-inert
 require('./inert')();
-
-require('./dom-remove')();
