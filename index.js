@@ -835,6 +835,16 @@ const createFocusTrap = function (elements, userOptions) {
 
       if (state.active) {
         updateTabbableNodes();
+
+        if (state.mutationObserver) {
+          state.mutationObserver.disconnect();
+          state.containers.map(function (container) {
+            state.mutationObserver.observe(container, {
+              subtree: true,
+              childList: true,
+            });
+          });
+        }
       }
 
       return this;
