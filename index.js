@@ -156,10 +156,6 @@ const createFocusTrap = function (elements, userOptions) {
     // timer ID for when delayInitialFocus is true and initial focus in this trap
     //  has been delayed during activation
     delayInitialFocusTimer: undefined,
-
-    // MutationObserver to detect whether the currently focused element has been
-    // removed from the DOM.
-    mutationObserver: undefined,
   };
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
@@ -604,21 +600,6 @@ const createFocusTrap = function (elements, userOptions) {
     e.stopImmediatePropagation();
   };
 
-  const checkDomRemoval = function (mutations) {
-    const isFocusedNodeRemoved = mutations.some(function (mutation) {
-      const removedNodes = Array.from(mutation.removedNodes);
-      return removedNodes.some(function (node) {
-        return node === state.mostRecentlyFocusedNode;
-      });
-    });
-
-    // If the currently focused is removed then browsers will move focus to the
-    // <body> element. If this happens, try to move focus back into the trap.
-    if (isFocusedNodeRemoved) {
-      tryFocus(getInitialFocusNode());
-    }
-  };
-
   //
   // EVENT LISTENERS
   //
@@ -657,17 +638,6 @@ const createFocusTrap = function (elements, userOptions) {
       passive: false,
     });
 
-    // Use MutationObserver - if supported - to check if focused node is removed
-    if (typeof window !== 'undefined' && 'MutationObserver' in window) {
-      state.mutationObserver = new MutationObserver(checkDomRemoval);
-      state.containers.map(function (container) {
-        state.mutationObserver.observe(container, {
-          subtree: true,
-          childList: true,
-        });
-      });
-    }
-
     return trap;
   };
 
@@ -682,9 +652,49 @@ const createFocusTrap = function (elements, userOptions) {
     doc.removeEventListener('click', checkClick, true);
     doc.removeEventListener('keydown', checkKey, true);
 
-    state.mutationObserver && state.mutationObserver.disconnect();
-
     return trap;
+  };
+
+  //
+  // MUTATION OBSERVER
+  //
+
+  const checkDomRemoval = function (mutations) {
+    const isFocusedNodeRemoved = mutations.some(function (mutation) {
+      const removedNodes = Array.from(mutation.removedNodes);
+      return removedNodes.some(function (node) {
+        return node === state.mostRecentlyFocusedNode;
+      });
+    });
+
+    // If the currently focused is removed then browsers will move focus to the
+    // <body> element. If this happens, try to move focus back into the trap.
+    if (isFocusedNodeRemoved) {
+      tryFocus(getInitialFocusNode());
+    }
+  };
+
+  // Use MutationObserver - if supported - to detect if focused node is removed
+  // from the DOM.
+  const mutationObserver =
+    typeof window !== 'undefined' && 'MutationObserver' in window
+      ? new MutationObserver(checkDomRemoval)
+      : undefined;
+
+  const updateObservedNodes = function () {
+    if (!mutationObserver) {
+      return;
+    }
+
+    mutationObserver.disconnect();
+    if (state.active && !state.paused) {
+      state.containers.map(function (container) {
+        mutationObserver.observe(container, {
+          subtree: true,
+          childList: true,
+        });
+      });
+    }
   };
 
   //
@@ -724,6 +734,7 @@ const createFocusTrap = function (elements, userOptions) {
           updateTabbableNodes();
         }
         addListeners();
+        updateObservedNodes();
         onPostActivate?.();
       };
 
@@ -757,6 +768,7 @@ const createFocusTrap = function (elements, userOptions) {
       removeListeners();
       state.active = false;
       state.paused = false;
+      updateObservedNodes();
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
 
@@ -803,6 +815,7 @@ const createFocusTrap = function (elements, userOptions) {
       onPause?.();
 
       removeListeners();
+      updateObservedNodes();
 
       onPostPause?.();
       return this;
@@ -821,6 +834,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       updateTabbableNodes();
       addListeners();
+      updateObservedNodes();
 
       onPostUnpause?.();
       return this;
@@ -835,17 +849,9 @@ const createFocusTrap = function (elements, userOptions) {
 
       if (state.active) {
         updateTabbableNodes();
-
-        if (state.mutationObserver) {
-          state.mutationObserver.disconnect();
-          state.containers.map(function (container) {
-            state.mutationObserver.observe(container, {
-              subtree: true,
-              childList: true,
-            });
-          });
-        }
       }
+
+      updateObservedNodes();
 
       return this;
     },
