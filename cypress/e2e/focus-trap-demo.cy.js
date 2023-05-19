@@ -1687,6 +1687,45 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: removing elements', () => {
+    it('traps focus even when focused element is removed', () => {
+      cy.get('#demo-dom-remove').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active(keep focus in trap by blocking clicks on outside un-focusable element)
+      cy.get('#arrow-keys-heading').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // when the focused element is removed, focus is transitioned to the first
+      // focusable element in the trap
+      cy.get('@testRoot').findByRole('button', { name: 'remove' }).click();
+      cy.focused().should('not.be.undefined').and('have.text', 'with');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .click();
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
+    });
+  });
+
   // describe('demo: inert', () => {
   //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //    support the `inert` attribute so there's no point in writing a test for this demo at

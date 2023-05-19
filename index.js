@@ -260,8 +260,8 @@ const createFocusTrap = function (elements, userOptions) {
       return false;
     }
 
-    if (node === undefined) {
-      // option not specified: use fallback options
+    if (node === undefined || !isFocusable(node, config.tabbableOptions)) {
+      // option not specified nor focusable: use fallback options
       if (findContainerIndex(doc.activeElement) >= 0) {
         node = doc.activeElement;
       } else {
@@ -656,6 +656,48 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   //
+  // MUTATION OBSERVER
+  //
+
+  const checkDomRemoval = function (mutations) {
+    const isFocusedNodeRemoved = mutations.some(function (mutation) {
+      const removedNodes = Array.from(mutation.removedNodes);
+      return removedNodes.some(function (node) {
+        return node === state.mostRecentlyFocusedNode;
+      });
+    });
+
+    // If the currently focused is removed then browsers will move focus to the
+    // <body> element. If this happens, try to move focus back into the trap.
+    if (isFocusedNodeRemoved) {
+      tryFocus(getInitialFocusNode());
+    }
+  };
+
+  // Use MutationObserver - if supported - to detect if focused node is removed
+  // from the DOM.
+  const mutationObserver =
+    typeof window !== 'undefined' && 'MutationObserver' in window
+      ? new MutationObserver(checkDomRemoval)
+      : undefined;
+
+  const updateObservedNodes = function () {
+    if (!mutationObserver) {
+      return;
+    }
+
+    mutationObserver.disconnect();
+    if (state.active && !state.paused) {
+      state.containers.map(function (container) {
+        mutationObserver.observe(container, {
+          subtree: true,
+          childList: true,
+        });
+      });
+    }
+  };
+
+  //
   // TRAP DEFINITION
   //
 
@@ -692,6 +734,7 @@ const createFocusTrap = function (elements, userOptions) {
           updateTabbableNodes();
         }
         addListeners();
+        updateObservedNodes();
         onPostActivate?.();
       };
 
@@ -725,6 +768,7 @@ const createFocusTrap = function (elements, userOptions) {
       removeListeners();
       state.active = false;
       state.paused = false;
+      updateObservedNodes();
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
 
@@ -771,6 +815,7 @@ const createFocusTrap = function (elements, userOptions) {
       onPause?.();
 
       removeListeners();
+      updateObservedNodes();
 
       onPostPause?.();
       return this;
@@ -789,6 +834,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       updateTabbableNodes();
       addListeners();
+      updateObservedNodes();
 
       onPostUnpause?.();
       return this;
@@ -804,6 +850,8 @@ const createFocusTrap = function (elements, userOptions) {
       if (state.active) {
         updateTabbableNodes();
       }
+
+      updateObservedNodes();
 
       return this;
     },

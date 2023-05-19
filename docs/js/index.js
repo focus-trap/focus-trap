@@ -23,6 +23,7 @@ require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./arrow-keys')();
+require('./dom-remove')();
 
 // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
 //  the `"chromeWebSecurity": false` option set in the cypress.json config file),

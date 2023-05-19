@@ -1135,6 +1135,42 @@
       </p>
     </div>
 
+
+    <div id="demo-dom-remove">
+      <h2 id="dom-remove-heading">Keeps focus when removing DOM elements</h2>
+      <p>
+        <a href="https://amberwilson.co.uk/blog/where-did-the-focus-go/">If the currently focused elemented is removed from the DOM, the
+        focus can move to the document <code>body</code></a>.
+      </p>
+      <p>
+        focus-trap ensures that focus remains within the trap.
+      </p>
+      <p>
+        <button id="activate-dom-remove" aria-describedby="dom-remove-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="dom-remove" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          This button will be removed when clicking it: <button id="dom-remove-button">remove</button>
+        </p>
+        <p>
+          Reload the page to make the button reappear.
+        </p>
+        <p>
+          <button id="deactivate-dom-remove" aria-describedby="dom-remove-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/dom-remove.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <p>
       <span aria-hidden="true" style="font-size:2em;vertical-align:middle;">☜</span>
       <a href="https://github.com/focus-trap/focus-trap" style="vertical-align:middle;">Return to the repository</a>
