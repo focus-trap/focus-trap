@@ -4,8 +4,8 @@
 import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
 import sourceMaps from 'rollup-plugin-sourcemaps';
-import { terser } from 'rollup-plugin-terser';
 import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
