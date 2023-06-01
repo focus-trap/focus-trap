@@ -1767,6 +1767,8 @@ describe('focus-trap', () => {
   //    or another.
   // });
 
+  // DEBUG TODO: can we write a test for positive-tabindex?
+
   // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //  support web components, so we can't successfully run this test because it will skip
   //  over the web component when tabbing from 'button 3', jumping to 'button 4' instead of

@@ -1017,6 +1017,51 @@
       </p>
     </div>
 
+    <div id="demo-positive-tabindex">
+      <h2 id="positive-tabindex-heading">Positive tabindex</h2>
+      <p>
+        This trap has 3 buttons which have a positive (greater than 0) tabindex attribute.
+        Per tab order rules, they should get focused first (in 1-2-3 order tabbing forward),
+        then all tabbable elements without a tabindex attribute (or with one set to 0, which
+        is the case with the left-most button) should get focused in DOM order (left to right,
+        top to bottom). The same should happen in reverse when shift+tabbing.
+      </p>
+      <p>
+        ⚠️ Primarily for accessibility reasons, using positive tab indexes
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#accessibility_concerns" target="_blank">is not recommended</a>.
+        It also causes <strong>momentary focus escape</strong> which focus-trap will identify and
+        rectify to keep tab order working as expected. This momentary escape, however, means some
+        node outside the trap will get focused before focus-trap is able to pull focus back into
+        the trap. If that node is out of view, this may cause the window to scroll to it, not to
+        mention the <code>focus</code> event this outside node will unavoidably receive.
+      </p>
+      <p>
+        <button id="activate-positive-tabindex" aria-describedby="positive-tabindex-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="positive-tabindex" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button tabindex="0">tabindex 0</button>
+          <button tabindex="1">tabindex 1</button>
+          <button tabindex="3">tabindex 3</button>
+          <button tabindex="2">tabindex 2</button>
+          <button>tabindex -</button>
+        </p>
+        <p>
+          <button id="deactivate-positive-tabindex" aria-describedby="positive-tabindex-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/positive-tabindex.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-with-open-web-component">
       <h2 id="with-open-web-component-heading">With open web component</h2>
       <p>
