@@ -1022,18 +1022,31 @@
       <p>
         This trap has 3 buttons which have a positive (greater than 0) tabindex attribute.
         Per tab order rules, they should get focused first (in 1-2-3 order tabbing forward),
-        then all tabbable elements without a tabindex attribute (or with one set to 0, which
-        is the case with the left-most button) should get focused in DOM order (left to right,
-        top to bottom). The same should happen in reverse when shift+tabbing.
+        then all tabbable nodes without a tabindex attribute (the 3 links, "tabindex 0" and
+        "tabindex ?") should get focused in document position order. The same should happen in
+        reverse when shift+tabbing.
       </p>
       <p>
-        ⚠️ Primarily for accessibility reasons, using positive tab indexes
-        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#accessibility_concerns" target="_blank">is not recommended</a>.
-        It also causes <strong>momentary focus escape</strong> which focus-trap will identify and
-        rectify to keep tab order working as expected. This momentary escape, however, means some
-        node outside the trap will get focused before focus-trap is able to pull focus back into
-        the trap. If that node is out of view, this may cause the window to scroll to it, not to
-        mention the <code>focus</code> event this outside node will unavoidably receive.
+        ❗️ Positive tabindex support is <strong>limited to single-container traps</strong>. It
+        is also not 100% accurate to browser behavior in one edge case, which is when tabbing
+        <em>from</em> a negative tabindex node (focusable, not tabbable). In this case,
+        browsers will set focus to the next tabbable node in <em>document position</em> order,
+        regardless of <code>tabindex</code> value (zero or positive). Focus-trap, however, will
+        set focus to the next tabbable node in <em>DOM</em> order. Most of the time, the
+        result will be the same, but there may be slight differences.
+      </p>
+      <p>
+        ⚠️ Using positive tab indexes
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#accessibility_concerns" target="_blank">is not recommended</a>,
+        primarily for accessibility reasons.
+      </p>
+      <p>
+        ⚠️ Tabbing from the last positive tabindex node leading to a zero/default tabindex node
+        will cause a <strong>momentary focus escape</strong> which focus-trap will identify and rectify
+        to keep tab order working as expected. This momentary escape, however, means some node outside
+        the trap will get focused before focus-trap is able to pull focus back into the trap. If that
+        node is out of view, this may cause the window to scroll to it, not to mention the
+        <code>focus</code> event this outside node will unavoidably receive.
       </p>
       <p>
         <button id="activate-positive-tabindex" aria-describedby="positive-tabindex-heading">
@@ -1047,9 +1060,10 @@
         <p>
           <button tabindex="0">tabindex 0</button>
           <button tabindex="1">tabindex 1</button>
+          <button tabindex="-1">tabindex -1</button>
           <button tabindex="3">tabindex 3</button>
           <button tabindex="2">tabindex 2</button>
-          <button>tabindex -</button>
+          <button>tabindex ?</button>
         </p>
         <p>
           <button id="deactivate-positive-tabindex" aria-describedby="positive-tabindex-heading">

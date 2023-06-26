@@ -24,7 +24,6 @@ require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
 require('./arrow-keys')();
 require('./dom-remove')();
-require('./positive-tabindex')();
 
 // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
 //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
@@ -53,6 +52,13 @@ require('./negative-tabindex')();
 // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
 // http://localhost:9966/#demo-negative-tabindex-last
 require('./negative-tabindex-last')();
+
+// TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+// - Check tabbing FWD from the "tabindex -1" button moves focus to "tabindex 3" button.
+// - Check tabbing BWD from "tabindex -1" moves to "tabindex 1".
+// - Rest is covered by a Cypress test.
+// http://localhost:9966/#demo-positive-tabindex
+require('./positive-tabindex')();
 
 // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 // http://localhost:9966/#demo-with-open-web-component

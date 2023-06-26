@@ -3,7 +3,7 @@ const { createFocusTrap } = require('../../index');
 module.exports = () => {
   const container = document.getElementById('positive-tabindex');
 
-  const focusTrap = createFocusTrap('#positive-tabindex', {
+  const focusTrap = createFocusTrap(container, {
     onActivate: () => container.classList.add('is-active'),
     onDeactivate: () => container.classList.remove('is-active'),
   });

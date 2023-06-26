@@ -144,6 +144,18 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 If you have closed shadow roots that you would like considered for tabbable/focusable nodes, use the `tabbableOptions.getShadowRoot` option to provide Tabbable (used internally) with a reference to a given node's shadow root so that it can be searched for candidates.
 
+#### Positive Tabindexes
+
+⚠️ Using positive tab indexes (i.e. `<button tabindex="1">Label</button>`) [is not recommended](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex#accessibility_concerns), primarily for accessibility reasons. Supporting them properly also means a lot of hoops to jump through when Shadow DOM is used as some key DOM APIs like [Node.compareDocumentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition) [do not](https://github.com/whatwg/dom/issues/320) properly support Shadow DOM.
+
+As such, focus-trap considers using positive tabindexes an edge case and only supports them in __single-container__ traps with some caveats for related edge case behavior (see the [demo](https://focus-trap.github.io/focus-trap/#demo-positive-tabindex) for more details).
+
+If you try to create a multi-container trap where at least one container has one node with a positive tabindex, an exception will be thrown:
+
+```
+At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps.
+```
+
 ### trap.active
 
 ```typescript

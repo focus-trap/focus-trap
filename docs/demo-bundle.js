@@ -1,6 +1,7 @@
 /*!
 * focus-trap demo bundle
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
@@ -571,7 +572,7 @@ var focusTrapDemoBundle = (function () {
     }
 
     /*!
-    * tabbable 6.1.2
+    * tabbable 6.2.0
     * @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
     */
     // NOTE: separate `:not()` selectors has broader browser support than the newer
@@ -751,7 +752,27 @@ var focusTrapDemoBundle = (function () {
       }
       return candidates;
     };
-    var getTabindex = function getTabindex(node, isScope) {
+
+    /**
+     * @private
+     * Determines if the node has an explicitly specified `tabindex` attribute.
+     * @param {HTMLElement} node
+     * @returns {boolean} True if so; false if not.
+     */
+    var hasTabIndex = function hasTabIndex(node) {
+      return !isNaN(parseInt(node.getAttribute('tabindex'), 10));
+    };
+
+    /**
+     * Determine the tab index of a given node.
+     * @param {HTMLElement} node
+     * @returns {number} Tab order (negative, 0, or positive number).
+     * @throws {Error} If `node` is falsy.
+     */
+    var getTabIndex = function getTabIndex(node) {
+      if (!node) {
+        throw new Error('No node provided');
+      }
       if (node.tabIndex < 0) {
         // in Chrome, <details/>, <audio controls/> and <video controls/> elements get a default
         // `tabIndex` of -1 when the 'tabindex' attribute isn't specified in the DOM,
@@ -760,15 +781,27 @@ var focusTrapDemoBundle = (function () {
         // order, consider their tab index to be 0.
         // Also browsers do not return `tabIndex` correctly for contentEditable nodes;
         // so if they don't have a tabindex attribute specifically set, assume it's 0.
-        //
-        // isScope is positive for custom element with shadow root or slot that by default
-        // have tabIndex -1, but need to be sorted by document order in order for their
-        // content to be inserted in the correct position
-        if ((isScope || /^(AUDIO|VIDEO|DETAILS)$/.test(node.tagName) || isContentEditable(node)) && isNaN(parseInt(node.getAttribute('tabindex'), 10))) {
+        if ((/^(AUDIO|VIDEO|DETAILS)$/.test(node.tagName) || isContentEditable(node)) && !hasTabIndex(node)) {
           return 0;
         }
       }
       return node.tabIndex;
+    };
+
+    /**
+     * Determine the tab index of a given node __for sort order purposes__.
+     * @param {HTMLElement} node
+     * @param {boolean} [isScope] True for a custom element with shadow root or slot that, by default,
+     *  has tabIndex -1, but needs to be sorted by document order in order for its content to be
+     *  inserted into the correct sort position.
+     * @returns {number} Tab order (negative, 0, or positive number).
+     */
+    var getSortOrderTabIndex = function getSortOrderTabIndex(node, isScope) {
+      var tabIndex = getTabIndex(node);
+      if (tabIndex < 0 && isScope && !hasTabIndex(node)) {
+        return 0;
+      }
+      return tabIndex;
     };
     var sortOrderedTabbables = function sortOrderedTabbables(a, b) {
       return a.tabIndex === b.tabIndex ? a.documentOrder - b.documentOrder : a.tabIndex - b.tabIndex;
@@ -1012,7 +1045,7 @@ var focusTrapDemoBundle = (function () {
       return true;
     };
     var isNodeMatchingSelectorTabbable = function isNodeMatchingSelectorTabbable(options, node) {
-      if (isNonTabbableRadio(node) || getTabindex(node) < 0 || !isNodeMatchingSelectorFocusable(options, node)) {
+      if (isNonTabbableRadio(node) || getTabIndex(node) < 0 || !isNodeMatchingSelectorFocusable(options, node)) {
         return false;
       }
       return true;
@@ -1037,7 +1070,7 @@ var focusTrapDemoBundle = (function () {
       candidates.forEach(function (item, i) {
         var isScope = !!item.scopeParent;
         var element = isScope ? item.scopeParent : item;
-        var candidateTabindex = getTabindex(element, isScope);
+        var candidateTabindex = getSortOrderTabIndex(element, isScope);
         var elements = isScope ? sortByOrder(item.candidates) : element;
         if (candidateTabindex === 0) {
           isScope ? regularTabbables.push.apply(regularTabbables, elements) : regularTabbables.push(element);
@@ -1056,32 +1089,32 @@ var focusTrapDemoBundle = (function () {
         return acc;
       }, []).concat(regularTabbables);
     };
-    var tabbable = function tabbable(el, options) {
+    var tabbable = function tabbable(container, options) {
       options = options || {};
       var candidates;
       if (options.getShadowRoot) {
-        candidates = getCandidatesIteratively([el], options.includeContainer, {
+        candidates = getCandidatesIteratively([container], options.includeContainer, {
           filter: isNodeMatchingSelectorTabbable.bind(null, options),
           flatten: false,
           getShadowRoot: options.getShadowRoot,
           shadowRootFilter: isValidShadowRootTabbable
         });
       } else {
-        candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
+        candidates = getCandidates(container, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
       }
       return sortByOrder(candidates);
     };
-    var focusable = function focusable(el, options) {
+    var focusable = function focusable(container, options) {
       options = options || {};
       var candidates;
       if (options.getShadowRoot) {
-        candidates = getCandidatesIteratively([el], options.includeContainer, {
+        candidates = getCandidatesIteratively([container], options.includeContainer, {
           filter: isNodeMatchingSelectorFocusable.bind(null, options),
           flatten: true,
           getShadowRoot: options.getShadowRoot
         });
       } else {
-        candidates = getCandidates(el, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
+        candidates = getCandidates(container, options.includeContainer, isNodeMatchingSelectorFocusable.bind(null, options));
       }
       return candidates;
     };
@@ -1225,8 +1258,11 @@ var focusTrapDemoBundle = (function () {
         //   container: HTMLElement,
         //   tabbableNodes: Array<HTMLElement>, // empty if none
         //   focusableNodes: Array<HTMLElement>, // empty if none
-        //   firstTabbableNode: HTMLElement|null,
-        //   lastTabbableNode: HTMLElement|null,
+        //   posTabIndexesFound: boolean,
+        //   firstTabbableNode: HTMLElement|undefined,
+        //   lastTabbableNode: HTMLElement|undefined,
+        //   firstDomTabbableNode: HTMLElement|undefined,
+        //   lastDomTabbableNode: HTMLElement|undefined,
         //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
         // }>}
         containerGroups: [],
@@ -1361,14 +1397,41 @@ var focusTrapDemoBundle = (function () {
           var tabbableNodes = tabbable(container, config.tabbableOptions);
 
           // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
-          //  are a superset of tabbable nodes
+          //  are a superset of tabbable nodes since nodes with negative `tabindex` attributes
+          //  are focusable but not tabbable
           var focusableNodes = focusable(container, config.tabbableOptions);
+          var firstTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[0] : undefined;
+          var lastTabbableNode = tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : undefined;
+          var firstDomTabbableNode = focusableNodes.find(function (node) {
+            return isTabbable(node);
+          });
+          var lastDomTabbableNode = focusableNodes.findLast(function (node) {
+            return isTabbable(node);
+          });
+          var posTabIndexesFound = !!tabbableNodes.find(function (node) {
+            return getTabIndex(node) > 0;
+          });
           return {
             container: container,
             tabbableNodes: tabbableNodes,
             focusableNodes: focusableNodes,
-            firstTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[0] : null,
-            lastTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[tabbableNodes.length - 1] : null,
+            /** True if at least one node with positive `tabindex` was found in this container. */
+            posTabIndexesFound: posTabIndexesFound,
+            /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
+            firstTabbableNode: firstTabbableNode,
+            /** Last tabbable node in container, __tabindex__ order; `undefined` if none. */
+            lastTabbableNode: lastTabbableNode,
+            // NOTE: DOM order is NOT NECESSARILY "document position" order, but figuring that out
+            //  would require more than just https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+            //  because that API doesn't work with Shadow DOM as well as it should (@see
+            //  https://github.com/whatwg/dom/issues/320) and since this first/last is only needed, so far,
+            //  to address an edge case related to positive tabindex support, this seems like a much easier,
+            //  "close enough most of the time" alternative for positive tabindexes which should generally
+            //  be avoided anyway...
+            /** First tabbable node in container, __DOM__ order; `undefined` if none. */
+            firstDomTabbableNode: firstDomTabbableNode,
+            /** Last tabbable node in container, __DOM__ order; `undefined` if none. */
+            lastDomTabbableNode: lastDomTabbableNode,
             /**
              * Finds the __tabbable__ node that follows the given node in the specified direction,
              *  in this container, if any.
@@ -1379,37 +1442,28 @@ var focusTrapDemoBundle = (function () {
              */
             nextTabbableNode: function nextTabbableNode(node) {
               var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-              // DEBUG TODO: wondering why we're using focusableNodes where when we're looking for
-              //  a TABBABLE node -- why not tabbableNodes (which are in proper DOM order, including
-              //  nodes with positive tabindexes...)?
-
-              // NOTE: If tabindex is positive (in order to manipulate the tab order separate
-              //  from the DOM order), this __will not work__ because the list of focusableNodes,
-              //  while it contains tabbable nodes, does not sort its nodes in any order other
-              //  than DOM order, because it can't: Where would you place focusable (but not
-              //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
-              // Support for positive tabindex is already broken and hard to manage (possibly
-              //  not supportable, TBD), so this isn't going to make things worse than they
-              //  already are, and at least makes things better for the majority of cases where
-              //  tabindex is either 0/unset or negative.
-              // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
               var nodeIdx = tabbableNodes.findIndex(function (n) {
                 return n === node;
               });
               if (nodeIdx < 0) {
-                return undefined;
+                // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
+                //  since `node` should at least have been focusable, we assume that's the case and mimic
+                //  what browsers do, which is set focus to the next node in __document position order__,
+                //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
+                //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
+                //  basic DOM order
+                return forward ? firstDomTabbableNode : lastDomTabbableNode;
               }
               if (forward) {
+                // first found, if any (array will be empty if `node` was in last position)
                 return tabbableNodes.slice(nodeIdx + 1).find(function () {
                   return true;
-                }); // first found, if any
-                // DEBUG UNNECESSARY .find((n) => isTabbable(n, config.tabbableOptions));
+                });
               }
-
-              return tabbableNodes.slice(0, nodeIdx).reverse().find(function () {
+              return tabbableNodes.slice(0, nodeIdx) // exclude `node` itself
+              .reverse().find(function () {
                 return true;
-              }); // first found, if any
-              // DEBUG UNNECESSARY .find((n) => isTabbable(n, config.tabbableOptions));
+              }); // first found, if any (array will be empty if `node` was in first position)
             }
           };
         });
@@ -1422,6 +1476,19 @@ var focusTrapDemoBundle = (function () {
         if (state.tabbableGroups.length <= 0 && !getNodeForOption('fallbackFocus') // returning false not supported for this option
         ) {
           throw new Error('Your focus-trap must have at least one container with at least one tabbable node in it at all times');
+        }
+
+        // NOTE: Positive tabindexes are only properly supported in single-container traps because
+        //  doing it across multiple containers where tabindexes could be all over the place
+        //  would require Tabbable to support multiple containers, would require additional
+        //  specialized Shadow DOM support, and would require Tabbable's multi-container support
+        //  to look at those containers in document position order rather than user-provided
+        //  order (as they are treated in Focus-trap, for legacy reasons). See discussion on
+        //  https://github.com/focus-trap/focus-trap/issues/375 for more details.
+        if (state.containerGroups.find(function (g) {
+          return g.posTabIndexesFound;
+        }) && state.containerGroups.length > 1) {
+          throw new Error("At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps.");
         }
       };
       var tryFocus = function tryFocus(node) {
@@ -1607,9 +1674,7 @@ var focusTrapDemoBundle = (function () {
           //  toward a node with a positive tab index
           var nextNode; // next node to focus, if we find one
           var navAcrossContainers = true;
-          if (
-          // DEBUG TODO: this needs the same logic for tab index as tabbable uses in its getTabIndex() function...
-          typeof state.mostRecentlyFocusedNode.tabIndex === 'number' && state.mostRecentlyFocusedNode.tabIndex > 0) {
+          if (getTabIndex(state.mostRecentlyFocusedNode) > 0) {
             // MRU container index must be >=0 otherwise we wouldn't have it as an MRU node...
             var mruContainerIdx = findContainerIndex(state.mostRecentlyFocusedNode);
             // there MAY not be any tabbable nodes in the container if there are at least 2 containers
@@ -1652,10 +1717,7 @@ var focusTrapDemoBundle = (function () {
             //  the greatest positive tab index like it should)
             if (!state.containerGroups.some(function (g) {
               return g.tabbableNodes.some(function (n) {
-                return (
-                  // DEBUG TODO: this needs the same logic for tab index as tabbable uses in its getTabIndex() function...
-                  typeof n.tabIndex === 'number' && n.tabIndex > 0
-                );
+                return getTabIndex(n) > 0;
               });
             })) {
               // no containers with tabbable nodes with positive tab indexes which means the focus
@@ -2731,21 +2793,6 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-dom-remove').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$6 = require$$0.createFocusTrap;
-    var positiveTabindex = function positiveTabindex() {
-      var container = document.getElementById('positive-tabindex');
-      var focusTrap = createFocusTrap$6('#positive-tabindex', {
-        onActivate: function onActivate() {
-          return container.classList.add('is-active');
-        },
-        onDeactivate: function onDeactivate() {
-          return container.classList.remove('is-active');
-        }
-      });
-      document.getElementById('activate-positive-tabindex').addEventListener('click', focusTrap.activate);
-      document.getElementById('deactivate-positive-tabindex').addEventListener('click', focusTrap.deactivate);
-    };
-
     var runtime = {exports: {}};
 
     runtime.exports;
@@ -3475,7 +3522,7 @@ var focusTrapDemoBundle = (function () {
       return inIframe;
     }
 
-    var createFocusTrap$5 = require$$0.createFocusTrap;
+    var createFocusTrap$6 = require$$0.createFocusTrap;
     var inOpenShadowDom = function inOpenShadowDom() {
       var CustomButton = /*#__PURE__*/function (_HTMLElement) {
         _inherits(CustomButton, _HTMLElement);
@@ -3527,7 +3574,7 @@ var focusTrapDemoBundle = (function () {
           });
           shadowEl.appendChild(styleLinkEl);
           shadowEl.appendChild(modalEl);
-          var focusTrap = createFocusTrap$5(modalEl, {
+          var focusTrap = createFocusTrap$6(modalEl, {
             onActivate: function onActivate() {
               return modalEl.classList.add('is-active');
             },
@@ -3553,7 +3600,7 @@ var focusTrapDemoBundle = (function () {
       customElements.define('custom-span', CustomSpan);
     };
 
-    var createFocusTrap$4 = require$$0.createFocusTrap;
+    var createFocusTrap$5 = require$$0.createFocusTrap;
     var withShadowDom = function withShadowDom() {
       var OpenShadowTest = /*#__PURE__*/function (_HTMLElement) {
         _inherits(OpenShadowTest, _HTMLElement);
@@ -3611,7 +3658,7 @@ var focusTrapDemoBundle = (function () {
       var closedShadowHostEl = document.getElementById('with-shadow-dom-closed-shadow');
       var closedShadowEl = createClosedShadow(closedShadowHostEl);
       var containerEl = document.getElementById('with-shadow-dom');
-      var focusTrap = createFocusTrap$4('#with-shadow-dom', {
+      var focusTrap = createFocusTrap$5('#with-shadow-dom', {
         onActivate: function onActivate() {
           return containerEl.classList.add('is-active');
         },
@@ -3630,10 +3677,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-with-shadow-dom').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$3 = require$$0.createFocusTrap;
+    var createFocusTrap$4 = require$$0.createFocusTrap;
     var negativeTabindex = function negativeTabindex() {
       var container = document.getElementById('negative-tabindex');
-      var focusTrap = createFocusTrap$3('#negative-tabindex', {
+      var focusTrap = createFocusTrap$4('#negative-tabindex', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3645,10 +3692,10 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-negative-tabindex').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$2 = require$$0.createFocusTrap;
+    var createFocusTrap$3 = require$$0.createFocusTrap;
     var negativeTabindexLast = function negativeTabindexLast() {
       var container = document.getElementById('negative-tabindex-last');
-      var focusTrap = createFocusTrap$2('#negative-tabindex-last', {
+      var focusTrap = createFocusTrap$3('#negative-tabindex-last', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -3658,6 +3705,21 @@ var focusTrapDemoBundle = (function () {
       });
       document.getElementById('activate-negative-tabindex-last').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-negative-tabindex-last').addEventListener('click', focusTrap.deactivate);
+    };
+
+    var createFocusTrap$2 = require$$0.createFocusTrap;
+    var positiveTabindex = function positiveTabindex() {
+      var container = document.getElementById('positive-tabindex');
+      var focusTrap = createFocusTrap$2(container, {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        }
+      });
+      document.getElementById('activate-positive-tabindex').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-positive-tabindex').addEventListener('click', focusTrap.deactivate);
     };
 
     var createFocusTrap$1 = require$$0.createFocusTrap;
@@ -3738,7 +3800,6 @@ var focusTrapDemoBundle = (function () {
     multipleElementsMultipleTraps();
     arrowKeys();
     domRemove();
-    positiveTabindex();
 
     // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
     //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
@@ -3767,6 +3828,13 @@ var focusTrapDemoBundle = (function () {
     // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
     // http://localhost:9966/#demo-negative-tabindex-last
     negativeTabindexLast();
+
+    // TEST MANUALLY (cypress-plugin-tab doesn't support non-tabbable but still focusable nodes)
+    // - Check tabbing FWD from the "tabindex -1" button moves focus to "tabindex 3" button.
+    // - Check tabbing BWD from "tabindex -1" moves to "tabindex 1".
+    // - Rest is covered by a Cypress test.
+    // http://localhost:9966/#demo-positive-tabindex
+    positiveTabindex();
 
     // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
     // http://localhost:9966/#demo-with-open-web-component

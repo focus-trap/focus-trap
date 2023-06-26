@@ -1,4 +1,10 @@
-import { tabbable, focusable, isFocusable, isTabbable } from 'tabbable';
+import {
+  tabbable,
+  focusable,
+  isFocusable,
+  isTabbable,
+  getTabIndex,
+} from 'tabbable';
 
 const activeFocusTraps = {
   activateTrap(trapStack, trap) {
@@ -136,8 +142,11 @@ const createFocusTrap = function (elements, userOptions) {
     //   container: HTMLElement,
     //   tabbableNodes: Array<HTMLElement>, // empty if none
     //   focusableNodes: Array<HTMLElement>, // empty if none
-    //   firstTabbableNode: HTMLElement|null,
-    //   lastTabbableNode: HTMLElement|null,
+    //   posTabIndexesFound: boolean,
+    //   firstTabbableNode: HTMLElement|undefined,
+    //   lastTabbableNode: HTMLElement|undefined,
+    //   firstDomTabbableNode: HTMLElement|undefined,
+    //   lastDomTabbableNode: HTMLElement|undefined,
     //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
     // }>}
     containerGroups: [], // same order/length as `containers` list
@@ -293,18 +302,52 @@ const createFocusTrap = function (elements, userOptions) {
       const tabbableNodes = tabbable(container, config.tabbableOptions);
 
       // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
-      //  are a superset of tabbable nodes
+      //  are a superset of tabbable nodes since nodes with negative `tabindex` attributes
+      //  are focusable but not tabbable
       const focusableNodes = focusable(container, config.tabbableOptions);
+
+      const firstTabbableNode =
+        tabbableNodes.length > 0 ? tabbableNodes[0] : undefined;
+      const lastTabbableNode =
+        tabbableNodes.length > 0
+          ? tabbableNodes[tabbableNodes.length - 1]
+          : undefined;
+
+      const firstDomTabbableNode = focusableNodes.find((node) =>
+        isTabbable(node)
+      );
+      const lastDomTabbableNode = focusableNodes.findLast((node) =>
+        isTabbable(node)
+      );
+
+      const posTabIndexesFound = !!tabbableNodes.find(
+        (node) => getTabIndex(node) > 0
+      );
 
       return {
         container,
         tabbableNodes,
         focusableNodes,
-        firstTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[0] : null,
-        lastTabbableNode:
-          tabbableNodes.length > 0
-            ? tabbableNodes[tabbableNodes.length - 1]
-            : null,
+
+        /** True if at least one node with positive `tabindex` was found in this container. */
+        posTabIndexesFound,
+
+        /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
+        firstTabbableNode,
+        /** Last tabbable node in container, __tabindex__ order; `undefined` if none. */
+        lastTabbableNode,
+
+        // NOTE: DOM order is NOT NECESSARILY "document position" order, but figuring that out
+        //  would require more than just https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+        //  because that API doesn't work with Shadow DOM as well as it should (@see
+        //  https://github.com/whatwg/dom/issues/320) and since this first/last is only needed, so far,
+        //  to address an edge case related to positive tabindex support, this seems like a much easier,
+        //  "close enough most of the time" alternative for positive tabindexes which should generally
+        //  be avoided anyway...
+        /** First tabbable node in container, __DOM__ order; `undefined` if none. */
+        firstDomTabbableNode,
+        /** Last tabbable node in container, __DOM__ order; `undefined` if none. */
+        lastDomTabbableNode,
 
         /**
          * Finds the __tabbable__ node that follows the given node in the specified direction,
@@ -315,35 +358,26 @@ const createFocusTrap = function (elements, userOptions) {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode(node, forward = true) {
-          // DEBUG TODO: wondering why we're using focusableNodes where when we're looking for
-          //  a TABBABLE node -- why not tabbableNodes (which are in proper DOM order, including
-          //  nodes with positive tabindexes...)?
-
-          // NOTE: If tabindex is positive (in order to manipulate the tab order separate
-          //  from the DOM order), this __will not work__ because the list of focusableNodes,
-          //  while it contains tabbable nodes, does not sort its nodes in any order other
-          //  than DOM order, because it can't: Where would you place focusable (but not
-          //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
-          // Support for positive tabindex is already broken and hard to manage (possibly
-          //  not supportable, TBD), so this isn't going to make things worse than they
-          //  already are, and at least makes things better for the majority of cases where
-          //  tabindex is either 0/unset or negative.
-          // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
           const nodeIdx = tabbableNodes.findIndex((n) => n === node);
           if (nodeIdx < 0) {
-            return undefined;
+            // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
+            //  since `node` should at least have been focusable, we assume that's the case and mimic
+            //  what browsers do, which is set focus to the next node in __document position order__,
+            //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
+            //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
+            //  basic DOM order
+            return forward ? firstDomTabbableNode : lastDomTabbableNode;
           }
 
           if (forward) {
-            return tabbableNodes.slice(nodeIdx + 1).find(() => true); // first found, if any
-            // DEBUG UNNECESSARY .find((n) => isTabbable(n, config.tabbableOptions));
+            // first found, if any (array will be empty if `node` was in last position)
+            return tabbableNodes.slice(nodeIdx + 1).find(() => true);
           }
 
           return tabbableNodes
-            .slice(0, nodeIdx)
+            .slice(0, nodeIdx) // exclude `node` itself
             .reverse()
-            .find(() => true); // first found, if any
-          // DEBUG UNNECESSARY .find((n) => isTabbable(n, config.tabbableOptions));
+            .find(() => true); // first found, if any (array will be empty if `node` was in first position)
         },
       };
     });
@@ -359,6 +393,22 @@ const createFocusTrap = function (elements, userOptions) {
     ) {
       throw new Error(
         'Your focus-trap must have at least one container with at least one tabbable node in it at all times'
+      );
+    }
+
+    // NOTE: Positive tabindexes are only properly supported in single-container traps because
+    //  doing it across multiple containers where tabindexes could be all over the place
+    //  would require Tabbable to support multiple containers, would require additional
+    //  specialized Shadow DOM support, and would require Tabbable's multi-container support
+    //  to look at those containers in document position order rather than user-provided
+    //  order (as they are treated in Focus-trap, for legacy reasons). See discussion on
+    //  https://github.com/focus-trap/focus-trap/issues/375 for more details.
+    if (
+      state.containerGroups.find((g) => g.posTabIndexesFound) &&
+      state.containerGroups.length > 1
+    ) {
+      throw new Error(
+        "At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps."
       );
     }
   };
@@ -578,11 +628,7 @@ const createFocusTrap = function (elements, userOptions) {
       //  toward a node with a positive tab index
       let nextNode; // next node to focus, if we find one
       let navAcrossContainers = true;
-      if (
-        // DEBUG TODO: this needs the same logic for tab index as tabbable uses in its getTabIndex() function...
-        typeof state.mostRecentlyFocusedNode.tabIndex === 'number' &&
-        state.mostRecentlyFocusedNode.tabIndex > 0
-      ) {
+      if (getTabIndex(state.mostRecentlyFocusedNode) > 0) {
         // MRU container index must be >=0 otherwise we wouldn't have it as an MRU node...
         const mruContainerIdx = findContainerIndex(
           state.mostRecentlyFocusedNode
@@ -627,11 +673,7 @@ const createFocusTrap = function (elements, userOptions) {
         //  the greatest positive tab index like it should)
         if (
           !state.containerGroups.some((g) =>
-            g.tabbableNodes.some(
-              (n) =>
-                // DEBUG TODO: this needs the same logic for tab index as tabbable uses in its getTabIndex() function...
-                typeof n.tabIndex === 'number' && n.tabIndex > 0
-            )
+            g.tabbableNodes.some((n) => getTabIndex(n) > 0)
           )
         ) {
           // no containers with tabbable nodes with positive tab indexes which means the focus
