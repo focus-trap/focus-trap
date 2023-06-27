@@ -366,14 +366,16 @@ const createFocusTrap = function (elements, userOptions) {
             //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
             //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
             //  basic DOM order
+            const nodeFocusableIndex = focusableNodes.indexOf(node);
+
             if (forward) {
               return focusableNodes
-                .slice(focusableNodes.indexOf(node) + 1)
+                .slice(nodeFocusableIndex + 1)
                 .find((el) => isTabbable(el));
             }
 
             return focusableNodes
-              .slice(0, focusableNodes.indexOf(node))
+              .slice(0, nodeFocusableIndex)
               .findLast((el) => isTabbable(el));
           }
 
