@@ -358,7 +358,7 @@ const createFocusTrap = function (elements, userOptions) {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode(node, forward = true) {
-          const nodeIdx = tabbableNodes.findIndex((n) => n === node);
+          const nodeIdx = tabbableNodes.indexOf(node);
           if (nodeIdx < 0) {
             // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
             //  since `node` should at least have been focusable, we assume that's the case and mimic
@@ -369,15 +369,7 @@ const createFocusTrap = function (elements, userOptions) {
             return forward ? firstDomTabbableNode : lastDomTabbableNode;
           }
 
-          if (forward) {
-            // first found, if any (array will be empty if `node` was in last position)
-            return tabbableNodes.slice(nodeIdx + 1).find(() => true);
-          }
-
-          return tabbableNodes
-            .slice(0, nodeIdx) // exclude `node` itself
-            .reverse()
-            .find(() => true); // first found, if any (array will be empty if `node` was in first position)
+          return tabbableNodes[nodeIdx + (forward ? 1 : -1)];
         },
       };
     });
