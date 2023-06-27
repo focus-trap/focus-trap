@@ -513,7 +513,11 @@ const createFocusTrap = function (elements, userOptions) {
               : startOfGroupIndex - 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-          destinationNode = destinationGroup.lastTabbableNode;
+
+          destinationNode =
+            getTabIndex(target) >= 0
+              ? destinationGroup.lastTabbableNode
+              : destinationGroup.lastDomTabbableNode;
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
@@ -554,7 +558,11 @@ const createFocusTrap = function (elements, userOptions) {
               : lastOfGroupIndex + 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-          destinationNode = destinationGroup.firstTabbableNode;
+
+          destinationNode =
+            getTabIndex(target) >= 0
+              ? destinationGroup.firstTabbableNode
+              : destinationGroup.firstDomTabbableNode;
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
