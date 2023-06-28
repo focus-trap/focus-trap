@@ -358,18 +358,26 @@ const createFocusTrap = function (elements, userOptions) {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode(node, forward = true) {
-          // Can't use `tabbableNodes` because `node` may have negative tab index.
-          const nodeIdx = focusableNodes.indexOf(node);
+          const nodeIdx = tabbableNodes.indexOf(node);
+          if (nodeIdx < 0) {
+            // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
+            //  since `node` should at least have been focusable, we assume that's the case and mimic
+            //  what browsers do, which is set focus to the next node in __document position order__,
+            //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
+            //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
+            //  basic DOM order
+            if (forward) {
+              return focusableNodes
+                .slice(focusableNodes.indexOf(node) + 1)
+                .find((el) => isTabbable(el));
+            }
 
-          if (forward) {
             return focusableNodes
-              .slice(nodeIdx + 1)
-              .find((el) => isTabbable(el));
+              .slice(0, focusableNodes.indexOf(node))
+              .findLast((el) => isTabbable(el));
           }
 
-          return focusableNodes
-            .slice(0, nodeIdx)
-            .findLast((el) => isTabbable(el));
+          return tabbableNodes[nodeIdx + (forward ? 1 : -1)];
         },
       };
     });
