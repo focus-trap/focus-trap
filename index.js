@@ -466,7 +466,7 @@ const createFocusTrap = function (elements, userOptions) {
       const containerGroup =
         containerIndex >= 0 ? state.containerGroups[containerIndex] : undefined;
 
-      if (!containerGroup) {
+      if (containerIndex < 0) {
         // target not found in any group: quite possible focus has escaped the trap,
         //  so bring it back into...
         if (isBackward) {
@@ -481,19 +481,36 @@ const createFocusTrap = function (elements, userOptions) {
       } else if (isBackward) {
         // REVERSE
 
+        // is the target the first tabbable node in a group?
+        let startOfGroupIndex = findIndex(
+          state.tabbableGroups,
+          ({ firstTabbableNode }) => target === firstTabbableNode
+        );
+
         if (
-          target === containerGroup.container ||
-          containerGroup.focusableNodes.indexOf(target) <=
-            containerGroup.focusableNodes.indexOf(
-              containerGroup.firstTabbableNode
-            )
+          startOfGroupIndex < 0 &&
+          (containerGroup.container === target ||
+            (isFocusable(target, config.tabbableOptions) &&
+              !isTabbable(target, config.tabbableOptions) &&
+              !containerGroup.nextTabbableNode(target, false)))
         ) {
+          // an exception case where the target is either the container itself, or
+          //  a non-tabbable node that was given focus (i.e. tabindex is negative
+          //  and user clicked on it or node was programmatically given focus)
+          //  and is not followed by any other tabbable node, in which
+          //  case, we should handle shift+tab as if focus were on the container's
+          //  first tabbable node, and go to the last tabbable node of the LAST group
+          startOfGroupIndex = containerIndex;
+        }
+
+        if (startOfGroupIndex >= 0) {
           // YES: then shift+tab should go to the last tabbable node in the
           //  previous group (and wrap around to the last tabbable node of
           //  the LAST group if it's the first tabbable node of the FIRST group)
           const destinationGroupIndex =
-            (containerIndex - 1 + state.containerGroups.length) %
-            state.containerGroups.length;
+            startOfGroupIndex === 0
+              ? state.tabbableGroups.length - 1
+              : startOfGroupIndex - 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
 
@@ -509,18 +526,36 @@ const createFocusTrap = function (elements, userOptions) {
       } else {
         // FORWARD
 
+        // is the target the last tabbable node in a group?
+        let lastOfGroupIndex = findIndex(
+          state.tabbableGroups,
+          ({ lastTabbableNode }) => target === lastTabbableNode
+        );
+
         if (
-          target === containerGroup.container ||
-          containerGroup.focusableNodes.indexOf(target) >=
-            containerGroup.focusableNodes.indexOf(
-              containerGroup.lastTabbableNode
-            )
+          lastOfGroupIndex < 0 &&
+          (containerGroup.container === target ||
+            (isFocusable(target, config.tabbableOptions) &&
+              !isTabbable(target, config.tabbableOptions) &&
+              !containerGroup.nextTabbableNode(target)))
         ) {
+          // an exception case where the target is the container itself, or
+          //  a non-tabbable node that was given focus (i.e. tabindex is negative
+          //  and user clicked on it or node was programmatically given focus)
+          //  and is not followed by any other tabbable node, in which
+          //  case, we should handle tab as if focus were on the container's
+          //  last tabbable node, and go to the first tabbable node of the FIRST group
+          lastOfGroupIndex = containerIndex;
+        }
+
+        if (lastOfGroupIndex >= 0) {
           // YES: then tab should go to the first tabbable node in the next
           //  group (and wrap around to the first tabbable node of the FIRST
           //  group if it's the last tabbable node of the LAST group)
           const destinationGroupIndex =
-            (containerIndex + 1) % state.containerGroups.length;
+            lastOfGroupIndex === state.tabbableGroups.length - 1
+              ? 0
+              : lastOfGroupIndex + 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
 
