@@ -1,4 +1,10 @@
-import { tabbable, focusable, isFocusable, isTabbable } from 'tabbable';
+import {
+  tabbable,
+  focusable,
+  isFocusable,
+  isTabbable,
+  getTabIndex,
+} from 'tabbable';
 
 const activeFocusTraps = {
   activateTrap(trapStack, trap) {
@@ -40,11 +46,11 @@ const isSelectableInput = function (node) {
 };
 
 const isEscapeEvent = function (e) {
-  return e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27;
+  return e?.key === 'Escape' || e?.key === 'Esc' || e?.keyCode === 27;
 };
 
 const isTabEvent = function (e) {
-  return e.key === 'Tab' || e.keyCode === 9;
+  return e?.key === 'Tab' || e?.keyCode === 9;
 };
 
 // checks for TAB by default
@@ -136,8 +142,11 @@ const createFocusTrap = function (elements, userOptions) {
     //   container: HTMLElement,
     //   tabbableNodes: Array<HTMLElement>, // empty if none
     //   focusableNodes: Array<HTMLElement>, // empty if none
-    //   firstTabbableNode: HTMLElement|null,
-    //   lastTabbableNode: HTMLElement|null,
+    //   posTabIndexesFound: boolean,
+    //   firstTabbableNode: HTMLElement|undefined,
+    //   lastTabbableNode: HTMLElement|undefined,
+    //   firstDomTabbableNode: HTMLElement|undefined,
+    //   lastDomTabbableNode: HTMLElement|undefined,
     //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
     // }>}
     containerGroups: [], // same order/length as `containers` list
@@ -156,6 +165,9 @@ const createFocusTrap = function (elements, userOptions) {
     // timer ID for when delayInitialFocus is true and initial focus in this trap
     //  has been delayed during activation
     delayInitialFocusTimer: undefined,
+
+    // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
+    recentNavEvent: undefined,
   };
 
   let trap; // eslint-disable-line prefer-const -- some private functions reference it, and its methods reference private functions, so we must declare here and define later
@@ -178,7 +190,9 @@ const createFocusTrap = function (elements, userOptions) {
   /**
    * Finds the index of the container that contains the element.
    * @param {HTMLElement} element
-   * @param {Event} [event]
+   * @param {Event} [event] If available, and `element` isn't directly found in any container,
+   *  the event's composed path is used to see if includes any known trap containers in the
+   *  case where the element is inside a Shadow DOM.
    * @returns {number} Index of the container in either `state.containers` or
    *  `state.containerGroups` (the order/length of these lists are the same); -1
    *  if the element isn't found.
@@ -288,18 +302,52 @@ const createFocusTrap = function (elements, userOptions) {
       const tabbableNodes = tabbable(container, config.tabbableOptions);
 
       // NOTE: if we have tabbable nodes, we must have focusable nodes; focusable nodes
-      //  are a superset of tabbable nodes
+      //  are a superset of tabbable nodes since nodes with negative `tabindex` attributes
+      //  are focusable but not tabbable
       const focusableNodes = focusable(container, config.tabbableOptions);
+
+      const firstTabbableNode =
+        tabbableNodes.length > 0 ? tabbableNodes[0] : undefined;
+      const lastTabbableNode =
+        tabbableNodes.length > 0
+          ? tabbableNodes[tabbableNodes.length - 1]
+          : undefined;
+
+      const firstDomTabbableNode = focusableNodes.find((node) =>
+        isTabbable(node)
+      );
+      const lastDomTabbableNode = focusableNodes.findLast((node) =>
+        isTabbable(node)
+      );
+
+      const posTabIndexesFound = !!tabbableNodes.find(
+        (node) => getTabIndex(node) > 0
+      );
 
       return {
         container,
         tabbableNodes,
         focusableNodes,
-        firstTabbableNode: tabbableNodes.length > 0 ? tabbableNodes[0] : null,
-        lastTabbableNode:
-          tabbableNodes.length > 0
-            ? tabbableNodes[tabbableNodes.length - 1]
-            : null,
+
+        /** True if at least one node with positive `tabindex` was found in this container. */
+        posTabIndexesFound,
+
+        /** First tabbable node in container, __tabindex__ order; `undefined` if none. */
+        firstTabbableNode,
+        /** Last tabbable node in container, __tabindex__ order; `undefined` if none. */
+        lastTabbableNode,
+
+        // NOTE: DOM order is NOT NECESSARILY "document position" order, but figuring that out
+        //  would require more than just https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition
+        //  because that API doesn't work with Shadow DOM as well as it should (@see
+        //  https://github.com/whatwg/dom/issues/320) and since this first/last is only needed, so far,
+        //  to address an edge case related to positive tabindex support, this seems like a much easier,
+        //  "close enough most of the time" alternative for positive tabindexes which should generally
+        //  be avoided anyway...
+        /** First tabbable node in container, __DOM__ order; `undefined` if none. */
+        firstDomTabbableNode,
+        /** Last tabbable node in container, __DOM__ order; `undefined` if none. */
+        lastDomTabbableNode,
 
         /**
          * Finds the __tabbable__ node that follows the given node in the specified direction,
@@ -310,31 +358,26 @@ const createFocusTrap = function (elements, userOptions) {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode(node, forward = true) {
-          // NOTE: If tabindex is positive (in order to manipulate the tab order separate
-          //  from the DOM order), this __will not work__ because the list of focusableNodes,
-          //  while it contains tabbable nodes, does not sort its nodes in any order other
-          //  than DOM order, because it can't: Where would you place focusable (but not
-          //  tabbable) nodes in that order? They have no order, because they aren't tabbale...
-          // Support for positive tabindex is already broken and hard to manage (possibly
-          //  not supportable, TBD), so this isn't going to make things worse than they
-          //  already are, and at least makes things better for the majority of cases where
-          //  tabindex is either 0/unset or negative.
-          // FYI, positive tabindex issue: https://github.com/focus-trap/focus-trap/issues/375
-          const nodeIdx = focusableNodes.findIndex((n) => n === node);
+          const nodeIdx = tabbableNodes.indexOf(node);
           if (nodeIdx < 0) {
-            return undefined;
-          }
+            // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
+            //  since `node` should at least have been focusable, we assume that's the case and mimic
+            //  what browsers do, which is set focus to the next node in __document position order__,
+            //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
+            //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
+            //  basic DOM order
+            if (forward) {
+              return focusableNodes
+                .slice(focusableNodes.indexOf(node) + 1)
+                .find((el) => isTabbable(el));
+            }
 
-          if (forward) {
             return focusableNodes
-              .slice(nodeIdx + 1)
-              .find((n) => isTabbable(n, config.tabbableOptions));
+              .slice(0, focusableNodes.indexOf(node))
+              .findLast((el) => isTabbable(el));
           }
 
-          return focusableNodes
-            .slice(0, nodeIdx)
-            .reverse()
-            .find((n) => isTabbable(n, config.tabbableOptions));
+          return tabbableNodes[nodeIdx + (forward ? 1 : -1)];
         },
       };
     });
@@ -350,6 +393,22 @@ const createFocusTrap = function (elements, userOptions) {
     ) {
       throw new Error(
         'Your focus-trap must have at least one container with at least one tabbable node in it at all times'
+      );
+    }
+
+    // NOTE: Positive tabindexes are only properly supported in single-container traps because
+    //  doing it across multiple containers where tabindexes could be all over the place
+    //  would require Tabbable to support multiple containers, would require additional
+    //  specialized Shadow DOM support, and would require Tabbable's multi-container support
+    //  to look at those containers in document position order rather than user-provided
+    //  order (as they are treated in Focus-trap, for legacy reasons). See discussion on
+    //  https://github.com/focus-trap/focus-trap/issues/375 for more details.
+    if (
+      state.containerGroups.find((g) => g.posTabIndexesFound) &&
+      state.containerGroups.length > 1
+    ) {
+      throw new Error(
+        "At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps."
       );
     }
   };
@@ -369,6 +428,7 @@ const createFocusTrap = function (elements, userOptions) {
     }
 
     node.focus({ preventScroll: !!config.preventScroll });
+    // NOTE: focus() API does not trigger focusIn event so set MRU node manually
     state.mostRecentlyFocusedNode = node;
 
     if (isSelectableInput(node)) {
@@ -381,65 +441,19 @@ const createFocusTrap = function (elements, userOptions) {
     return node ? node : node === false ? false : previousActiveElement;
   };
 
-  // This needs to be done on mousedown and touchstart instead of click
-  // so that it precedes the focus event.
-  const checkPointerDown = function (e) {
-    const target = getActualTarget(e);
-
-    if (findContainerIndex(target, e) >= 0) {
-      // allow the click since it ocurred inside the trap
-      return;
-    }
-
-    if (valueOrHandler(config.clickOutsideDeactivates, e)) {
-      // immediately deactivate the trap
-      trap.deactivate({
-        // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
-        //  which will result in the outside click setting focus to the node
-        //  that was clicked (and if not focusable, to "nothing"); by setting
-        //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
-        //  on activation (or the configured `setReturnFocus` node), whether the
-        //  outside click was on a focusable node or not
-        returnFocus: config.returnFocusOnDeactivate,
-      });
-      return;
-    }
-
-    // This is needed for mobile devices.
-    // (If we'll only let `click` events through,
-    // then on mobile they will be blocked anyways if `touchstart` is blocked.)
-    if (valueOrHandler(config.allowOutsideClick, e)) {
-      // allow the click outside the trap to take place
-      return;
-    }
-
-    // otherwise, prevent the click
-    e.preventDefault();
-  };
-
-  // In case focus escapes the trap for some strange reason, pull it back in.
-  const checkFocusIn = function (e) {
-    const target = getActualTarget(e);
-    const targetContained = findContainerIndex(target, e) >= 0;
-
-    // In Firefox when you Tab out of an iframe the Document is briefly focused.
-    if (targetContained || target instanceof Document) {
-      if (targetContained) {
-        state.mostRecentlyFocusedNode = target;
-      }
-    } else {
-      // escaped! pull it back in to where it just left
-      e.stopImmediatePropagation();
-      tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
-    }
-  };
-
-  // Hijack key nav events on the first and last focusable nodes of the trap,
-  // in order to prevent focus from escaping. If it escapes for even a
-  // moment it can end up scrolling the page and causing confusion so we
-  // kind of need to capture the action at the keydown phase.
-  const checkKeyNav = function (event, isBackward = false) {
-    const target = getActualTarget(event);
+  /**
+   * Finds the next node (in either direction) where focus should move according to a
+   *  keyboard focus-in event.
+   * @param {Object} params
+   * @param {Node} [params.target] Known target __from which__ to navigate, if any.
+   * @param {KeyboardEvent|FocusEvent} [params.event] Event to use if `target` isn't known (event
+   *  will be used to determine the `target`). Ignored if `target` is specified.
+   * @param {boolean} [params.isBackward] True if focus should move backward.
+   * @returns {Node|undefined} The next node, or `undefined` if a next node couldn't be
+   *  determined given the current state of the trap.
+   */
+  const findNextNavNode = function ({ target, event, isBackward = false }) {
+    target = target || getActualTarget(event);
     updateTabbableNodes();
 
     let destinationNode = null;
@@ -499,7 +513,11 @@ const createFocusTrap = function (elements, userOptions) {
               : startOfGroupIndex - 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-          destinationNode = destinationGroup.lastTabbableNode;
+
+          destinationNode =
+            getTabIndex(target) >= 0
+              ? destinationGroup.lastTabbableNode
+              : destinationGroup.lastDomTabbableNode;
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
@@ -540,7 +558,11 @@ const createFocusTrap = function (elements, userOptions) {
               : lastOfGroupIndex + 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-          destinationNode = destinationGroup.firstTabbableNode;
+
+          destinationNode =
+            getTabIndex(target) >= 0
+              ? destinationGroup.firstTabbableNode
+              : destinationGroup.firstDomTabbableNode;
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
@@ -553,6 +575,149 @@ const createFocusTrap = function (elements, userOptions) {
       destinationNode = getNodeForOption('fallbackFocus');
     }
 
+    return destinationNode;
+  };
+
+  // This needs to be done on mousedown and touchstart instead of click
+  // so that it precedes the focus event.
+  const checkPointerDown = function (e) {
+    const target = getActualTarget(e);
+
+    if (findContainerIndex(target, e) >= 0) {
+      // allow the click since it ocurred inside the trap
+      return;
+    }
+
+    if (valueOrHandler(config.clickOutsideDeactivates, e)) {
+      // immediately deactivate the trap
+      trap.deactivate({
+        // NOTE: by setting `returnFocus: false`, deactivate() will do nothing,
+        //  which will result in the outside click setting focus to the node
+        //  that was clicked (and if not focusable, to "nothing"); by setting
+        //  `returnFocus: true`, we'll attempt to re-focus the node originally-focused
+        //  on activation (or the configured `setReturnFocus` node), whether the
+        //  outside click was on a focusable node or not
+        returnFocus: config.returnFocusOnDeactivate,
+      });
+      return;
+    }
+
+    // This is needed for mobile devices.
+    // (If we'll only let `click` events through,
+    // then on mobile they will be blocked anyways if `touchstart` is blocked.)
+    if (valueOrHandler(config.allowOutsideClick, e)) {
+      // allow the click outside the trap to take place
+      return;
+    }
+
+    // otherwise, prevent the click
+    e.preventDefault();
+  };
+
+  // In case focus escapes the trap for some strange reason, pull it back in.
+  // NOTE: the focusIn event is NOT cancelable, so if focus escapes, it may cause unexpected
+  //  scrolling if the node that got focused was out of view; there's nothing we can do to
+  //  prevent that from happening by the time we discover that focus escaped
+  const checkFocusIn = function (event) {
+    const target = getActualTarget(event);
+    const targetContained = findContainerIndex(target, event) >= 0;
+
+    // In Firefox when you Tab out of an iframe the Document is briefly focused.
+    if (targetContained || target instanceof Document) {
+      if (targetContained) {
+        state.mostRecentlyFocusedNode = target;
+      }
+    } else {
+      // escaped! pull it back in to where it just left
+      event.stopImmediatePropagation();
+
+      // focus will escape if the MRU node had a positive tab index and user tried to nav forward;
+      //  it will also escape if the MRU node had a 0 tab index and user tried to nav backward
+      //  toward a node with a positive tab index
+      let nextNode; // next node to focus, if we find one
+      let navAcrossContainers = true;
+      if (getTabIndex(state.mostRecentlyFocusedNode) > 0) {
+        // MRU container index must be >=0 otherwise we wouldn't have it as an MRU node...
+        const mruContainerIdx = findContainerIndex(
+          state.mostRecentlyFocusedNode
+        );
+        // there MAY not be any tabbable nodes in the container if there are at least 2 containers
+        //  and the MRU node is focusable but not tabbable (focus-trap requires at least 1 container
+        //  with at least one tabbable node in order to function, so this could be the other container
+        //  with nothing tabbable in it)
+        const { tabbableNodes } = state.containerGroups[mruContainerIdx];
+        if (tabbableNodes.length > 0) {
+          // MRU tab index MAY not be found if the MRU node is focusable but not tabbable
+          const mruTabIdx = tabbableNodes.findIndex(
+            (node) => node === state.mostRecentlyFocusedNode
+          );
+          if (mruTabIdx >= 0) {
+            if (config.isKeyForward(state.recentNavEvent)) {
+              if (mruTabIdx + 1 < tabbableNodes.length) {
+                nextNode = tabbableNodes[mruTabIdx + 1];
+                navAcrossContainers = false;
+              }
+              // else, don't wrap within the container as focus should move to next/previous
+              //  container
+            } else {
+              if (mruTabIdx - 1 >= 0) {
+                nextNode = tabbableNodes[mruTabIdx - 1];
+                navAcrossContainers = false;
+              }
+              // else, don't wrap within the container as focus should move to next/previous
+              //  container
+            }
+            // else, don't find in container order without considering direction too
+          }
+        }
+        // else, no tabbable nodes in that container (which means we must have at least one other
+        //  container with at least one tabbable node in it, otherwise focus-trap would've thrown
+        //  an error the last time updateTabbableNodes() was run): find next node among all known
+        //  containers
+      } else {
+        // check to see if there's at least one tabbable node with a positive tab index inside
+        //  the trap because focus seems to escape when navigating backward from a tabbable node
+        //  with tabindex=0 when this is the case (instead of wrapping to the tabbable node with
+        //  the greatest positive tab index like it should)
+        if (
+          !state.containerGroups.some((g) =>
+            g.tabbableNodes.some((n) => getTabIndex(n) > 0)
+          )
+        ) {
+          // no containers with tabbable nodes with positive tab indexes which means the focus
+          //  escaped for some other reason and we should just execute the fallback to the
+          //  MRU node or initial focus node, if any
+          navAcrossContainers = false;
+        }
+      }
+
+      if (navAcrossContainers) {
+        nextNode = findNextNavNode({
+          // move FROM the MRU node, not event-related node (which will be the node that is
+          //  outside the trap causing the focus escape we're trying to fix)
+          target: state.mostRecentlyFocusedNode,
+          isBackward: config.isKeyBackward(state.recentNavEvent),
+        });
+      }
+
+      if (nextNode) {
+        tryFocus(nextNode);
+      } else {
+        tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
+      }
+    }
+
+    state.recentNavEvent = undefined; // clear
+  };
+
+  // Hijack key nav events on the first and last focusable nodes of the trap,
+  // in order to prevent focus from escaping. If it escapes for even a
+  // moment it can end up scrolling the page and causing confusion so we
+  // kind of need to capture the action at the keydown phase.
+  const checkKeyNav = function (event, isBackward = false) {
+    state.recentNavEvent = event;
+
+    const destinationNode = findNextNavNode({ event, isBackward });
     if (destinationNode) {
       if (isTabEvent(event)) {
         // since tab natively moves focus, we wouldn't have a destination node unless we

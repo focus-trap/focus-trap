@@ -1767,6 +1767,81 @@ describe('focus-trap', () => {
   //    or another.
   // });
 
+  describe('demo: positive-tabindex', () => {
+    it('supports nodes with positive tabindexes', () => {
+      cy.get('#demo-positive-tabindex').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // 1st element should be focused
+      cy.get('@testRoot')
+        .findByRole('button', { name: 'tabindex 1' })
+        .as('firstElementInTrap')
+        .should('be.focused');
+
+      // trap is active (keep focus in trap by blocking clicks on outside focusable element)
+      cy.get('#return-to-repo').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active (keep focus in trap by blocking clicks on outside un-focusable element)
+      cy.get('#default-heading').click();
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // trap is active (keep focus in trap by tabbing through the focus trap's tabbable elements)
+      // eslint-disable-next-line cypress/no-unnecessary-waiting
+      cy.get('@firstElementInTrap')
+        .tab()
+        .should('have.text', 'tabindex 2')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'tabindex 3')
+        .should('be.focused')
+        .tab()
+        .wait(500) // need slight delay here to allow trap to pull focus back in
+        .focused() // `wait()` yields the node it was given, but it should have changed by now
+        .should('have.text', 'with')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'some')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'focusable')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'tabindex 0')
+        .should('be.focused')
+        .tab()
+        .should('have.text', 'tabindex ?')
+        .should('be.focused')
+        .tab()
+        .as('lastElementInTrap')
+        .should('contain', 'deactivate trap')
+        .should('be.focused')
+        .tab(); // back to @firstElementInTrap
+
+      // trap is active (keep focus in trap by shift-tabbing through the focus trap's tabbable elements)
+      cy.get('@firstElementInTrap').should('be.focused').tab({ shift: true });
+      cy.get('@lastElementInTrap').should('be.focused');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .click();
+      verifyFocusIsNotTrapped(
+        cy.get('@lastlyFocusedElementBeforeTrapIsActivated')
+      );
+    });
+
+    // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+    //  understand that a non-tabbable node can still be focusable and that it's possible
+    //  to tab away from it. As such, we can't test that tabbing from the negative tabindex
+    //  button leads to the "tabindex 3" button in DOM order.
+  });
+
   // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //  support web components, so we can't successfully run this test because it will skip
   //  over the web component when tabbing from 'button 3', jumping to 'button 4' instead of
