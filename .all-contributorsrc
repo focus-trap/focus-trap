@@ -238,7 +238,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/98312056?v=4",
       "profile": "https://github.com/DaviDevMod",
       "contributions": [
-        "doc"
+        "doc",
+        "code",
+        "bug"
       ]
     },
     {
@@ -303,5 +305,6 @@
   ],
   "contributorsPerLine": 7,
   "contributorsSortAlphabetically": true,
-  "skipCi": true
+  "skipCi": true,
+  "commitType": "docs"
 }
