@@ -358,7 +358,7 @@ const createFocusTrap = function (elements, userOptions) {
          * @returns {HTMLElement|undefined} The next tabbable node, if any.
          */
         nextTabbableNode(node, forward = true) {
-          const nodeIdx = tabbableNodes.findIndex((n) => n === node);
+          const nodeIdx = tabbableNodes.indexOf(node);
           if (nodeIdx < 0) {
             // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
             //  since `node` should at least have been focusable, we assume that's the case and mimic
@@ -366,18 +366,18 @@ const createFocusTrap = function (elements, userOptions) {
             //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
             //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
             //  basic DOM order
-            return forward ? firstDomTabbableNode : lastDomTabbableNode;
+            if (forward) {
+              return focusableNodes
+                .slice(focusableNodes.indexOf(node) + 1)
+                .find((el) => isTabbable(el));
+            }
+
+            return focusableNodes
+              .slice(0, focusableNodes.indexOf(node))
+              .findLast((el) => isTabbable(el));
           }
 
-          if (forward) {
-            // first found, if any (array will be empty if `node` was in last position)
-            return tabbableNodes.slice(nodeIdx + 1).find(() => true);
-          }
-
-          return tabbableNodes
-            .slice(0, nodeIdx) // exclude `node` itself
-            .reverse()
-            .find(() => true); // first found, if any (array will be empty if `node` was in first position)
+          return tabbableNodes[nodeIdx + (forward ? 1 : -1)];
         },
       };
     });
@@ -513,7 +513,11 @@ const createFocusTrap = function (elements, userOptions) {
               : startOfGroupIndex - 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-          destinationNode = destinationGroup.lastTabbableNode;
+
+          destinationNode =
+            getTabIndex(target) >= 0
+              ? destinationGroup.lastTabbableNode
+              : destinationGroup.lastDomTabbableNode;
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
@@ -554,7 +558,11 @@ const createFocusTrap = function (elements, userOptions) {
               : lastOfGroupIndex + 1;
 
           const destinationGroup = state.tabbableGroups[destinationGroupIndex];
-          destinationNode = destinationGroup.firstTabbableNode;
+
+          destinationNode =
+            getTabIndex(target) >= 0
+              ? destinationGroup.firstTabbableNode
+              : destinationGroup.firstDomTabbableNode;
         } else if (!isTabEvent(event)) {
           // user must have customized the nav keys so we have to move focus manually _within_
           //  the active group: do this based on the order determined by tabbable()
