@@ -1442,9 +1442,7 @@ var focusTrapDemoBundle = (function () {
              */
             nextTabbableNode: function nextTabbableNode(node) {
               var forward = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-              var nodeIdx = tabbableNodes.findIndex(function (n) {
-                return n === node;
-              });
+              var nodeIdx = tabbableNodes.indexOf(node);
               if (nodeIdx < 0) {
                 // either not tabbable nor focusable, or was focused but not tabbable (negative tabindex):
                 //  since `node` should at least have been focusable, we assume that's the case and mimic
@@ -1452,22 +1450,19 @@ var focusTrapDemoBundle = (function () {
                 //  regardless of positive tabindexes, if any -- and for reasons explained in the NOTE
                 //  above related to `firstDomTabbable` and `lastDomTabbable` properties, we fall back to
                 //  basic DOM order
-                return forward ? firstDomTabbableNode : lastDomTabbableNode;
-              }
-              if (forward) {
-                // first found, if any (array will be empty if `node` was in last position)
-                return tabbableNodes.slice(nodeIdx + 1).find(function () {
-                  return true;
+                if (forward) {
+                  return focusableNodes.slice(focusableNodes.indexOf(node) + 1).find(function (el) {
+                    return isTabbable(el);
+                  });
+                }
+                return focusableNodes.slice(0, focusableNodes.indexOf(node)).findLast(function (el) {
+                  return isTabbable(el);
                 });
               }
-              return tabbableNodes.slice(0, nodeIdx) // exclude `node` itself
-              .reverse().find(function () {
-                return true;
-              }); // first found, if any (array will be empty if `node` was in first position)
+              return tabbableNodes[nodeIdx + (forward ? 1 : -1)];
             }
           };
         });
-
         state.tabbableGroups = state.containerGroups.filter(function (group) {
           return group.tabbableNodes.length > 0;
         });
@@ -1574,7 +1569,7 @@ var focusTrapDemoBundle = (function () {
               //  the LAST group if it's the first tabbable node of the FIRST group)
               var destinationGroupIndex = startOfGroupIndex === 0 ? state.tabbableGroups.length - 1 : startOfGroupIndex - 1;
               var destinationGroup = state.tabbableGroups[destinationGroupIndex];
-              destinationNode = destinationGroup.lastTabbableNode;
+              destinationNode = getTabIndex(target) >= 0 ? destinationGroup.lastTabbableNode : destinationGroup.lastDomTabbableNode;
             } else if (!isTabEvent(event)) {
               // user must have customized the nav keys so we have to move focus manually _within_
               //  the active group: do this based on the order determined by tabbable()
@@ -1603,7 +1598,7 @@ var focusTrapDemoBundle = (function () {
               //  group if it's the last tabbable node of the LAST group)
               var _destinationGroupIndex = lastOfGroupIndex === state.tabbableGroups.length - 1 ? 0 : lastOfGroupIndex + 1;
               var _destinationGroup = state.tabbableGroups[_destinationGroupIndex];
-              destinationNode = _destinationGroup.firstTabbableNode;
+              destinationNode = getTabIndex(target) >= 0 ? _destinationGroup.firstTabbableNode : _destinationGroup.firstDomTabbableNode;
             } else if (!isTabEvent(event)) {
               // user must have customized the nav keys so we have to move focus manually _within_
               //  the active group: do this based on the order determined by tabbable()
