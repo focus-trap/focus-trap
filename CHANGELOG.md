@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.1
+
+### Patch Changes
+
+- d9e2546: Fix possible exception in new `Tabbable.getTabIndex()` when initializing trap
+
 ## 7.5.0
 
 ### Minor Changes
