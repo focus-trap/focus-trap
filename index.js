@@ -636,59 +636,67 @@ const createFocusTrap = function (elements, userOptions) {
       //  toward a node with a positive tab index
       let nextNode; // next node to focus, if we find one
       let navAcrossContainers = true;
-      if (getTabIndex(state.mostRecentlyFocusedNode) > 0) {
-        // MRU container index must be >=0 otherwise we wouldn't have it as an MRU node...
-        const mruContainerIdx = findContainerIndex(
-          state.mostRecentlyFocusedNode
-        );
-        // there MAY not be any tabbable nodes in the container if there are at least 2 containers
-        //  and the MRU node is focusable but not tabbable (focus-trap requires at least 1 container
-        //  with at least one tabbable node in order to function, so this could be the other container
-        //  with nothing tabbable in it)
-        const { tabbableNodes } = state.containerGroups[mruContainerIdx];
-        if (tabbableNodes.length > 0) {
-          // MRU tab index MAY not be found if the MRU node is focusable but not tabbable
-          const mruTabIdx = tabbableNodes.findIndex(
-            (node) => node === state.mostRecentlyFocusedNode
+      if (state.mostRecentlyFocusedNode) {
+        if (getTabIndex(state.mostRecentlyFocusedNode) > 0) {
+          // MRU container index must be >=0 otherwise we wouldn't have it as an MRU node...
+          const mruContainerIdx = findContainerIndex(
+            state.mostRecentlyFocusedNode
           );
-          if (mruTabIdx >= 0) {
-            if (config.isKeyForward(state.recentNavEvent)) {
-              if (mruTabIdx + 1 < tabbableNodes.length) {
-                nextNode = tabbableNodes[mruTabIdx + 1];
-                navAcrossContainers = false;
+          // there MAY not be any tabbable nodes in the container if there are at least 2 containers
+          //  and the MRU node is focusable but not tabbable (focus-trap requires at least 1 container
+          //  with at least one tabbable node in order to function, so this could be the other container
+          //  with nothing tabbable in it)
+          const { tabbableNodes } = state.containerGroups[mruContainerIdx];
+          if (tabbableNodes.length > 0) {
+            // MRU tab index MAY not be found if the MRU node is focusable but not tabbable
+            const mruTabIdx = tabbableNodes.findIndex(
+              (node) => node === state.mostRecentlyFocusedNode
+            );
+            if (mruTabIdx >= 0) {
+              if (config.isKeyForward(state.recentNavEvent)) {
+                if (mruTabIdx + 1 < tabbableNodes.length) {
+                  nextNode = tabbableNodes[mruTabIdx + 1];
+                  navAcrossContainers = false;
+                }
+                // else, don't wrap within the container as focus should move to next/previous
+                //  container
+              } else {
+                if (mruTabIdx - 1 >= 0) {
+                  nextNode = tabbableNodes[mruTabIdx - 1];
+                  navAcrossContainers = false;
+                }
+                // else, don't wrap within the container as focus should move to next/previous
+                //  container
               }
-              // else, don't wrap within the container as focus should move to next/previous
-              //  container
-            } else {
-              if (mruTabIdx - 1 >= 0) {
-                nextNode = tabbableNodes[mruTabIdx - 1];
-                navAcrossContainers = false;
-              }
-              // else, don't wrap within the container as focus should move to next/previous
-              //  container
+              // else, don't find in container order without considering direction too
             }
-            // else, don't find in container order without considering direction too
+          }
+          // else, no tabbable nodes in that container (which means we must have at least one other
+          //  container with at least one tabbable node in it, otherwise focus-trap would've thrown
+          //  an error the last time updateTabbableNodes() was run): find next node among all known
+          //  containers
+        } else {
+          // check to see if there's at least one tabbable node with a positive tab index inside
+          //  the trap because focus seems to escape when navigating backward from a tabbable node
+          //  with tabindex=0 when this is the case (instead of wrapping to the tabbable node with
+          //  the greatest positive tab index like it should)
+          if (
+            !state.containerGroups.some((g) =>
+              g.tabbableNodes.some((n) => getTabIndex(n) > 0)
+            )
+          ) {
+            // no containers with tabbable nodes with positive tab indexes which means the focus
+            //  escaped for some other reason and we should just execute the fallback to the
+            //  MRU node or initial focus node, if any
+            navAcrossContainers = false;
           }
         }
-        // else, no tabbable nodes in that container (which means we must have at least one other
-        //  container with at least one tabbable node in it, otherwise focus-trap would've thrown
-        //  an error the last time updateTabbableNodes() was run): find next node among all known
-        //  containers
       } else {
-        // check to see if there's at least one tabbable node with a positive tab index inside
-        //  the trap because focus seems to escape when navigating backward from a tabbable node
-        //  with tabindex=0 when this is the case (instead of wrapping to the tabbable node with
-        //  the greatest positive tab index like it should)
-        if (
-          !state.containerGroups.some((g) =>
-            g.tabbableNodes.some((n) => getTabIndex(n) > 0)
-          )
-        ) {
-          // no containers with tabbable nodes with positive tab indexes which means the focus
-          //  escaped for some other reason and we should just execute the fallback to the
-          //  MRU node or initial focus node, if any
-          navAcrossContainers = false;
-        }
+        // no MRU node means we're likely in some initial condition when the trap has just
+        //  been activated and initial focus hasn't been given yet, in which case we should
+        //  fall through to trying to focus the initial focus node, which is what should
+        //  happen below at this point in the logic
+        navAcrossContainers = false;
       }
 
       if (navAcrossContainers) {
