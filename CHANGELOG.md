@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.0
+
+### Minor Changes
+
+- 5e2f913: Adds support for nodes with a positive tabindex in single-container traps only ([#375](https://github.com/focus-trap/focus-trap/issues/375))
+
 ## 7.4.3
 
 ### Patch Changes
