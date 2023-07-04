@@ -316,9 +316,10 @@ const createFocusTrap = function (elements, userOptions) {
       const firstDomTabbableNode = focusableNodes.find((node) =>
         isTabbable(node)
       );
-      const lastDomTabbableNode = focusableNodes.findLast((node) =>
-        isTabbable(node)
-      );
+      const lastDomTabbableNode = focusableNodes
+        .slice()
+        .reverse()
+        .find((node) => isTabbable(node));
 
       const posTabIndexesFound = !!tabbableNodes.find(
         (node) => getTabIndex(node) > 0
@@ -374,7 +375,8 @@ const createFocusTrap = function (elements, userOptions) {
 
             return focusableNodes
               .slice(0, focusableNodes.indexOf(node))
-              .findLast((el) => isTabbable(el));
+              .reverse()
+              .find((el) => isTabbable(el));
           }
 
           return tabbableNodes[nodeIdx + (forward ? 1 : -1)];
