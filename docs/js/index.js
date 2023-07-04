@@ -29,7 +29,7 @@ require('./dom-remove')();
 // ❗️ MANUALLY TESTED DEMOS ❗️
 // These are demos that can't be auto-tested in JSDom (Jest) or Cypress, typically
 //  because of tab handling.
-//  
+//
 // Consider running them in SAFARI to also check, at the same, that features work
 //  under this browser, which tends to be a late adopter of newer Web APIs.
 //  Cypress doesn't support Safari yet, so tests can't be automated.
