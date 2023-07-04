@@ -1,6 +1,7 @@
 /*!
 * focus-trap demo bundle
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
     'use strict';
 
@@ -1404,7 +1405,7 @@ var focusTrapDemoBundle = (function () {
           var firstDomTabbableNode = focusableNodes.find(function (node) {
             return isTabbable(node);
           });
-          var lastDomTabbableNode = focusableNodes.findLast(function (node) {
+          var lastDomTabbableNode = focusableNodes.slice().reverse().find(function (node) {
             return isTabbable(node);
           });
           var posTabIndexesFound = !!tabbableNodes.find(function (node) {
@@ -1454,7 +1455,7 @@ var focusTrapDemoBundle = (function () {
                     return isTabbable(el);
                   });
                 }
-                return focusableNodes.slice(0, focusableNodes.indexOf(node)).findLast(function (el) {
+                return focusableNodes.slice(0, focusableNodes.indexOf(node)).reverse().find(function (el) {
                   return isTabbable(el);
                 });
               }
