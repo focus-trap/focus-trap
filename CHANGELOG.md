@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.2
+
+### Patch Changes
+
+- b73eb02: Remove references to `Array.prototype.findLast()` not well supported in Safari ([#996](https://github.com/focus-trap/focus-trap/issues/996))
+
 ## 7.5.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "focus-trap",
-  "version": "7.5.1",
+  "version": "7.5.2",
   "description": "Trap focus within a DOM node.",
   "main": "dist/focus-trap.js",
   "module": "dist/focus-trap.esm.js",
