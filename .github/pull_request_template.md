@@ -12,9 +12,10 @@ Please be sure to go over the PR CHECKLIST below before posting your PR to make 
 
 __Please leave this checklist in your PR.__
 
-- Source changes maintain stated browser compatibility.
-- Includes updated docs demo bundle if source/docs code was changed (run `npm run demo-bundle` in your branch and include the `/docs/demo-bundle.js` file that gets generated in your PR).
 - Issue being fixed is referenced.
+- Source changes maintain stated browser compatibility.
+- Web APIs introduced have __deep__ browser coverage, including Safari (often very late to adopt new APIs).
+- Includes updated docs demo bundle if source/docs code was changed (run `npm run demo-bundle` in your branch and include the `/docs/demo-bundle.js` file that gets generated in your PR).
 - Unit test coverage added/updated.
 - E2E (i.e. demos) test coverage added/updated.
   - ⚠️ Non-covered demos (look for `// TEST MANUALLY` comments [here](https://github.com/focus-trap/focus-trap/blob/master/docs/js/index.js)) that can't be fully tested in Cypress have been __manually__ verified.

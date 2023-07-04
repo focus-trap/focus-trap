@@ -25,11 +25,20 @@ require('./multiple-elements-multiple-traps')();
 require('./arrow-keys')();
 require('./dom-remove')();
 
+//
+// ❗️ MANUALLY TESTED DEMOS ❗️
+// These are demos that can't be auto-tested in JSDom (Jest) or Cypress, typically
+//  because of tab handling.
+//
+// Consider running them in SAFARI to also check, at the same, that features work
+//  under this browser, which tends to be a late adopter of newer Web APIs.
+//  Cypress doesn't support Safari yet, so tests can't be automated.
+//
+
 // loading this in a Cypress env causes Chrome to fail in GitHub CI (even with
 //  the `"chromeWebSecurity": false` option set in the cypress.json config file),
 //  and causes FireFox to fail both locally and in CI due to security context
-//  violations; but it's still a good demo to have, and at least we can test
-//  it manually
+//  violations; but it's still a good demo to have
 // eslint-disable-next-line no-undef -- process is defined via Rollup
 if (!process.env.IS_CYPRESS_ENV) {
   // TEST MANUALLY (causes Cypress to fail due to security context violations)
