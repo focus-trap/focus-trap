@@ -1,3 +1,8 @@
+// disabling `cypress/unsafe-to-chain-command` is mainly due to chaining from `cy.focused()`
+//  which seems perfectly fine to do according to the docs:
+//  https://docs.cypress.io/api/commands/focused
+/* eslint-disable cypress/unsafe-to-chain-command */
+
 describe('focus-trap', () => {
   beforeEach(() => cy.visit('index.html?bundle=cypress'));
 
