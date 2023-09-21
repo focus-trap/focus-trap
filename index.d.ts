@@ -118,7 +118,7 @@ declare module 'focus-trap' {
      * Setting this option to `undefined` (or a function that returns `undefined`)
      * will result in the default behavior.
      */
-    initialFocus?: FocusTargetOrFalse | undefined | (() => undefined);
+    initialFocus?: FocusTargetOrFalse | undefined | (() => void);
     /**
      * By default, an error will be thrown if the focus trap contains no
      * elements in its tab order. With this option you can specify a
