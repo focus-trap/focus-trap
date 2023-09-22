@@ -114,8 +114,11 @@ declare module 'focus-trap' {
      *
      * NOTE: Setting this option to `false` (or a function that returns `false`)
      * will prevent the `fallbackFocus` option from being used.
+     *
+     * Setting this option to `undefined` (or a function that returns `undefined`)
+     * will result in the default behavior.
      */
-    initialFocus?: FocusTargetOrFalse;
+    initialFocus?: FocusTargetOrFalse | undefined | (() => void);
     /**
      * By default, an error will be thrown if the focus trap contains no
      * elements in its tab order. With this option you can specify a
