@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.3
+
+### Patch Changes
+
+- 203b322: Fix missing typings for initialFocus option ([#1060](https://github.com/focus-trap/focus-trap/issues/1060))
+
 ## 7.5.2
 
 ### Patch Changes
