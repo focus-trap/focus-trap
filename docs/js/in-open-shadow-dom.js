@@ -19,9 +19,51 @@ module.exports = () => {
   }
 
   class FocusTrapModal extends HTMLElement {
+    focusTrap;
+
     constructor() {
       super();
       this.id = 'in-open-shadow-dom-host';
+
+      // use same styles as host
+      const styleLinkEl = document.createElement('link');
+      styleLinkEl.setAttribute('rel', 'stylesheet');
+      styleLinkEl.setAttribute('href', 'style.css');
+
+      const shadowEl = this.attachShadow({ mode: 'open' });
+      shadowEl.innerHTML = '<slot></slot>';
+
+      shadowEl.appendChild(styleLinkEl);
+
+      this.focusTrap = createFocusTrap(this, {
+        onActivate: () => this.classList.add('is-active'),
+        onDeactivate: () => this.classList.remove('is-active'),
+        // allow outside clicks to deactivate to verify clicking on shadowDOM components within
+        //  a focus trap's container should not deactivate the focus trap (#959)
+        clickOutsideDeactivates: true,
+        escapeDeactivates: true,
+        tabbableOptions: {
+          getShadowRoot: true,
+        },
+      });
+
+      document
+        .getElementById('activate-in-open-shadow-dom')
+        .addEventListener('click', this.focusTrap.activate);
+    }
+
+    connectedCallback() {
+      const customContent = this.querySelector('custom-content');
+
+      if (customContent) {
+        customContent.focusTrap = this.focusTrap;
+      }
+    }
+  }
+
+  class FocusableCustomContent extends HTMLElement {
+    constructor() {
+      super();
 
       const modalEl = document.createElement('div');
       modalEl.id = 'in-open-shadow-dom-trap';
@@ -50,32 +92,25 @@ module.exports = () => {
       styleLinkEl.setAttribute('rel', 'stylesheet');
       styleLinkEl.setAttribute('href', 'style.css');
 
-      const shadowEl = this.attachShadow({ mode: 'open' });
-      shadowEl.appendChild(styleLinkEl);
-      shadowEl.appendChild(modalEl);
+      const shadowRoot = this.attachShadow({ mode: 'open' });
 
-      const focusTrap = createFocusTrap(modalEl, {
-        onActivate: () => modalEl.classList.add('is-active'),
-        onDeactivate: () => modalEl.classList.remove('is-active'),
-        // allow outside clicks to deactivate to verify clicking on shadowDOM components within
-        //  a focus trap's container should not deactivate the focus trap (#959)
-        clickOutsideDeactivates: true,
-        escapeDeactivates: true,
-        tabbableOptions: {
-          getShadowRoot: true,
-        },
-      });
+      shadowRoot.appendChild(styleLinkEl);
+      shadowRoot.appendChild(modalEl);
 
-      document
-        .getElementById('activate-in-open-shadow-dom')
-        .addEventListener('click', focusTrap.activate);
       modalEl
         .querySelector('#deactivate-in-open-shadow-dom')
-        .addEventListener('click', focusTrap.deactivate);
+        .addEventListener('click', () => {
+          this.deactivate();
+        });
     }
+
+    deactivate = () => {
+      this.focusTrap.deactivate();
+    };
   }
 
   customElements.define('focus-trap-modal', FocusTrapModal);
   customElements.define('custom-button', CustomButton);
   customElements.define('custom-span', CustomSpan);
+  customElements.define('custom-content', FocusableCustomContent);
 };
