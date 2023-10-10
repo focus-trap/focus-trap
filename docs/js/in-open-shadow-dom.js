@@ -36,8 +36,16 @@ module.exports = () => {
       shadowEl.appendChild(styleLinkEl);
 
       this.focusTrap = createFocusTrap(this, {
-        onActivate: () => this.classList.add('is-active'),
-        onDeactivate: () => this.classList.remove('is-active'),
+        onActivate: () => {
+          const content = this.querySelector('custom-content');
+
+          content.classList.add('is-active');
+        },
+        onDeactivate: () => {
+          const content = this.querySelector('custom-content');
+
+          content.classList.remove('is-active');
+        },
         // allow outside clicks to deactivate to verify clicking on shadowDOM components within
         //  a focus trap's container should not deactivate the focus trap (#959)
         clickOutsideDeactivates: true,
@@ -87,6 +95,16 @@ module.exports = () => {
         </p>
       `;
 
+      const style = document.createElement('style');
+      style.innerHTML = `
+        :host(:focus-visible) #in-open-shadow-dom-trap {
+          outline: 5px solid lightblue; 
+        }
+
+        :host(.is-active) #in-open-shadow-dom-trap {
+          background: #fee9ff;
+        }
+      `;
       // use same styles as host
       const styleLinkEl = document.createElement('link');
       styleLinkEl.setAttribute('rel', 'stylesheet');
@@ -95,6 +113,7 @@ module.exports = () => {
       const shadowRoot = this.attachShadow({ mode: 'open' });
 
       shadowRoot.appendChild(styleLinkEl);
+      shadowRoot.appendChild(style);
       shadowRoot.appendChild(modalEl);
 
       modalEl

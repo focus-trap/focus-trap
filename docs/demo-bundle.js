@@ -1486,7 +1486,10 @@ var focusTrapDemoBundle = (function () {
       /**
        * Gets the current activeElement. If it's a web-component and has open shadow-root
        * it will recursively search inside shadow roots for the "true" activeElement.
+       *
        * @param {Document | ShadowRoot} el
+       *
+       * @returns {HTMLElement} The element that currently has the focus
        **/
       var getActiveElement = function getActiveElement(el) {
         var activeElement = el.activeElement;
@@ -1494,10 +1497,9 @@ var focusTrapDemoBundle = (function () {
           return;
         }
         if (activeElement.shadowRoot && activeElement.shadowRoot.activeElement !== null) {
-          getActiveElement(activeElement.shadowRoot);
-        } else {
-          return activeElement;
+          return getActiveElement(activeElement.shadowRoot);
         }
+        return activeElement;
       };
       var tryFocus = function tryFocus(node) {
         if (node === false) {
@@ -3589,10 +3591,12 @@ var focusTrapDemoBundle = (function () {
           shadowEl.appendChild(styleLinkEl);
           _this3.focusTrap = createFocusTrap$6(_assertThisInitialized(_this3), {
             onActivate: function onActivate() {
-              return _this3.classList.add('is-active');
+              var content = _this3.querySelector('custom-content');
+              content.classList.add('is-active');
             },
             onDeactivate: function onDeactivate() {
-              return _this3.classList.remove('is-active');
+              var content = _this3.querySelector('custom-content');
+              content.classList.remove('is-active');
             },
             // allow outside clicks to deactivate to verify clicking on shadowDOM components within
             //  a focus trap's container should not deactivate the focus trap (#959)
@@ -3630,7 +3634,8 @@ var focusTrapDemoBundle = (function () {
           modalEl.id = 'in-open-shadow-dom-trap';
           modalEl.className = 'trap';
           modalEl.innerHTML = "\n        <p>\n          Here is a focus trap in an open Shadow DOM\n          <a href=\"#\">with</a> <a href=\"#\">some</a> <a href=\"#\">focusable</a> parts.\n        </p>\n        <p>\n          \uD83D\uDCAC Clicking anywhere outside the trap will deactivate it, but clicking on any element\n          inside it, including those in nested shadow DOMs, will not.\n        </p>\n        <p>\n          <custom-button>Shadow Button</custom-button>\n          <button>Light DOM Button</button>\n          <custom-span>Shadow Span</custom-span>\n          <button id=\"deactivate-in-open-shadow-dom\" aria-describedby=\"in-open-shadow-dom-heading\">\n            deactivate trap\n          </button>\n        </p>\n      ";
-
+          var style = document.createElement('style');
+          style.innerHTML = "\n        :host(:focus-visible) #in-open-shadow-dom-trap {\n          outline: 5px solid lightblue; \n        }\n\n        :host(.is-active) #in-open-shadow-dom-trap {\n          background: #fee9ff;\n        }\n      ";
           // use same styles as host
           var styleLinkEl = document.createElement('link');
           styleLinkEl.setAttribute('rel', 'stylesheet');
@@ -3639,6 +3644,7 @@ var focusTrapDemoBundle = (function () {
             mode: 'open'
           });
           shadowRoot.appendChild(styleLinkEl);
+          shadowRoot.appendChild(style);
           shadowRoot.appendChild(modalEl);
           modalEl.querySelector('#deactivate-in-open-shadow-dom').addEventListener('click', function () {
             _this4.deactivate();

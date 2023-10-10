@@ -70,6 +70,7 @@ dist/
 
 cypress/videos
 cypress/screenshots
+cypress/downloads
 
 # alternate demo bundles for non-docs/demo page purposes, e.g. cypress
 #  ('docs/demo-bundle-cypress.js[.map]')
