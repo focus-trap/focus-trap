@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.5.4
+
+### Patch Changes
+
+- 680f6e8: Fix issue with not being able to cycle back to the start from the last element if there is a focusable web component inside the focus-trap ((#1068)[https://github.com/focus-trap/focus-trap/issues/1068])
+
 ## 7.5.3
 
 ### Patch Changes
