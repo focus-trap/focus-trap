@@ -39,7 +39,8 @@
     "test": "npm run format:check && npm run lint && npm run test:unit && npm run test:types && npm run test:e2e:chrome",
     "prepare": "npm run build",
     "prepublishOnly": "npm run test && npm run build",
-    "release": "npm run build && changeset publish"
+    "release": "npm run build && changeset publish",
+    "all-contributors": "all-contributors"
   },
   "repository": {
     "type": "git",

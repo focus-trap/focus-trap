@@ -415,12 +415,37 @@ const createFocusTrap = function (elements, userOptions) {
     }
   };
 
+  /**
+   * Gets the current activeElement. If it's a web-component and has open shadow-root
+   * it will recursively search inside shadow roots for the "true" activeElement.
+   *
+   * @param {Document | ShadowRoot} el
+   *
+   * @returns {HTMLElement} The element that currently has the focus
+   **/
+  const getActiveElement = function (el) {
+    const activeElement = el.activeElement;
+
+    if (!activeElement) {
+      return;
+    }
+
+    if (
+      activeElement.shadowRoot &&
+      activeElement.shadowRoot.activeElement !== null
+    ) {
+      return getActiveElement(activeElement.shadowRoot);
+    }
+
+    return activeElement;
+  };
+
   const tryFocus = function (node) {
     if (node === false) {
       return;
     }
 
-    if (node === doc.activeElement) {
+    if (node === getActiveElement(document)) {
       return;
     }
 
