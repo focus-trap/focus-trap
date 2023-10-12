@@ -14,10 +14,10 @@ jobs:
       CI: true
     strategy:
       matrix:
-        node: [18]
+        node-version: ['latest']
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup environment
         id: setup
@@ -25,7 +25,7 @@ jobs:
           echo "npm-cache-dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Setup Node ${{ matrix.node }}
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
