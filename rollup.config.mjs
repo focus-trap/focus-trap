@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-env node */
 
+import { createRequire } from 'module';
 import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
@@ -10,6 +11,7 @@ import injectProcessEnv from 'rollup-plugin-inject-process-env';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 
+const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 
 // REQUIRED: process.env.BUILD_ENV: "esm" | "cjs" | "umd"
