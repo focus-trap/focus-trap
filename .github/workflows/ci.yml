@@ -19,33 +19,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup environment
-        id: setup
-        run: |-
-          echo "npm-cache-dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
       - name: Setup Node ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
           check-latest: true
-
-      # TODO: this does work (it'll find the cache) but it appears it's not putting the cache
-      #  back into ./node_modules because skipping the install step results in subsequent
-      #  steps failing with messages like `prettier not found`, which implies there's no
-      #  node_modules directory there with Prettier installed in it...
-      #
-      # - name: NPM cache check
-      #   uses: actions/cache@v3
-      #   id: npm-cache
-      #   with:
-      #     path: ${{ steps.setup.outputs.npm-cache-dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+          cache: npm
 
       - name: Install packages
-        # if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Lint
