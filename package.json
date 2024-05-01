@@ -85,7 +85,7 @@
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-cypress": "^3.0.0",
+    "eslint-plugin-cypress": "^3.0.2",
     "eslint-plugin-jest": "^28.2.0",
     "onchange": "^7.1.0",
     "prettier": "^3.2.5",
