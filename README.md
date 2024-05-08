@@ -348,6 +348,18 @@ You will hit this error if your trap does not have (or no longer has) any [tabba
 
 This often happens when traps are related to elements that appear and disappear dynamically. Typically, the error will fire either as the element is being shown (because the trap gets created before the trapped children have been inserted into the DOM), or as it's being hidden (because the trapped children are destroyed before the trap is either destroyed or disabled).
 
+### First element in trap is unreachable with the TAB key
+
+If you create a trap and try to use the TAB key to set focus to the first element in your trap, the first element seems unreachable because focus keeps skipping over it for some reason.
+
+This can happen in projects where the Angular-related [zone.js](https://www.npmjs.com/package/zone.js) module is being used because Zone can interfere with Focus-trap's ability to control where focus goes when it _leaves an edge node_ (that is, a node that is on the edge of a container in which it is trapping focus).
+
+What is actually happening is that Focus-trap is correctly wrapping focus around to that first element (or last element, if going in reverse with SHIFT+TAB, and you're seeing that get skipped) and setting focus to it, but because of Zone's interference (in which Focus-trap's call to `preventDefault()` on the focus event triggered by the TAB key press is rendered ineffective), once Focus-trap is done handling the event, the browser hasn't received the signal that its default behavior should be prevented, and so it proceeds to move focus to the _next_ element -- effectively "skipping" over the element to which Focus-trap set focus, making it seem "unreachable".
+
+Unfortunately, there's no good workaround to this issue from Focus-trap's perspective. The issue was [reported to Angular](https://github.com/angular/angular/issues/45020) (not by Focus-trap) and [has a PR](https://github.com/angular/angular/pull/49477) (also not by Focus-trap) for a fix.
+
+This was originally investigated in [#1165](https://github.com/focus-trap/focus-trap/issues/1165) if you want to go deeper.
+
 # Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md).
