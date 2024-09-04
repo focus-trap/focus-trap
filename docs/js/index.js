@@ -3,6 +3,7 @@ require('./global-trap-stack')();
 require('./animated-dialog')();
 require('./animated-trigger')();
 require('./escape-deactivates')();
+require('./escape-key-cancelation')();
 require('./initial-element-no-escape')();
 require('./initially-focused-container')();
 require('./hidden-treasures')();

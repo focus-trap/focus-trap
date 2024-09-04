@@ -163,6 +163,40 @@
       </p>
     </div>
 
+    <div id="demo-escape-key-cancelation">
+      <h2 id="escape-key-cancelation-heading">escape key cancelation</h2>
+      <p>
+        This demo shows how the Escape key can be canceled from a child within the focus trap.
+      </p>
+      <p>
+        <button id="activate-escape-key-cancelation" aria-describedby="escape-key-cancelation-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="escape-key-cancelation" class="trap" tabindex="-1">
+        <p>
+          <label for="escape-handling-input" class="inline-label">
+            Escape-canceling input
+          </label>
+          <input id="escape-handling-input" />
+        </p>
+        <p>
+          <label for="non-escape-handling-input" class="inline-label">
+            Non-escape-canceling input
+          </label>
+          <input id="non-escape-handling-input" />
+        </p>
+        <p>
+          <button id="deactivate-escape-key-cancelation" aria-describedby="escape-key-cancelation-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/escape-key-cancelation.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-iene">
       <h2 id="iene-heading">initial element, no escape</h2>
       <p>
