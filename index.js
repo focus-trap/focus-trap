@@ -839,10 +839,7 @@ const createFocusTrap = function (elements, userOptions) {
       capture: true,
       passive: false,
     });
-    doc.addEventListener('keydown', checkEscapeKey, {
-      capture: false,
-      passive: false,
-    });
+    doc.addEventListener('keydown', checkEscapeKey);
 
     return trap;
   };
