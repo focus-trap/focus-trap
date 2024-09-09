@@ -1790,10 +1790,7 @@ var focusTrapDemoBundle = (function () {
           capture: true,
           passive: false
         });
-        doc.addEventListener('keydown', checkEscapeKey, {
-          capture: false,
-          passive: false
-        });
+        doc.addEventListener('keydown', checkEscapeKey);
         return trap;
       };
       var removeListeners = function removeListeners() {
@@ -1805,6 +1802,7 @@ var focusTrapDemoBundle = (function () {
         doc.removeEventListener('touchstart', checkPointerDown, true);
         doc.removeEventListener('click', checkClick, true);
         doc.removeEventListener('keydown', checkTabKey, true);
+        doc.removeEventListener('keydown', checkEscapeKey);
         return trap;
       };
 
