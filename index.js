@@ -857,6 +857,7 @@ const createFocusTrap = function (elements, userOptions) {
     doc.removeEventListener('touchstart', checkPointerDown, true);
     doc.removeEventListener('click', checkClick, true);
     doc.removeEventListener('keydown', checkTabKey, true);
+    doc.removeEventListener('keydown', checkEscapeKey);
 
     return trap;
   };
