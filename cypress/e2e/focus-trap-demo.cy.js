@@ -382,6 +382,33 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: escape key cancelation', () => {
+    it('allows the Escape key to be canceled from a child within the focus trap', () => {
+      cy.get('#demo-escape-key-cancelation').as('testRoot');
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      cy.get('@testRoot')
+        .findByRole('textbox', { name: /^Escape-canceling input/ })
+        .as('escapeCancelingInput')
+        .click()
+        .type('{esc}')
+        .should('be.focused');
+
+      cy.get('@testRoot')
+        .findByRole('textbox', { name: /^Non-escape-canceling input/ })
+        .as('nonEscapeCancelingInput')
+        .click()
+        .type('{esc}')
+        .should('not.be.focused');
+
+      cy.get('@lastlyFocusedElementBeforeTrapIsActivated').should('be.focused');
+    });
+  });
+
   describe('demo: iene', () => {
     beforeEach(() => {
       cy.get('#demo-iene').as('testRoot');

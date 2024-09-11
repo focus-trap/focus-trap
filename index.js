@@ -766,18 +766,20 @@ const createFocusTrap = function (elements, userOptions) {
     // else, let the browser take care of [shift+]tab and move the focus
   };
 
-  const checkKey = function (event) {
+  const checkTabKey = function (event) {
+    if (config.isKeyForward(event) || config.isKeyBackward(event)) {
+      checkKeyNav(event, config.isKeyBackward(event));
+    }
+  };
+
+  // we use a different event phase for the Escape key to allow canceling the event and checking for this in escapeDeactivates
+  const checkEscapeKey = function (event) {
     if (
       isEscapeEvent(event) &&
       valueOrHandler(config.escapeDeactivates, event) !== false
     ) {
       event.preventDefault();
       trap.deactivate();
-      return;
-    }
-
-    if (config.isKeyForward(event) || config.isKeyBackward(event)) {
-      checkKeyNav(event, config.isKeyBackward(event));
     }
   };
 
@@ -833,10 +835,11 @@ const createFocusTrap = function (elements, userOptions) {
       capture: true,
       passive: false,
     });
-    doc.addEventListener('keydown', checkKey, {
+    doc.addEventListener('keydown', checkTabKey, {
       capture: true,
       passive: false,
     });
+    doc.addEventListener('keydown', checkEscapeKey);
 
     return trap;
   };
@@ -850,7 +853,8 @@ const createFocusTrap = function (elements, userOptions) {
     doc.removeEventListener('mousedown', checkPointerDown, true);
     doc.removeEventListener('touchstart', checkPointerDown, true);
     doc.removeEventListener('click', checkClick, true);
-    doc.removeEventListener('keydown', checkKey, true);
+    doc.removeEventListener('keydown', checkTabKey, true);
+    doc.removeEventListener('keydown', checkEscapeKey);
 
     return trap;
   };

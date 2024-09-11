@@ -43,6 +43,99 @@ var focusTrapDemoBundle = (function () {
 
     var js = {};
 
+    function _assertThisInitialized(e) {
+      if (void 0 === e) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+      return e;
+    }
+    function asyncGeneratorStep(n, t, e, r, o, a, c) {
+      try {
+        var i = n[a](c),
+          u = i.value;
+      } catch (n) {
+        return void e(n);
+      }
+      i.done ? t(u) : Promise.resolve(u).then(r, o);
+    }
+    function _asyncToGenerator(n) {
+      return function () {
+        var t = this,
+          e = arguments;
+        return new Promise(function (r, o) {
+          var a = n.apply(t, e);
+          function _next(n) {
+            asyncGeneratorStep(a, r, o, _next, _throw, "next", n);
+          }
+          function _throw(n) {
+            asyncGeneratorStep(a, r, o, _next, _throw, "throw", n);
+          }
+          _next(void 0);
+        });
+      };
+    }
+    function _callSuper(t, o, e) {
+      return o = _getPrototypeOf(o), _possibleConstructorReturn(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], _getPrototypeOf(t).constructor) : o.apply(t, e));
+    }
+    function _classCallCheck(a, n) {
+      if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function");
+    }
+    function _construct(t, e, r) {
+      if (_isNativeReflectConstruct()) return Reflect.construct.apply(null, arguments);
+      var o = [null];
+      o.push.apply(o, e);
+      var p = new (t.bind.apply(t, o))();
+      return r && _setPrototypeOf(p, r.prototype), p;
+    }
+    function _defineProperties(e, r) {
+      for (var t = 0; t < r.length; t++) {
+        var o = r[t];
+        o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o);
+      }
+    }
+    function _createClass(e, r, t) {
+      return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", {
+        writable: !1
+      }), e;
+    }
+    function _defineProperty(e, r, t) {
+      return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
+        value: t,
+        enumerable: !0,
+        configurable: !0,
+        writable: !0
+      }) : e[r] = t, e;
+    }
+    function _getPrototypeOf(t) {
+      return _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function (t) {
+        return t.__proto__ || Object.getPrototypeOf(t);
+      }, _getPrototypeOf(t);
+    }
+    function _inherits(t, e) {
+      if ("function" != typeof e && null !== e) throw new TypeError("Super expression must either be null or a function");
+      t.prototype = Object.create(e && e.prototype, {
+        constructor: {
+          value: t,
+          writable: !0,
+          configurable: !0
+        }
+      }), Object.defineProperty(t, "prototype", {
+        writable: !1
+      }), e && _setPrototypeOf(t, e);
+    }
+    function _isNativeFunction(t) {
+      try {
+        return -1 !== Function.toString.call(t).indexOf("[native code]");
+      } catch (n) {
+        return "function" == typeof t;
+      }
+    }
+    function _isNativeReflectConstruct() {
+      try {
+        var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      } catch (t) {}
+      return (_isNativeReflectConstruct = function () {
+        return !!t;
+      })();
+    }
     function ownKeys(e, r) {
       var t = Object.keys(e);
       if (Object.getOwnPropertySymbols) {
@@ -63,6 +156,11 @@ var focusTrapDemoBundle = (function () {
         });
       }
       return e;
+    }
+    function _possibleConstructorReturn(t, e) {
+      if (e && ("object" == typeof e || "function" == typeof e)) return e;
+      if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined");
+      return _assertThisInitialized(t);
     }
     function _regeneratorRuntime() {
       _regeneratorRuntime = function () {
@@ -172,7 +270,7 @@ var focusTrapDemoBundle = (function () {
       function makeInvokeMethod(e, r, n) {
         var o = h;
         return function (i, a) {
-          if (o === f) throw new Error("Generator is already running");
+          if (o === f) throw Error("Generator is already running");
           if (o === s) {
             if ("throw" === i) throw a;
             return {
@@ -314,7 +412,7 @@ var focusTrapDemoBundle = (function () {
               } else if (c) {
                 if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
               } else {
-                if (!u) throw new Error("try statement without catch or finally");
+                if (!u) throw Error("try statement without catch or finally");
                 if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
               }
             }
@@ -354,7 +452,7 @@ var focusTrapDemoBundle = (function () {
               return o;
             }
           }
-          throw new Error("illegal catch attempt");
+          throw Error("illegal catch attempt");
         },
         delegateYield: function (e, r, n) {
           return this.delegate = {
@@ -365,6 +463,25 @@ var focusTrapDemoBundle = (function () {
         }
       }, e;
     }
+    function _setPrototypeOf(t, e) {
+      return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) {
+        return t.__proto__ = e, t;
+      }, _setPrototypeOf(t, e);
+    }
+    function _toPrimitive(t, r) {
+      if ("object" != typeof t || !t) return t;
+      var e = t[Symbol.toPrimitive];
+      if (void 0 !== e) {
+        var i = e.call(t, r || "default");
+        if ("object" != typeof i) return i;
+        throw new TypeError("@@toPrimitive must return a primitive value.");
+      }
+      return ("string" === r ? String : Number)(t);
+    }
+    function _toPropertyKey(t) {
+      var i = _toPrimitive(t, "string");
+      return "symbol" == typeof i ? i : i + "";
+    }
     function _typeof(o) {
       "@babel/helpers - typeof";
 
@@ -374,197 +491,27 @@ var focusTrapDemoBundle = (function () {
         return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
       }, _typeof(o);
     }
-    function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-      try {
-        var info = gen[key](arg);
-        var value = info.value;
-      } catch (error) {
-        reject(error);
-        return;
-      }
-      if (info.done) {
-        resolve(value);
-      } else {
-        Promise.resolve(value).then(_next, _throw);
-      }
-    }
-    function _asyncToGenerator(fn) {
-      return function () {
-        var self = this,
-          args = arguments;
-        return new Promise(function (resolve, reject) {
-          var gen = fn.apply(self, args);
-          function _next(value) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-          }
-          function _throw(err) {
-            asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-          }
-          _next(undefined);
-        });
-      };
-    }
-    function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-      }
-    }
-    function _defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
-      }
-    }
-    function _createClass(Constructor, protoProps, staticProps) {
-      if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) _defineProperties(Constructor, staticProps);
-      Object.defineProperty(Constructor, "prototype", {
-        writable: false
-      });
-      return Constructor;
-    }
-    function _defineProperty(obj, key, value) {
-      key = _toPropertyKey(key);
-      if (key in obj) {
-        Object.defineProperty(obj, key, {
-          value: value,
-          enumerable: true,
-          configurable: true,
-          writable: true
-        });
-      } else {
-        obj[key] = value;
-      }
-      return obj;
-    }
-    function _inherits(subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function");
-      }
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: {
-          value: subClass,
-          writable: true,
-          configurable: true
-        }
-      });
-      Object.defineProperty(subClass, "prototype", {
-        writable: false
-      });
-      if (superClass) _setPrototypeOf(subClass, superClass);
-    }
-    function _getPrototypeOf(o) {
-      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) {
-        return o.__proto__ || Object.getPrototypeOf(o);
-      };
-      return _getPrototypeOf(o);
-    }
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-      return _setPrototypeOf(o, p);
-    }
-    function _isNativeReflectConstruct() {
-      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-      if (Reflect.construct.sham) return false;
-      if (typeof Proxy === "function") return true;
-      try {
-        Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-    function _construct(Parent, args, Class) {
-      if (_isNativeReflectConstruct()) {
-        _construct = Reflect.construct.bind();
-      } else {
-        _construct = function _construct(Parent, args, Class) {
-          var a = [null];
-          a.push.apply(a, args);
-          var Constructor = Function.bind.apply(Parent, a);
-          var instance = new Constructor();
-          if (Class) _setPrototypeOf(instance, Class.prototype);
-          return instance;
-        };
-      }
-      return _construct.apply(null, arguments);
-    }
-    function _isNativeFunction(fn) {
-      return Function.toString.call(fn).indexOf("[native code]") !== -1;
-    }
-    function _wrapNativeSuper(Class) {
-      var _cache = typeof Map === "function" ? new Map() : undefined;
-      _wrapNativeSuper = function _wrapNativeSuper(Class) {
-        if (Class === null || !_isNativeFunction(Class)) return Class;
-        if (typeof Class !== "function") {
-          throw new TypeError("Super expression must either be null or a function");
-        }
-        if (typeof _cache !== "undefined") {
-          if (_cache.has(Class)) return _cache.get(Class);
-          _cache.set(Class, Wrapper);
+    function _wrapNativeSuper(t) {
+      var r = "function" == typeof Map ? new Map() : void 0;
+      return _wrapNativeSuper = function (t) {
+        if (null === t || !_isNativeFunction(t)) return t;
+        if ("function" != typeof t) throw new TypeError("Super expression must either be null or a function");
+        if (void 0 !== r) {
+          if (r.has(t)) return r.get(t);
+          r.set(t, Wrapper);
         }
         function Wrapper() {
-          return _construct(Class, arguments, _getPrototypeOf(this).constructor);
+          return _construct(t, arguments, _getPrototypeOf(this).constructor);
         }
-        Wrapper.prototype = Object.create(Class.prototype, {
+        return Wrapper.prototype = Object.create(t.prototype, {
           constructor: {
             value: Wrapper,
-            enumerable: false,
-            writable: true,
-            configurable: true
+            enumerable: !1,
+            writable: !0,
+            configurable: !0
           }
-        });
-        return _setPrototypeOf(Wrapper, Class);
-      };
-      return _wrapNativeSuper(Class);
-    }
-    function _assertThisInitialized(self) {
-      if (self === void 0) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
-      return self;
-    }
-    function _possibleConstructorReturn(self, call) {
-      if (call && (typeof call === "object" || typeof call === "function")) {
-        return call;
-      } else if (call !== void 0) {
-        throw new TypeError("Derived constructors may only return object or undefined");
-      }
-      return _assertThisInitialized(self);
-    }
-    function _createSuper(Derived) {
-      var hasNativeReflectConstruct = _isNativeReflectConstruct();
-      return function _createSuperInternal() {
-        var Super = _getPrototypeOf(Derived),
-          result;
-        if (hasNativeReflectConstruct) {
-          var NewTarget = _getPrototypeOf(this).constructor;
-          result = Reflect.construct(Super, arguments, NewTarget);
-        } else {
-          result = Super.apply(this, arguments);
-        }
-        return _possibleConstructorReturn(this, result);
-      };
-    }
-    function _toPrimitive(input, hint) {
-      if (typeof input !== "object" || input === null) return input;
-      var prim = input[Symbol.toPrimitive];
-      if (prim !== undefined) {
-        var res = prim.call(input, hint || "default");
-        if (typeof res !== "object") return res;
-        throw new TypeError("@@toPrimitive must return a primitive value.");
-      }
-      return (hint === "string" ? String : Number)(input);
-    }
-    function _toPropertyKey(arg) {
-      var key = _toPrimitive(arg, "string");
-      return typeof key === "symbol" ? key : String(key);
+        }), _setPrototypeOf(Wrapper, t);
+      }, _wrapNativeSuper(t);
     }
 
     /*!
@@ -1195,10 +1142,8 @@ var focusTrapDemoBundle = (function () {
           idx = i;
           return false; // break
         }
-
         return true; // next
       });
-
       return idx;
     };
 
@@ -1229,7 +1174,7 @@ var focusTrapDemoBundle = (function () {
     // NOTE: this must be _outside_ `createFocusTrap()` to make sure all traps in this
     //  current instance use the same stack if `userOptions.trapStack` isn't specified
     var internalTrapStack = [];
-    var createFocusTrap$x = function createFocusTrap(elements, userOptions) {
+    var createFocusTrap$y = function createFocusTrap(elements, userOptions) {
       // SSR: a live trap shouldn't be created in this type of environment so this
       //  should be safe code to execute if the `document` option isn't specified
       var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
@@ -1345,7 +1290,6 @@ var focusTrapDemoBundle = (function () {
         if (optionValue === true) {
           optionValue = undefined; // use default value
         }
-
         if (!optionValue) {
           if (optionValue === undefined || optionValue === false) {
             return optionValue;
@@ -1491,25 +1435,25 @@ var focusTrapDemoBundle = (function () {
        *
        * @returns {HTMLElement} The element that currently has the focus
        **/
-      var getActiveElement = function getActiveElement(el) {
+      var _getActiveElement = function getActiveElement(el) {
         var activeElement = el.activeElement;
         if (!activeElement) {
           return;
         }
         if (activeElement.shadowRoot && activeElement.shadowRoot.activeElement !== null) {
-          return getActiveElement(activeElement.shadowRoot);
+          return _getActiveElement(activeElement.shadowRoot);
         }
         return activeElement;
       };
-      var tryFocus = function tryFocus(node) {
+      var _tryFocus = function tryFocus(node) {
         if (node === false) {
           return;
         }
-        if (node === getActiveElement(document)) {
+        if (node === _getActiveElement(document)) {
           return;
         }
         if (!node || !node.focus) {
-          tryFocus(getInitialFocusNode());
+          _tryFocus(getInitialFocusNode());
           return;
         }
         node.focus({
@@ -1753,9 +1697,9 @@ var focusTrapDemoBundle = (function () {
             });
           }
           if (nextNode) {
-            tryFocus(nextNode);
+            _tryFocus(nextNode);
           } else {
-            tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
+            _tryFocus(state.mostRecentlyFocusedNode || getInitialFocusNode());
           }
         }
         state.recentNavEvent = undefined; // clear
@@ -1780,19 +1724,21 @@ var focusTrapDemoBundle = (function () {
             //  to where it normally would
             event.preventDefault();
           }
-          tryFocus(destinationNode);
+          _tryFocus(destinationNode);
         }
         // else, let the browser take care of [shift+]tab and move the focus
       };
+      var checkTabKey = function checkTabKey(event) {
+        if (config.isKeyForward(event) || config.isKeyBackward(event)) {
+          checkKeyNav(event, config.isKeyBackward(event));
+        }
+      };
 
-      var checkKey = function checkKey(event) {
+      // we use a different event phase for the Escape key to allow canceling the event and checking for this in escapeDeactivates
+      var checkEscapeKey = function checkEscapeKey(event) {
         if (isEscapeEvent(event) && valueOrHandler(config.escapeDeactivates, event) !== false) {
           event.preventDefault();
           trap.deactivate();
-          return;
-        }
-        if (config.isKeyForward(event) || config.isKeyBackward(event)) {
-          checkKeyNav(event, config.isKeyBackward(event));
         }
       };
       var checkClick = function checkClick(e) {
@@ -1825,8 +1771,8 @@ var focusTrapDemoBundle = (function () {
         // Delay ensures that the focused element doesn't capture the event
         // that caused the focus trap activation.
         state.delayInitialFocusTimer = config.delayInitialFocus ? delay$1(function () {
-          tryFocus(getInitialFocusNode());
-        }) : tryFocus(getInitialFocusNode());
+          _tryFocus(getInitialFocusNode());
+        }) : _tryFocus(getInitialFocusNode());
         doc.addEventListener('focusin', checkFocusIn, true);
         doc.addEventListener('mousedown', checkPointerDown, {
           capture: true,
@@ -1840,10 +1786,11 @@ var focusTrapDemoBundle = (function () {
           capture: true,
           passive: false
         });
-        doc.addEventListener('keydown', checkKey, {
+        doc.addEventListener('keydown', checkTabKey, {
           capture: true,
           passive: false
         });
+        doc.addEventListener('keydown', checkEscapeKey);
         return trap;
       };
       var removeListeners = function removeListeners() {
@@ -1854,7 +1801,8 @@ var focusTrapDemoBundle = (function () {
         doc.removeEventListener('mousedown', checkPointerDown, true);
         doc.removeEventListener('touchstart', checkPointerDown, true);
         doc.removeEventListener('click', checkClick, true);
-        doc.removeEventListener('keydown', checkKey, true);
+        doc.removeEventListener('keydown', checkTabKey, true);
+        doc.removeEventListener('keydown', checkEscapeKey);
         return trap;
       };
 
@@ -1873,7 +1821,7 @@ var focusTrapDemoBundle = (function () {
         // If the currently focused is removed then browsers will move focus to the
         // <body> element. If this happens, try to move focus back into the trap.
         if (isFocusedNodeRemoved) {
-          tryFocus(getInitialFocusNode());
+          _tryFocus(getInitialFocusNode());
         }
       };
 
@@ -1959,7 +1907,7 @@ var focusTrapDemoBundle = (function () {
           var finishDeactivation = function finishDeactivation() {
             delay$1(function () {
               if (returnFocus) {
-                tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+                _tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
               }
               onPostDeactivate === null || onPostDeactivate === void 0 || onPostDeactivate();
             });
@@ -2018,15 +1966,15 @@ var focusTrapDemoBundle = (function () {
 
     var focusTrap = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        createFocusTrap: createFocusTrap$x
+        createFocusTrap: createFocusTrap$y
     });
 
     var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
 
-    var createFocusTrap$w = require$$0.createFocusTrap;
+    var createFocusTrap$x = require$$0.createFocusTrap;
     var _default = function _default() {
       var container = document.getElementById('default');
-      var focusTrap = createFocusTrap$w('#default', {
+      var focusTrap = createFocusTrap$x('#default', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2038,7 +1986,7 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$v = require$$0.createFocusTrap;
+    var createFocusTrap$w = require$$0.createFocusTrap;
     var globalTrapStack = function globalTrapStack() {
       var container = document.getElementById('global-trap-stack');
       var counter = container.querySelector('.counter');
@@ -2046,7 +1994,7 @@ var focusTrapDemoBundle = (function () {
       var updateCounter = function updateCounter() {
         counter.innerHTML = window.__trapStack.length;
       };
-      var focusTrap = createFocusTrap$v('#global-trap-stack', {
+      var focusTrap = createFocusTrap$w('#global-trap-stack', {
         trapStack: window.__trapStack,
         onPostActivate: function onPostActivate() {
           container.classList.add('is-active');
@@ -2062,11 +2010,11 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-global-trap-stack').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$u = require$$0.createFocusTrap;
+    var createFocusTrap$v = require$$0.createFocusTrap;
     var animatedDialog = function animatedDialog() {
       var container = document.getElementById('animated-dialog');
       var activatedFlag = document.getElementById('animated-dialog-trap-activated');
-      var focusTrap = createFocusTrap$u('#animated-dialog', {
+      var focusTrap = createFocusTrap$v('#animated-dialog', {
         // Called before focus is sent
         onActivate: function onActivate() {
           return container.classList.add('is-active');
@@ -2102,13 +2050,13 @@ var focusTrapDemoBundle = (function () {
       document.getElementById('deactivate-animated-dialog').addEventListener('click', focusTrap.deactivate);
     };
 
-    var createFocusTrap$t = require$$0.createFocusTrap;
+    var createFocusTrap$u = require$$0.createFocusTrap;
     var animatedTrigger = function animatedTrigger() {
       var container = document.getElementById('animated-trigger');
       var trigger = document.getElementById('activate-animated-trigger');
       var deactivatedFlag = document.getElementById('animated-trigger-trap-deactivated');
       var returnFocusCheckbox = document.getElementById('animated-trigger-returnfocus');
-      var focusTrap = createFocusTrap$t('#animated-trigger', {
+      var focusTrap = createFocusTrap$u('#animated-trigger', {
         // Called before focus is sent
         onActivate: function onActivate() {
           container.classList.add('is-active');
@@ -2144,11 +2092,11 @@ var focusTrapDemoBundle = (function () {
       });
     };
 
-    var createFocusTrap$s = require$$0.createFocusTrap;
-    var escapeDeactivates = function escapeDeactivates() {
+    var createFocusTrap$t = require$$0.createFocusTrap;
+    var _escapeDeactivates = function escapeDeactivates() {
       var container = document.getElementById('escape-deactivates');
       var escapeDeactivatesOption = document.getElementById('escape-deactivates-option');
-      var focusTrap = createFocusTrap$s('#escape-deactivates', {
+      var focusTrap = createFocusTrap$t('#escape-deactivates', {
         onActivate: function onActivate() {
           return container.classList.add('is-active');
         },
@@ -2165,6 +2113,30 @@ var focusTrapDemoBundle = (function () {
       });
       document.getElementById('activate-escape-deactivates').addEventListener('click', focusTrap.activate);
       document.getElementById('deactivate-escape-deactivates').addEventListener('click', focusTrap.deactivate);
+    };
+
+    var createFocusTrap$s = require$$0.createFocusTrap;
+    var escapeKeyCancelation = function escapeKeyCancelation() {
+      var container = document.getElementById('escape-key-cancelation');
+      var escapeCancelingInput = document.getElementById('escape-handling-input');
+      escapeCancelingInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          event.preventDefault();
+        }
+      });
+      var focusTrap = createFocusTrap$s('#escape-key-cancelation', {
+        onActivate: function onActivate() {
+          return container.classList.add('is-active');
+        },
+        onDeactivate: function onDeactivate() {
+          return container.classList.remove('is-active');
+        },
+        escapeDeactivates: function escapeDeactivates(event) {
+          return !event.defaultPrevented;
+        }
+      });
+      document.getElementById('activate-escape-key-cancelation').addEventListener('click', focusTrap.activate);
+      document.getElementById('deactivate-escape-key-cancelation').addEventListener('click', focusTrap.deactivate);
     };
 
     var createFocusTrap$r = require$$0.createFocusTrap;
@@ -3543,41 +3515,37 @@ var focusTrapDemoBundle = (function () {
     var createFocusTrap$6 = require$$0.createFocusTrap;
     var inOpenShadowDom = function inOpenShadowDom() {
       var CustomButton = /*#__PURE__*/function (_HTMLElement) {
-        _inherits(CustomButton, _HTMLElement);
-        var _super = _createSuper(CustomButton);
         function CustomButton() {
           var _this;
           _classCallCheck(this, CustomButton);
-          _this = _super.call(this);
+          _this = _callSuper(this, CustomButton);
           _this.attachShadow({
             mode: 'open'
           }).innerHTML = '<button id="button-inside-custom-button"><slot></slot></button>';
           return _this;
         }
+        _inherits(CustomButton, _HTMLElement);
         return _createClass(CustomButton);
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
       var CustomSpan = /*#__PURE__*/function (_HTMLElement2) {
-        _inherits(CustomSpan, _HTMLElement2);
-        var _super2 = _createSuper(CustomSpan);
         function CustomSpan() {
           var _this2;
           _classCallCheck(this, CustomSpan);
-          _this2 = _super2.call(this);
+          _this2 = _callSuper(this, CustomSpan);
           _this2.attachShadow({
             mode: 'open'
           }).innerHTML = '<span id="span-inside-custom-span"><slot></slot></span>';
           return _this2;
         }
+        _inherits(CustomSpan, _HTMLElement2);
         return _createClass(CustomSpan);
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
       var FocusTrapModal = /*#__PURE__*/function (_HTMLElement3) {
-        _inherits(FocusTrapModal, _HTMLElement3);
-        var _super3 = _createSuper(FocusTrapModal);
         function FocusTrapModal() {
           var _this3;
           _classCallCheck(this, FocusTrapModal);
-          _this3 = _super3.call(this);
-          _defineProperty(_assertThisInitialized(_this3), "focusTrap", void 0);
+          _this3 = _callSuper(this, FocusTrapModal);
+          _defineProperty(_this3, "focusTrap", void 0);
           _this3.id = 'in-open-shadow-dom-host';
 
           // use same styles as host
@@ -3589,7 +3557,7 @@ var focusTrapDemoBundle = (function () {
           });
           shadowEl.innerHTML = '<slot></slot>';
           shadowEl.appendChild(styleLinkEl);
-          _this3.focusTrap = createFocusTrap$6(_assertThisInitialized(_this3), {
+          _this3.focusTrap = createFocusTrap$6(_this3, {
             onActivate: function onActivate() {
               var content = _this3.querySelector('custom-content');
               content.classList.add('is-active');
@@ -3609,7 +3577,8 @@ var focusTrapDemoBundle = (function () {
           document.getElementById('activate-in-open-shadow-dom').addEventListener('click', _this3.focusTrap.activate);
           return _this3;
         }
-        _createClass(FocusTrapModal, [{
+        _inherits(FocusTrapModal, _HTMLElement3);
+        return _createClass(FocusTrapModal, [{
           key: "connectedCallback",
           value: function connectedCallback() {
             var customContent = this.querySelector('custom-content');
@@ -3618,16 +3587,13 @@ var focusTrapDemoBundle = (function () {
             }
           }
         }]);
-        return FocusTrapModal;
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
       var FocusableCustomContent = /*#__PURE__*/function (_HTMLElement4) {
-        _inherits(FocusableCustomContent, _HTMLElement4);
-        var _super4 = _createSuper(FocusableCustomContent);
         function FocusableCustomContent() {
           var _this4;
           _classCallCheck(this, FocusableCustomContent);
-          _this4 = _super4.call(this);
-          _defineProperty(_assertThisInitialized(_this4), "deactivate", function () {
+          _this4 = _callSuper(this, FocusableCustomContent);
+          _defineProperty(_this4, "deactivate", function () {
             _this4.focusTrap.deactivate();
           });
           var modalEl = document.createElement('div');
@@ -3651,6 +3617,7 @@ var focusTrapDemoBundle = (function () {
           });
           return _this4;
         }
+        _inherits(FocusableCustomContent, _HTMLElement4);
         return _createClass(FocusableCustomContent);
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
       customElements.define('focus-trap-modal', FocusTrapModal);
@@ -3662,12 +3629,10 @@ var focusTrapDemoBundle = (function () {
     var createFocusTrap$5 = require$$0.createFocusTrap;
     var withShadowDom = function withShadowDom() {
       var OpenShadowTest = /*#__PURE__*/function (_HTMLElement) {
-        _inherits(OpenShadowTest, _HTMLElement);
-        var _super = _createSuper(OpenShadowTest);
         function OpenShadowTest() {
           var _this;
           _classCallCheck(this, OpenShadowTest);
-          _this = _super.call(this);
+          _this = _callSuper(this, OpenShadowTest);
           _this.id = 'with-shadow-dom-open-host';
           var containerEl = document.createElement('div');
           containerEl.id = 'with-shadow-dom-open-container';
@@ -3685,6 +3650,7 @@ var focusTrapDemoBundle = (function () {
           shadowEl.appendChild(containerEl);
           return _this;
         }
+        _inherits(OpenShadowTest, _HTMLElement);
         return _createClass(OpenShadowTest);
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement));
       var createClosedShadow = function createClosedShadow(hostEl) {
@@ -3785,13 +3751,12 @@ var focusTrapDemoBundle = (function () {
     var withOpenWebComponent = function withOpenWebComponent() {
       var container = document.getElementById('with-open-web-component');
       customElements.define('open-web-component', /*#__PURE__*/function (_HTMLElement) {
-        _inherits(_class, _HTMLElement);
-        var _super = _createSuper(_class);
         function _class() {
           _classCallCheck(this, _class);
-          return _super.apply(this, arguments);
+          return _callSuper(this, _class, arguments);
         }
-        _createClass(_class, [{
+        _inherits(_class, _HTMLElement);
+        return _createClass(_class, [{
           key: "connectedCallback",
           value: function connectedCallback() {
             this.attachShadow({
@@ -3800,7 +3765,6 @@ var focusTrapDemoBundle = (function () {
             this.shadowRoot.innerHTML = "\n          <p>\n            <button id=\"with-open-web-component-button\">open-web-component</button>\n          </p>\n        ";
           }
         }]);
-        return _class;
       }( /*#__PURE__*/_wrapNativeSuper(HTMLElement)));
       container.innerHTML = "\n    <button>button 1</button>\n    <button>button 2</button>\n    <button>button 3</button>\n    <open-web-component></open-web-component>\n    <button>button 4</button>\n    <button>button 5</button>\n    <p>\n      <button id=\"deactivate-with-open-web-component\" aria-describedby=\"with-open-web-component-heading\">\n        deactivate trap\n      </button>\n    </p>\n  ";
       var focusTrap = createFocusTrap$1('#with-open-web-component', {
@@ -3837,7 +3801,8 @@ var focusTrapDemoBundle = (function () {
     globalTrapStack();
     animatedDialog();
     animatedTrigger();
-    escapeDeactivates();
+    _escapeDeactivates();
+    escapeKeyCancelation();
     initialElementNoEscape();
     initiallyFocusedContainer();
     hiddenTreasures();
