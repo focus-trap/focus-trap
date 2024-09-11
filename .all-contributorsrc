@@ -329,6 +329,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jcfranco",
+      "name": "JC Franco",
+      "avatar_url": "https://avatars.githubusercontent.com/u/197440?v=4",
+      "profile": "https://github.com/jcfranco",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
