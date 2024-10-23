@@ -71,7 +71,7 @@
     "@babel/core": "^7.25.2",
     "@babel/eslint-parser": "^7.25.9",
     "@babel/preset-env": "^7.25.4",
-    "@changesets/cli": "^2.27.8",
+    "@changesets/cli": "^2.27.9",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
