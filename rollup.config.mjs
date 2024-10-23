@@ -164,7 +164,9 @@ const demo = {
   },
   plugins: [
     resolve(),
-    commonjs(),
+    commonjs({
+      strictRequires: 'auto',
+    }),
     injectProcessEnv({
       BUILD_ENV: process.env.BUILD_ENV,
       IS_CYPRESS_ENV: process.env.IS_CYPRESS_ENV,
