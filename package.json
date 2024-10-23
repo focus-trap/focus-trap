@@ -67,7 +67,7 @@
     "tabbable": "^6.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.25.6",
+    "@babel/cli": "^7.25.9",
     "@babel/core": "^7.25.2",
     "@babel/eslint-parser": "^7.25.9",
     "@babel/preset-env": "^7.25.4",
