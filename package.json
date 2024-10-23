@@ -73,7 +73,7 @@
     "@babel/preset-env": "^7.25.9",
     "@changesets/cli": "^2.27.9",
     "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@testing-library/cypress": "^10.0.2",
