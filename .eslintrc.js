@@ -18,6 +18,11 @@ module.exports = {
     commonjs: true,
     browser: true,
   },
+  globals: {
+    // RUP_* consts are defined in the Rollup build via the `replace` plugin
+    RUP_BUILD_ENV: 'readonly',
+    RUP_IS_CYPRESS_ENV: 'readonly',
+  },
   overrides: [
     {
       files: ['index.js', 'rollup.config.js', 'cypress/support/e2e.js'],

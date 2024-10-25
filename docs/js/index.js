@@ -42,7 +42,7 @@ require('./dom-remove')();
 //  and causes FireFox to fail both locally and in CI due to security context
 //  violations; but it's still a good demo to have
 // eslint-disable-next-line no-undef -- process is defined via Rollup
-if (!process.env.IS_CYPRESS_ENV) {
+if (!RUP_IS_CYPRESS_ENV) {
   // TEST MANUALLY (causes Cypress to fail due to security context violations)
   // http://localhost:9966/#demo-in-iframe
   require('./in-iframe')();

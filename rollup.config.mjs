@@ -6,7 +6,7 @@ import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
-import injectProcessEnv from 'rollup-plugin-inject-process-env';
+import replace from '@rollup/plugin-replace'
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 
@@ -163,13 +163,17 @@ const demo = {
     banner: demoBanner,
   },
   plugins: [
+    // ALWAYS FIRST: string token replacement
+    replace({
+      values: {
+        RUP_BUILD_ENV: JSON.stringify(process.env.BUILD_ENV || null),
+        RUP_IS_CYPRESS_ENV: JSON.stringify(process.env.IS_CYPRESS_ENV || null),
+      },
+      preventAssignment: true,
+    }),
     resolve(),
     commonjs({
       strictRequires: 'auto',
-    }),
-    injectProcessEnv({
-      BUILD_ENV: process.env.BUILD_ENV,
-      IS_CYPRESS_ENV: process.env.IS_CYPRESS_ENV,
     }),
     babel({ babelHelpers: 'bundled' }),
     isDevServer &&
