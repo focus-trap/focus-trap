@@ -245,6 +245,82 @@
       </p>
     </div>
 
+    <div id="demo-tif">
+      <h2 id="tif-heading">tricky initial focus</h2>
+      <p>
+        In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).
+        If you activate the trap in this state, the <code>fallbackFocus</code> option is used to focus the container.
+        If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
+      </p>
+      <p>
+        <button id="activate-tif" aria-describedby="tif-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="tif" class="trap" tabindex="-1">
+        <p>
+          <button id="deactivate-tif" tabindex="-1" aria-describedby="tif-heading">
+            deactivate trap
+          </button>
+        </p>
+        <p>
+          <button id="tif-show-focusable" tabindex="-1">
+            show focusable button
+          </button>
+        </p>
+        <p>
+          <button id="tif-hide-focusable" style="display:none;">
+            hide focusable button
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/tricky-initial-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
+    <div id="demo-iswf">
+      <h2 id="iswf-heading">initial focus selector with fallback</h2>
+      <p>
+        If the <code>initialFocus</code> option is a <strong>selector string</strong> that refers to a node that doesn't exist when the trap is activated, the trap will throw an <strong>error</strong> by default because the option was specified (same as setting the option to a node, or a function that returns a node).
+      </p>
+      <p>
+        This behavior can be avoided, however, by using the <code>fallbackFocus</code> option. If that option isn't configured, however, an error will still be thrown. Note that the <code>initialFocus</code> option can also be set to <code>false</code> (or a function that returns <code>false</code>) to avoid initial focus altogether.
+      </p>
+      <p>
+        In this demo, you can toggle whether the <code>initialFocus</code> node (the "initial focus" button) exists or not when the trap is activated. If it exists, it'll be initially focused (even though it's not at the start of the regular tab order inside the trap). If it doesn't exist, the trap's container will be focused instead, thanks to the <code>fallbackFocus</code> option (but only once as the container is only focusable, not tabbable).
+      </p>
+      <p>
+        <label>
+          Show <code>initialFocus</code> node:
+          <input type="checkbox" id="checkbox-iswf" checked />
+        </label>
+      </p>
+      <p>
+        <button id="activate-iswf" aria-describedby="iswf-heading">
+          activate trap
+        </button>
+      </p>
+      <div id="iswf" class="trap" tabindex="-1">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="initial-focus-btn-iswf">
+            initial focus
+          </button>
+        </p>
+        <p>
+          <button id="deactivate-iswf" aria-describedby="iswf-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/initial-focus-selector-with-fallback.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-ifc">
       <h2 id="ifc-heading">initially focused container</h2>
       <p>
@@ -393,40 +469,6 @@
       </div>
       <p>
         <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/sibling.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
-      </p>
-    </div>
-
-    <div id="demo-tif">
-      <h2 id="tif-heading">tricky initial focus</h2>
-      <p>
-        In this focus trap, the single focusable button is hidden (the ones you see at first have <code>tabindex="-1"</code>).
-        If you activate the trap in this state, the <code>fallbackFocus</code> option is used to focus the container.
-        If, however, you <em>first</em> make the focusable button visible by clicking "show focusable button", that button will receive focus when you activate the trap.
-      </p>
-      <p>
-        <button id="activate-tif" aria-describedby="tif-heading">
-          activate trap
-        </button>
-      </p>
-      <div id="tif" class="trap" tabindex="-1">
-        <p>
-          <button id="deactivate-tif" tabindex="-1" aria-describedby="tif-heading">
-            deactivate trap
-          </button>
-        </p>
-        <p>
-          <button id="tif-show-focusable" tabindex="-1">
-            show focusable button
-          </button>
-        </p>
-        <p>
-          <button id="tif-hide-focusable" style="display:none;">
-            hide focusable button
-          </button>
-        </p>
-      </div>
-      <p>
-        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/tricky-initial-focus.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
     </div>
 

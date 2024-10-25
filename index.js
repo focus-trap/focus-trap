@@ -223,14 +223,22 @@ const createFocusTrap = function (elements, userOptions) {
    *  (if a node is explicitly NOT given), or a function that returns any of these
    *  values.
    * @param {string} optionName
-   * @returns {undefined | false | HTMLElement | SVGElement} Returns
-   *  `undefined` if the option is not specified; `false` if the option
-   *  resolved to `false` (node explicitly not given); otherwise, the resolved
-   *  DOM node.
+   * @param {Object} options
+   * @param {boolean} [options.hasFallback] True if the option could be a selector string
+   *  and the option allows for a fallback scenario in the case where the selector is
+   *  valid but does not match a node (i.e. the queried node doesn't exist in the DOM).
+   * @param {Array} [options.params] Params to pass to the option if it's a function.
+   * @returns {undefined | null | false | HTMLElement | SVGElement} Returns
+   *  `undefined` if the option is not specified; `null` if the option didn't resolve
+   *  to a node but `options.hasFallback=true`, `false` if the option resolved to `false`
+   *  (node explicitly not given); otherwise, the resolved DOM node.
    * @throws {Error} If the option is set, not `false`, and is not, or does not
-   *  resolve to a node.
+   *  resolve to a node, unless the option is a selector string and `options.hasFallback=true`.
    */
-  const getNodeForOption = function (optionName, ...params) {
+  const getNodeForOption = function (
+    optionName,
+    { hasFallback = false, params = [] } = {}
+  ) {
     let optionValue = config[optionName];
 
     if (typeof optionValue === 'function') {
@@ -255,11 +263,22 @@ const createFocusTrap = function (elements, userOptions) {
     let node = optionValue; // could be HTMLElement, SVGElement, or non-empty string at this point
 
     if (typeof optionValue === 'string') {
-      node = doc.querySelector(optionValue); // resolve to node, or null if fails
-      if (!node) {
+      try {
+        node = doc.querySelector(optionValue); // resolve to node, or null if fails
+      } catch (err) {
         throw new Error(
-          `\`${optionName}\` as selector refers to no known node`
+          `\`${optionName}\` appears to be an invalid selector; error="${err.message}"`
         );
+      }
+
+      if (!node) {
+        if (!hasFallback) {
+          throw new Error(
+            `\`${optionName}\` as selector refers to no known node`
+          );
+        }
+        // else, `node` MUST be `null` because that's what `Document.querySelector()` returns
+        //  if the selector is valid but doesn't match anything
       }
     }
 
@@ -267,14 +286,17 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const getInitialFocusNode = function () {
-    let node = getNodeForOption('initialFocus');
+    let node = getNodeForOption('initialFocus', { hasFallback: true });
 
     // false explicitly indicates we want no initialFocus at all
     if (node === false) {
       return false;
     }
 
-    if (node === undefined || !isFocusable(node, config.tabbableOptions)) {
+    if (
+      node === undefined ||
+      (node && !isFocusable(node, config.tabbableOptions))
+    ) {
       // option not specified nor focusable: use fallback options
       if (findContainerIndex(doc.activeElement) >= 0) {
         node = doc.activeElement;
@@ -286,6 +308,10 @@ const createFocusTrap = function (elements, userOptions) {
         // NOTE: `fallbackFocus` option function cannot return `false` (not supported)
         node = firstTabbableNode || getNodeForOption('fallbackFocus');
       }
+    } else if (node === null) {
+      // option is a VALID selector string that doesn't yield a node: use the `fallbackFocus`
+      //  option instead of the default behavior when the option isn't specified at all
+      node = getNodeForOption('fallbackFocus');
     }
 
     if (!node) {
@@ -464,7 +490,9 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const getReturnFocusNode = function (previousActiveElement) {
-    const node = getNodeForOption('setReturnFocus', previousActiveElement);
+    const node = getNodeForOption('setReturnFocus', {
+      params: [previousActiveElement],
+    });
     return node ? node : node === false ? false : previousActiveElement;
   };
 
