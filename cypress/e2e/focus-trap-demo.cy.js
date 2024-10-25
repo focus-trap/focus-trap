@@ -863,6 +863,59 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: iswf', () => {
+    it('when trap is activated and initialFocus is selector to existing node, that node is focused', () => {
+      cy.get('#demo-iswf').as('testRoot');
+
+      cy.get('#checkbox-iswf').as('testOption').should('be.checked');
+
+      // activate trap, which should focus the "initial focus" button because it exists
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('activate')
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .click();
+      cy.get('@testRoot')
+        .get('#initial-focus-btn-iswf')
+        .as('initialFocusButton')
+        .should('be.focused');
+      verifyCrucialFocusTrapOnClicking('@initialFocusButton');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .as('deactivate')
+        .click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
+      verifyFocusIsNotTrapped(cy.get('@lastlyFocusedElBeforeTrapIsActivated'));
+    });
+
+    it('when trap is activated and initialFocus is selector to non-existent node, fallbackFocus option is used', () => {
+      cy.get('#demo-iswf').as('testRoot');
+
+      cy.get('#checkbox-iswf').as('testOption').should('be.checked');
+      cy.get('@testOption').click(); // initial state is checked, so uncheck it
+      cy.get('@testOption').should('not.be.checked');
+
+      // activate trap, which should focus the container because the "initial focus" button doesn't exist
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('activate')
+        .as('lastlyFocusedElBeforeTrapIsActivated')
+        .click();
+      cy.get('@testRoot').get('#iswf').should('be.focused');
+      verifyCrucialFocusTrapOnClicking('#iswf');
+
+      // deactivate trap and element outside of trap can be focused again
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .as('deactivate')
+        .click();
+      cy.get('@lastlyFocusedElBeforeTrapIsActivated').should('be.focused');
+      verifyFocusIsNotTrapped(cy.get('@lastlyFocusedElBeforeTrapIsActivated'));
+    });
+  });
+
   describe('demo: input', () => {
     it('if current focused element is already in the trap, focus activation does not change its selection range"', () => {
       cy.get('#demo-input-activation').as('testRoot');
