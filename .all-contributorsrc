@@ -338,6 +338,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "konradr33",
+      "name": "konradr33",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32595283?v=4",
+      "profile": "https://github.com/konradr33",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
