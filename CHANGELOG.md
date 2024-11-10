@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.6.1
+
+### Patch Changes
+
+- fc5910d: Fix fallbackFocus not used when initialFocus is selector to non-existent node ([#1218](https://github.com/focus-trap/focus-trap/issues/1218))
+
 ## 7.6.0
 
 ### Minor Changes
