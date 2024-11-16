@@ -67,23 +67,6 @@ const delay = function (fn) {
   return setTimeout(fn, 0);
 };
 
-// Array.find/findIndex() are not supported on IE; this replicates enough
-//  of Array.findIndex() for our needs
-const findIndex = function (arr, fn) {
-  let idx = -1;
-
-  arr.every(function (value, i) {
-    if (fn(value)) {
-      idx = i;
-      return false; // break
-    }
-
-    return true; // next
-  });
-
-  return idx;
-};
-
 /**
  * Get an option's value when it could be a plain value, or a handler that provides
  *  the value.
@@ -537,8 +520,7 @@ const createFocusTrap = function (elements, userOptions) {
         // REVERSE
 
         // is the target the first tabbable node in a group?
-        let startOfGroupIndex = findIndex(
-          state.tabbableGroups,
+        let startOfGroupIndex = state.tabbableGroups.findIndex(
           ({ firstTabbableNode }) => target === firstTabbableNode
         );
 
@@ -582,8 +564,7 @@ const createFocusTrap = function (elements, userOptions) {
         // FORWARD
 
         // is the target the last tabbable node in a group?
-        let lastOfGroupIndex = findIndex(
-          state.tabbableGroups,
+        let lastOfGroupIndex = state.tabbableGroups.findIndex(
           ({ lastTabbableNode }) => target === lastTabbableNode
         );
 
