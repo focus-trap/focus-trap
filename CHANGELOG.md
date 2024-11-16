@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.6.2
+
+### Patch Changes
+
+- d4a4c34: Replace findIndex with native implementation - [Closes #1305](https://github.com/focus-trap/focus-trap/issues/1305
+
 ## 7.6.1
 
 ### Patch Changes
