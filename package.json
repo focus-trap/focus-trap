@@ -93,7 +93,7 @@
     "rollup": "^4.28.1",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
-    "start-server-and-test": "^2.0.8",
+    "start-server-and-test": "^2.0.9",
     "typescript": "^5.7.2"
   }
 }
