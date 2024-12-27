@@ -1113,12 +1113,12 @@ var focusTrapDemoBundle = (function () {
 	      trapStack.push(trap);
 	    }
 	  },
-	  deactivateTrap: function deactivateTrap(trapStack, trap) {
+	  deactivateTrap: function deactivateTrap(trapStack, trap, unpauseOnDeactivate) {
 	    var trapIndex = trapStack.indexOf(trap);
 	    if (trapIndex !== -1) {
 	      trapStack.splice(trapIndex, 1);
 	    }
-	    if (trapStack.length > 0) {
+	    if (trapStack.length > 0 && unpauseOnDeactivate) {
 	      trapStack[trapStack.length - 1].unpause();
 	    }
 	  }
@@ -1144,20 +1144,6 @@ var focusTrapDemoBundle = (function () {
 	};
 	var delay$1 = function delay(fn) {
 	  return setTimeout(fn, 0);
-	};
-
-	// Array.find/findIndex() are not supported on IE; this replicates enough
-	//  of Array.findIndex() for our needs
-	var findIndex = function findIndex(arr, fn) {
-	  var idx = -1;
-	  arr.every(function (value, i) {
-	    if (fn(value)) {
-	      idx = i;
-	      return false; // break
-	    }
-	    return true; // next
-	  });
-	  return idx;
 	};
 
 	/**
@@ -1194,6 +1180,7 @@ var focusTrapDemoBundle = (function () {
 	  var trapStack = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.trapStack) || internalTrapStack;
 	  var config = _objectSpread2({
 	    returnFocusOnDeactivate: true,
+	    unpauseOnDeactivate: true,
 	    escapeDeactivates: true,
 	    delayInitialFocus: true,
 	    isKeyForward: isKeyForward,
@@ -1545,7 +1532,7 @@ var focusTrapDemoBundle = (function () {
 	        // REVERSE
 
 	        // is the target the first tabbable node in a group?
-	        var startOfGroupIndex = findIndex(state.tabbableGroups, function (_ref4) {
+	        var startOfGroupIndex = state.tabbableGroups.findIndex(function (_ref4) {
 	          var firstTabbableNode = _ref4.firstTabbableNode;
 	          return target === firstTabbableNode;
 	        });
@@ -1574,7 +1561,7 @@ var focusTrapDemoBundle = (function () {
 	        // FORWARD
 
 	        // is the target the last tabbable node in a group?
-	        var lastOfGroupIndex = findIndex(state.tabbableGroups, function (_ref5) {
+	        var lastOfGroupIndex = state.tabbableGroups.findIndex(function (_ref5) {
 	          var lastTabbableNode = _ref5.lastTabbableNode;
 	          return target === lastTabbableNode;
 	        });
@@ -1934,7 +1921,7 @@ var focusTrapDemoBundle = (function () {
 	      state.active = false;
 	      state.paused = false;
 	      updateObservedNodes();
-	      activeFocusTraps.deactivateTrap(trapStack, trap);
+	      activeFocusTraps.deactivateTrap(trapStack, trap, config.unpauseOnDeactivate);
 	      var onDeactivate = getOption(options, 'onDeactivate');
 	      var onPostDeactivate = getOption(options, 'onPostDeactivate');
 	      var checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');

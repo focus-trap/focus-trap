@@ -141,6 +141,11 @@ declare module 'focus-trap' {
      */
     returnFocusOnDeactivate?: boolean;
     /**
+     * By default, the previous focus trap on the stack will be unpaused 
+     * when the current active trap is deactivated.
+     */
+    unpauseOnDeactivate?: boolean;
+    /**
      * By default, focus trap on deactivation will return to the element
      * that was focused before activation.
      */
