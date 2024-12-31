@@ -28,7 +28,7 @@ const activeFocusTraps = {
   deactivateTrap(trapStack, trap) {
     const trapIndex = trapStack.indexOf(trap);
     if (trapIndex !== -1) {
-      trapStack.splice(trapIndex, 1);
+      trapStack?.splice(trapIndex, 1);
     }
 
     if (trapStack.length > 0) {

@@ -16,14 +16,16 @@ declare module 'focus-trap' {
    * `document.querySelector()` to find the DOM node), `false` to explicitly indicate
    * an opt-out, or a function that returns a DOM node or `false`.
    */
-  export type FocusTargetOrFalse = FocusTargetValueOrFalse | (() => FocusTargetValueOrFalse);
+  export type FocusTargetOrFalse =
+    | FocusTargetValueOrFalse
+    | (() => FocusTargetValueOrFalse);
 
   type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
 
   /** tabbable options supported by focus-trap. */
-  export interface FocusTrapTabbableOptions extends TabbableCheckOptions {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Reserving ability to add/remove properties in the future
+  export interface FocusTrapTabbableOptions extends TabbableCheckOptions {}
 
   export interface Options {
     /**
@@ -205,6 +207,7 @@ declare module 'focus-trap' {
      * being auto-paused. By default, each instance will have its own internal stack,
      * leading to conflicts if they each try to trap the focus at the same time.
      */
+    // eslint-disable-next-line no-use-before-define -- TypeScript handles circular dependencies automatically
     trapStack?: Array<FocusTrap>;
 
     /**
@@ -224,22 +227,35 @@ declare module 'focus-trap' {
     isKeyBackward?: KeyboardEventToBoolean;
   }
 
-  type ActivateOptions = Pick<Options, 'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'>;
+  type ActivateOptions = Pick<
+    Options,
+    'onActivate' | 'onPostActivate' | 'checkCanFocusTrap'
+  >;
   type PauseOptions = Pick<Options, 'onPause' | 'onPostPause'>;
   type UnpauseOptions = Pick<Options, 'onUnpause' | 'onPostUnpause'>;
 
-  interface DeactivateOptions extends Pick<Options, 'onDeactivate' | 'onPostDeactivate' | 'checkCanReturnFocus'> {
+  interface DeactivateOptions
+    extends Pick<
+      Options,
+      'onDeactivate' | 'onPostDeactivate' | 'checkCanReturnFocus'
+    > {
     returnFocus?: boolean;
   }
 
   export interface FocusTrap {
-    active: boolean,
-    paused: boolean,
+    active: boolean;
+    paused: boolean;
     activate(activateOptions?: ActivateOptions): FocusTrap;
     deactivate(deactivateOptions?: DeactivateOptions): FocusTrap;
     pause(pauseOptions?: PauseOptions): FocusTrap;
     unpause(unpauseOptions?: UnpauseOptions): FocusTrap;
-    updateContainerElements(containerElements: HTMLElement | SVGElement | string | Array<HTMLElement | SVGElement | string>): FocusTrap;
+    updateContainerElements(
+      containerElements:
+        | HTMLElement
+        | SVGElement
+        | string
+        | Array<HTMLElement | SVGElement | string>
+    ): FocusTrap;
   }
 
   /**
@@ -250,7 +266,11 @@ declare module 'focus-trap' {
    *  find the element.
    */
   export function createFocusTrap(
-    element: HTMLElement | SVGElement | string | Array<HTMLElement | SVGElement | string>,
+    element:
+      | HTMLElement
+      | SVGElement
+      | string
+      | Array<HTMLElement | SVGElement | string>,
     userOptions?: Options
   ): FocusTrap;
 }

@@ -1,12 +1,11 @@
-/* eslint-disable no-console */
 /* eslint-env node */
 
 import { createRequire } from 'module';
-import babel from '@rollup/plugin-babel';
+import babelPlugin from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
-import replace from '@rollup/plugin-replace'
+import replace from '@rollup/plugin-replace';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 
@@ -36,7 +35,7 @@ const commonPlugins = [
   commonjs({
     include: 'node_modules/**',
   }),
-  babel({
+  babelPlugin({
     exclude: 'node_modules/**',
     babelHelpers: 'bundled',
   }),
@@ -175,7 +174,7 @@ const demo = {
     commonjs({
       strictRequires: 'auto',
     }),
-    babel({ babelHelpers: 'bundled' }),
+    babelPlugin({ babelHelpers: 'bundled' }),
     isDevServer &&
       serve({
         port: 9966,
