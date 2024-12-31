@@ -21,9 +21,9 @@
   ],
   "scripts": {
     "demo-bundle": "npm run compile:demo",
-    "format": "prettier --write \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|cjs|mjs|ts|cts|mts|yml)\"",
-    "format:check": "prettier --check \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|cjs|mjs|ts|cts|mts|yml)\"",
-    "format:watch": "onchange \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/*,cypress/**/*}.+(js|cjs|mjs|ts|cts|mts|yml)\" -- prettier --write {{changed}}",
+    "format": "prettier --write \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/**/*,cypress/**/*}.+(js|cjs|mjs|ts|cts|mts|yml)\"",
+    "format:check": "prettier --check \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/**/*,cypress/**/*}.+(js|cjs|mjs|ts|cts|mts|yml)\"",
+    "format:watch": "onchange \"{*,src/**/*,test/**/*,docs/js/**/*,.github/workflows/**/*,cypress/**/*}.+(js|cjs|mjs|ts|cts|mts|yml)\" -- prettier --write {{changed}}",
     "lint": "eslint \"{*,docs/js/**/*,cypress/e2e/**/*}.+(js|cjs|mjs|ts|cts|mts)\"",
     "clean": "rm -rf ./dist",
     "compile:esm": "cross-env BUILD_ENV=esm BABEL_ENV=esm rollup -c",

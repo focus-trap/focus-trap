@@ -17,7 +17,7 @@ import cypress from 'eslint-plugin-cypress';
 import importPlugin from 'eslint-plugin-import';
 import testingLibrary from 'eslint-plugin-testing-library';
 
-const ecmaVersion = 6;
+const ecmaVersion = 'latest';
 const impliedStrict = true;
 const tsconfigRootDir = import.meta.dirname;
 
@@ -73,9 +73,12 @@ const browserGlobals = {
 
 // Globals for test files
 const testGlobals = {
-  ...globals.node,
   ...globals.jest,
   ...cypress.environments.globals.globals,
+
+  // `globals.browser` defines this global but it's also part of the `testing-library`
+  //  API so needs to be overwritable to avoid ESLint's `no-redeclare` rule
+  screen: 'off',
 };
 
 // Globals for BUNDLED (Webpack, Rollup, etc) source code
@@ -170,7 +173,10 @@ const baseRules = {
   'prefer-const': 'error',
 };
 
+//
 // TypeScript-specific rules
+//
+
 const typescriptRules = {
   ...typescript.configs['recommended-type-checked'].rules,
 
@@ -178,7 +184,10 @@ const typescriptRules = {
   ...importPlugin.flatConfigs.typescript.rules,
 };
 
+//
 // Test-specific rules
+//
+
 const testRules = {
   //// jest plugin
 
@@ -230,13 +239,14 @@ const testRules = {
 const createToolingConfig = (isModule = true, isTypescript = false) => ({
   files: isModule
     ? isTypescript
-      ? ['**/*.m?ts']
-      : ['**/*.mjs']
-    : ['**/*.c?js'],
-  ignores: ['index.js'],
+      ? ['**/*.{ts,mts}']
+      : ['**/*.{js,mjs}']
+    : ['**/*.{js,cjs}'],
+  ignores: ['index.js', 'docs/**/*.*'],
   plugins: {
     ...basePlugins,
     ...(isModule ? { import: importPlugin } : {}),
+    ...(isTypescript ? { '@typescript-eslint': typescript } : {}),
   },
   languageOptions: {
     ecmaVersion,
@@ -315,7 +325,7 @@ const createDocsJSConfig = () => {
   config.languageOptions.parserOptions.sourceType = 'script';
   config.languageOptions.globals = {
     ...config.languageOptions.globals,
-    ...globals.node, // because these are modules are still CJS, not ESM
+    ...globals.commonjs,
   };
   return config;
 };
