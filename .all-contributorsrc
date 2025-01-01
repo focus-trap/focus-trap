@@ -246,6 +246,13 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/17225564?v=4",
       "profile": "https://github.com/tomasvn",
       "contributions": ["code"]
+    },
+    {
+      "login": "bernhardoj",
+      "name": "Bernhard Owen Josephus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/50919443?v=4",
+      "profile": "https://github.com/bernhardoj",
+      "contributions": ["code"]
     }
   ],
   "contributorsPerLine": 7,

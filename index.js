@@ -25,13 +25,13 @@ const activeFocusTraps = {
     }
   },
 
-  deactivateTrap(trapStack, trap) {
+  deactivateTrap(trapStack, trap, unpauseOnDeactivate) {
     const trapIndex = trapStack.indexOf(trap);
     if (trapIndex !== -1) {
       trapStack.splice(trapIndex, 1);
     }
 
-    if (trapStack.length > 0) {
+    if (trapStack.length > 0 && unpauseOnDeactivate) {
       trapStack[trapStack.length - 1].unpause();
     }
   },
@@ -104,6 +104,7 @@ const createFocusTrap = function (elements, userOptions) {
 
   const config = {
     returnFocusOnDeactivate: true,
+    unpauseOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
     isKeyForward,
@@ -983,7 +984,11 @@ const createFocusTrap = function (elements, userOptions) {
       state.paused = false;
       updateObservedNodes();
 
-      activeFocusTraps.deactivateTrap(trapStack, trap);
+      activeFocusTraps.deactivateTrap(
+        trapStack,
+        trap,
+        config.unpauseOnDeactivate
+      );
 
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
