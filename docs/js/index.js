@@ -24,6 +24,7 @@ require('./multiple-elements')();
 require('./multiple-elements-delete')();
 require('./multiple-elements-delete-all')();
 require('./multiple-elements-multiple-traps')();
+require('./multiple-traps-manual-pause')();
 require('./arrow-keys')();
 require('./dom-remove')();
 

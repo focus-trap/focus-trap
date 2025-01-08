@@ -11,7 +11,7 @@ const activeFocusTraps = {
     if (trapStack.length > 0) {
       const activeTrap = trapStack[trapStack.length - 1];
       if (activeTrap !== trap) {
-        activeTrap.pause();
+        activeTrap._setPausedState(true);
       }
     }
 
@@ -31,7 +31,10 @@ const activeFocusTraps = {
       trapStack.splice(trapIndex, 1);
     }
 
-    if (trapStack.length > 0) {
+    if (
+      trapStack.length > 0 &&
+      !trapStack[trapStack.length - 1]._isManuallyPaused()
+    ) {
       trapStack[trapStack.length - 1].unpause();
     }
   },
@@ -144,6 +147,7 @@ const createFocusTrap = function (elements, userOptions) {
     mostRecentlyFocusedNode: null,
     active: false,
     paused: false,
+    manuallyPaused: false,
 
     // timer ID for when delayInitialFocus is true and initial focus in this trap
     //  has been delayed during activation
@@ -1016,41 +1020,63 @@ const createFocusTrap = function (elements, userOptions) {
       return this;
     },
 
-    pause(pauseOptions) {
-      if (state.paused || !state.active) {
-        return this;
+    _isManuallyPaused() {
+      return state.manuallyPaused;
+    },
+
+    _setPausedState(paused, options) {
+      state.paused = paused;
+      if (paused) {
+        const onPause = getOption(options, 'onPause');
+        const onPostPause = getOption(options, 'onPostPause');
+        onPause?.();
+
+        removeListeners();
+        updateObservedNodes();
+
+        onPostPause?.();
+      } else {
+        const onUnpause = getOption(options, 'onUnpause');
+        const onPostUnpause = getOption(options, 'onPostUnpause');
+
+        onUnpause?.();
+
+        updateTabbableNodes();
+        addListeners();
+        updateObservedNodes();
+
+        onPostUnpause?.();
       }
 
-      const onPause = getOption(pauseOptions, 'onPause');
-      const onPostPause = getOption(pauseOptions, 'onPostPause');
-
-      state.paused = true;
-      onPause?.();
-
-      removeListeners();
-      updateObservedNodes();
-
-      onPostPause?.();
       return this;
     },
 
-    unpause(unpauseOptions) {
-      if (!state.paused || !state.active) {
+    pause(pauseOptions) {
+      if (!state.active) {
         return this;
       }
 
-      const onUnpause = getOption(unpauseOptions, 'onUnpause');
-      const onPostUnpause = getOption(unpauseOptions, 'onPostUnpause');
+      state.manuallyPaused = true;
 
-      state.paused = false;
-      onUnpause?.();
+      if (state.paused) {
+        return this;
+      }
 
-      updateTabbableNodes();
-      addListeners();
-      updateObservedNodes();
+      return this._setPausedState(true, pauseOptions);
+    },
 
-      onPostUnpause?.();
-      return this;
+    unpause(unpauseOptions) {
+      if (!state.active) {
+        return this;
+      }
+
+      state.manuallyPaused = false;
+
+      if (!state.paused || trapStack[trapStack.length - 1] !== this) {
+        return this;
+      }
+
+      return this._setPausedState(false, unpauseOptions);
     },
 
     updateContainerElements(containerElements) {
