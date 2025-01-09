@@ -1025,6 +1025,10 @@ const createFocusTrap = function (elements, userOptions) {
     },
 
     _setPausedState(paused, options) {
+      if (state.paused === paused) {
+        return this;
+      }
+
       state.paused = paused;
       if (paused) {
         const onPause = getOption(options, 'onPause');
@@ -1058,10 +1062,6 @@ const createFocusTrap = function (elements, userOptions) {
 
       state.manuallyPaused = true;
 
-      if (state.paused) {
-        return this;
-      }
-
       return this._setPausedState(true, pauseOptions);
     },
 
@@ -1072,7 +1072,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       state.manuallyPaused = false;
 
-      if (!state.paused || trapStack[trapStack.length - 1] !== this) {
+      if (trapStack[trapStack.length - 1] !== this) {
         return this;
       }
 
