@@ -1020,41 +1020,6 @@ const createFocusTrap = function (elements, userOptions) {
       return this;
     },
 
-    _isManuallyPaused() {
-      return state.manuallyPaused;
-    },
-
-    _setPausedState(paused, options) {
-      if (state.paused === paused) {
-        return this;
-      }
-
-      state.paused = paused;
-      if (paused) {
-        const onPause = getOption(options, 'onPause');
-        const onPostPause = getOption(options, 'onPostPause');
-        onPause?.();
-
-        removeListeners();
-        updateObservedNodes();
-
-        onPostPause?.();
-      } else {
-        const onUnpause = getOption(options, 'onUnpause');
-        const onPostUnpause = getOption(options, 'onPostUnpause');
-
-        onUnpause?.();
-
-        updateTabbableNodes();
-        addListeners();
-        updateObservedNodes();
-
-        onPostUnpause?.();
-      }
-
-      return this;
-    },
-
     pause(pauseOptions) {
       if (!state.active) {
         return this;
@@ -1095,6 +1060,46 @@ const createFocusTrap = function (elements, userOptions) {
       return this;
     },
   };
+
+  Object.defineProperties(trap, {
+    _isManuallyPaused: {
+      value() {
+        return state.manuallyPaused;
+      },
+    },
+    _setPausedState: {
+      value(paused, options) {
+        if (state.paused === paused) {
+          return this;
+        }
+
+        state.paused = paused;
+        if (paused) {
+          const onPause = getOption(options, 'onPause');
+          const onPostPause = getOption(options, 'onPostPause');
+          onPause?.();
+
+          removeListeners();
+          updateObservedNodes();
+
+          onPostPause?.();
+        } else {
+          const onUnpause = getOption(options, 'onUnpause');
+          const onPostUnpause = getOption(options, 'onPostUnpause');
+
+          onUnpause?.();
+
+          updateTabbableNodes();
+          addListeners();
+          updateObservedNodes();
+
+          onPostUnpause?.();
+        }
+
+        return this;
+      },
+    },
+  });
 
   // initialize container elements
   trap.updateContainerElements(elements);
