@@ -35,7 +35,7 @@ const activeFocusTraps = {
       trapStack.length > 0 &&
       !trapStack[trapStack.length - 1]._isManuallyPaused()
     ) {
-      trapStack[trapStack.length - 1].unpause();
+      trapStack[trapStack.length - 1]._setPausedState(false);
     }
   },
 };
