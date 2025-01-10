@@ -1016,6 +1016,55 @@
       </p>
     </div>
 
+    <div id="demo-multipletraps-manual-pause">
+      <h2 id="multipletraps-manual-pause-heading">multiple traps with manual pause</h2>
+      <p>
+        If the previous trap is manually paused, deactivating the current focus trap won't automatically unpause the previous focus trap.
+        Clicking outside on the activate and deactivate trap buttons is allowed.
+      </p>
+      <p>
+        <button id="activate-multipletraps-manual-pause-1" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+          activate trap 1
+        </button>
+        <button id="activate-multipletraps-manual-pause-2" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+          activate trap 2
+        </button>
+        <button id="pause-multipletraps-manual-pause-1" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+          pause trap 1
+        </button>
+        <button id="pause-multipletraps-manual-pause-2" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+          pause trap 2
+        </button>
+      </p>
+      <div id="multipletraps-manual-pause" class="trap">
+        <p id="multipletraps-manual-pause-1" style="margin-top: 0">
+          Here is the first focus trap <a href="#">with</a> <a href="#">some</a>
+          <a href="#">focusable</a> parts.
+        </p>
+        <p id="multipletraps-manual-pause-2">
+          Here is the second focus trap <a href="#">with</a> <a href="#">some</a>
+          <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="deactivate-multipletraps-manual-pause-1" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+            deactivate trap 1
+          </button>
+          <button id="deactivate-multipletraps-manual-pause-2" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+            deactivate trap 2
+          </button>
+          <button id="unpause-multipletraps-manual-pause-1" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+            unpause trap 1
+          </button>
+          <button id="unpause-multipletraps-manual-pause-2" class="enable-outside" aria-describedby="multipletraps-manual-pause-heading">
+            unpause trap 2
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/multiple-traps-manual-pause.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-negative-tabindex">
       <h2 id="negative-tabindex-heading">Negative tabindex</h2>
       <p>

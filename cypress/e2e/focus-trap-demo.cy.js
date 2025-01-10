@@ -1655,6 +1655,39 @@ describe('focus-trap', () => {
     });
   });
 
+  describe('demo: multiple traps with manual pause', () => {
+    it('manually paused trap will not be automatically unpaused if another trap is deactivated', () => {
+      cy.get('#demo-multipletraps-manual-pause').as('testRoot');
+
+      // activate trap 1
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap 1/ })
+        .as('lastlyFocusedElementBeforeTrapIsActivated')
+        .click();
+
+      // activate focus trap 2. This should pause trap 1
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap 2/ })
+        .click();
+
+      // pause focus trap 1 manually
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^pause trap 1/ })
+        .click();
+
+      // stop focus trap 2
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap 2/ })
+        .click({ force: true }); // click fails without `force` option
+
+      // focus can be transitioned freely when trap 2 is deactivated because trap 1 is still paused
+      cy.findByRole('heading', { name: 'focus-trap demo' })
+        .as('outsideEl')
+        .click();
+      verifyFocusIsNotTrapped(cy.get('@outsideEl'));
+    });
+  });
+
   describe('demo: global trap stack', () => {
     it('traps focus tab sequence and allows deactivation by clicking deactivate button', () => {
       cy.get('#demo-global-trap-stack').as('testRoot');

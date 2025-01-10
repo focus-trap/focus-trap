@@ -11,7 +11,7 @@ const activeFocusTraps = {
     if (trapStack.length > 0) {
       const activeTrap = trapStack[trapStack.length - 1];
       if (activeTrap !== trap) {
-        activeTrap.pause();
+        activeTrap._setPausedState(true);
       }
     }
 
@@ -31,8 +31,11 @@ const activeFocusTraps = {
       trapStack.splice(trapIndex, 1);
     }
 
-    if (trapStack.length > 0) {
-      trapStack[trapStack.length - 1].unpause();
+    if (
+      trapStack.length > 0 &&
+      !trapStack[trapStack.length - 1]._isManuallyPaused()
+    ) {
+      trapStack[trapStack.length - 1]._setPausedState(false);
     }
   },
 };
@@ -144,6 +147,7 @@ const createFocusTrap = function (elements, userOptions) {
     mostRecentlyFocusedNode: null,
     active: false,
     paused: false,
+    manuallyPaused: false,
 
     // timer ID for when delayInitialFocus is true and initial focus in this trap
     //  has been delayed during activation
@@ -1017,40 +1021,27 @@ const createFocusTrap = function (elements, userOptions) {
     },
 
     pause(pauseOptions) {
-      if (state.paused || !state.active) {
+      if (!state.active) {
         return this;
       }
 
-      const onPause = getOption(pauseOptions, 'onPause');
-      const onPostPause = getOption(pauseOptions, 'onPostPause');
+      state.manuallyPaused = true;
 
-      state.paused = true;
-      onPause?.();
-
-      removeListeners();
-      updateObservedNodes();
-
-      onPostPause?.();
-      return this;
+      return this._setPausedState(true, pauseOptions);
     },
 
     unpause(unpauseOptions) {
-      if (!state.paused || !state.active) {
+      if (!state.active) {
         return this;
       }
 
-      const onUnpause = getOption(unpauseOptions, 'onUnpause');
-      const onPostUnpause = getOption(unpauseOptions, 'onPostUnpause');
+      state.manuallyPaused = false;
 
-      state.paused = false;
-      onUnpause?.();
+      if (trapStack[trapStack.length - 1] !== this) {
+        return this;
+      }
 
-      updateTabbableNodes();
-      addListeners();
-      updateObservedNodes();
-
-      onPostUnpause?.();
-      return this;
+      return this._setPausedState(false, unpauseOptions);
     },
 
     updateContainerElements(containerElements) {
@@ -1069,6 +1060,46 @@ const createFocusTrap = function (elements, userOptions) {
       return this;
     },
   };
+
+  Object.defineProperties(trap, {
+    _isManuallyPaused: {
+      value() {
+        return state.manuallyPaused;
+      },
+    },
+    _setPausedState: {
+      value(paused, options) {
+        if (state.paused === paused) {
+          return this;
+        }
+
+        state.paused = paused;
+        if (paused) {
+          const onPause = getOption(options, 'onPause');
+          const onPostPause = getOption(options, 'onPostPause');
+          onPause?.();
+
+          removeListeners();
+          updateObservedNodes();
+
+          onPostPause?.();
+        } else {
+          const onUnpause = getOption(options, 'onUnpause');
+          const onPostUnpause = getOption(options, 'onPostUnpause');
+
+          onUnpause?.();
+
+          updateTabbableNodes();
+          addListeners();
+          updateObservedNodes();
+
+          onPostUnpause?.();
+        }
+
+        return this;
+      },
+    },
+  });
 
   // initialize container elements
   trap.updateContainerElements(elements);
