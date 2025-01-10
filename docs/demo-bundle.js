@@ -1118,7 +1118,7 @@ var focusTrapDemoBundle = (function () {
 	      trapStack.splice(trapIndex, 1);
 	    }
 	    if (trapStack.length > 0 && !trapStack[trapStack.length - 1]._isManuallyPaused()) {
-	      trapStack[trapStack.length - 1].unpause();
+	      trapStack[trapStack.length - 1]._setPausedState(false);
 	    }
 	  }
 	};
@@ -1941,37 +1941,11 @@ var focusTrapDemoBundle = (function () {
 	      finishDeactivation();
 	      return this;
 	    },
-	    _isManuallyPaused: function _isManuallyPaused() {
-	      return state.manuallyPaused;
-	    },
-	    _setPausedState: function _setPausedState(paused, options) {
-	      state.paused = paused;
-	      if (paused) {
-	        var onPause = getOption(options, 'onPause');
-	        var onPostPause = getOption(options, 'onPostPause');
-	        onPause === null || onPause === void 0 || onPause();
-	        removeListeners();
-	        updateObservedNodes();
-	        onPostPause === null || onPostPause === void 0 || onPostPause();
-	      } else {
-	        var onUnpause = getOption(options, 'onUnpause');
-	        var onPostUnpause = getOption(options, 'onPostUnpause');
-	        onUnpause === null || onUnpause === void 0 || onUnpause();
-	        updateTabbableNodes();
-	        addListeners();
-	        updateObservedNodes();
-	        onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause();
-	      }
-	      return this;
-	    },
 	    pause: function pause(pauseOptions) {
 	      if (!state.active) {
 	        return this;
 	      }
 	      state.manuallyPaused = true;
-	      if (state.paused) {
-	        return this;
-	      }
 	      return this._setPausedState(true, pauseOptions);
 	    },
 	    unpause: function unpause(unpauseOptions) {
@@ -1979,7 +1953,7 @@ var focusTrapDemoBundle = (function () {
 	        return this;
 	      }
 	      state.manuallyPaused = false;
-	      if (!state.paused || trapStack[trapStack.length - 1] !== this) {
+	      if (trapStack[trapStack.length - 1] !== this) {
 	        return this;
 	      }
 	      return this._setPausedState(false, unpauseOptions);
@@ -1996,6 +1970,38 @@ var focusTrapDemoBundle = (function () {
 	      return this;
 	    }
 	  };
+	  Object.defineProperties(trap, {
+	    _isManuallyPaused: {
+	      value: function value() {
+	        return state.manuallyPaused;
+	      }
+	    },
+	    _setPausedState: {
+	      value: function value(paused, options) {
+	        if (state.paused === paused) {
+	          return this;
+	        }
+	        state.paused = paused;
+	        if (paused) {
+	          var onPause = getOption(options, 'onPause');
+	          var onPostPause = getOption(options, 'onPostPause');
+	          onPause === null || onPause === void 0 || onPause();
+	          removeListeners();
+	          updateObservedNodes();
+	          onPostPause === null || onPostPause === void 0 || onPostPause();
+	        } else {
+	          var onUnpause = getOption(options, 'onUnpause');
+	          var onPostUnpause = getOption(options, 'onPostUnpause');
+	          onUnpause === null || onUnpause === void 0 || onUnpause();
+	          updateTabbableNodes();
+	          addListeners();
+	          updateObservedNodes();
+	          onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause();
+	        }
+	        return this;
+	      }
+	    }
+	  });
 
 	  // initialize container elements
 	  trap.updateContainerElements(elements);
