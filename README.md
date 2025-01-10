@@ -231,6 +231,8 @@ Pause an active focus trap's event listening without deactivating the trap.
 
 If the focus trap has not been activated, nothing happens.
 
+Whether the trap is already paused or not, its paused state becomes __manually-paused__ even if the trap has already been auto-paused as a result of another trap being activated after this one (and so being higher on the stack than this one).
+
 Returns the `trap`.
 
 Any `onDeactivate` callback will not be called, and focus will not return to the element that was focused before the trap's activation. But the trap's behavior will be paused.
@@ -254,7 +256,11 @@ Unpause an active focus trap. (See `pause()`, above.)
 
 Focus is forced into the trap just as described for `focusTrap.activate()`.
 
-If the focus trap has not been activated or has not been paused, nothing happens.
+If the focus trap has not been activated, nothing happens.
+
+If the focus trap has not been paused, nothing happens other than resetting its __manually-paused__ state.
+
+If the focus trap is not at the top of the `trapStack`, it will not be unpaused (whether previously auto- or manually-paused) until all traps higher on the stack have been deactivated and this trap becomes the one at the top again.
 
 Returns the `trap`.
 
