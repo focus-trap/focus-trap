@@ -233,6 +233,8 @@ If the focus trap has not been activated, nothing happens.
 
 Whether the trap is already paused or not, its paused state becomes __manually-paused__ even if the trap has already been auto-paused as a result of another trap being activated after this one (and so being higher on the stack than this one).
 
+> Note that a manually-paused trap will not be auto-unpaused if it becomes the trap at the top of the `trapStack` again by way of all other traps higher than it on the stack being deactivated. It will remain paused until manually unpaused by calling `unpause()`. If the trap was auto-paused the entire time it was not at the top of the stack, then it will be auto-unpaused when it gets to the top of the stack again.
+
 Returns the `trap`.
 
 Any `onDeactivate` callback will not be called, and focus will not return to the element that was focused before the trap's activation. But the trap's behavior will be paused.
