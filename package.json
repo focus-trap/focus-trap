@@ -79,7 +79,7 @@
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
-    "@testing-library/cypress": "^10.0.2",
+    "@testing-library/cypress": "^10.0.3",
     "@types/jquery": "^3.5.32",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.21.0",
