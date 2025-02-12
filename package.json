@@ -82,7 +82,7 @@
     "@testing-library/cypress": "^10.0.3",
     "@types/jquery": "^3.5.32",
     "@typescript-eslint/eslint-plugin": "^8.24.0",
-    "@typescript-eslint/parser": "^8.23.0",
+    "@typescript-eslint/parser": "^8.24.0",
     "all-contributors-cli": "^6.26.1",
     "babel-loader": "^9.2.1",
     "cross-env": "^7.0.3",
