@@ -84,7 +84,7 @@
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
     "all-contributors-cli": "^6.26.1",
-    "babel-loader": "^9.2.1",
+    "babel-loader": "^10.0.0",
     "cross-env": "^7.0.3",
     "cypress": "^14.1.0",
     "cypress-plugin-tab": "^1.0.5",
