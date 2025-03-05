@@ -99,7 +99,7 @@
     "eslint-plugin-testing-library": "^7.1.1",
     "globals": "^16.0.0",
     "onchange": "^7.1.0",
-    "prettier": "^3.5.2",
+    "prettier": "^3.5.3",
     "rollup": "^4.34.9",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
