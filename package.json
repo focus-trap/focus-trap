@@ -92,7 +92,7 @@
     "eslint-config-prettier": "^10.0.2",
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^3.8.3",
-    "eslint-plugin-cypress": "^4.1.0",
+    "eslint-plugin-cypress": "^4.2.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jest-dom": "^5.5.0",
