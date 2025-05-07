@@ -100,7 +100,7 @@
     "globals": "^16.0.0",
     "onchange": "^7.1.0",
     "prettier": "^3.5.3",
-    "rollup": "^4.40.1",
+    "rollup": "^4.40.2",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
     "start-server-and-test": "^2.0.11",
