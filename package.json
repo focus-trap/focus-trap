@@ -89,7 +89,7 @@
     "cypress": "^14.3.2",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.2",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^4.3.4",
     "eslint-plugin-cypress": "^4.3.0",
