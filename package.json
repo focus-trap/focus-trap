@@ -86,7 +86,7 @@
     "all-contributors-cli": "^6.26.1",
     "babel-loader": "^10.0.0",
     "cross-env": "^7.0.3",
-    "cypress": "^14.3.3",
+    "cypress": "^14.4.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
