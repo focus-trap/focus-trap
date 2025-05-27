@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.6.5
+
+### Patch Changes
+
+- d51ad78: Allow activation element in shadow DOM to be auto-focused after trap is deactivated
+
 ## 7.6.4
 
 ### Patch Changes
