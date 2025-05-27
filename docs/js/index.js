@@ -49,6 +49,10 @@ if (!RUP_IS_CYPRESS_ENV) {
 }
 
 // TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+// http://localhost:9966/#demo-aesd
+require('./activation-element-shadow-dom')();
+
+// TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 // http://localhost:9966/#demo-in-open-shadow-dom
 require('./in-open-shadow-dom')();
 
