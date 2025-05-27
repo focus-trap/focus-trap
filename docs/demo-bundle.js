@@ -5,7 +5,7 @@ var focusTrapDemoBundle = (function () {
 	'use strict';
 
 	function getAugmentedNamespace(n) {
-	  if (n.__esModule) return n;
+	  if (Object.prototype.hasOwnProperty.call(n, '__esModule')) return n;
 	  var f = n.default;
 		if (typeof f == "function") {
 			var a = function a () {
@@ -84,20 +84,20 @@ var focusTrapDemoBundle = (function () {
 	function _defineProperties(e, r) {
 	  for (var t = 0; t < r.length; t++) {
 	    var o = r[t];
-	    o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o);
+	    o.enumerable = o.enumerable || false, o.configurable = true, "value" in o && (o.writable = true), Object.defineProperty(e, _toPropertyKey(o.key), o);
 	  }
 	}
 	function _createClass(e, r, t) {
 	  return r && _defineProperties(e.prototype, r), Object.defineProperty(e, "prototype", {
-	    writable: !1
+	    writable: false
 	  }), e;
 	}
 	function _defineProperty(e, r, t) {
 	  return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
 	    value: t,
-	    enumerable: !0,
-	    configurable: !0,
-	    writable: !0
+	    enumerable: true,
+	    configurable: true,
+	    writable: true
 	  }) : e[r] = t, e;
 	}
 	function _getPrototypeOf(t) {
@@ -110,11 +110,11 @@ var focusTrapDemoBundle = (function () {
 	  t.prototype = Object.create(e && e.prototype, {
 	    constructor: {
 	      value: t,
-	      writable: !0,
-	      configurable: !0
+	      writable: true,
+	      configurable: true
 	    }
 	  }), Object.defineProperty(t, "prototype", {
-	    writable: !1
+	    writable: false
 	  }), e && _setPrototypeOf(t, e);
 	}
 	function _isNativeFunction(t) {
@@ -151,7 +151,7 @@ var focusTrapDemoBundle = (function () {
 	function _objectSpread2(e) {
 	  for (var r = 1; r < arguments.length; r++) {
 	    var t = null != arguments[r] ? arguments[r] : {};
-	    r % 2 ? ownKeys(Object(t), !0).forEach(function (r) {
+	    r % 2 ? ownKeys(Object(t), true).forEach(function (r) {
 	      _defineProperty(e, r, t[r]);
 	    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) {
 	      Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r));
@@ -166,47 +166,77 @@ var focusTrapDemoBundle = (function () {
 	}
 	function _regeneratorRuntime() {
 	  _regeneratorRuntime = function () {
-	    return e;
+	    return r;
 	  };
 	  var t,
-	    e = {},
-	    r = Object.prototype,
-	    n = r.hasOwnProperty,
-	    o = Object.defineProperty || function (t, e, r) {
-	      t[e] = r.value;
-	    },
-	    i = "function" == typeof Symbol ? Symbol : {},
-	    a = i.iterator || "@@iterator",
-	    c = i.asyncIterator || "@@asyncIterator",
-	    u = i.toStringTag || "@@toStringTag";
-	  function define(t, e, r) {
-	    return Object.defineProperty(t, e, {
-	      value: r,
-	      enumerable: !0,
-	      configurable: !0,
-	      writable: !0
-	    }), t[e];
+	    r = {},
+	    e = Object.prototype,
+	    n = e.hasOwnProperty,
+	    o = "function" == typeof Symbol ? Symbol : {},
+	    i = o.iterator || "@@iterator",
+	    a = o.asyncIterator || "@@asyncIterator",
+	    u = o.toStringTag || "@@toStringTag";
+	  function c(t, r, e, n) {
+	    return Object.defineProperty(t, r, {
+	      value: e,
+	      enumerable: !n,
+	      configurable: !n,
+	      writable: !n
+	    });
 	  }
 	  try {
-	    define({}, "");
+	    c({}, "");
 	  } catch (t) {
-	    define = function (t, e, r) {
-	      return t[e] = r;
+	    c = function (t, r, e) {
+	      return t[r] = e;
 	    };
 	  }
-	  function wrap(t, e, r, n) {
+	  function h(r, e, n, o) {
 	    var i = e && e.prototype instanceof Generator ? e : Generator,
-	      a = Object.create(i.prototype),
-	      c = new Context(n || []);
-	    return o(a, "_invoke", {
-	      value: makeInvokeMethod(t, r, c)
-	    }), a;
+	      a = Object.create(i.prototype);
+	    return c(a, "_invoke", function (r, e, n) {
+	      var o = 1;
+	      return function (i, a) {
+	        if (3 === o) throw Error("Generator is already running");
+	        if (4 === o) {
+	          if ("throw" === i) throw a;
+	          return {
+	            value: t,
+	            done: true
+	          };
+	        }
+	        for (n.method = i, n.arg = a;;) {
+	          var u = n.delegate;
+	          if (u) {
+	            var c = d(u, n);
+	            if (c) {
+	              if (c === f) continue;
+	              return c;
+	            }
+	          }
+	          if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) {
+	            if (1 === o) throw o = 4, n.arg;
+	            n.dispatchException(n.arg);
+	          } else "return" === n.method && n.abrupt("return", n.arg);
+	          o = 3;
+	          var h = s(r, e, n);
+	          if ("normal" === h.type) {
+	            if (o = n.done ? 4 : 2, h.arg === f) continue;
+	            return {
+	              value: h.arg,
+	              done: n.done
+	            };
+	          }
+	          "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg);
+	        }
+	      };
+	    }(r, n, new Context(o || [])), true), a;
 	  }
-	  function tryCatch(t, e, r) {
+	  function s(t, r, e) {
 	    try {
 	      return {
 	        type: "normal",
-	        arg: t.call(e, r)
+	        arg: t.call(r, e)
 	      };
 	    } catch (t) {
 	      return {
@@ -215,255 +245,193 @@ var focusTrapDemoBundle = (function () {
 	      };
 	    }
 	  }
-	  e.wrap = wrap;
-	  var h = "suspendedStart",
-	    l = "suspendedYield",
-	    f = "executing",
-	    s = "completed",
-	    y = {};
+	  r.wrap = h;
+	  var f = {};
 	  function Generator() {}
 	  function GeneratorFunction() {}
 	  function GeneratorFunctionPrototype() {}
-	  var p = {};
-	  define(p, a, function () {
+	  var l = {};
+	  c(l, i, function () {
 	    return this;
 	  });
-	  var d = Object.getPrototypeOf,
-	    v = d && d(d(values([])));
-	  v && v !== r && n.call(v, a) && (p = v);
-	  var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p);
-	  function defineIteratorMethods(t) {
-	    ["next", "throw", "return"].forEach(function (e) {
-	      define(t, e, function (t) {
-	        return this._invoke(e, t);
+	  var p = Object.getPrototypeOf,
+	    y = p && p(p(x([])));
+	  y && y !== e && n.call(y, i) && (l = y);
+	  var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l);
+	  function g(t) {
+	    ["next", "throw", "return"].forEach(function (r) {
+	      c(t, r, function (t) {
+	        return this._invoke(r, t);
 	      });
 	    });
 	  }
-	  function AsyncIterator(t, e) {
-	    function invoke(r, o, i, a) {
-	      var c = tryCatch(t[r], t, o);
+	  function AsyncIterator(t, r) {
+	    function e(o, i, a, u) {
+	      var c = s(t[o], t, i);
 	      if ("throw" !== c.type) {
-	        var u = c.arg,
-	          h = u.value;
-	        return h && "object" == typeof h && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) {
-	          invoke("next", t, i, a);
+	        var h = c.arg,
+	          f = h.value;
+	        return f && "object" == typeof f && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) {
+	          e("next", t, a, u);
 	        }, function (t) {
-	          invoke("throw", t, i, a);
-	        }) : e.resolve(h).then(function (t) {
-	          u.value = t, i(u);
+	          e("throw", t, a, u);
+	        }) : r.resolve(f).then(function (t) {
+	          h.value = t, a(h);
 	        }, function (t) {
-	          return invoke("throw", t, i, a);
+	          return e("throw", t, a, u);
 	        });
 	      }
-	      a(c.arg);
+	      u(c.arg);
 	    }
-	    var r;
-	    o(this, "_invoke", {
-	      value: function (t, n) {
-	        function callInvokeWithMethodAndArg() {
-	          return new e(function (e, r) {
-	            invoke(t, n, e, r);
-	          });
-	        }
-	        return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
+	    var o;
+	    c(this, "_invoke", function (t, n) {
+	      function i() {
+	        return new r(function (r, o) {
+	          e(t, n, r, o);
+	        });
 	      }
-	    });
+	      return o = o ? o.then(i, i) : i();
+	    }, true);
 	  }
-	  function makeInvokeMethod(e, r, n) {
-	    var o = h;
-	    return function (i, a) {
-	      if (o === f) throw Error("Generator is already running");
-	      if (o === s) {
-	        if ("throw" === i) throw a;
-	        return {
-	          value: t,
-	          done: !0
-	        };
-	      }
-	      for (n.method = i, n.arg = a;;) {
-	        var c = n.delegate;
-	        if (c) {
-	          var u = maybeInvokeDelegate(c, n);
-	          if (u) {
-	            if (u === y) continue;
-	            return u;
-	          }
-	        }
-	        if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) {
-	          if (o === h) throw o = s, n.arg;
-	          n.dispatchException(n.arg);
-	        } else "return" === n.method && n.abrupt("return", n.arg);
-	        o = f;
-	        var p = tryCatch(e, r, n);
-	        if ("normal" === p.type) {
-	          if (o = n.done ? s : l, p.arg === y) continue;
-	          return {
-	            value: p.arg,
-	            done: n.done
-	          };
-	        }
-	        "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg);
-	      }
-	    };
-	  }
-	  function maybeInvokeDelegate(e, r) {
-	    var n = r.method,
-	      o = e.iterator[n];
-	    if (o === t) return r.delegate = null, "throw" === n && e.iterator.return && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y;
-	    var i = tryCatch(o, e.iterator, r.arg);
-	    if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y;
+	  function d(r, e) {
+	    var n = e.method,
+	      o = r.i[n];
+	    if (o === t) return e.delegate = null, "throw" === n && r.i.return && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f;
+	    var i = s(o, r.i, e.arg);
+	    if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f;
 	    var a = i.arg;
-	    return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y);
+	    return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f);
 	  }
-	  function pushTryEntry(t) {
-	    var e = {
-	      tryLoc: t[0]
-	    };
-	    1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e);
+	  function w(t) {
+	    this.tryEntries.push(t);
 	  }
-	  function resetTryEntry(t) {
-	    var e = t.completion || {};
-	    e.type = "normal", delete e.arg, t.completion = e;
+	  function m(r) {
+	    var e = r[4] || {};
+	    e.type = "normal", e.arg = t, r[4] = e;
 	  }
 	  function Context(t) {
-	    this.tryEntries = [{
-	      tryLoc: "root"
-	    }], t.forEach(pushTryEntry, this), this.reset(!0);
+	    this.tryEntries = [[-1]], t.forEach(w, this), this.reset(true);
 	  }
-	  function values(e) {
-	    if (e || "" === e) {
-	      var r = e[a];
-	      if (r) return r.call(e);
-	      if ("function" == typeof e.next) return e;
-	      if (!isNaN(e.length)) {
+	  function x(r) {
+	    if (null != r) {
+	      var e = r[i];
+	      if (e) return e.call(r);
+	      if ("function" == typeof r.next) return r;
+	      if (!isNaN(r.length)) {
 	        var o = -1,
-	          i = function next() {
-	            for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next;
-	            return next.value = t, next.done = !0, next;
+	          a = function e() {
+	            for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = false, e;
+	            return e.value = t, e.done = true, e;
 	          };
-	        return i.next = i;
+	        return a.next = a;
 	      }
 	    }
-	    throw new TypeError(typeof e + " is not iterable");
+	    throw new TypeError(typeof r + " is not iterable");
 	  }
-	  return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", {
-	    value: GeneratorFunctionPrototype,
-	    configurable: !0
-	  }), o(GeneratorFunctionPrototype, "constructor", {
-	    value: GeneratorFunction,
-	    configurable: !0
-	  }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) {
-	    var e = "function" == typeof t && t.constructor;
-	    return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name));
-	  }, e.mark = function (t) {
-	    return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t;
-	  }, e.awrap = function (t) {
+	  return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) {
+	    var r = "function" == typeof t && t.constructor;
+	    return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name));
+	  }, r.mark = function (t) {
+	    return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t;
+	  }, r.awrap = function (t) {
 	    return {
 	      __await: t
 	    };
-	  }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () {
+	  }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () {
 	    return this;
-	  }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) {
+	  }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) {
 	    void 0 === i && (i = Promise);
-	    var a = new AsyncIterator(wrap(t, r, n, o), i);
-	    return e.isGeneratorFunction(r) ? a : a.next().then(function (t) {
+	    var a = new AsyncIterator(h(t, e, n, o), i);
+	    return r.isGeneratorFunction(e) ? a : a.next().then(function (t) {
 	      return t.done ? t.value : a.next();
 	    });
-	  }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () {
+	  }, g(v), c(v, u, "Generator"), c(v, i, function () {
 	    return this;
-	  }), define(g, "toString", function () {
+	  }), c(v, "toString", function () {
 	    return "[object Generator]";
-	  }), e.keys = function (t) {
-	    var e = Object(t),
-	      r = [];
-	    for (var n in e) r.push(n);
-	    return r.reverse(), function next() {
-	      for (; r.length;) {
-	        var t = r.pop();
-	        if (t in e) return next.value = t, next.done = !1, next;
-	      }
-	      return next.done = !0, next;
+	  }), r.keys = function (t) {
+	    var r = Object(t),
+	      e = [];
+	    for (var n in r) e.unshift(n);
+	    return function t() {
+	      for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = false, t;
+	      return t.done = true, t;
 	    };
-	  }, e.values = values, Context.prototype = {
+	  }, r.values = x, Context.prototype = {
 	    constructor: Context,
-	    reset: function (e) {
-	      if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t);
+	    reset: function (r) {
+	      if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = false, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t);
 	    },
 	    stop: function () {
-	      this.done = !0;
-	      var t = this.tryEntries[0].completion;
+	      this.done = true;
+	      var t = this.tryEntries[0][4];
 	      if ("throw" === t.type) throw t.arg;
 	      return this.rval;
 	    },
-	    dispatchException: function (e) {
-	      if (this.done) throw e;
-	      var r = this;
-	      function handle(n, o) {
-	        return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o;
+	    dispatchException: function (r) {
+	      if (this.done) throw r;
+	      var e = this;
+	      function n(t) {
+	        a.type = "throw", a.arg = r, e.next = t;
 	      }
-	      for (var o = this.tryEntries.length - 1; o >= 0; --o) {
+	      for (var o = e.tryEntries.length - 1; o >= 0; --o) {
 	        var i = this.tryEntries[o],
-	          a = i.completion;
-	        if ("root" === i.tryLoc) return handle("end");
-	        if (i.tryLoc <= this.prev) {
-	          var c = n.call(i, "catchLoc"),
-	            u = n.call(i, "finallyLoc");
-	          if (c && u) {
-	            if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
-	            if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
-	          } else if (c) {
-	            if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
-	          } else {
-	            if (!u) throw Error("try statement without catch or finally");
-	            if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
-	          }
+	          a = i[4],
+	          u = this.prev,
+	          c = i[1],
+	          h = i[2];
+	        if (-1 === i[0]) return n("end"), false;
+	        if (!c && !h) throw Error("try statement without catch or finally");
+	        if (null != i[0] && i[0] <= u) {
+	          if (u < c) return this.method = "next", this.arg = t, n(c), true;
+	          if (u < h) return n(h), false;
 	        }
 	      }
 	    },
-	    abrupt: function (t, e) {
-	      for (var r = this.tryEntries.length - 1; r >= 0; --r) {
-	        var o = this.tryEntries[r];
-	        if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) {
-	          var i = o;
+	    abrupt: function (t, r) {
+	      for (var e = this.tryEntries.length - 1; e >= 0; --e) {
+	        var n = this.tryEntries[e];
+	        if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) {
+	          var o = n;
 	          break;
 	        }
 	      }
-	      i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null);
-	      var a = i ? i.completion : {};
-	      return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a);
+	      o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null);
+	      var i = o ? o[4] : {};
+	      return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i);
 	    },
-	    complete: function (t, e) {
+	    complete: function (t, r) {
 	      if ("throw" === t.type) throw t.arg;
-	      return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y;
+	      return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f;
 	    },
 	    finish: function (t) {
-	      for (var e = this.tryEntries.length - 1; e >= 0; --e) {
-	        var r = this.tryEntries[e];
-	        if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y;
+	      for (var r = this.tryEntries.length - 1; r >= 0; --r) {
+	        var e = this.tryEntries[r];
+	        if (e[2] === t) return this.complete(e[4], e[3]), m(e), f;
 	      }
 	    },
 	    catch: function (t) {
-	      for (var e = this.tryEntries.length - 1; e >= 0; --e) {
-	        var r = this.tryEntries[e];
-	        if (r.tryLoc === t) {
-	          var n = r.completion;
+	      for (var r = this.tryEntries.length - 1; r >= 0; --r) {
+	        var e = this.tryEntries[r];
+	        if (e[0] === t) {
+	          var n = e[4];
 	          if ("throw" === n.type) {
 	            var o = n.arg;
-	            resetTryEntry(r);
+	            m(e);
 	          }
 	          return o;
 	        }
 	      }
 	      throw Error("illegal catch attempt");
 	    },
-	    delegateYield: function (e, r, n) {
+	    delegateYield: function (r, e, n) {
 	      return this.delegate = {
-	        iterator: values(e),
-	        resultName: r,
-	        nextLoc: n
-	      }, "next" === this.method && (this.arg = t), y;
+	        i: x(r),
+	        r: e,
+	        n: n
+	      }, "next" === this.method && (this.arg = t), f;
 	    }
-	  }, e;
+	  }, r;
 	}
 	function _setPrototypeOf(t, e) {
 	  return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) {
@@ -518,9 +486,9 @@ var focusTrapDemoBundle = (function () {
 	    return Wrapper.prototype = Object.create(t.prototype, {
 	      constructor: {
 	        value: Wrapper,
-	        enumerable: !1,
-	        writable: !0,
-	        configurable: !0
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
 	      }
 	    }), _setPrototypeOf(Wrapper, t);
 	  }, _wrapNativeSuper(t);
@@ -1172,7 +1140,7 @@ var focusTrapDemoBundle = (function () {
 	// NOTE: this must be _outside_ `createFocusTrap()` to make sure all traps in this
 	//  current instance use the same stack if `userOptions.trapStack` isn't specified
 	var internalTrapStack = [];
-	var createFocusTrap$B = function createFocusTrap(elements, userOptions) {
+	var createFocusTrap$C = function createFocusTrap(elements, userOptions) {
 	  // SSR: a live trap shouldn't be created in this type of environment so this
 	  //  should be safe code to execute if the `document` option isn't specified
 	  var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
@@ -1888,7 +1856,7 @@ var focusTrapDemoBundle = (function () {
 	      }
 	      state.active = true;
 	      state.paused = false;
-	      state.nodeFocusedBeforeActivation = doc.activeElement;
+	      state.nodeFocusedBeforeActivation = _getActiveElement(doc);
 	      onActivate === null || onActivate === void 0 || onActivate();
 	      var finishActivation = function finishActivation() {
 	        if (checkCanFocusTrap) {
@@ -2008,17 +1976,17 @@ var focusTrapDemoBundle = (function () {
 	  return trap;
 	};
 
-	var focusTrap = /*#__PURE__*/Object.freeze({
+	var focusTrapFork = /*#__PURE__*/Object.freeze({
 		__proto__: null,
-		createFocusTrap: createFocusTrap$B
+		createFocusTrap: createFocusTrap$C
 	});
 
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
+	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrapFork);
 
-	var createFocusTrap$A = require$$0.createFocusTrap;
+	var createFocusTrap$B = require$$0.createFocusTrap;
 	var _default = function _default() {
 	  var container = document.getElementById('default');
-	  var focusTrap = createFocusTrap$A('#default', {
+	  var focusTrap = createFocusTrap$B('#default', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2030,7 +1998,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$z = require$$0.createFocusTrap;
+	var createFocusTrap$A = require$$0.createFocusTrap;
 	var globalTrapStack = function globalTrapStack() {
 	  var container = document.getElementById('global-trap-stack');
 	  var counter = container.querySelector('.counter');
@@ -2038,7 +2006,7 @@ var focusTrapDemoBundle = (function () {
 	  var updateCounter = function updateCounter() {
 	    counter.innerHTML = window.__trapStack.length;
 	  };
-	  var focusTrap = createFocusTrap$z('#global-trap-stack', {
+	  var focusTrap = createFocusTrap$A('#global-trap-stack', {
 	    trapStack: window.__trapStack,
 	    onPostActivate: function onPostActivate() {
 	      container.classList.add('is-active');
@@ -2054,11 +2022,11 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-global-trap-stack').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$y = require$$0.createFocusTrap;
+	var createFocusTrap$z = require$$0.createFocusTrap;
 	var animatedDialog = function animatedDialog() {
 	  var container = document.getElementById('animated-dialog');
 	  var activatedFlag = document.getElementById('animated-dialog-trap-activated');
-	  var focusTrap = createFocusTrap$y('#animated-dialog', {
+	  var focusTrap = createFocusTrap$z('#animated-dialog', {
 	    // Called before focus is sent
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
@@ -2094,13 +2062,13 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-animated-dialog').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$x = require$$0.createFocusTrap;
+	var createFocusTrap$y = require$$0.createFocusTrap;
 	var animatedTrigger = function animatedTrigger() {
 	  var container = document.getElementById('animated-trigger');
 	  var trigger = document.getElementById('activate-animated-trigger');
 	  var deactivatedFlag = document.getElementById('animated-trigger-trap-deactivated');
 	  var returnFocusCheckbox = document.getElementById('animated-trigger-returnfocus');
-	  var focusTrap = createFocusTrap$x('#animated-trigger', {
+	  var focusTrap = createFocusTrap$y('#animated-trigger', {
 	    // Called before focus is sent
 	    onActivate: function onActivate() {
 	      container.classList.add('is-active');
@@ -2136,11 +2104,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$w = require$$0.createFocusTrap;
+	var createFocusTrap$x = require$$0.createFocusTrap;
 	var _escapeDeactivates = function escapeDeactivates() {
 	  var container = document.getElementById('escape-deactivates');
 	  var escapeDeactivatesOption = document.getElementById('escape-deactivates-option');
-	  var focusTrap = createFocusTrap$w('#escape-deactivates', {
+	  var focusTrap = createFocusTrap$x('#escape-deactivates', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2159,7 +2127,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-escape-deactivates').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$v = require$$0.createFocusTrap;
+	var createFocusTrap$w = require$$0.createFocusTrap;
 	var escapeKeyCancelation = function escapeKeyCancelation() {
 	  var container = document.getElementById('escape-key-cancelation');
 	  var escapeCancelingInput = document.getElementById('escape-handling-input');
@@ -2168,7 +2136,7 @@ var focusTrapDemoBundle = (function () {
 	      event.preventDefault();
 	    }
 	  });
-	  var focusTrap = createFocusTrap$v('#escape-key-cancelation', {
+	  var focusTrap = createFocusTrap$w('#escape-key-cancelation', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2183,7 +2151,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-escape-key-cancelation').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$u = require$$0.createFocusTrap;
+	var createFocusTrap$v = require$$0.createFocusTrap;
 	var initialElementNoEscape = function initialElementNoEscape() {
 	  var container = document.getElementById('iene');
 	  var activateTrigger = document.getElementById('activate-iene');
@@ -2192,7 +2160,7 @@ var focusTrapDemoBundle = (function () {
 	  var initialize = function initialize(_ref) {
 	    var _ref$initialFocus = _ref.initialFocus,
 	      initialFocus = _ref$initialFocus === void 0 ? '#focused-input' : _ref$initialFocus;
-	    return createFocusTrap$u(container, {
+	    return createFocusTrap$v(container, {
 	      onActivate: function onActivate() {
 	        return container.classList.add('is-active');
 	      },
@@ -2229,11 +2197,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$t = require$$0.createFocusTrap;
+	var createFocusTrap$u = require$$0.createFocusTrap;
 	var trickyInitialFocus = function trickyInitialFocus() {
 	  var container = document.getElementById('tif');
 	  var focusable = document.getElementById('tif-hide-focusable');
-	  var focusTrap = createFocusTrap$t(container, {
+	  var focusTrap = createFocusTrap$u(container, {
 	    fallbackFocus: container,
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
@@ -2252,7 +2220,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$s = require$$0.createFocusTrap;
+	var createFocusTrap$t = require$$0.createFocusTrap;
 	var initialSelectorWithFallback = function initialSelectorWithFallback() {
 	  var container = document.getElementById('iswf');
 	  var activateTrigger = document.getElementById('activate-iswf');
@@ -2261,7 +2229,7 @@ var focusTrapDemoBundle = (function () {
 	  var button = document.getElementById('initial-focus-btn-iswf');
 	  var buttonParent = button.parentNode;
 	  var initialize = function initialize() {
-	    return createFocusTrap$s(container, {
+	    return createFocusTrap$t(container, {
 	      onActivate: function onActivate() {
 	        return container.classList.add('is-active');
 	      },
@@ -2292,10 +2260,10 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$r = require$$0.createFocusTrap;
+	var createFocusTrap$s = require$$0.createFocusTrap;
 	var initiallyFocusedContainer = function initiallyFocusedContainer() {
 	  var container = document.getElementById('ifc');
-	  var focusTrap = createFocusTrap$r('#ifc', {
+	  var focusTrap = createFocusTrap$s('#ifc', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2311,11 +2279,11 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-ifc').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$q = require$$0.createFocusTrap;
+	var createFocusTrap$r = require$$0.createFocusTrap;
 	var hiddenTreasures = function hiddenTreasures() {
 	  var container = document.getElementById('ht');
 	  var more = document.getElementById('ht-more');
-	  var focusTrap = createFocusTrap$q(container, {
+	  var focusTrap = createFocusTrap$r(container, {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2332,7 +2300,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$p = require$$0.createFocusTrap;
+	var createFocusTrap$q = require$$0.createFocusTrap;
 	var nested = function nested() {
 	  var primary = document.getElementById('nested');
 	  var nested = document.getElementById('nested-nested');
@@ -2342,7 +2310,7 @@ var focusTrapDemoBundle = (function () {
 	  primary.dataset.ftTestPrimaryOnPostPauseCalledTimes = 0;
 	  primary.dataset.ftTestPrimaryOnUnpauseCalledTimes = 0;
 	  primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes = 0;
-	  var primaryFocusTrap = createFocusTrap$p('#nested', {
+	  var primaryFocusTrap = createFocusTrap$q('#nested', {
 	    onDeactivate: function onDeactivate() {
 	      return primary.style.display = 'none';
 	    },
@@ -2359,7 +2327,7 @@ var focusTrapDemoBundle = (function () {
 	      return primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes++;
 	    }
 	  });
-	  var nestedFocusTrap = createFocusTrap$p('#nested-nested', {
+	  var nestedFocusTrap = createFocusTrap$q('#nested-nested', {
 	    onDeactivate: function onDeactivate() {
 	      nested.style.display = 'none';
 	    }
@@ -2376,16 +2344,16 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('nested-deactivate-nested').addEventListener('click', nestedFocusTrap.deactivate);
 	};
 
-	var createFocusTrap$o = require$$0.createFocusTrap;
+	var createFocusTrap$p = require$$0.createFocusTrap;
 	var sibling = function sibling() {
 	  var container = document.getElementById('sibling-first');
 	  var second = document.getElementById('sibling-second');
-	  var firstFocusTrap = createFocusTrap$o('#sibling-first', {
+	  var firstFocusTrap = createFocusTrap$p('#sibling-first', {
 	    onDeactivate: function onDeactivate() {
 	      return container.classList.remove('is-active');
 	    }
 	  });
-	  var secondFocusTrap = createFocusTrap$o('#sibling-second', {
+	  var secondFocusTrap = createFocusTrap$p('#sibling-second', {
 	    onDeactivate: function onDeactivate() {
 	      second.style.display = 'none';
 	      second.classList.remove('is-active');
@@ -2404,10 +2372,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-second-sibling').addEventListener('click', secondFocusTrap.deactivate);
 	};
 
-	var createFocusTrap$n = require$$0.createFocusTrap;
+	var createFocusTrap$o = require$$0.createFocusTrap;
 	var inputActivation = function inputActivation() {
 	  var container = document.getElementById('input-activation');
-	  var focusTrap = createFocusTrap$n(container, {
+	  var focusTrap = createFocusTrap$o(container, {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2419,10 +2387,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-input-activation').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$m = require$$0.createFocusTrap;
+	var createFocusTrap$n = require$$0.createFocusTrap;
 	var container = document.getElementById('delay');
 	var delay = function delay() {
-	  var focusTrap = createFocusTrap$m(container, {
+	  var focusTrap = createFocusTrap$n(container, {
 	    onActivate: function onActivate() {
 	      container.style.opacity = '1';
 	      container.classList.add('is-active');
@@ -2444,10 +2412,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('close-button-delay').addEventListener('click', hideContainer);
 	};
 
-	var createFocusTrap$l = require$$0.createFocusTrap;
+	var createFocusTrap$m = require$$0.createFocusTrap;
 	var radio = function radio() {
 	  var container = document.getElementById('radio');
-	  var focusTrap = createFocusTrap$l('#radio', {
+	  var focusTrap = createFocusTrap$m('#radio', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2459,10 +2427,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-radio').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$k = require$$0.createFocusTrap;
+	var createFocusTrap$l = require$$0.createFocusTrap;
 	var iframe = function iframe() {
 	  var container = document.getElementById('iframe');
-	  var focusTrap = createFocusTrap$k('#iframe', {
+	  var focusTrap = createFocusTrap$l('#iframe', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2474,14 +2442,14 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$j = require$$0.createFocusTrap;
+	var createFocusTrap$k = require$$0.createFocusTrap;
 	var allowOutsideClick = function allowOutsideClick() {
 	  var container = document.getElementById('allowoutsideclick');
 	  var trigger = document.getElementById('activate-allowoutsideclick');
 	  var active = false;
 	  var allowOutsideClick = true;
 	  function initialize() {
-	    return createFocusTrap$j('#allowoutsideclick', {
+	    return createFocusTrap$k('#allowoutsideclick', {
 	      allowOutsideClick: allowOutsideClick,
 	      escapeDeactivates: false,
 	      onActivate: function onActivate() {
@@ -2522,7 +2490,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$i = require$$0.createFocusTrap;
+	var createFocusTrap$j = require$$0.createFocusTrap;
 	var clickOutsideDeactivates = function clickOutsideDeactivates() {
 	  var container = document.getElementById('clickoutsidedeactivates');
 	  var trigger = document.getElementById('activate-clickoutsidedeactivates');
@@ -2534,7 +2502,7 @@ var focusTrapDemoBundle = (function () {
 	  var notice = document.createElement('span');
 	  notice.appendChild(document.createTextNode('-> Must click on checkbox to deactivate'));
 	  var initialize = function initialize() {
-	    return createFocusTrap$i('#clickoutsidedeactivates', {
+	    return createFocusTrap$j('#clickoutsidedeactivates', {
 	      returnFocusOnDeactivate: returnFocusOnDeactivate,
 	      clickOutsideDeactivates: clickOutsideDeactivates,
 	      escapeDeactivates: false,
@@ -2579,10 +2547,10 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$h = require$$0.createFocusTrap;
+	var createFocusTrap$i = require$$0.createFocusTrap;
 	var setReturnFocus = function setReturnFocus() {
 	  var container = document.getElementById('setreturnfocus');
-	  var focusTrap = createFocusTrap$h('#setreturnfocus', {
+	  var focusTrap = createFocusTrap$i('#setreturnfocus', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2595,7 +2563,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$g = require$$0.createFocusTrap;
+	var createFocusTrap$h = require$$0.createFocusTrap;
 	var setReturnFocusFunction = function setReturnFocusFunction() {
 	  var container = document.getElementById('setreturnfocus-function');
 	  var clickedElement;
@@ -2610,7 +2578,7 @@ var focusTrapDemoBundle = (function () {
 	    }
 	    return false;
 	  };
-	  var focusTrap = createFocusTrap$g('#setreturnfocus-function', {
+	  var focusTrap = createFocusTrap$h('#setreturnfocus-function', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2632,10 +2600,10 @@ var focusTrapDemoBundle = (function () {
 	  document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
 	};
 
-	var createFocusTrap$f = require$$0.createFocusTrap;
+	var createFocusTrap$g = require$$0.createFocusTrap;
 	var noDelay = function noDelay() {
 	  var container = document.getElementById('no-delay');
-	  var focusTrap = createFocusTrap$f(container, {
+	  var focusTrap = createFocusTrap$g(container, {
 	    delayInitialFocus: false,
 	    onActivate: function onActivate() {
 	      container.style.opacity = '1';
@@ -2659,11 +2627,11 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
 	};
 
-	var createFocusTrap$e = require$$0.createFocusTrap;
+	var createFocusTrap$f = require$$0.createFocusTrap;
 	var multipleElements = function multipleElements() {
 	  var container = document.getElementById('multipleelements');
 	  var selectors = ['#multipleelements-1', '#multipleelements-3'];
-	  var focusTrap = createFocusTrap$e(selectors, {
+	  var focusTrap = createFocusTrap$f(selectors, {
 	    clickOutsideDeactivates: true,
 	    onActivate: function onActivate() {
 	      container.classList.add('is-active');
@@ -2686,11 +2654,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$d = require$$0.createFocusTrap;
+	var createFocusTrap$e = require$$0.createFocusTrap;
 	var multipleElementsDelete = function multipleElementsDelete() {
 	  var container = document.getElementById('multipleelements-delete');
 	  var selectors = ['#multipleelements-delete-1', '#multipleelements-delete-2'];
-	  var focusTrap = createFocusTrap$d(selectors, {
+	  var focusTrap = createFocusTrap$e(selectors, {
 	    allowOutsideClick: function allowOutsideClick(event) {
 	      return event.target.id === 'deactivate-multipleelements-delete';
 	    },
@@ -2718,11 +2686,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$c = require$$0.createFocusTrap;
+	var createFocusTrap$d = require$$0.createFocusTrap;
 	var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
 	  var container = document.getElementById('multipleelements-delete-all');
 	  var selectors = ['#multipleelements-delete-all-1', '#multipleelements-delete-all-2'];
-	  var focusTrap = createFocusTrap$c(selectors, {
+	  var focusTrap = createFocusTrap$d(selectors, {
 	    fallbackFocus: '#deactivate-multipleelements-delete-all',
 	    allowOutsideClick: function allowOutsideClick(event) {
 	      return event.target.id === 'deactivate-multipleelements-delete-all';
@@ -2752,7 +2720,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$b = require$$0.createFocusTrap;
+	var createFocusTrap$c = require$$0.createFocusTrap;
 	var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
 	  var container = document.getElementById('multipleelements-multipletraps');
 	  var isTrap1Active = false;
@@ -2776,7 +2744,7 @@ var focusTrapDemoBundle = (function () {
 	  };
 	  var trap1Selectors = ['#multipleelements-multipletraps-1', '#multipleelements-multipletraps-3'];
 	  var trap2Selectors = ['#multipleelements-multipletraps-2', '#multipleelements-multipletraps-4'];
-	  var focusTrap1 = createFocusTrap$b(trap1Selectors, {
+	  var focusTrap1 = createFocusTrap$c(trap1Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap2Active) {
@@ -2795,7 +2763,7 @@ var focusTrapDemoBundle = (function () {
 	    },
 	    allowOutsideClick: allowOutsideClick
 	  });
-	  var focusTrap2 = createFocusTrap$b(trap2Selectors, {
+	  var focusTrap2 = createFocusTrap$c(trap2Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap1Active) {
@@ -2828,7 +2796,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$a = require$$0.createFocusTrap;
+	var createFocusTrap$b = require$$0.createFocusTrap;
 	var multipleTrapsManualPause = function multipleTrapsManualPause() {
 	  var container = document.getElementById('multipletraps-manual-pause');
 	  var isTrap1Active = false;
@@ -2852,7 +2820,7 @@ var focusTrapDemoBundle = (function () {
 	  };
 	  var trap1Selectors = ['#multipletraps-manual-pause-1'];
 	  var trap2Selectors = ['#multipletraps-manual-pause-2'];
-	  var focusTrap1 = createFocusTrap$a(trap1Selectors, {
+	  var focusTrap1 = createFocusTrap$b(trap1Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap2Active) {
@@ -2871,7 +2839,7 @@ var focusTrapDemoBundle = (function () {
 	    },
 	    allowOutsideClick: allowOutsideClick
 	  });
-	  var focusTrap2 = createFocusTrap$a(trap2Selectors, {
+	  var focusTrap2 = createFocusTrap$b(trap2Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap1Active) {
@@ -2916,10 +2884,10 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$9 = require$$0.createFocusTrap;
+	var createFocusTrap$a = require$$0.createFocusTrap;
 	var arrowKeys = function arrowKeys() {
 	  var container = document.getElementById('arrow-keys');
-	  var focusTrap = createFocusTrap$9('#arrow-keys', {
+	  var focusTrap = createFocusTrap$a('#arrow-keys', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2937,13 +2905,13 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-arrow-keys').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$8 = require$$0.createFocusTrap;
+	var createFocusTrap$9 = require$$0.createFocusTrap;
 	var domRemove = function domRemove() {
 	  var container = document.getElementById('dom-remove');
 	  document.getElementById('dom-remove-button').addEventListener('click', function (event) {
 	    event.target.remove();
 	  });
-	  var focusTrap = createFocusTrap$8('#dom-remove', {
+	  var focusTrap = createFocusTrap$9('#dom-remove', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -3623,7 +3591,7 @@ var focusTrapDemoBundle = (function () {
 
 	// needed for the async function we export here
 
-	var createFocusTrap$7 = require$$0.createFocusTrap;
+	var createFocusTrap$8 = require$$0.createFocusTrap;
 	var inIframe = /*#__PURE__*/function () {
 	  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
 	    var contextIframe, targetDocument, trapWrapper, focusTrap;
@@ -3647,7 +3615,7 @@ var focusTrapDemoBundle = (function () {
 	          targetDocument = contextIframe.contentWindow.document;
 	          if (targetDocument) {
 	            trapWrapper = targetDocument.getElementById('in-iframe-trap');
-	            focusTrap = createFocusTrap$7('#in-iframe-trap', {
+	            focusTrap = createFocusTrap$8('#in-iframe-trap', {
 	              document: targetDocument,
 	              onActivate: function onActivate() {
 	                return trapWrapper.classList.add('is-active');
@@ -3669,6 +3637,35 @@ var focusTrapDemoBundle = (function () {
 	    return _ref.apply(this, arguments);
 	  };
 	}();
+
+	var createFocusTrap$7 = require$$0.createFocusTrap;
+	var activationElementShadowDom = function activationElementShadowDom() {
+	  var CustomShadowDomButton = /*#__PURE__*/function (_HTMLElement) {
+	    function CustomShadowDomButton() {
+	      var _this;
+	      _classCallCheck(this, CustomShadowDomButton);
+	      _this = _callSuper(this, CustomShadowDomButton);
+	      _this.attachShadow({
+	        mode: 'open'
+	      }).innerHTML = '<button id="button-inside-shadow-dom"><slot></slot></button>';
+	      return _this;
+	    }
+	    _inherits(CustomShadowDomButton, _HTMLElement);
+	    return _createClass(CustomShadowDomButton);
+	  }(/*#__PURE__*/_wrapNativeSuper(HTMLElement));
+	  var container = document.getElementById('aesd');
+	  var focusTrap = createFocusTrap$7('#aesd', {
+	    onActivate: function onActivate() {
+	      return container.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      return container.classList.remove('is-active');
+	    }
+	  });
+	  document.getElementById('activate-aesd').addEventListener('click', focusTrap.activate);
+	  document.getElementById('deactivate-aesd').addEventListener('click', focusTrap.deactivate);
+	  customElements.define('custom-shadow-dom-button', CustomShadowDomButton);
+	};
 
 	var createFocusTrap$6 = require$$0.createFocusTrap;
 	var inOpenShadowDom = function inOpenShadowDom() {
@@ -3999,12 +3996,15 @@ var focusTrapDemoBundle = (function () {
 	//  the `"chromeWebSecurity": false` option set in the cypress.json config file),
 	//  and causes FireFox to fail both locally and in CI due to security context
 	//  violations; but it's still a good demo to have
-	// eslint-disable-next-line no-undef -- process is defined via Rollup
 	{
 	  // TEST MANUALLY (causes Cypress to fail due to security context violations)
 	  // http://localhost:9966/#demo-in-iframe
 	  inIframe();
 	}
+
+	// TEST MANUALLY (Cypress doesn't support Shadow DOM well)
+	// http://localhost:9966/#demo-aesd
+	activationElementShadowDom();
 
 	// TEST MANUALLY (Cypress doesn't support Shadow DOM well)
 	// http://localhost:9966/#demo-in-open-shadow-dom

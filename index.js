@@ -942,7 +942,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       state.active = true;
       state.paused = false;
-      state.nodeFocusedBeforeActivation = doc.activeElement;
+      state.nodeFocusedBeforeActivation = getActiveElement(doc);
 
       onActivate?.();
 

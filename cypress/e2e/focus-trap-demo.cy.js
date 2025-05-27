@@ -310,6 +310,11 @@ describe('focus-trap', () => {
     });
   });
 
+  // describe('demo: activation-element-shadow-dom', () => {
+  //   NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
+  //    support Shadow DOM, and Cypress itself doesn't have great support for it either
+  // });
+
   describe('demo: escape deactivates', () => {
     it('traps focus tab sequence and disallows deactivation by ESC after trap is activated', () => {
       cy.get('#demo-escape-deactivates').as('testRoot');

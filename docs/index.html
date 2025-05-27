@@ -127,6 +127,34 @@
       </p>
     </div>
 
+    <div id="demo-aesd">
+      <h2 id="aesd-heading">activation element in shadow DOM</h2>
+      <p>
+        The activation button for this focus trap is inside an open <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM">shadow DOM</a>.
+      </p>
+      <p>
+        Deactivating the focus trap should put the focus back on the button within the shadow DOM.
+      </p>
+      <p>
+        <custom-shadow-dom-button id="activate-aesd" aria-describedby="aesd-heading" role="button" aria-label="activate trap">
+          activate trap
+        </custom-shadow-dom-button>
+      </p>
+      <div id="aesd" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="deactivate-aesd" aria-describedby="default-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/activation-element-shadow-dom.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-escape-deactivates">
       <h2 id="escape-deactivates-heading">configurable escape behavior</h2>
       <p>
