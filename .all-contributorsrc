@@ -374,6 +374,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "marioliu-block",
+      "name": "Mario Liu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/104794152?v=4",
+      "profile": "https://github.com/marioliu-block",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
