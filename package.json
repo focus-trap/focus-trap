@@ -73,7 +73,7 @@
     "@babel/eslint-plugin": "^7.27.1",
     "@babel/preset-env": "^7.27.2",
     "@changesets/cli": "^2.29.4",
-    "@eslint/js": "^9.27.0",
+    "@eslint/js": "^9.28.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
