@@ -78,7 +78,7 @@ const browserGlobals = {
 // Globals for test files
 const testGlobals = {
   ...globals.jest,
-  ...cypress.environments.globals.globals,
+  ...cypress.configs.globals.languageOptions.globals,
 
   // `globals.browser` defines this global but it's also part of the `testing-library`
   //  API so needs to be overwritable to avoid ESLint's `no-redeclare` rule
