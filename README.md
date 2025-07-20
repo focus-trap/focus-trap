@@ -89,54 +89,227 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 
 > A focus trap must have at least one container with at least one tabbable/focusable node in it to be considered valid. While nodes can be added/removed at runtime, with the trap adjusting to added/removed tabbable nodes, **an error will be thrown** if the trap ever gets into a state where it determines none of its containers have any tabbable nodes in them *and* the `fallbackFocus` option does not resolve to an alternate node where focus can go.
 
-#### createOptions
+#### Trap Configuration Options
 
-- **onActivate** `{() => void}`: A function that will be called **before** sending focus to the target element upon activation.
-- **onPostActivate** `{() => void}`: A function that will be called **after** sending focus to the target element upon activation.
-- **onPause** `{() => void}`: A function that will be called immediately after the trap's state is updated to be paused.
-- **onPostPause** `{() => void}`: A function that will be called after the trap has been completely paused and is no longer managing/trapping focus.
-- **onUnpause** `{() => void}`: A function that will be called immediately after the trap's state is updated to be active again, but prior to updating its knowledge of what nodes are tabbable within its containers, and prior to actively managing/trapping focus.
-- **onPostUnpause** `{() => void}`: A function that will be called after the trap has been completely unpaused and is once again managing/trapping focus.
-- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option).
-- **onDeactivate** `{() => void}`: A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
-- **onPostDeactivate** `{() => void}`: A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
-- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: An animated trigger button will have a small delay between when `onDeactivate` is called and when the focus is able to be sent back to the trigger. `checkCanReturnFocus` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to to the node that had focus prior to the activation of the trap (or the node configured in the `setReturnFocus` option).
-- **initialFocus** `{HTMLElement | SVGElement | string | false | undefined | (() => HTMLElement | SVGElement | string | false | undefined)}`: By default (when `undefined` or the function returns `undefined`), when a focus trap is activated, the active element will receive focus if it's in the trap, otherwise, the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these. You can also set this option to `false` (or to a function that returns `false`) to prevent any initial focus at all when the trap activates.
-  - 💬 Setting this option to `false` (or a function that returns `false`) will prevent the `fallbackFocus` option from being used.
-  - 💬 If the option resolves to a non-focusable node (e.g. one that exists, but is hidden), the default behavior will be used (as though the option weren't set at all).
-  - 💬 If the option resolves to a non-existent node, an exception will be thrown.
-  - 💬 If the option resolves to a valid selector string (directly set, or returned from a function), but the selector doesn't match a node, the trap will fall back to the `fallbackFocus` node option. If that option also fails to yield a node, an exception will be thrown.
-  - 💬 If the option resolves to `undefined` (i.e. not set or function returns `undefined`), the default behavior will be used.
-  - ⚠️ See warning below about **Shadow DOM** and selector strings.
-- **fallbackFocus** `{HTMLElement | SVGElement | string | () => HTMLElement | SVGElement | string}`: By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these.
-  - 💬 If `initialFocus` is `false` (or a function that returns `false`), this function will not be called when the trap is activated, and no element will be initially focused. This function may still be called while the trap is active if things change such that there are no longer any tabbable nodes in the trap.
-  - ⚠️ See warning below about **Shadow DOM** and selector strings.
-- **escapeDeactivates** `{boolean} | (e: KeyboardEvent) => boolean)`: Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out. Note that if a function is given, it's only called if the ESC key was pressed.
-- **clickOutsideDeactivates** `{boolean | (e: MouseEvent | TouchEvent) => boolean}`: If `true` or returns `true`, a click outside the focus trap will immediately deactivate the focus trap and allow the click event to do its thing (i.e. to pass-through to the element that was clicked). This option **takes precedence** over `allowOutsideClick` when it's set to `true`. Default: `false`.
-  - 💬 If a function is provided, it will be called up to **twice** (but only if the click occurs *outside* the trap's containers): First on the `mousedown` (or `touchstart` on mobile) event and, if `true` was returned, again on the `click` event. It will get the same node each time, and it's recommended that the returned value is also the same each time. Be sure to check the event type if the double call is an issue in your code.
-  - ⚠️ If you're using a password manager such as 1Password, where the app adds a clickable icon to all fillable fields, you should avoid using this option, and instead use the `allowOutsideClick` option to better control exactly when the focus trap can be deactivated. The clickable icons are usually positioned absolutely, floating on top of the fields, and therefore *not* part of the container the trap is managing. When using the `clickOutsideDeactivates` option, clicking on a field's 1Password icon will likely cause the trap to be unintentionally deactivated.
-- **allowOutsideClick** `{boolean | (e: MouseEvent | TouchEvent) => boolean}`: If set and is or returns `true`, a click outside the focus trap will not be prevented (letting focus temporarily escape the trap, without deactivating it), even if `clickOutsideDeactivates=false`. Default: `false`.
-  - 💬 If this is a function, it will be called up to **twice** on every click (but only if the click occurs *outside* the trap's containers): First on `mousedown` (or `touchstart` on mobile), and then on the actual `click` if the function returned `true` on the first event. Be sure to check the event type if the double call is an issue in your code.
-  - 💡 When `clickOutsideDeactivates=true`, this option is **ignored** (i.e. if it's a function, it will not be called).
-  - Use this option to control if (and even which) clicks are allowed outside the trap in conjunction with `clickOutsideDeactivates=false`.
-- **returnFocusOnDeactivate** `{boolean}`: Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
-  - 💬 When using this option in conjunction with `clickOutsideDeactivates=true`:
-    - If `returnFocusOnDeactivate=true` and the outside click causing deactivation is on a focusable element, focus will __not__ return to that element; instead, it will return to the node focused just before activation.
-    - If `returnFocusOnDeactivate=false` and the outside click is on a focusable node, focus will __remain__ on that node instead of the node focused just before activation. If the outside click is on a non-focusable node, then "nothing" will have focus post-deactivation.
-- **setReturnFocus** `{HTMLElement | SVGElement | string | (previousActiveElement: HTMLElement | SVGElement) => HTMLElement | SVGElement | string | false}`: By default, on **deactivation**, if `returnFocusOnDeactivate=true` (or if `returnFocus=true` in the [deactivation options](#trapdeactivate)), focus will be returned to the element that was focused just before activation. With this option, you can specify another element to programmatically receive focus after deactivation. It can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node **upon deactivation**), or a function that returns any of these to call **upon deactivation** (i.e. the selector and function options are only executed at the time the trap is deactivated). Can also be `false` (or return `false`) to leave focus where it is at the time of deactivation.
-  - 💬 Using the selector or function options is a good way to return focus to a DOM node that may not exist at the time the trap is activated.
-  - ⚠️ See warning below about **Shadow DOM** and selector strings.
-- **preventScroll** `{boolean}`: By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
-- **delayInitialFocus** `{boolean}`: Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
-- **document** {Document}: Default: `window.document`. Document where the focus trap will be active. This enables the use of FocusTrap [inside an iFrame](https://focus-trap.github.io/focus-trap/#demo-in-iframe).
-    - ⚠️ Note that FocusTrap will be unable to trap focus outside the iFrame if you configure this option to be the iFrame's document. It will only trap focus _inside_ of it (as the demo shows). If you want to trap focus _outside_ as well, then your FocusTrap must be configured on an element that [contains the iFrame](https://focus-trap.github.io/focus-trap/#demo-iframe).
-- **tabbableOptions**: (optional) [tabbable options](https://github.com/focus-trap/tabbable#common-options) configurable on FocusTrap (all the *common options*).
-  - ⚠️ See notes about **[testing in JSDom](#testing-in-jsdom)** (e.g. using Jest).
-- **trapStack** (optional) `{Array<FocusTrap>}`: Define the global trap stack. This makes it possible to share the same stack in multiple instances of `focus-trap` in the same page such that auto-activation/pausing of traps is properly coordinated among all instances as activating a trap when another is already active should result in the other being auto-paused. By default, each instance will have its own internal stack, leading to conflicts if they each try to trap the focus at the same time.
-- **isKeyForward** `{(event: KeyboardEvent) => boolean}`: (optional) Determines if the given keyboard event is a "tab forward" event that will move the focus to the next trapped element in tab order. Defaults to the `TAB` key. Use this to override the trap's behavior if you want to use arrow keys to control keyboard navigation within the trap, for example. Also see `isKeyBackward()` option.
-    - ⚠️ Using this option will not automatically prevent use of the `TAB` key as the browser will continue to respond to it by moving focus forward because that's what using the `TAB` key does in a browser, but it will no longer respect the trap's container edges as it normally would. You will need to add your own `keydown` handler to call `preventDefault()` on a `TAB` key event if you want to completely suppress the use of the `TAB` key.
-- **isKeyBackward** `{(event: KeyboardEvent) => boolean}`: (optional) Determines if the given keyboard event is a "tab backward" event that will move the focus to the previous trapped element in tab order. Defaults to the `SHIFT+TAB` key. Use this to override the trap's behavior if you want to use arrow keys to control keyboard navigation within the trap, for example. Also see `isKeyForward()` option.
-    - ⚠️ Using this option will not automatically prevent use of the `SHIFT+TAB` key as the browser will continue to respond to it by moving focus backward because that's what using the `SHIFT+TAB` key sequence does in a browser, but it will no longer respect the trap's container edges as it normally would. You will need to add your own `keydown` handler to call `preventDefault()` on a `TAB` key event if you want to completely suppress the use of the `SHIFT+TAB` key sequence.
+##### onActivate
+
+```typescript
+() => void
+```
+
+A function that will be called **before** sending focus to the target element upon activation.
+
+##### onPostActivate
+
+```typescript
+() => void
+```
+
+A function that will be called **after** sending focus to the target element upon activation.
+
+##### onPause
+
+```typescript
+() => void
+```
+
+A function that will be called immediately after the trap's state is updated to be paused.
+
+##### onPostPause
+
+```typescript
+() => void
+```
+
+A function that will be called after the trap has been completely paused and is no longer managing/trapping focus.
+
+##### onUnpause
+
+```typescript
+() => void
+```
+
+A function that will be called immediately after the trap's state is updated to be active again, but prior to updating its knowledge of what nodes are tabbable within its containers, and prior to actively managing/trapping focus.
+
+##### onPostUnpause
+
+```typescript
+() => void
+```
+
+A function that will be called after the trap has been completely unpaused and is once again managing/trapping focus.
+
+##### checkCanFocusTrap
+
+```typescript
+(containers: Array<HTMLElement | SVGElement>) => Promise<void>
+```
+
+Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option).
+
+##### onDeactivate
+
+```typescript
+() => void
+```
+
+A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
+
+##### onPostDeactivate
+
+```typescript
+() => void
+```
+
+A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
+
+##### checkCanReturnFocus
+
+```typescript
+(trigger: HTMLElement | SVGElement) => Promise<void>
+```
+
+An animated trigger button will have a small delay between when `onDeactivate` is called and when the focus is able to be sent back to the trigger. `checkCanReturnFocus` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to to the node that had focus prior to the activation of the trap (or the node configured in the `setReturnFocus` option).
+
+##### initialFocus
+
+```typescript
+HTMLElement | SVGElement | string | false | undefined | (() => HTMLElement | SVGElement | string | false | undefined)
+```
+
+By default (when `undefined` or the function returns `undefined`), when a focus trap is activated, the active element will receive focus if it's in the trap, otherwise, the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these. You can also set this option to `false` (or to a function that returns `false`) to prevent any initial focus at all when the trap activates.
+
+- Setting this option to `false` (or a function that returns `false`) will prevent the `fallbackFocus` option from being used.
+- If the option resolves to a non-focusable node (e.g. one that exists, but is hidden), the default behavior will be used (as though the option weren't set at all).
+- If the option resolves to a non-existent node, an exception will be thrown.
+- If the option resolves to a valid selector string (directly set, or returned from a function), but the selector doesn't match a node, the trap will fall back to the `fallbackFocus` node option. If that option also fails to yield a node, an exception will be thrown.
+- If the option resolves to `undefined` (i.e. not set or function returns `undefined`), the default behavior will be used.
+- ⚠️ See warning below about **[Shadow DOM](#shadow-dom)** and selector strings.
+
+##### fallbackFocus
+
+```typescript
+HTMLElement | SVGElement | string | () => HTMLElement | SVGElement | string
+```
+
+By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these.
+
+- If `initialFocus` is `false` (or a function that returns `false`), this function will not be called when the trap is activated, and no element will be initially focused. This function may still be called while the trap is active if things change such that there are no longer any tabbable nodes in the trap.
+- ⚠️ See warning below about **[Shadow DOM](#shadow-dom)** and selector strings.
+
+##### escapeDeactivates
+
+```typescript
+boolean | (e: KeyboardEvent) => boolean
+```
+
+Default: `true`. If `false` or returns `false`, the `Escape` key will not trigger deactivation of the focus trap. This can be useful if you want to force the user to make a decision instead of allowing an easy way out. Note that if a function is given, it's only called if the ESC key was pressed.
+
+##### clickOutsideDeactivates
+
+```typescript
+boolean | (e: MouseEvent | TouchEvent) => boolean
+```
+
+If `true` or returns `true`, a click outside the focus trap will immediately deactivate the focus trap and allow the click event to do its thing (i.e. to pass-through to the element that was clicked). This option **takes precedence** over `allowOutsideClick` when it's set to `true`. Default: `false`.
+
+- If a function is provided, it will be called up to **twice** (but only if the click occurs *outside* the trap's containers): First on the `mousedown` (or `touchstart` on mobile) event and, if `true` was returned, again on the `click` event. It will get the same node each time, and it's recommended that the returned value is also the same each time. Be sure to check the event type if the double call is an issue in your code.
+- ⚠️ If you're using a password manager such as 1Password, where the app adds a clickable icon to all fillable fields, you should avoid using this option, and instead use the `allowOutsideClick` option to better control exactly when the focus trap can be deactivated. The clickable icons are usually positioned absolutely, floating on top of the fields, and therefore *not* part of the container the trap is managing. When using the `clickOutsideDeactivates` option, clicking on a field's 1Password icon will likely cause the trap to be unintentionally deactivated.
+
+##### allowOutsideClick
+
+```typescript
+boolean | (e: MouseEvent | TouchEvent) => boolean
+```
+
+If set and is or returns `true`, a click outside the focus trap will not be prevented (letting focus temporarily escape the trap, without deactivating it), even if `clickOutsideDeactivates=false`. Default: `false`.
+
+- If this is a function, it will be called up to **twice** on every click (but only if the click occurs *outside* the trap's containers): First on `mousedown` (or `touchstart` on mobile), and then on the actual `click` if the function returned `true` on the first event. Be sure to check the event type if the double call is an issue in your code.
+- 💡 When `clickOutsideDeactivates=true`, this option is **ignored** (i.e. if it's a function, it will not be called).
+- Use this option to control if (and even which) clicks are allowed outside the trap in conjunction with `clickOutsideDeactivates=false`.
+
+##### returnFocusOnDeactivate
+
+```typescript
+boolean
+```
+
+Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
+
+- 💬 When using this option in conjunction with `clickOutsideDeactivates=true`:
+  - If `returnFocusOnDeactivate=true` and the outside click causing deactivation is on a focusable element, focus will __not__ return to that element; instead, it will return to the node focused just before activation.
+  - If `returnFocusOnDeactivate=false` and the outside click is on a focusable node, focus will __remain__ on that node instead of the node focused just before activation. If the outside click is on a non-focusable node, then "nothing" will have focus post-deactivation.
+
+##### setReturnFocus
+
+```typescript
+HTMLElement | SVGElement | string | (previousActiveElement: HTMLElement | SVGElement) => HTMLElement | SVGElement | string | false
+```
+
+By default, on **deactivation**, if `returnFocusOnDeactivate=true` (or if `returnFocus=true` in the [deactivation options](#trapdeactivate)), focus will be returned to the element that was focused just before activation. With this option, you can specify another element to programmatically receive focus after deactivation. It can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node **upon deactivation**), or a function that returns any of these to call **upon deactivation** (i.e. the selector and function options are only executed at the time the trap is deactivated). Can also be `false` (or return `false`) to leave focus where it is at the time of deactivation.
+
+- 💬 Using the selector or function options is a good way to return focus to a DOM node that may not exist at the time the trap is activated.
+- ⚠️ See warning below about **[Shadow DOM](#shadow-dom)** and selector strings.
+
+##### preventScroll
+
+```typescript
+boolean
+```
+
+By default, focus() will scroll to the element if not in viewport. It can produce unintended effects like scrolling back to the top of a modal. If set to `true`, no scroll will happen.
+
+##### delayInitialFocus
+
+```typescript
+boolean
+```
+
+Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
+
+##### document
+
+```typescript
+Document
+```
+
+Default: `window.document`. Document where the focus trap will be active. This enables the use of FocusTrap [inside an iFrame](https://focus-trap.github.io/focus-trap/#demo-in-iframe).
+
+- ⚠️ Note that FocusTrap will be unable to trap focus outside the iFrame if you configure this option to be the iFrame's document. It will only trap focus _inside_ of it (as the demo shows). If you want to trap focus _outside_ as well, then your FocusTrap must be configured on an element that [contains the iFrame](https://focus-trap.github.io/focus-trap/#demo-iframe).
+
+##### tabbableOptions
+
+[Tabbable options](https://github.com/focus-trap/tabbable#common-options) configurable on FocusTrap (all the *common options*).
+
+- ⚠️ See notes about **[testing in JSDom](#testing-in-jsdom)** (e.g. using Jest).
+
+##### trapStack
+
+```typescript
+Array<FocusTrap>
+```
+
+Define the global trap stack. This makes it possible to share the same stack in multiple instances of `focus-trap` in the same page such that auto-activation/pausing of traps is properly coordinated among all instances as activating a trap when another is already active should result in the other being auto-paused. By default, each instance will have its own internal stack, leading to conflicts if they each try to trap the focus at the same time.
+
+##### isKeyForward
+
+```typescript
+(event: KeyboardEvent) => boolean
+```
+
+Determines if the given keyboard event is a "tab forward" event that will move the focus to the next trapped element in tab order. Defaults to the `TAB` key. Use this to override the trap's behavior if you want to use arrow keys to control keyboard navigation within the trap, for example. Also see `isKeyBackward()` option.
+
+- ⚠️ Using this option will not automatically prevent use of the `TAB` key as the browser will continue to respond to it by moving focus forward because that's what using the `TAB` key does in a browser, but it will no longer respect the trap's container edges as it normally would. You will need to add your own `keydown` handler to call `preventDefault()` on a `TAB` key event if you want to completely suppress the use of the `TAB` key.
+
+##### isKeyBackward
+
+```typescript
+(event: KeyboardEvent) => boolean
+```
+
+Determines if the given keyboard event is a "tab backward" event that will move the focus to the previous trapped element in tab order. Defaults to the `SHIFT+TAB` key. Use this to override the trap's behavior if you want to use arrow keys to control keyboard navigation within the trap, for example. Also see `isKeyForward()` option.
+
+- ⚠️ Using this option will not automatically prevent use of the `SHIFT+TAB` key as the browser will continue to respond to it by moving focus backward because that's what using the `SHIFT+TAB` key sequence does in a browser, but it will no longer respect the trap's container edges as it normally would. You will need to add your own `keydown` handler to call `preventDefault()` on a `TAB` key event if you want to completely suppress the use of the `SHIFT+TAB` key sequence.
 
 #### Shadow DOM
 
