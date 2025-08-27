@@ -1,0 +1,30 @@
+# Configuration for development teams
+language: "en-US"
+
+reviews:
+  profile: "assertive"
+  high_level_summary: true
+  # review_status true causes A LOT email of noise
+  review_status: false
+  auto_review:
+    enabled: true
+    drafts: false
+    ignore_title_keywords:
+      - "wip"
+      - "WIP"
+      - "draft"
+      - "DRAFT"
+      - "DEPENDABOT"
+      - "dependabot"
+  tools:
+    eslint:
+      enabled: true
+    gitleaks:
+      enabled: true
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
