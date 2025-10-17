@@ -105,7 +105,7 @@ A function that will be called **before** sending focus to the target element up
 () => void
 ```
 
-A function that will be called **after** sending focus to the target element upon activation.
+A function that will be called **after** sending focus to the target element upon activation **unless** initial focus is delayed because the  [delayInitialFocus](#delayinitialfocus) is true (default).
 
 ##### onPause
 
@@ -138,6 +138,8 @@ A function that will be called immediately after the trap's state is updated to 
 ```
 
 A function that will be called after the trap has been completely unpaused and is once again managing/trapping focus.
+
+Note that if [delayInitialFocus](#delayinitialfocus) is true, this handler will be called **before** focus is re-set on the initial focused node.
 
 ##### checkCanFocusTrap
 
@@ -266,6 +268,8 @@ boolean
 ```
 
 Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
+
+🔺 Note that when this option is `true` (default), it means the initial element to be focused will not be focused until **after** [onPostActivate](#onpostactivate) or [onPostUnpause](#onpostunpause) are called.
 
 ##### document
 
