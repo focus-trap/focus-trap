@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.6.6
+
+### Patch Changes
+
+- dcd4ae9: Update `tabbable` dependency to [6.3.0](https://github.com/focus-trap/tabbable/blob/master/CHANGELOG.md#630) for new `displayCheck` option.
+
 ## 7.6.5
 
 ### Patch Changes
@@ -245,7 +251,6 @@
   There may be cases where we don't want to focus the first tabbable element when a focus trap activates.
 
   Examples use-cases:
-
   - Modals/dialogs
   - On mobile devices where "tabbing" doesn't make sense without a connected Bluetooth keyboard
 
