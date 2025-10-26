@@ -51,7 +51,8 @@ jobs:
     container:
       # https://hub.docker.com/r/cypress/browsers/tags
       # NOTE: at least Chrome 102 is required for testing `inert` attribute support
-      image: cypress/browsers:node18.12.0-chrome106-ff106
+      #  and at least FireFox 135 is required for Cypress >=15
+      image: cypress/browsers:node-22.21.0-chrome-141.0.7390.107-1-ff-144.0-edge-141.0.3537.92-1
       options: --user 1001 --shm-size=2g # @see https://github.com/cypress-io/github-action/issues/104#issuecomment-666047965
     env:
       CYPRESS_BROWSER: ${{ matrix.browser }} # `npm run start:cypress` needs this
