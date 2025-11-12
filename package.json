@@ -81,7 +81,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@testing-library/cypress": "^10.1.0",
     "@types/jquery": "^3.5.33",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
     "@typescript-eslint/parser": "^8.46.3",
     "all-contributors-cli": "^6.26.1",
     "babel-loader": "^10.0.0",
