@@ -234,11 +234,10 @@ declare module 'focus-trap' {
   type PauseOptions = Pick<Options, 'onPause' | 'onPostPause'>;
   type UnpauseOptions = Pick<Options, 'onUnpause' | 'onPostUnpause'>;
 
-  interface DeactivateOptions
-    extends Pick<
-      Options,
-      'onDeactivate' | 'onPostDeactivate' | 'checkCanReturnFocus'
-    > {
+  interface DeactivateOptions extends Pick<
+    Options,
+    'onDeactivate' | 'onPostDeactivate' | 'checkCanReturnFocus'
+  > {
     returnFocus?: boolean;
   }
 
