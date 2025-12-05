@@ -869,7 +869,6 @@ const createFocusTrap = function (elements, userOptions) {
   };
 
   const collectAdjacentElements = function (containers) {
-
     // Re-activate all adjacent elements & clear previous collection.
     setSubtreeIsolation(false);
     state.adjacentElements.clear();
@@ -911,7 +910,6 @@ const createFocusTrap = function (elements, userOptions) {
     containerAncestors.forEach((el) => {
       adjacentElements.delete(el);
     });
-
 
     state.adjacentElements = adjacentElements;
   };

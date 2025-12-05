@@ -1720,11 +1720,8 @@ var focusTrapDemoBundle = (function () {
 	        var current = container;
 	        while (current) {
 	          containerAncestors.add(current);
-
-	          // Add all the children, we'll remove container lineage later.
-
 	          var parent = current.parentElement;
-	          var siblings = void 0;
+	          var siblings = [];
 	          if (parent) {
 	            siblings = parent.children;
 	          } else if (!parent && insideShadowRoot) {
@@ -1732,6 +1729,8 @@ var focusTrapDemoBundle = (function () {
 	            parent = current.getRootNode().host;
 	            insideShadowRoot = parent.getRootNode() instanceof ShadowRoot;
 	          }
+
+	          // Add all the children, we'll remove container lineage later.
 	          var _iterator2 = _createForOfIteratorHelper(siblings),
 	            _step2;
 	          try {

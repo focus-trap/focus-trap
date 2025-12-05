@@ -1975,12 +1975,9 @@ describe('focus-trap', () => {
         .as('activationButton')
         .click();
 
-      cy.get('@testRoot')
-        .should('not.have.attr', 'inert')
+      cy.get('@testRoot').should('not.have.attr', 'inert');
 
-      cy.get('@testRoot')
-        .parent()
-        .should('not.have.attr', 'inert')
+      cy.get('@testRoot').parent().should('not.have.attr', 'inert');
 
       cy.get('@testRoot')
         .parent()
@@ -1992,18 +1989,12 @@ describe('focus-trap', () => {
         .as('deactivationButton')
         .click();
 
-      cy.get('@testRoot')
-        .should('not.have.attr', 'inert')
+      cy.get('@testRoot').should('not.have.attr', 'inert');
 
-      cy.get('@testRoot')
-        .parent()
-        .should('not.have.attr', 'inert')
+      cy.get('@testRoot').parent().should('not.have.attr', 'inert');
 
-      cy.get('@testRoot')
-        .parent()
-        .children('[inert]')
-        .should('have.length', 0);
-    })
+      cy.get('@testRoot').parent().children('[inert]').should('have.length', 0);
+    });
   });
 
   // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
