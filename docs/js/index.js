@@ -27,6 +27,7 @@ require('./multiple-elements-multiple-traps')();
 require('./multiple-traps-manual-pause')();
 require('./arrow-keys')();
 require('./dom-remove')();
+require('./isolate-subtree')();
 
 //
 // ❗️ MANUALLY TESTED DEMOS ❗️

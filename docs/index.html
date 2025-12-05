@@ -544,6 +544,43 @@
       </p>
     </div>
 
+    <div id="demo-isolate-subtree">
+      <h2 id="isolate-subtree-heading">isolate subtree</h2>
+      <style>
+        [inert] {
+          opacity: 0.5;
+        }
+      </style>
+      <p>
+        focus-trap prevents screen reader access to content not contained within the trap. For easier visibility on this site, inert items will be faded.
+      </p>
+      <p>
+        <button id="activate-isolate-subtree" aria-describedby="isolate-subtree-heading">
+          activate trap
+        </button>
+      </p>
+
+      <div id="isolate-subtree" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <label for="focused-input-is" class="inline-label">
+            Initially focused input
+          </label>
+          <input id="focused-input-is">
+        </p>
+        <p>
+          <button id="deactivate-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            deactivate trap
+          </button>
+        </p>
+      </div>
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/isolate-subtree.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-radio">
       <h2 id="radio-heading">radio group</h2>
       <p>
