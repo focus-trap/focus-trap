@@ -1965,6 +1965,47 @@ describe('focus-trap', () => {
     //  button leads to the "tabindex 3" button in DOM order.
   });
 
+  describe('demo: isolate subtree', () => {
+    it('toggles inert on un-trapped elements', () => {
+      cy.get('#demo-isolate-subtree').as('testRoot');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('activationButton')
+        .click();
+
+      cy.get('@testRoot')
+        .should('not.have.attr', 'inert')
+
+      cy.get('@testRoot')
+        .parent()
+        .should('not.have.attr', 'inert')
+
+      cy.get('@testRoot')
+        .parent()
+        .children('[inert]')
+        .should('have.length.of.at.least', 1);
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .as('deactivationButton')
+        .click();
+
+      cy.get('@testRoot')
+        .should('not.have.attr', 'inert')
+
+      cy.get('@testRoot')
+        .parent()
+        .should('not.have.attr', 'inert')
+
+      cy.get('@testRoot')
+        .parent()
+        .children('[inert]')
+        .should('have.length', 0);
+    })
+  });
+
   // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //  support web components, so we can't successfully run this test because it will skip
   //  over the web component when tabbing from 'button 3', jumping to 'button 4' instead of
