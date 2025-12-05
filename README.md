@@ -271,6 +271,18 @@ Default: `true`. Delays the autofocus to the next execution frame when the focus
 
 🔺 Note that when this option is `true` (default), it means the initial element to be focused will not be focused until **after** [onPostActivate](#onpostactivate) or [onPostUnpause](#onpostunpause) are called.
 
+##### isolateSubtree
+
+```typescript
+boolean
+```
+
+Default: `false`. Isolates the portion of the DOM tree containing the focus trap when activated. This prevents screen readers and other assistive technologies from accessing page content outside of the trap.
+
+🔺 Note that when this option is `true`, all user interactions outside of the trapped element are prevented and content will be inaccessible to screen readers. This prevents the use of the `clickOutsideDeactivates` feature.
+
+🔺 Note that when this option does not work
+
 ##### document
 
 ```typescript
