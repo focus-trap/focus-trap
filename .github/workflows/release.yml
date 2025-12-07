@@ -4,6 +4,12 @@ on:
   push:
     branches: [master]
 
+permissions:
+  # `id-token` and `contents` are requried for NPM Trusted Publishing with OIDC
+  # @see https://docs.npmjs.com/trusted-publishers
+  id-token: write
+  contents: read
+
 jobs:
   release:
     name: Release
@@ -11,7 +17,7 @@ jobs:
     env:
       CI: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -21,27 +27,17 @@ jobs:
           echo "npm-cache-dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           check-latest: true
+          registry-url: 'https://registry.npmjs.org' # required for NPM Trusted Publishing
 
-      # TODO: this does work (it'll find the cache) but it appears it's not putting the cache
-      #  back into ./node_modules because skipping the install step results in subsequent
-      #  steps failing with messages like `prettier not found`, which implies there's no
-      #  node_modules directory there with Prettier installed in it...
-      #
-      # - name: NPM cache check
-      #   uses: actions/cache@v3
-      #   id: npm-cache
-      #   with:
-      #     path: ${{ steps.setup.outputs.npm-cache-dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+      # Ensure npm >=11.5.1 installed for NPM Trusted Publishing
+      - name: Updated npm
+        run: npm install -g npm@latest
 
       - name: Install packages
-        # if: steps.npm-cache.outputs.cache-hit != 'true'
         run: npm ci
 
       - name: Test All
@@ -54,4 +50,3 @@ jobs:
           publish: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
