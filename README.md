@@ -281,8 +281,6 @@ Default: `false`. Isolates the portion of the DOM tree containing the focus trap
 
 🔺 Note that when this option is `true`, all user interactions outside of the trapped element are prevented and content will be inaccessible to screen readers. This prevents the use of the `clickOutsideDeactivates` feature.
 
-🔺 Note that when this option does not work
-
 ##### document
 
 ```typescript
