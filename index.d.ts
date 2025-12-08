@@ -189,9 +189,9 @@ declare module 'focus-trap' {
      */
     delayInitialFocus?: boolean;
     /**
-     * Default: `false`. Applies `inert` to the siblings of contianers and their
+     * Default: `false`. Applies `inert` to the siblings of containers and their
      * ancestors up to the document root. This prevents screen readers from
-     * accessing content outside of the focus trap.
+     * accessing content outside the focus trap.
      */
     isolateSubtree?: boolean;
     /**
