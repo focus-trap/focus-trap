@@ -1968,6 +1968,13 @@ describe('focus-trap', () => {
   describe('demo: isolate subtree', () => {
     it('toggles inert on un-trapped elements', () => {
       cy.get('#demo-isolate-subtree').as('testRoot');
+      cy.get('#inert-isolate-subtree').as('inertSibling');
+      cy.get('#isolate-subtree-sibling').as('sibling');
+
+      // before activation
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      cy.get('@sibling').should('not.have.attr', 'inert');
 
       // activate trap
       cy.get('@testRoot')
@@ -1975,25 +1982,21 @@ describe('focus-trap', () => {
         .as('activationButton')
         .click();
 
+      // after activation
       cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      cy.get('@sibling').should('have.attr', 'inert');
 
-      cy.get('@testRoot').parent().should('not.have.attr', 'inert');
-
-      cy.get('@testRoot')
-        .parent()
-        .children('[inert]')
-        .should('have.length.of.at.least', 1);
-
+      // deactivate trap
       cy.get('@testRoot')
         .findByRole('button', { name: /^deactivate trap/ })
         .as('deactivationButton')
         .click();
 
+      // after deactivation
       cy.get('@testRoot').should('not.have.attr', 'inert');
-
-      cy.get('@testRoot').parent().should('not.have.attr', 'inert');
-
-      cy.get('@testRoot').parent().children('[inert]').should('have.length', 0);
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      cy.get('@sibling').should('not.have.attr', 'inert');
     });
   });
 

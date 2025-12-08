@@ -1091,6 +1091,9 @@ var focusTrapDemoBundle = (function () {
 	    // references to nodes that siblings to the ancestors of this trap's containers.
 	    // @type {Set<HTMLElement>}
 	    adjacentElements: new Set(),
+	    // references to nodes that were inert before the trap was activated.
+	    // @type {Set<HTMLElement>}
+	    alreadyInert: new Set(),
 	    nodeFocusedBeforeActivation: null,
 	    mostRecentlyFocusedNode: null,
 	    active: false,
@@ -1697,8 +1700,21 @@ var focusTrapDemoBundle = (function () {
 	  var setSubtreeIsolation = function setSubtreeIsolation() {
 	    var enabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 	    state.adjacentElements.forEach(function (el) {
-	      el.inert = enabled;
+	      if (enabled) {
+	        if (el.inert) {
+	          state.alreadyInert.add(el);
+	        } else {
+	          el.inert = true;
+	        }
+	      } else {
+	        if (state.alreadyInert.has(el)) ; else {
+	          el.inert = false;
+	        }
+	      }
 	    });
+	    if (!enabled) {
+	      state.alreadyInert.clear();
+	    }
 	  };
 	  var collectAdjacentElements = function collectAdjacentElements(containers) {
 	    // Re-activate all adjacent elements & clear previous collection.

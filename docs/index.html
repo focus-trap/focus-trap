@@ -576,6 +576,36 @@
           </button>
         </p>
       </div>
+
+      <div id="inert-isolate-subtree" style="background: #eee; padding: 1rem; margin-bottom: 1rem;" inert>
+        This element and its entire subtree is already inert, and thus hidden from assistive technologies.
+        <p>
+          <label for="inert-input-is" class="inline-label">
+            An inert input
+          </label>
+          <input id="inert-input-is">
+        </p>
+        <p>
+          <button id="inert-button-is">
+            An inert button
+          </button>
+        </p>
+      </div>
+
+      <div id="isolate-subtree-sibling" style="background: #eee; padding: 1rem; margin-top: 1rem;">
+        This element and its entire subtree is outside the trapped area.
+        <p>
+          <label for="sibling-input-is" class="inline-label">
+            An unrelated input
+          </label>
+          <input id="sibling-input-is">
+        </p>
+        <p>
+          <button id="sibling-button-is">
+            An unrelated button
+          </button>
+        </p>
+      </div>
       <p>
         <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/isolate-subtree.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>

@@ -148,6 +148,9 @@ const createFocusTrap = function (elements, userOptions) {
     // @type {Set<HTMLElement>}
     adjacentElements: new Set(),
 
+    // references to nodes that were inert before the trap was activated.
+    // @type {Set<HTMLElement>}
+    alreadyInert: new Set(),
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -864,8 +867,24 @@ const createFocusTrap = function (elements, userOptions) {
 
   const setSubtreeIsolation = function (enabled = true) {
     state.adjacentElements.forEach((el) => {
-      el.inert = enabled;
+      if (enabled) {
+        if (el.inert) {
+          state.alreadyInert.add(el);
+        } else {
+          el.inert = true;
+        }
+      } else {
+        if (state.alreadyInert.has(el)) {
+          // do nothing
+        } else {
+          el.inert = false;
+        }
+      }
     });
+
+    if (!enabled) {
+      state.alreadyInert.clear();
+    }
   };
 
   const collectAdjacentElements = function (containers) {
