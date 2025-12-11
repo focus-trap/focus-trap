@@ -213,7 +213,6 @@ declare module 'focus-trap' {
      * being auto-paused. By default, each instance will have its own internal stack,
      * leading to conflicts if they each try to trap the focus at the same time.
      */
-    // eslint-disable-next-line no-use-before-define -- TypeScript handles circular dependencies automatically
     trapStack?: Array<FocusTrap>;
 
     /**
