@@ -1965,6 +1965,41 @@ describe('focus-trap', () => {
     //  button leads to the "tabindex 3" button in DOM order.
   });
 
+  describe('demo: isolate subtree', () => {
+    it('toggles inert on un-trapped elements', () => {
+      cy.get('#demo-isolate-subtree').as('testRoot');
+      cy.get('#inert-isolate-subtree').as('inertSibling');
+      cy.get('#isolate-subtree-sibling').as('sibling');
+
+      // before activation
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      cy.get('@sibling').should('not.have.attr', 'inert');
+
+      // activate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('activationButton')
+        .click();
+
+      // after activation
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      cy.get('@sibling').should('have.attr', 'inert');
+
+      // deactivate trap
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .as('deactivationButton')
+        .click();
+
+      // after deactivation
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      cy.get('@sibling').should('not.have.attr', 'inert');
+    });
+  });
+
   // NOTE: Unfortunately, the https://github.com/Bkucera/cypress-plugin-tab plugin doesn't
   //  support web components, so we can't successfully run this test because it will skip
   //  over the web component when tabbing from 'button 3', jumping to 'button 4' instead of
