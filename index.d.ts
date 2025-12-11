@@ -193,7 +193,7 @@ declare module 'focus-trap' {
      * ancestors up to the document root. This prevents screen readers from
      * accessing content outside the focus trap.
      */
-    isolateSubtree?: boolean;
+    isolateSubtrees?: boolean;
     /**
      * Default: `window.document`. Document where the focus trap will be active.
      * This allows to use FocusTrap in an iFrame context.
