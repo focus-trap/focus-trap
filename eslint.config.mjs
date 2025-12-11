@@ -51,6 +51,7 @@ const importPluginSettings = {
     },
     typescript: {
       alwaysTryTypes: true,
+      project: './tsconfig.json',
     },
   },
 };
@@ -83,6 +84,9 @@ const testGlobals = {
   // `globals.browser` defines this global but it's also part of the `testing-library`
   //  API so needs to be overwritable to avoid ESLint's `no-redeclare` rule
   screen: 'off',
+
+  // globals defined in /test/tools/testingUtility.ts
+  renderFixture: 'readonly',
 };
 
 // Globals for BUNDLED (Webpack, Rollup, etc) source code
@@ -367,7 +371,9 @@ const createSourceTSConfig = () => ({
 });
 
 const createTestConfig = (isTypescript = false) => ({
-  files: isTypescript ? ['cypress/e2e/**/*.ts'] : ['cypress/e2e/**/*.js'],
+  files: isTypescript
+    ? ['test/**/*.ts', 'cypress/e2e/**/*.ts']
+    : ['test/**/*.js', 'cypress/e2e/**/*.js'],
   plugins: {
     ...basePlugins,
     import: importPlugin,
@@ -398,6 +404,7 @@ const createTestConfig = (isTypescript = false) => ({
       ...bundlerGlobals, // because tests execute code that also gets bundled
       ...browserGlobals,
       ...testGlobals,
+      ...(isTypescript ? {} : globals.commonjs),
     },
   },
   rules: {

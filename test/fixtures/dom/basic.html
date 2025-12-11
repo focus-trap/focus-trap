@@ -1,0 +1,34 @@
+<!--
+NOTE: script blocks are always executed AFTER the HTML is loaded no matter the
+ node order here
+-->
+
+<div id="fixture">
+  <button id="activate">
+    activate trap
+  </button>
+  <div id="trap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <button id="deactivate">
+      deactivate trap
+    </button>
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('fixture');
+
+  const focusTrap = createFocusTrap('#trap', {
+    onActivate: () => container.classList.add('is-active'),
+    onDeactivate: () => container.classList.remove('is-active'),
+  });
+
+  document
+    .getElementById('activate-default')
+    .addEventListener('click', focusTrap.activate);
+  document
+    .getElementById('deactivate-default')
+    .addEventListener('click', focusTrap.deactivate);
+</script>
