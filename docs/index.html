@@ -559,16 +559,9 @@
           activate trap
         </button>
       </p>
-
       <div id="isolate-subtree" class="trap">
         <p>
           Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
-        </p>
-        <p>
-          <label for="focused-input-is" class="inline-label">
-            Initially focused input
-          </label>
-          <input id="focused-input-is">
         </p>
         <p>
           <button id="deactivate-isolate-subtree" aria-describedby="isolate-subtree-heading">
@@ -576,7 +569,6 @@
           </button>
         </p>
       </div>
-
       <div id="inert-isolate-subtree" style="background: #eee; padding: 1rem; margin-bottom: 1rem;" inert>
         This element and its entire subtree is already inert, and thus hidden from assistive technologies.
         <p>
@@ -591,7 +583,11 @@
           </button>
         </p>
       </div>
-
+      <div id="isolate-subtree-alt-container" class="trap">
+        <p>
+          Here is a second container for our focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+      </div>
       <div id="isolate-subtree-sibling" style="background: #eee; padding: 1rem; margin-top: 1rem;">
         This element and its entire subtree is outside the trapped area.
         <p>
@@ -680,8 +676,7 @@
       </p>
       <p>
         ⚠️ As it executes inside the iframe, it cannot prevent clicks on links
-        in the parent document. This is the same drawback as you might experience
-        when putting a focus-trap <a href="#demo-in-open-shadow-dom">inside a Shadow DOM</a>.
+        in the parent document.
       </p>
       <p>
         <button id="activate-in-iframe" aria-describedby="in-iframe-heading">
@@ -799,7 +794,7 @@
         <open-shadow-test></open-shadow-test>
         <div id="with-shadow-dom-closed-shadow"></div>
         <p>
-          <button id="deactivate-with-shadow-dom" aria-describedby="with-shadow-dom-heading">
+          <button id="deactivate-with-shadow-dom" aria-describedby="with-shadow-dom-heading" inert>
             deactivate trap
           </button>
         </p>

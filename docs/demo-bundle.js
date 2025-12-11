@@ -1056,30 +1056,31 @@ var focusTrapDemoBundle = (function () {
 	    returnFocusOnDeactivate: true,
 	    escapeDeactivates: true,
 	    delayInitialFocus: true,
-	    isolateSubtree: false,
+	    isolateSubtrees: false,
 	    isKeyForward: isKeyForward,
 	    isKeyBackward: isKeyBackward
 	  }, userOptions);
 	  var state = {
 	    // containers given to createFocusTrap()
-	    // @type {Array<HTMLElement>}
+	    /** @type {Array<HTMLElement>} */
 	    containers: [],
 	    // list of objects identifying tabbable nodes in `containers` in the trap
 	    // NOTE: it's possible that a group has no tabbable nodes if nodes get removed while the trap
 	    //  is active, but the trap should never get to a state where there isn't at least one group
 	    //  with at least one tabbable node in it (that would lead to an error condition that would
 	    //  result in an error being thrown)
-	    // @type {Array<{
-	    //   container: HTMLElement,
-	    //   tabbableNodes: Array<HTMLElement>, // empty if none
-	    //   focusableNodes: Array<HTMLElement>, // empty if none
-	    //   posTabIndexesFound: boolean,
-	    //   firstTabbableNode: HTMLElement|undefined,
-	    //   lastTabbableNode: HTMLElement|undefined,
-	    //   firstDomTabbableNode: HTMLElement|undefined,
-	    //   lastDomTabbableNode: HTMLElement|undefined,
-	    //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
-	    // }>}
+	    /** @type {Array<{
+	     *    container: HTMLElement,
+	     *    tabbableNodes: Array<HTMLElement>, // empty if none
+	     *    focusableNodes: Array<HTMLElement>, // empty if none
+	     *    posTabIndexesFound: boolean,
+	     *    firstTabbableNode: HTMLElement|undefined,
+	     *    lastTabbableNode: HTMLElement|undefined,
+	     *    firstDomTabbableNode: HTMLElement|undefined,
+	     *    lastDomTabbableNode: HTMLElement|undefined,
+	     *    nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
+	     *  }>}
+	     */
 	    containerGroups: [],
 	    // same order/length as `containers` list
 
@@ -1088,11 +1089,11 @@ var focusTrapDemoBundle = (function () {
 	    // NOTE: same order as `containers` and `containerGroups`, but __not necessarily__
 	    //  the same length
 	    tabbableGroups: [],
-	    // references to nodes that siblings to the ancestors of this trap's containers.
-	    // @type {Set<HTMLElement>}
+	    // references to nodes that are siblings to the ancestors of this trap's containers.
+	    /** @type {Set<HTMLElement>} */
 	    adjacentElements: new Set(),
 	    // references to nodes that were inert before the trap was activated.
-	    // @type {Set<HTMLElement>}
+	    /** @type {Set<HTMLElement>} */
 	    alreadyInert: new Set(),
 	    nodeFocusedBeforeActivation: null,
 	    mostRecentlyFocusedNode: null,
@@ -1697,6 +1698,12 @@ var focusTrapDemoBundle = (function () {
 	    doc.addEventListener('keydown', checkEscapeKey);
 	    return trap;
 	  };
+
+	  /**
+	   * Iterates over state.adjacentElements, toggling the inert attribute.
+	   * @param {Boolean?} enabled
+	   *   Default: true. True isolates the subtrees, false removes that isolation
+	   */
 	  var setSubtreeIsolation = function setSubtreeIsolation() {
 	    var enabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 	    state.adjacentElements.forEach(function (el) {
@@ -1716,6 +1723,12 @@ var focusTrapDemoBundle = (function () {
 	      state.alreadyInert.clear();
 	    }
 	  };
+
+	  /**
+	   * Traverses up the DOM from each of `containers`, collecting references to
+	   * the elements that are siblings to `container` or an ancestor of `container`.
+	   * @param {Array<HTMLElement>} containers
+	   */
 	  var collectAdjacentElements = function collectAdjacentElements(containers) {
 	    // Re-activate all adjacent elements & clear previous collection.
 	    setSubtreeIsolation(false);
@@ -1855,7 +1868,7 @@ var focusTrapDemoBundle = (function () {
 	          updateTabbableNodes();
 	        }
 	        addListeners();
-	        if (config.isolateSubtree) {
+	        if (config.isolateSubtrees) {
 	          setSubtreeIsolation(true);
 	        }
 	        updateObservedNodes();
@@ -1880,7 +1893,7 @@ var focusTrapDemoBundle = (function () {
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
 	      removeListeners();
-	      if (config.isolateSubtree) {
+	      if (config.isolateSubtrees) {
 	        setSubtreeIsolation(false);
 	      }
 	      state.active = false;
@@ -1912,6 +1925,9 @@ var focusTrapDemoBundle = (function () {
 	        return this;
 	      }
 	      state.manuallyPaused = true;
+	      if (config.isolateSubtrees) {
+	        setSubtreeIsolation(false);
+	      }
 	      return this._setPausedState(true, pauseOptions);
 	    },
 	    unpause: function unpause(unpauseOptions) {
@@ -1919,6 +1935,9 @@ var focusTrapDemoBundle = (function () {
 	        return this;
 	      }
 	      state.manuallyPaused = false;
+	      if (config.isolateSubtrees) {
+	        setSubtreeIsolation(true);
+	      }
 	      if (trapStack[trapStack.length - 1] !== this) {
 	        return this;
 	      }
@@ -1929,12 +1948,12 @@ var focusTrapDemoBundle = (function () {
 	      state.containers = elementsAsArray.map(function (element) {
 	        return typeof element === 'string' ? doc.querySelector(element) : element;
 	      });
-	      if (config.isolateSubtree) {
+	      if (config.isolateSubtrees) {
 	        collectAdjacentElements(state.containers);
 	      }
 	      if (state.active) {
 	        updateTabbableNodes();
-	        if (config.isolateSubtree) {
+	        if (config.isolateSubtrees) {
 	          setSubtreeIsolation(true);
 	        }
 	      }
@@ -2443,7 +2462,10 @@ var focusTrapDemoBundle = (function () {
 	    }
 	  });
 	  document.getElementById('activate-iframe').addEventListener('click', focusTrap.activate);
-	  document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
+
+	  // document
+	  //   .getElementById('deactivate-iframe')
+	  //   .addEventListener('click', focusTrap.deactivate);
 	};
 
 	var createFocusTrap$l = require$$0.createFocusTrap;
@@ -2930,8 +2952,17 @@ var focusTrapDemoBundle = (function () {
 	var createFocusTrap$9 = require$$0.createFocusTrap;
 	var isolateSubtree = function isolateSubtree() {
 	  var container = document.getElementById('isolate-subtree');
-	  var focusTrap = createFocusTrap$9(container, {
-	    isolateSubtree: true
+	  var altContainer = document.getElementById('isolate-subtree-alt-container');
+	  var focusTrap = createFocusTrap$9([container, altContainer], {
+	    isolateSubtrees: true,
+	    onActivate: function onActivate() {
+	      container.classList.add('is-active');
+	      altContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      container.classList.remove('is-active');
+	      altContainer.classList.remove('is-active');
+	    }
 	  });
 	  document.getElementById('activate-isolate-subtree').addEventListener('click', focusTrap.activate);
 	  document.getElementById('deactivate-isolate-subtree').addEventListener('click', focusTrap.deactivate);
