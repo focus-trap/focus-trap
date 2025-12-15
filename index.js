@@ -824,6 +824,33 @@ const createFocusTrap = function (elements, userOptions) {
     e.stopImmediatePropagation();
   };
 
+  /**
+   * Iterates over state.adjacentElements, toggling the inert attribute.
+   * @param {Boolean?} enabled
+   *   Default: true. True isolates the subtrees, false removes that isolation
+   */
+  const setSubtreeIsolation = function (enabled = true) {
+    state.adjacentElements.forEach((el) => {
+      if (enabled) {
+        if (el.inert) {
+          state.alreadyInert.add(el);
+        } else {
+          el.inert = true;
+        }
+      } else {
+        if (state.alreadyInert.has(el)) {
+          // do nothing
+        } else {
+          el.inert = false;
+        }
+      }
+    });
+
+    if (!enabled) {
+      state.alreadyInert.clear();
+    }
+  };
+
   //
   // EVENT LISTENERS
   //
@@ -835,6 +862,10 @@ const createFocusTrap = function (elements, userOptions) {
 
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trapStack, trap);
+
+    if (config.isolateSubtrees) {
+      setSubtreeIsolation(true)
+    }
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
@@ -864,33 +895,6 @@ const createFocusTrap = function (elements, userOptions) {
     doc.addEventListener('keydown', checkEscapeKey);
 
     return trap;
-  };
-
-  /**
-   * Iterates over state.adjacentElements, toggling the inert attribute.
-   * @param {Boolean?} enabled
-   *   Default: true. True isolates the subtrees, false removes that isolation
-   */
-  const setSubtreeIsolation = function (enabled = true) {
-    state.adjacentElements.forEach((el) => {
-      if (enabled) {
-        if (el.inert) {
-          state.alreadyInert.add(el);
-        } else {
-          el.inert = true;
-        }
-      } else {
-        if (state.alreadyInert.has(el)) {
-          // do nothing
-        } else {
-          el.inert = false;
-        }
-      }
-    });
-
-    if (!enabled) {
-      state.alreadyInert.clear();
-    }
   };
 
   /**
@@ -947,6 +951,10 @@ const createFocusTrap = function (elements, userOptions) {
   const removeListeners = function () {
     if (!state.active) {
       return;
+    }
+
+    if (config.isolateSubtrees) {
+      setSubtreeIsolation(false)
     }
 
     doc.removeEventListener('focusin', checkFocusIn, true);
@@ -1038,9 +1046,6 @@ const createFocusTrap = function (elements, userOptions) {
           updateTabbableNodes();
         }
         addListeners();
-        if (config.isolateSubtrees) {
-          setSubtreeIsolation(true);
-        }
         updateObservedNodes();
         onPostActivate?.();
       };
@@ -1073,9 +1078,6 @@ const createFocusTrap = function (elements, userOptions) {
       state.delayInitialFocusTimer = undefined;
 
       removeListeners();
-      if (config.isolateSubtrees) {
-        setSubtreeIsolation(false);
-      }
       state.active = false;
       state.paused = false;
       updateObservedNodes();
@@ -1120,10 +1122,6 @@ const createFocusTrap = function (elements, userOptions) {
 
       state.manuallyPaused = true;
 
-      if (config.isolateSubtrees) {
-        setSubtreeIsolation(false);
-      }
-
       return this._setPausedState(true, pauseOptions);
     },
 
@@ -1133,10 +1131,6 @@ const createFocusTrap = function (elements, userOptions) {
       }
 
       state.manuallyPaused = false;
-
-      if (config.isolateSubtrees) {
-        setSubtreeIsolation(true);
-      }
 
       if (trapStack[trapStack.length - 1] !== this) {
         return this;
