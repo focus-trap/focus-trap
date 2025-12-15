@@ -3,7 +3,9 @@ module.exports = () => {
   const container = document.getElementById('isolate-subtree');
   const altContainer = document.getElementById('isolate-subtree-alt-container');
   const nestedTrapContainer = document.getElementById('isolate-subtree-nested');
-  const secondTrapContainer = document.getElementById('isolate-subtree-sibling');
+  const secondTrapContainer = document.getElementById(
+    'isolate-subtree-sibling'
+  );
 
   const stack = [];
 
@@ -29,7 +31,7 @@ module.exports = () => {
     onDeactivate: () => {
       nestedTrapContainer.classList.remove('is-active');
     },
-  })
+  });
 
   const secondTrap = createFocusTrap(secondTrapContainer, {
     trapStack: stack,
@@ -38,7 +40,9 @@ module.exports = () => {
       secondTrapContainer.classList.add('is-active');
       stack.at(-1).pause();
     },
-    onDeactivate: () => { secondTrapContainer.classList.remove('is-active') },
+    onDeactivate: () => {
+      secondTrapContainer.classList.remove('is-active');
+    },
     checkCanFocusTrap: (trapContainers) => {
       const results = trapContainers.map((trapContainer) => {
         return new Promise((resolve) => {

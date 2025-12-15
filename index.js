@@ -864,7 +864,7 @@ const createFocusTrap = function (elements, userOptions) {
     activeFocusTraps.activateTrap(trapStack, trap);
 
     if (config.isolateSubtrees) {
-      setSubtreeIsolation(true)
+      setSubtreeIsolation(true);
     }
 
     // Delay ensures that the focused element doesn't capture the event
@@ -954,7 +954,7 @@ const createFocusTrap = function (elements, userOptions) {
     }
 
     if (config.isolateSubtrees) {
-      setSubtreeIsolation(false)
+      setSubtreeIsolation(false);
     }
 
     doc.removeEventListener('focusin', checkFocusIn, true);
