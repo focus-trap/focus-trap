@@ -556,7 +556,7 @@
       </p>
       <p>
         <button id="activate-isolate-subtree" aria-describedby="isolate-subtree-heading">
-          activate trap
+          activate outer trap
         </button>
       </p>
       <div id="isolate-subtree" class="trap">
@@ -564,12 +564,35 @@
           Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
         <p>
-          <button id="deactivate-isolate-subtree" aria-describedby="isolate-subtree-heading">
-            deactivate trap
+          <button id="activate-nested-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            activate nested trap
           </button>
         </p>
+        <p>
+          <button id="activate-second-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            activate second, unrelated trap
+          </button>
+        </p>
+        <p>
+          <button id="deactivate-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            deactivate outer trap
+          </button>
+        </p>
+
+        <!-- asdf -->
+        <div id="isolate-subtree-nested" class="trap">
+          <p>
+            Here is a nested focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+          </p>
+          <p>
+            <button id="deactivate-nested-isolate-subtree">
+              deactivate nested trap
+            </button>
+          </p>
+        </div>
+        <!-- asdf -->
       </div>
-      <div id="inert-isolate-subtree" style="background: #eee; padding: 1rem; margin-bottom: 1rem;" inert>
+      <div id="inert-isolate-subtree" style="background: #eee; padding: 1rem; margin: 1rem 0" inert>
         This element and its entire subtree is already inert, and thus hidden from assistive technologies.
         <p>
           <label for="inert-input-is" class="inline-label">
@@ -588,8 +611,8 @@
           Here is a second container for our focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
         </p>
       </div>
-      <div id="isolate-subtree-sibling" style="background: #eee; padding: 1rem; margin-top: 1rem;">
-        This element and its entire subtree is outside the trapped area.
+      <div id="isolate-subtree-sibling" class="trap" style="margin: 1rem 0">
+        This is a second, unrelated trap.
         <p>
           <label for="sibling-input-is" class="inline-label">
             An unrelated input
@@ -597,11 +620,12 @@
           <input id="sibling-input-is">
         </p>
         <p>
-          <button id="sibling-button-is">
-            An unrelated button
+          <button id="deactivate-second-isolate-subtree">
+            Deactivate second, unrelated trap
           </button>
         </p>
       </div>
+
       <p>
         <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/isolate-subtree.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
       </p>
