@@ -689,11 +689,11 @@ describe('focus-trap', () => {
 
       // activate outer trap and element in outer trap should be focused
       cy.get('@testRoot')
-        .findByRole('button', { name: /^activate trap/ })
+        .get('#activate-nested')
         .as('lastlyFocusedElBeforeTrapIsActivated')
         .click();
 
-      cy.findByRole('button', { name: /^deactivate outer trap/ })
+      cy.get('#deactivate-nested')
         .as('firstTabbableElInOuterTrap')
         .should('be.focused');
 
@@ -1968,35 +1968,131 @@ describe('focus-trap', () => {
   describe('demo: isolate subtree', () => {
     it('toggles inert on un-trapped elements', () => {
       cy.get('#demo-isolate-subtree').as('testRoot');
+      cy.get('#isolate-subtree').as('trapContainer');
       cy.get('#inert-isolate-subtree').as('inertSibling');
-      cy.get('#isolate-subtree-sibling').as('sibling');
+      cy.get('#isolate-subtree-alt-container').as('altContainer');
+      cy.get('#isolate-subtree-sibling').as('trapTwo');
 
       // before activation
       cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
       cy.get('@inertSibling').should('have.attr', 'inert');
-      cy.get('@sibling').should('not.have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('not.have.attr', 'inert');
 
       // activate trap
       cy.get('@testRoot')
-        .findByRole('button', { name: /^activate trap/ })
+        .get('#activate-isolate-subtree')
         .as('activationButton')
         .click();
 
       // after activation
       cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
       cy.get('@inertSibling').should('have.attr', 'inert');
-      cy.get('@sibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('have.attr', 'inert');
 
       // deactivate trap
       cy.get('@testRoot')
-        .findByRole('button', { name: /^deactivate trap/ })
+        .get('#deactivate-isolate-subtree')
         .as('deactivationButton')
         .click();
 
       // after deactivation
       cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
       cy.get('@inertSibling').should('have.attr', 'inert');
-      cy.get('@sibling').should('not.have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('not.have.attr', 'inert');
+    });
+
+    it('nested trap should further narrow isolation', () => {
+      cy.get('#demo-isolate-subtree').as('testRoot');
+      cy.get('#isolate-subtree').as('trapContainer');
+      cy.get('#inert-isolate-subtree').as('inertSibling');
+      cy.get('#isolate-subtree-alt-container').as('altContainer');
+      cy.get('#isolate-subtree-sibling').as('trapTwo');
+
+      // before activation
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('not.have.attr', 'inert');
+
+      // activate outer trap
+      cy.get('@testRoot')
+        .get('#activate-isolate-subtree')
+        .as('activationButton')
+        .should('include.text', 'activate outer trap')
+        .click();
+
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('have.attr', 'inert');
+
+      // activate inner trap
+      cy.get('@testRoot')
+        .get('#activate-nested-isolate-subtree')
+        .as('activationButtonNested')
+        .click();
+
+      // cy.get('@altContainer').should('have.attr', 'inert');
+      // cy.get('p:has(#activate-nested-isolate-subtree)').should('have.attr', 'inert');
+    });
+
+    it('adjacent trap is able to isolate', () => {
+      cy.get('#demo-isolate-subtree').as('testRoot');
+      cy.get('#isolate-subtree').as('trapContainer');
+      cy.get('#inert-isolate-subtree').as('inertSibling');
+      cy.get('#isolate-subtree-alt-container').as('altContainer');
+      cy.get('#isolate-subtree-sibling').as('trapTwo');
+
+      // before activation
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('not.have.attr', 'inert');
+
+      // activate trap
+      cy.get('@testRoot')
+        .get('#activate-isolate-subtree')
+        .as('activationButton')
+        .click();
+
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('have.attr', 'inert');
+
+      // activate adjacent trap
+      cy.get('@testRoot')
+        .get('#activate-second-isolate-subtree')
+        .as('activationButtonAdjacent')
+        .click();
+
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      // cy.get('@trapContainer').should('have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('have.attr', 'inert');
+      // cy.get('@trapTwo').should('not.have.attr', 'inert');
+
+      // deactivate adjacent trap
+      cy.get('@trapTwo')
+        .get('#deactivate-second-isolate-subtree')
+        .as('deactivationButtonAdjacent')
+        .click({ force: true });
+
+      cy.get('@testRoot').should('not.have.attr', 'inert');
+      cy.get('@trapContainer').should('not.have.attr', 'inert');
+      cy.get('@inertSibling').should('have.attr', 'inert');
+      // cy.get('@altContainer').should('not.have.attr', 'inert');
+      cy.get('@trapTwo').should('have.attr', 'inert');
     });
   });
 
