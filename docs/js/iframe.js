@@ -10,7 +10,7 @@ module.exports = () => {
     .getElementById('activate-iframe')
     .addEventListener('click', focusTrap.activate);
 
-  // document
-  //   .getElementById('deactivate-iframe')
-  //   .addEventListener('click', focusTrap.deactivate);
+  document
+    .getElementById('deactivate-iframe')
+    .addEventListener('click', focusTrap.deactivate);
 };
