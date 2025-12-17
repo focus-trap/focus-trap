@@ -1,6 +1,7 @@
 /*!
 * focus-trap demo bundle
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -971,12 +972,18 @@ var focusTrapDemoBundle = (function () {
 	};
 
 	var activeFocusTraps = {
+	  // Returns the trap from the top of the stack.
+	  getActiveTrap: function getActiveTrap(trapStack) {
+	    if ((trapStack === null || trapStack === void 0 ? void 0 : trapStack.length) > 0) {
+	      return trapStack[trapStack.length - 1];
+	    }
+	    return null;
+	  },
+	  // Pauses the currently active trap, then adds a new trap to the stack.
 	  activateTrap: function activateTrap(trapStack, trap) {
-	    if (trapStack.length > 0) {
-	      var activeTrap = trapStack[trapStack.length - 1];
-	      if (activeTrap !== trap) {
-	        activeTrap._setPausedState(true);
-	      }
+	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+	    if (trap !== activeTrap) {
+	      activeFocusTraps.pauseTrap(trapStack);
 	    }
 	    var trapIndex = trapStack.indexOf(trap);
 	    if (trapIndex === -1) {
@@ -987,13 +994,24 @@ var focusTrapDemoBundle = (function () {
 	      trapStack.push(trap);
 	    }
 	  },
+	  // Removes the trap from the top of the stack, then unpauses the next trap down.
 	  deactivateTrap: function deactivateTrap(trapStack, trap) {
 	    var trapIndex = trapStack.indexOf(trap);
 	    if (trapIndex !== -1) {
 	      trapStack.splice(trapIndex, 1);
 	    }
-	    if (trapStack.length > 0 && !trapStack[trapStack.length - 1]._isManuallyPaused()) {
-	      trapStack[trapStack.length - 1]._setPausedState(false);
+	    activeFocusTraps.unpauseTrap(trapStack);
+	  },
+	  // Pauses the trap at the top of the stack.
+	  pauseTrap: function pauseTrap(trapStack) {
+	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+	    activeTrap === null || activeTrap === void 0 || activeTrap._setPausedState(true);
+	  },
+	  // Unpauses the trap at the top of the stack.
+	  unpauseTrap: function unpauseTrap(trapStack) {
+	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+	    if (activeTrap && !activeTrap._isManuallyPaused()) {
+	      activeTrap === null || activeTrap === void 0 || activeTrap._setPausedState(false);
 	    }
 	  }
 	};
@@ -1697,9 +1715,6 @@ var focusTrapDemoBundle = (function () {
 
 	    // There can be only one listening focus trap at a time
 	    activeFocusTraps.activateTrap(trapStack, trap);
-	    if (config.isolateSubtrees) {
-	      setSubtreeIsolation(true);
-	    }
 
 	    // Delay ensures that the focused element doesn't capture the event
 	    // that caused the focus trap activation.
@@ -1795,9 +1810,6 @@ var focusTrapDemoBundle = (function () {
 	    if (!state.active) {
 	      return;
 	    }
-	    if (config.isolateSubtrees) {
-	      setSubtreeIsolation(false);
-	    }
 	    doc.removeEventListener('focusin', checkFocusIn, true);
 	    doc.removeEventListener('mousedown', checkPointerDown, true);
 	    doc.removeEventListener('touchstart', checkPointerDown, true);
@@ -1862,26 +1874,35 @@ var focusTrapDemoBundle = (function () {
 	      var onActivate = getOption(activateOptions, 'onActivate');
 	      var onPostActivate = getOption(activateOptions, 'onPostActivate');
 	      var checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
-	      if (!checkCanFocusTrap) {
-	        updateTabbableNodes();
-	      }
-	      state.active = true;
-	      state.paused = false;
-	      state.nodeFocusedBeforeActivation = _getActiveElement(doc);
-	      onActivate === null || onActivate === void 0 || onActivate();
-	      var finishActivation = function finishActivation() {
-	        if (checkCanFocusTrap) {
+	      activeFocusTraps.pauseTrap(trapStack);
+	      try {
+	        if (!checkCanFocusTrap) {
 	          updateTabbableNodes();
 	        }
-	        addListeners();
-	        updateObservedNodes();
-	        onPostActivate === null || onPostActivate === void 0 || onPostActivate();
-	      };
-	      if (checkCanFocusTrap) {
-	        checkCanFocusTrap(state.containers.concat()).then(finishActivation, finishActivation);
-	        return this;
+	        state.active = true;
+	        state.paused = false;
+	        state.nodeFocusedBeforeActivation = _getActiveElement(doc);
+	        onActivate === null || onActivate === void 0 || onActivate();
+	        var finishActivation = function finishActivation() {
+	          if (checkCanFocusTrap) {
+	            updateTabbableNodes();
+	          }
+	          addListeners();
+	          updateObservedNodes();
+	          if (config.isolateSubtrees) {
+	            setSubtreeIsolation(true);
+	          }
+	          onPostActivate === null || onPostActivate === void 0 || onPostActivate();
+	        };
+	        if (checkCanFocusTrap) {
+	          checkCanFocusTrap(state.containers.concat()).then(finishActivation, finishActivation);
+	          return this;
+	        }
+	        finishActivation();
+	      } catch (error) {
+	        activeFocusTraps.unpauseTrap(trapStack);
+	        throw error;
 	      }
-	      finishActivation();
 	      return this;
 	    },
 	    deactivate: function deactivate(deactivateOptions) {
@@ -1895,6 +1916,9 @@ var focusTrapDemoBundle = (function () {
 	      }, deactivateOptions);
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
+	      if (config.isolateSubtrees) {
+	        setSubtreeIsolation(false);
+	      }
 	      removeListeners();
 	      state.active = false;
 	      state.paused = false;
@@ -1971,6 +1995,9 @@ var focusTrapDemoBundle = (function () {
 	          var onPause = getOption(options, 'onPause');
 	          var onPostPause = getOption(options, 'onPostPause');
 	          onPause === null || onPause === void 0 || onPause();
+	          if (config.isolateSubtrees) {
+	            setSubtreeIsolation(false);
+	          }
 	          removeListeners();
 	          updateObservedNodes();
 	          onPostPause === null || onPostPause === void 0 || onPostPause();
@@ -1978,6 +2005,9 @@ var focusTrapDemoBundle = (function () {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
 	          onUnpause === null || onUnpause === void 0 || onUnpause();
+	          if (config.isolateSubtrees) {
+	            setSubtreeIsolation(true);
+	          }
 	          updateTabbableNodes();
 	          addListeners();
 	          updateObservedNodes();
@@ -2946,9 +2976,7 @@ var focusTrapDemoBundle = (function () {
 	  var altContainer = document.getElementById('isolate-subtree-alt-container');
 	  var nestedTrapContainer = document.getElementById('isolate-subtree-nested');
 	  var secondTrapContainer = document.getElementById('isolate-subtree-sibling');
-	  var stack = [];
 	  var focusTrap = createFocusTrap$9([container, altContainer], {
-	    trapStack: stack,
 	    isolateSubtrees: true,
 	    onActivate: function onActivate() {
 	      container.classList.add('is-active');
@@ -2960,7 +2988,6 @@ var focusTrapDemoBundle = (function () {
 	    }
 	  });
 	  var nestedTrap = createFocusTrap$9(nestedTrapContainer, {
-	    trapStack: stack,
 	    isolateSubtrees: true,
 	    onActivate: function onActivate() {
 	      nestedTrapContainer.classList.add('is-active');
@@ -2970,29 +2997,28 @@ var focusTrapDemoBundle = (function () {
 	    }
 	  });
 	  var secondTrap = createFocusTrap$9(secondTrapContainer, {
-	    trapStack: stack,
 	    isolateSubtrees: true,
 	    onActivate: function onActivate() {
 	      secondTrapContainer.classList.add('is-active');
-	      stack.at(-1).pause();
+	      // stack.at(-1).pause();
 	    },
 	    onDeactivate: function onDeactivate() {
 	      secondTrapContainer.classList.remove('is-active');
-	    },
-	    checkCanFocusTrap: function checkCanFocusTrap(trapContainers) {
-	      var results = trapContainers.map(function (trapContainer) {
-	        return new Promise(function (resolve) {
-	          var interval = setInterval(function () {
-	            if (!trapContainer.closest('[inert]')) {
-	              resolve();
-	              clearInterval(interval);
-	            }
-	          }, 5);
-	        });
-	      });
-	      // Return a promise that resolves when all the trap containers are able to receive focus
-	      return Promise.all(results);
 	    }
+	    // checkCanFocusTrap: (trapContainers) => {
+	    //   const results = trapContainers.map((trapContainer) => {
+	    //     return new Promise((resolve) => {
+	    //       const interval = setInterval(() => {
+	    //         if (!trapContainer.closest('[inert]')) {
+	    //           resolve();
+	    //           clearInterval(interval);
+	    //         }
+	    //       }, 5);
+	    //     });
+	    //   });
+	    //   // Return a promise that resolves when all the trap containers are able to receive focus
+	    //   return Promise.all(results);
+	    // },
 	  });
 	  document.getElementById('activate-isolate-subtree').addEventListener('click', focusTrap.activate);
 	  document.getElementById('deactivate-isolate-subtree').addEventListener('click', focusTrap.deactivate);

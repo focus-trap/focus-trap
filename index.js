@@ -53,13 +53,10 @@ const activeFocusTraps = {
   unpauseTrap(trapStack) {
     const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
 
-    if (
-      activeTrap &&
-      !activeTrap._isManuallyPaused()
-    ) {
+    if (activeTrap && !activeTrap._isManuallyPaused()) {
       activeTrap?._setPausedState(false);
     }
-  }
+  },
 };
 
 const isSelectableInput = function (node) {
