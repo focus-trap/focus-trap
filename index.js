@@ -1171,7 +1171,7 @@ const createFocusTrap = function (elements, userOptions) {
         typeof element === 'string' ? doc.querySelector(element) : element
       );
 
-      if (config.isolateSubtrees) {
+      if (config.isolateSubtrees && !state.paused) {
         collectAdjacentElements(state.containers);
       }
 
