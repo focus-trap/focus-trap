@@ -16,7 +16,7 @@ describe('isolateSubtrees', () => {
   });
 
   it('should manage `inert` on activation and deactivation', async () => {
-    /** @type {import('../tools/testingUtility.js').RenderResults */
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
     const { containerEl } = renderFixture('isolateSubtrees');
 
     const firstTrapEl = containerEl.querySelector('#first-trap');

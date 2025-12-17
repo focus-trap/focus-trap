@@ -15,7 +15,7 @@ describe('basic', () => {
   });
 
   it('should activate and deactivate', async () => {
-    /** @type {import('../tools/testingUtility.js).RenderResults */
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
     const results = renderFixture('basic');
     const { activateEl, deactivateEl, trapEl } = results;
 
