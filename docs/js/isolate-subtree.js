@@ -33,25 +33,10 @@ module.exports = () => {
     isolateSubtrees: true,
     onActivate: () => {
       secondTrapContainer.classList.add('is-active');
-      // stack.at(-1).pause();
     },
     onDeactivate: () => {
       secondTrapContainer.classList.remove('is-active');
     },
-    // checkCanFocusTrap: (trapContainers) => {
-    //   const results = trapContainers.map((trapContainer) => {
-    //     return new Promise((resolve) => {
-    //       const interval = setInterval(() => {
-    //         if (!trapContainer.closest('[inert]')) {
-    //           resolve();
-    //           clearInterval(interval);
-    //         }
-    //       }, 5);
-    //     });
-    //   });
-    //   // Return a promise that resolves when all the trap containers are able to receive focus
-    //   return Promise.all(results);
-    // },
   });
 
   document

@@ -1,6 +1,7 @@
 /*!
 * focus-trap demo bundle
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -2999,25 +3000,10 @@ var focusTrapDemoBundle = (function () {
 	    isolateSubtrees: true,
 	    onActivate: function onActivate() {
 	      secondTrapContainer.classList.add('is-active');
-	      // stack.at(-1).pause();
 	    },
 	    onDeactivate: function onDeactivate() {
 	      secondTrapContainer.classList.remove('is-active');
 	    }
-	    // checkCanFocusTrap: (trapContainers) => {
-	    //   const results = trapContainers.map((trapContainer) => {
-	    //     return new Promise((resolve) => {
-	    //       const interval = setInterval(() => {
-	    //         if (!trapContainer.closest('[inert]')) {
-	    //           resolve();
-	    //           clearInterval(interval);
-	    //         }
-	    //       }, 5);
-	    //     });
-	    //   });
-	    //   // Return a promise that resolves when all the trap containers are able to receive focus
-	    //   return Promise.all(results);
-	    // },
 	  });
 	  document.getElementById('activate-isolate-subtree').addEventListener('click', focusTrap.activate);
 	  document.getElementById('deactivate-isolate-subtree').addEventListener('click', focusTrap.deactivate);
