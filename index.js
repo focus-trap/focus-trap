@@ -7,12 +7,20 @@ import {
 } from 'tabbable';
 
 const activeFocusTraps = {
+  // Returns the trap from the top of the stack.
+  getActiveTrap(trapStack) {
+    if (trapStack?.length > 0) {
+      return trapStack[trapStack.length - 1];
+    }
+    return null;
+  },
+
+  // Pauses the currently active trap, then adds a new trap to the stack.
   activateTrap(trapStack, trap) {
-    if (trapStack.length > 0) {
-      const activeTrap = trapStack[trapStack.length - 1];
-      if (activeTrap !== trap) {
-        activeTrap._setPausedState(true);
-      }
+    const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+
+    if (trap !== activeTrap) {
+      activeFocusTraps.pauseTrap(trapStack);
     }
 
     const trapIndex = trapStack.indexOf(trap);
@@ -25,19 +33,33 @@ const activeFocusTraps = {
     }
   },
 
+  // Removes the trap from the top of the stack, then unpauses the next trap down.
   deactivateTrap(trapStack, trap) {
     const trapIndex = trapStack.indexOf(trap);
     if (trapIndex !== -1) {
       trapStack.splice(trapIndex, 1);
     }
 
-    if (
-      trapStack.length > 0 &&
-      !trapStack[trapStack.length - 1]._isManuallyPaused()
-    ) {
-      trapStack[trapStack.length - 1]._setPausedState(false);
-    }
+    activeFocusTraps.unpauseTrap(trapStack);
   },
+
+  // Pauses the trap at the top of the stack.
+  pauseTrap(trapStack) {
+    const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+    activeTrap?._setPausedState(true);
+  },
+
+  // Unpauses the trap at the top of the stack.
+  unpauseTrap(trapStack) {
+    const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+
+    if (
+      activeTrap &&
+      !activeTrap._isManuallyPaused()
+    ) {
+      activeTrap?._setPausedState(false);
+    }
+  }
 };
 
 const isSelectableInput = function (node) {
@@ -863,10 +885,6 @@ const createFocusTrap = function (elements, userOptions) {
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trapStack, trap);
 
-    if (config.isolateSubtrees) {
-      setSubtreeIsolation(true);
-    }
-
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
     state.delayInitialFocusTimer = config.delayInitialFocus
@@ -953,10 +971,6 @@ const createFocusTrap = function (elements, userOptions) {
       return;
     }
 
-    if (config.isolateSubtrees) {
-      setSubtreeIsolation(false);
-    }
-
     doc.removeEventListener('focusin', checkFocusIn, true);
     doc.removeEventListener('mousedown', checkPointerDown, true);
     doc.removeEventListener('touchstart', checkPointerDown, true);
@@ -1031,34 +1045,44 @@ const createFocusTrap = function (elements, userOptions) {
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
 
-      if (!checkCanFocusTrap) {
-        updateTabbableNodes();
-      }
+      activeFocusTraps.pauseTrap(trapStack);
 
-      state.active = true;
-      state.paused = false;
-      state.nodeFocusedBeforeActivation = getActiveElement(doc);
-
-      onActivate?.();
-
-      const finishActivation = () => {
-        if (checkCanFocusTrap) {
+      try {
+        if (!checkCanFocusTrap) {
           updateTabbableNodes();
         }
-        addListeners();
-        updateObservedNodes();
-        onPostActivate?.();
-      };
 
-      if (checkCanFocusTrap) {
-        checkCanFocusTrap(state.containers.concat()).then(
-          finishActivation,
-          finishActivation
-        );
-        return this;
+        state.active = true;
+        state.paused = false;
+        state.nodeFocusedBeforeActivation = getActiveElement(doc);
+
+        onActivate?.();
+
+        const finishActivation = () => {
+          if (checkCanFocusTrap) {
+            updateTabbableNodes();
+          }
+          addListeners();
+          updateObservedNodes();
+          if (config.isolateSubtrees) {
+            setSubtreeIsolation(true);
+          }
+          onPostActivate?.();
+        };
+
+        if (checkCanFocusTrap) {
+          checkCanFocusTrap(state.containers.concat()).then(
+            finishActivation,
+            finishActivation
+          );
+          return this;
+        }
+
+        finishActivation();
+      } catch (error) {
+        activeFocusTraps.unpauseTrap(trapStack);
+        throw error;
       }
-
-      finishActivation();
       return this;
     },
 
@@ -1076,6 +1100,10 @@ const createFocusTrap = function (elements, userOptions) {
 
       clearTimeout(state.delayInitialFocusTimer); // noop if undefined
       state.delayInitialFocusTimer = undefined;
+
+      if (config.isolateSubtrees) {
+        setSubtreeIsolation(false);
+      }
 
       removeListeners();
       state.active = false;
@@ -1177,10 +1205,15 @@ const createFocusTrap = function (elements, userOptions) {
         }
 
         state.paused = paused;
+
         if (paused) {
           const onPause = getOption(options, 'onPause');
           const onPostPause = getOption(options, 'onPostPause');
           onPause?.();
+
+          if (config.isolateSubtrees) {
+            setSubtreeIsolation(false);
+          }
 
           removeListeners();
           updateObservedNodes();
@@ -1191,6 +1224,10 @@ const createFocusTrap = function (elements, userOptions) {
           const onPostUnpause = getOption(options, 'onPostUnpause');
 
           onUnpause?.();
+
+          if (config.isolateSubtrees) {
+            setSubtreeIsolation(true);
+          }
 
           updateTabbableNodes();
           addListeners();
