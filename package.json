@@ -95,7 +95,7 @@
     "cross-env": "^10.1.0",
     "cypress": "^15.7.1",
     "cypress-plugin-tab": "^1.0.5",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-import-resolver-typescript": "^4.4.4",
