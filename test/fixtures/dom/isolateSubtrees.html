@@ -1,0 +1,41 @@
+<!--
+NOTE: script blocks are always executed AFTER the HTML is loaded no matter the
+ node order here
+-->
+
+<div id="fixture">
+  <button id="activate-first">
+    activate first trap
+  </button>
+  <div id="first-trap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <button id="activate-second">
+      activate second trap
+    </button>
+    <button id="activate-nested">
+      activate nested trap
+    </button>
+    <button id="deactivate-first">
+      deactivate trap
+    </button>
+
+    <div id="nested-trap">
+      <p>
+        Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+      </p>
+      <button id="deactivate-nested">
+        deactivate trap
+      </button>
+    </div>
+  </div>
+  <div id="second-trap">
+    <p>
+      Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+    </p>
+    <button id="deactivate-second">
+      deactivate trap
+    </button>
+  </div>
+</div>

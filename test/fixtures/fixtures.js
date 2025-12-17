@@ -17,6 +17,11 @@ const domFixtures = {
       encoding: 'utf-8',
     }),
   },
+  isolateSubtrees: {
+    html: fs.readFileSync(path.resolve(__dirname, './dom/isolateSubtrees.html'), {
+      encoding: 'utf-8',
+    }),
+  },
 };
 
 module.exports = {
