@@ -843,33 +843,6 @@ const createFocusTrap = function (elements, userOptions) {
     e.stopImmediatePropagation();
   };
 
-  /**
-   * Iterates over state.adjacentElements, toggling the inert attribute.
-   * @param {Boolean?} enabled
-   *   Default: true. True isolates the subtrees, false removes that isolation
-   */
-  const setSubtreeIsolation = function (enabled = true) {
-    state.adjacentElements.forEach((el) => {
-      if (enabled) {
-        if (el.inert) {
-          state.alreadyInert.add(el);
-        } else {
-          el.inert = true;
-        }
-      } else {
-        if (state.alreadyInert.has(el)) {
-          // do nothing
-        } else {
-          el.inert = false;
-        }
-      }
-    });
-
-    if (!enabled) {
-      state.alreadyInert.clear();
-    }
-  };
-
   //
   // EVENT LISTENERS
   //
@@ -919,7 +892,7 @@ const createFocusTrap = function (elements, userOptions) {
    */
   const collectAdjacentElements = function (containers) {
     // Re-activate all adjacent elements & clear previous collection.
-    setSubtreeIsolation(false);
+    trap._setSubtreeIsolation(false);
     state.adjacentElements.clear();
 
     // Collect all ancestors of all containers to avoid redundant processing.
@@ -1042,7 +1015,10 @@ const createFocusTrap = function (elements, userOptions) {
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
 
-      activeFocusTraps.pauseTrap(trapStack);
+      // If a currently-active trap is isolating its subtree, we need to remove
+      // that isolation to allow the new trap to find tabbable nodes.
+      const preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
+      preexistingTrap?._setSubtreeIsolation(false);
 
       try {
         if (!checkCanFocusTrap) {
@@ -1062,7 +1038,7 @@ const createFocusTrap = function (elements, userOptions) {
           addListeners();
           updateObservedNodes();
           if (config.isolateSubtrees) {
-            setSubtreeIsolation(true);
+            trap._setSubtreeIsolation(true);
           }
           onPostActivate?.();
         };
@@ -1077,7 +1053,11 @@ const createFocusTrap = function (elements, userOptions) {
 
         finishActivation();
       } catch (error) {
-        activeFocusTraps.unpauseTrap(trapStack);
+        // If our activation throws an exception and the stack hasn't changed,
+        // we need to re-enable the prior trap's subtree isolation.
+        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack)) {
+          preexistingTrap._setSubtreeIsolation(true);
+        }
         throw error;
       }
       return this;
@@ -1098,14 +1078,14 @@ const createFocusTrap = function (elements, userOptions) {
       clearTimeout(state.delayInitialFocusTimer); // noop if undefined
       state.delayInitialFocusTimer = undefined;
 
-      if (config.isolateSubtrees) {
-        setSubtreeIsolation(false);
-      }
-
       removeListeners();
       state.active = false;
       state.paused = false;
       updateObservedNodes();
+
+      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
+      // This allows the next trap down to update its tabbable nodes properly.
+      trap._setSubtreeIsolation(false);
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
 
@@ -1179,7 +1159,7 @@ const createFocusTrap = function (elements, userOptions) {
         updateTabbableNodes();
 
         if (config.isolateSubtrees && !state.paused) {
-          setSubtreeIsolation(true);
+          trap._setSubtreeIsolation(true);
         }
       }
 
@@ -1208,12 +1188,9 @@ const createFocusTrap = function (elements, userOptions) {
           const onPostPause = getOption(options, 'onPostPause');
           onPause?.();
 
-          if (config.isolateSubtrees) {
-            setSubtreeIsolation(false);
-          }
-
           removeListeners();
           updateObservedNodes();
+          trap._setSubtreeIsolation(false);
 
           onPostPause?.();
         } else {
@@ -1222,10 +1199,7 @@ const createFocusTrap = function (elements, userOptions) {
 
           onUnpause?.();
 
-          if (config.isolateSubtrees) {
-            setSubtreeIsolation(true);
-          }
-
+          trap._setSubtreeIsolation(true);
           updateTabbableNodes();
           addListeners();
           updateObservedNodes();
@@ -1234,6 +1208,31 @@ const createFocusTrap = function (elements, userOptions) {
         }
 
         return this;
+      },
+    },
+    _setSubtreeIsolation: {
+      value(isEnabled) {
+        if (config.isolateSubtrees) {
+          state.adjacentElements.forEach((el) => {
+            if (isEnabled) {
+              if (el.inert) {
+                state.alreadyInert.add(el);
+              } else {
+                el.inert = true;
+              }
+            } else {
+              if (state.alreadyInert.has(el)) {
+                // do nothing
+              } else {
+                el.inert = false;
+              }
+            }
+          });
+
+          if (!isEnabled) {
+            state.alreadyInert.clear();
+          }
+        }
       },
     },
   });

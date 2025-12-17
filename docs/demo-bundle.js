@@ -1679,31 +1679,6 @@ var focusTrapDemoBundle = (function () {
 	    e.stopImmediatePropagation();
 	  };
 
-	  /**
-	   * Iterates over state.adjacentElements, toggling the inert attribute.
-	   * @param {Boolean?} enabled
-	   *   Default: true. True isolates the subtrees, false removes that isolation
-	   */
-	  var setSubtreeIsolation = function setSubtreeIsolation() {
-	    var enabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-	    state.adjacentElements.forEach(function (el) {
-	      if (enabled) {
-	        if (el.inert) {
-	          state.alreadyInert.add(el);
-	        } else {
-	          el.inert = true;
-	        }
-	      } else {
-	        if (state.alreadyInert.has(el)) ; else {
-	          el.inert = false;
-	        }
-	      }
-	    });
-	    if (!enabled) {
-	      state.alreadyInert.clear();
-	    }
-	  };
-
 	  //
 	  // EVENT LISTENERS
 	  //
@@ -1749,7 +1724,7 @@ var focusTrapDemoBundle = (function () {
 	   */
 	  var collectAdjacentElements = function collectAdjacentElements(containers) {
 	    // Re-activate all adjacent elements & clear previous collection.
-	    setSubtreeIsolation(false);
+	    trap._setSubtreeIsolation(false);
 	    state.adjacentElements.clear();
 
 	    // Collect all ancestors of all containers to avoid redundant processing.
@@ -1874,7 +1849,11 @@ var focusTrapDemoBundle = (function () {
 	      var onActivate = getOption(activateOptions, 'onActivate');
 	      var onPostActivate = getOption(activateOptions, 'onPostActivate');
 	      var checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
-	      activeFocusTraps.pauseTrap(trapStack);
+
+	      // If a currently-active trap is isolating its subtree, we need to remove
+	      // that isolation to allow the new trap to find tabbable nodes.
+	      var preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
+	      preexistingTrap === null || preexistingTrap === void 0 || preexistingTrap._setSubtreeIsolation(false);
 	      try {
 	        if (!checkCanFocusTrap) {
 	          updateTabbableNodes();
@@ -1890,7 +1869,7 @@ var focusTrapDemoBundle = (function () {
 	          addListeners();
 	          updateObservedNodes();
 	          if (config.isolateSubtrees) {
-	            setSubtreeIsolation(true);
+	            trap._setSubtreeIsolation(true);
 	          }
 	          onPostActivate === null || onPostActivate === void 0 || onPostActivate();
 	        };
@@ -1900,7 +1879,11 @@ var focusTrapDemoBundle = (function () {
 	        }
 	        finishActivation();
 	      } catch (error) {
-	        activeFocusTraps.unpauseTrap(trapStack);
+	        // If our activation throws an exception and the stack hasn't changed,
+	        // we need to re-enable the prior trap's subtree isolation.
+	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack)) {
+	          preexistingTrap._setSubtreeIsolation(true);
+	        }
 	        throw error;
 	      }
 	      return this;
@@ -1916,13 +1899,14 @@ var focusTrapDemoBundle = (function () {
 	      }, deactivateOptions);
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
-	      if (config.isolateSubtrees) {
-	        setSubtreeIsolation(false);
-	      }
 	      removeListeners();
 	      state.active = false;
 	      state.paused = false;
 	      updateObservedNodes();
+
+	      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
+	      // This allows the next trap down to update its tabbable nodes properly.
+	      trap._setSubtreeIsolation(false);
 	      activeFocusTraps.deactivateTrap(trapStack, trap);
 	      var onDeactivate = getOption(options, 'onDeactivate');
 	      var onPostDeactivate = getOption(options, 'onPostDeactivate');
@@ -1972,7 +1956,7 @@ var focusTrapDemoBundle = (function () {
 	      if (state.active) {
 	        updateTabbableNodes();
 	        if (config.isolateSubtrees && !state.paused) {
-	          setSubtreeIsolation(true);
+	          trap._setSubtreeIsolation(true);
 	        }
 	      }
 	      updateObservedNodes();
@@ -1995,25 +1979,43 @@ var focusTrapDemoBundle = (function () {
 	          var onPause = getOption(options, 'onPause');
 	          var onPostPause = getOption(options, 'onPostPause');
 	          onPause === null || onPause === void 0 || onPause();
-	          if (config.isolateSubtrees) {
-	            setSubtreeIsolation(false);
-	          }
 	          removeListeners();
 	          updateObservedNodes();
+	          trap._setSubtreeIsolation(false);
 	          onPostPause === null || onPostPause === void 0 || onPostPause();
 	        } else {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
 	          onUnpause === null || onUnpause === void 0 || onUnpause();
-	          if (config.isolateSubtrees) {
-	            setSubtreeIsolation(true);
-	          }
+	          trap._setSubtreeIsolation(true);
 	          updateTabbableNodes();
 	          addListeners();
 	          updateObservedNodes();
 	          onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause();
 	        }
 	        return this;
+	      }
+	    },
+	    _setSubtreeIsolation: {
+	      value: function value(isEnabled) {
+	        if (config.isolateSubtrees) {
+	          state.adjacentElements.forEach(function (el) {
+	            if (isEnabled) {
+	              if (el.inert) {
+	                state.alreadyInert.add(el);
+	              } else {
+	                el.inert = true;
+	              }
+	            } else {
+	              if (state.alreadyInert.has(el)) ; else {
+	                el.inert = false;
+	              }
+	            }
+	          });
+	          if (!isEnabled) {
+	            state.alreadyInert.clear();
+	          }
+	        }
 	      }
 	    }
 	  });
