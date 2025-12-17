@@ -7,10 +7,7 @@ module.exports = () => {
     'isolate-subtree-sibling'
   );
 
-  const stack = [];
-
   const focusTrap = createFocusTrap([container, altContainer], {
-    trapStack: stack,
     isolateSubtrees: true,
     onActivate: () => {
       container.classList.add('is-active');
@@ -23,7 +20,6 @@ module.exports = () => {
   });
 
   const nestedTrap = createFocusTrap(nestedTrapContainer, {
-    trapStack: stack,
     isolateSubtrees: true,
     onActivate: () => {
       nestedTrapContainer.classList.add('is-active');
@@ -34,29 +30,28 @@ module.exports = () => {
   });
 
   const secondTrap = createFocusTrap(secondTrapContainer, {
-    trapStack: stack,
     isolateSubtrees: true,
     onActivate: () => {
       secondTrapContainer.classList.add('is-active');
-      stack.at(-1).pause();
+      // stack.at(-1).pause();
     },
     onDeactivate: () => {
       secondTrapContainer.classList.remove('is-active');
     },
-    checkCanFocusTrap: (trapContainers) => {
-      const results = trapContainers.map((trapContainer) => {
-        return new Promise((resolve) => {
-          const interval = setInterval(() => {
-            if (!trapContainer.closest('[inert]')) {
-              resolve();
-              clearInterval(interval);
-            }
-          }, 5);
-        });
-      });
-      // Return a promise that resolves when all the trap containers are able to receive focus
-      return Promise.all(results);
-    },
+    // checkCanFocusTrap: (trapContainers) => {
+    //   const results = trapContainers.map((trapContainer) => {
+    //     return new Promise((resolve) => {
+    //       const interval = setInterval(() => {
+    //         if (!trapContainer.closest('[inert]')) {
+    //           resolve();
+    //           clearInterval(interval);
+    //         }
+    //       }, 5);
+    //     });
+    //   });
+    //   // Return a promise that resolves when all the trap containers are able to receive focus
+    //   return Promise.all(results);
+    // },
   });
 
   document
