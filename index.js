@@ -54,7 +54,7 @@ const activeFocusTraps = {
     const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
 
     if (activeTrap && !activeTrap._isManuallyPaused()) {
-      activeTrap?._setPausedState(false);
+      activeTrap._setPausedState(false);
     }
   },
 };
@@ -1171,14 +1171,14 @@ const createFocusTrap = function (elements, userOptions) {
         typeof element === 'string' ? doc.querySelector(element) : element
       );
 
-      if (config.isolateSubtrees && !state.paused) {
+      if (config.isolateSubtrees) {
         collectAdjacentElements(state.containers);
       }
 
       if (state.active) {
         updateTabbableNodes();
 
-        if (config.isolateSubtrees) {
+        if (config.isolateSubtrees && !state.paused) {
           setSubtreeIsolation(true);
         }
       }

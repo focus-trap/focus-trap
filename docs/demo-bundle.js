@@ -1011,7 +1011,7 @@ var focusTrapDemoBundle = (function () {
 	  unpauseTrap: function unpauseTrap(trapStack) {
 	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
 	    if (activeTrap && !activeTrap._isManuallyPaused()) {
-	      activeTrap === null || activeTrap === void 0 || activeTrap._setPausedState(false);
+	      activeTrap._setPausedState(false);
 	    }
 	  }
 	};
@@ -1966,12 +1966,12 @@ var focusTrapDemoBundle = (function () {
 	      state.containers = elementsAsArray.map(function (element) {
 	        return typeof element === 'string' ? doc.querySelector(element) : element;
 	      });
-	      if (config.isolateSubtrees && !state.paused) {
+	      if (config.isolateSubtrees) {
 	        collectAdjacentElements(state.containers);
 	      }
 	      if (state.active) {
 	        updateTabbableNodes();
-	        if (config.isolateSubtrees) {
+	        if (config.isolateSubtrees && !state.paused) {
 	          setSubtreeIsolation(true);
 	        }
 	      }
