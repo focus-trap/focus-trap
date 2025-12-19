@@ -139,30 +139,99 @@ describe('isolateSubtrees', () => {
     activateNested.addEventListener('click', nestedTrap.activate);
     deactivateNested.addEventListener('click', nestedTrap.deactivate);
 
-    const alreadyInert = containerEl.querySelector('#inert-sibling');
+    const inertSibling = containerEl.querySelector('#inert-sibling');
+    const ordinarySibling = containerEl.querySelector('#ordinary-sibling');
 
     // Activate first trap.
     userEvent.click(activateFirst);
     await waitFor(() => expect(firstTrap.active).toBe(true));
     expect(firstTrap.paused).toBe(false);
-    expect(alreadyInert.inert).toBe(true);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
 
     // Activate second trap.
     userEvent.click(activateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(true));
     expect(secondTrap.paused).toBe(false);
     expect(firstTrap.paused).toBe(true);
-    expect(alreadyInert.inert).toBe(true);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
 
     // Deactivate second trap.
     userEvent.click(deactivateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(false));
     expect(firstTrap.paused).toBe(false);
-    expect(alreadyInert.inert).toBe(true);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
 
     // Deactivate first trap.
     userEvent.click(deactivateFirst);
     await waitFor(() => expect(firstTrap.active).toBe(false));
-    expect(alreadyInert.inert).toBe(true);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(false);
+  });
+
+  it('should be robust to manual stack manipulation', async () => {
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
+    const { containerEl } = renderFixture('isolateSubtrees');
+
+    const firstTrapEl = containerEl.querySelector('#first-trap');
+    const firstTrap = createFocusTrap(firstTrapEl, { ...trapOptions });
+
+    const secondTrapEl = containerEl.querySelector('#second-trap');
+    const secondTrap = createFocusTrap(secondTrapEl, { ...trapOptions });
+
+    const nestedTrapEl = containerEl.querySelector('#nested-trap');
+    const nestedTrap = createFocusTrap(nestedTrapEl, { ...trapOptions });
+
+    const inertSibling = containerEl.querySelector('#inert-sibling');
+    const ordinarySibling = containerEl.querySelector('#ordinary-sibling');
+
+    // Activate first trap.
+    firstTrap.activate();
+    await waitFor(() => expect(firstTrap.active).toBe(true));
+    expect(firstTrap.paused).toBe(false);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
+
+    // Activate second trap.
+    secondTrap.activate();
+    await waitFor(() => expect(secondTrap.active).toBe(true));
+    expect(secondTrap.paused).toBe(false);
+    expect(firstTrap.paused).toBe(true);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
+
+    // Deactivate first trap.
+    firstTrap.deactivate();
+    await waitFor(() => expect(firstTrap.active).toBe(false));
+    expect(secondTrap.active).toBe(true);
+    expect(secondTrap.paused).toBe(false);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
+
+    // Activate nested trap.
+    nestedTrap.activate();
+    await waitFor(() => expect(nestedTrap.active).toBe(true));
+    expect(nestedTrap.paused).toBe(false);
+    expect(secondTrap.paused).toBe(true);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
+
+    // Deactivate second trap.
+    secondTrap.deactivate();
+    await waitFor(() => expect(secondTrap.active).toBe(false));
+    expect(nestedTrap.active).toBe(true);
+    expect(nestedTrap.paused).toBe(false);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(true);
+
+    // Deactivate nested trap.
+    nestedTrap.deactivate();
+    await waitFor(() => expect(nestedTrap.active).toBe(false));
+    expect(firstTrap.active).toBe(false);
+    expect(secondTrap.active).toBe(false);
+    expect(inertSibling.inert).toBe(true);
+    expect(ordinarySibling.inert).toBe(false);
   });
 });

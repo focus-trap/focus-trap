@@ -892,8 +892,11 @@ const createFocusTrap = function (elements, userOptions) {
    */
   const collectAdjacentElements = function (containers) {
     // Re-activate all adjacent elements & clear previous collection.
-    trap._setSubtreeIsolation(false);
+    if (state.active && !state.paused) {
+      trap._setSubtreeIsolation(false);
+    }
     state.adjacentElements.clear();
+    state.alreadyInert.clear();
 
     // Collect all ancestors of all containers to avoid redundant processing.
     const containerAncestors = new Set();
@@ -1018,7 +1021,11 @@ const createFocusTrap = function (elements, userOptions) {
       // If a currently-active trap is isolating its subtree, we need to remove
       // that isolation to allow the new trap to find tabbable nodes.
       const preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
-      preexistingTrap?._setSubtreeIsolation(false);
+      let revertState = false;
+      if (preexistingTrap && !preexistingTrap.paused) {
+        preexistingTrap._setSubtreeIsolation(false);
+        revertState = true;
+      }
 
       try {
         if (!checkCanFocusTrap) {
@@ -1055,7 +1062,10 @@ const createFocusTrap = function (elements, userOptions) {
       } catch (error) {
         // If our activation throws an exception and the stack hasn't changed,
         // we need to re-enable the prior trap's subtree isolation.
-        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack)) {
+        if (
+          preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
+          revertState
+        ) {
           preexistingTrap._setSubtreeIsolation(true);
         }
         throw error;
@@ -1078,15 +1088,18 @@ const createFocusTrap = function (elements, userOptions) {
       clearTimeout(state.delayInitialFocusTimer); // noop if undefined
       state.delayInitialFocusTimer = undefined;
 
+      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
+      // This allows the next trap down to update its tabbable nodes properly.
+      //
+      // If this trap is not top of the stack, don't change any current isolation.
+      if (!state.paused) {
+        trap._setSubtreeIsolation(false);
+      }
+      state.alreadyInert.clear();
       removeListeners();
       state.active = false;
       state.paused = false;
       updateObservedNodes();
-
-      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
-      // This allows the next trap down to update its tabbable nodes properly.
-      trap._setSubtreeIsolation(false);
-      state.alreadyInert.clear();
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
 
@@ -1216,11 +1229,13 @@ const createFocusTrap = function (elements, userOptions) {
         if (config.isolateSubtrees) {
           state.adjacentElements.forEach((el) => {
             if (isEnabled) {
-              if (el.inert) {
+              // check both attribute and property to ensure initial state is captured
+              // correctly across different browsers and test environments (like JSDOM)
+              const isInitiallyInert = el.inert || el.hasAttribute('inert');
+              if (isInitiallyInert) {
                 state.alreadyInert.add(el);
-              } else {
-                el.inert = true;
               }
+              el.inert = true;
             } else {
               if (state.alreadyInert.has(el)) {
                 // do nothing
