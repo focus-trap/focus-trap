@@ -384,6 +384,15 @@
         "code",
         "bug"
       ]
+    },
+    {
+      "login": "andy-blum",
+      "name": "Andy Blum",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25532785?v=4",
+      "profile": "https://www.andy-blum.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
