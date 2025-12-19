@@ -189,6 +189,12 @@ declare module 'focus-trap' {
      */
     delayInitialFocus?: boolean;
     /**
+     * Default: `false`. Applies `inert` to the siblings of containers and their
+     * ancestors up to the document root. This prevents screen readers from
+     * accessing content outside the focus trap.
+     */
+    isolateSubtrees?: boolean;
+    /**
      * Default: `window.document`. Document where the focus trap will be active.
      * This allows to use FocusTrap in an iFrame context.
      */

@@ -1,6 +1,7 @@
 /*!
 * focus-trap demo bundle
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -9,7 +10,11 @@ var focusTrapDemoBundle = (function () {
 	  var f = n.default;
 		if (typeof f == "function") {
 			var a = function a () {
-				if (this instanceof a) {
+				var isInstance = false;
+	      try {
+	        isInstance = this instanceof a;
+	      } catch {}
+				if (isInstance) {
 	        return Reflect.construct(f, arguments, this.constructor);
 				}
 				return f.apply(this, arguments);
@@ -92,6 +97,54 @@ var focusTrapDemoBundle = (function () {
 	    writable: false
 	  }), e;
 	}
+	function _createForOfIteratorHelper(r, e) {
+	  var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
+	  if (!t) {
+	    if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e) {
+	      t && (r = t);
+	      var n = 0,
+	        F = function () {};
+	      return {
+	        s: F,
+	        n: function () {
+	          return n >= r.length ? {
+	            done: true
+	          } : {
+	            done: false,
+	            value: r[n++]
+	          };
+	        },
+	        e: function (r) {
+	          throw r;
+	        },
+	        f: F
+	      };
+	    }
+	    throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+	  }
+	  var o,
+	    a = true,
+	    u = false;
+	  return {
+	    s: function () {
+	      t = t.call(r);
+	    },
+	    n: function () {
+	      var r = t.next();
+	      return a = r.done, r;
+	    },
+	    e: function (r) {
+	      u = true, o = r;
+	    },
+	    f: function () {
+	      try {
+	        a || null == t.return || t.return();
+	      } finally {
+	        if (u) throw o;
+	      }
+	    }
+	  };
+	}
 	function _defineProperty(e, r, t) {
 	  return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, {
 	    value: t,
@@ -164,274 +217,113 @@ var focusTrapDemoBundle = (function () {
 	  if (void 0 !== e) throw new TypeError("Derived constructors may only return object or undefined");
 	  return _assertThisInitialized(t);
 	}
-	function _regeneratorRuntime() {
-	  _regeneratorRuntime = function () {
-	    return r;
-	  };
-	  var t,
-	    r = {},
-	    e = Object.prototype,
-	    n = e.hasOwnProperty,
-	    o = "function" == typeof Symbol ? Symbol : {},
-	    i = o.iterator || "@@iterator",
-	    a = o.asyncIterator || "@@asyncIterator",
-	    u = o.toStringTag || "@@toStringTag";
-	  function c(t, r, e, n) {
-	    return Object.defineProperty(t, r, {
-	      value: e,
-	      enumerable: !n,
-	      configurable: !n,
-	      writable: !n
-	    });
-	  }
-	  try {
-	    c({}, "");
-	  } catch (t) {
-	    c = function (t, r, e) {
-	      return t[r] = e;
-	    };
-	  }
-	  function h(r, e, n, o) {
-	    var i = e && e.prototype instanceof Generator ? e : Generator,
-	      a = Object.create(i.prototype);
-	    return c(a, "_invoke", function (r, e, n) {
-	      var o = 1;
-	      return function (i, a) {
-	        if (3 === o) throw Error("Generator is already running");
-	        if (4 === o) {
-	          if ("throw" === i) throw a;
-	          return {
-	            value: t,
-	            done: true
-	          };
-	        }
-	        for (n.method = i, n.arg = a;;) {
-	          var u = n.delegate;
-	          if (u) {
-	            var c = d(u, n);
-	            if (c) {
-	              if (c === f) continue;
-	              return c;
-	            }
+	function _regenerator() {
+	  /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
+	  var e,
+	    t,
+	    r = "function" == typeof Symbol ? Symbol : {},
+	    n = r.iterator || "@@iterator",
+	    o = r.toStringTag || "@@toStringTag";
+	  function i(r, n, o, i) {
+	    var c = n && n.prototype instanceof Generator ? n : Generator,
+	      u = Object.create(c.prototype);
+	    return _regeneratorDefine(u, "_invoke", function (r, n, o) {
+	      var i,
+	        c,
+	        u,
+	        f = 0,
+	        p = o || [],
+	        y = false,
+	        G = {
+	          p: 0,
+	          n: 0,
+	          v: e,
+	          a: d,
+	          f: d.bind(e, 4),
+	          d: function (t, r) {
+	            return i = t, c = 0, u = e, G.n = r, a;
 	          }
-	          if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) {
-	            if (1 === o) throw o = 4, n.arg;
-	            n.dispatchException(n.arg);
-	          } else "return" === n.method && n.abrupt("return", n.arg);
-	          o = 3;
-	          var h = s(r, e, n);
-	          if ("normal" === h.type) {
-	            if (o = n.done ? 4 : 2, h.arg === f) continue;
-	            return {
-	              value: h.arg,
-	              done: n.done
-	            };
-	          }
-	          "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg);
+	        };
+	      function d(r, n) {
+	        for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) {
+	          var o,
+	            i = p[t],
+	            d = G.p,
+	            l = i[2];
+	          r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0));
 	        }
+	        if (o || r > 1) return a;
+	        throw y = true, n;
+	      }
+	      return function (o, p, l) {
+	        if (f > 1) throw TypeError("Generator is already running");
+	        for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) {
+	          i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u);
+	          try {
+	            if (f = 2, i) {
+	              if (c || (o = "next"), t = i[o]) {
+	                if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object");
+	                if (!t.done) return t;
+	                u = t.value, c < 2 && (c = 0);
+	              } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1);
+	              i = e;
+	            } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break;
+	          } catch (t) {
+	            i = e, c = 1, u = t;
+	          } finally {
+	            f = 1;
+	          }
+	        }
+	        return {
+	          value: t,
+	          done: y
+	        };
 	      };
-	    }(r, n, new Context(o || [])), true), a;
+	    }(r, o, i), true), u;
 	  }
-	  function s(t, r, e) {
-	    try {
-	      return {
-	        type: "normal",
-	        arg: t.call(r, e)
-	      };
-	    } catch (t) {
-	      return {
-	        type: "throw",
-	        arg: t
-	      };
-	    }
-	  }
-	  r.wrap = h;
-	  var f = {};
+	  var a = {};
 	  function Generator() {}
 	  function GeneratorFunction() {}
 	  function GeneratorFunctionPrototype() {}
-	  var l = {};
-	  c(l, i, function () {
+	  t = Object.getPrototypeOf;
+	  var c = [][n] ? t(t([][n]())) : (_regeneratorDefine(t = {}, n, function () {
+	      return this;
+	    }), t),
+	    u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c);
+	  function f(e) {
+	    return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e;
+	  }
+	  return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine(u), _regeneratorDefine(u, o, "Generator"), _regeneratorDefine(u, n, function () {
 	    return this;
-	  });
-	  var p = Object.getPrototypeOf,
-	    y = p && p(p(x([])));
-	  y && y !== e && n.call(y, i) && (l = y);
-	  var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l);
-	  function g(t) {
-	    ["next", "throw", "return"].forEach(function (r) {
-	      c(t, r, function (t) {
-	        return this._invoke(r, t);
-	      });
-	    });
-	  }
-	  function AsyncIterator(t, r) {
-	    function e(o, i, a, u) {
-	      var c = s(t[o], t, i);
-	      if ("throw" !== c.type) {
-	        var h = c.arg,
-	          f = h.value;
-	        return f && "object" == typeof f && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) {
-	          e("next", t, a, u);
-	        }, function (t) {
-	          e("throw", t, a, u);
-	        }) : r.resolve(f).then(function (t) {
-	          h.value = t, a(h);
-	        }, function (t) {
-	          return e("throw", t, a, u);
-	        });
-	      }
-	      u(c.arg);
-	    }
-	    var o;
-	    c(this, "_invoke", function (t, n) {
-	      function i() {
-	        return new r(function (r, o) {
-	          e(t, n, r, o);
-	        });
-	      }
-	      return o = o ? o.then(i, i) : i();
-	    }, true);
-	  }
-	  function d(r, e) {
-	    var n = e.method,
-	      o = r.i[n];
-	    if (o === t) return e.delegate = null, "throw" === n && r.i.return && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f;
-	    var i = s(o, r.i, e.arg);
-	    if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f;
-	    var a = i.arg;
-	    return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f);
-	  }
-	  function w(t) {
-	    this.tryEntries.push(t);
-	  }
-	  function m(r) {
-	    var e = r[4] || {};
-	    e.type = "normal", e.arg = t, r[4] = e;
-	  }
-	  function Context(t) {
-	    this.tryEntries = [[-1]], t.forEach(w, this), this.reset(true);
-	  }
-	  function x(r) {
-	    if (null != r) {
-	      var e = r[i];
-	      if (e) return e.call(r);
-	      if ("function" == typeof r.next) return r;
-	      if (!isNaN(r.length)) {
-	        var o = -1,
-	          a = function e() {
-	            for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = false, e;
-	            return e.value = t, e.done = true, e;
-	          };
-	        return a.next = a;
-	      }
-	    }
-	    throw new TypeError(typeof r + " is not iterable");
-	  }
-	  return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) {
-	    var r = "function" == typeof t && t.constructor;
-	    return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name));
-	  }, r.mark = function (t) {
-	    return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t;
-	  }, r.awrap = function (t) {
-	    return {
-	      __await: t
-	    };
-	  }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () {
-	    return this;
-	  }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) {
-	    void 0 === i && (i = Promise);
-	    var a = new AsyncIterator(h(t, e, n, o), i);
-	    return r.isGeneratorFunction(e) ? a : a.next().then(function (t) {
-	      return t.done ? t.value : a.next();
-	    });
-	  }, g(v), c(v, u, "Generator"), c(v, i, function () {
-	    return this;
-	  }), c(v, "toString", function () {
+	  }), _regeneratorDefine(u, "toString", function () {
 	    return "[object Generator]";
-	  }), r.keys = function (t) {
-	    var r = Object(t),
-	      e = [];
-	    for (var n in r) e.unshift(n);
-	    return function t() {
-	      for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = false, t;
-	      return t.done = true, t;
+	  }), (_regenerator = function () {
+	    return {
+	      w: i,
+	      m: f
 	    };
-	  }, r.values = x, Context.prototype = {
-	    constructor: Context,
-	    reset: function (r) {
-	      if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = false, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t);
-	    },
-	    stop: function () {
-	      this.done = true;
-	      var t = this.tryEntries[0][4];
-	      if ("throw" === t.type) throw t.arg;
-	      return this.rval;
-	    },
-	    dispatchException: function (r) {
-	      if (this.done) throw r;
-	      var e = this;
-	      function n(t) {
-	        a.type = "throw", a.arg = r, e.next = t;
-	      }
-	      for (var o = e.tryEntries.length - 1; o >= 0; --o) {
-	        var i = this.tryEntries[o],
-	          a = i[4],
-	          u = this.prev,
-	          c = i[1],
-	          h = i[2];
-	        if (-1 === i[0]) return n("end"), false;
-	        if (!c && !h) throw Error("try statement without catch or finally");
-	        if (null != i[0] && i[0] <= u) {
-	          if (u < c) return this.method = "next", this.arg = t, n(c), true;
-	          if (u < h) return n(h), false;
-	        }
-	      }
-	    },
-	    abrupt: function (t, r) {
-	      for (var e = this.tryEntries.length - 1; e >= 0; --e) {
-	        var n = this.tryEntries[e];
-	        if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) {
-	          var o = n;
-	          break;
-	        }
-	      }
-	      o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null);
-	      var i = o ? o[4] : {};
-	      return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i);
-	    },
-	    complete: function (t, r) {
-	      if ("throw" === t.type) throw t.arg;
-	      return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f;
-	    },
-	    finish: function (t) {
-	      for (var r = this.tryEntries.length - 1; r >= 0; --r) {
-	        var e = this.tryEntries[r];
-	        if (e[2] === t) return this.complete(e[4], e[3]), m(e), f;
-	      }
-	    },
-	    catch: function (t) {
-	      for (var r = this.tryEntries.length - 1; r >= 0; --r) {
-	        var e = this.tryEntries[r];
-	        if (e[0] === t) {
-	          var n = e[4];
-	          if ("throw" === n.type) {
-	            var o = n.arg;
-	            m(e);
-	          }
-	          return o;
-	        }
-	      }
-	      throw Error("illegal catch attempt");
-	    },
-	    delegateYield: function (r, e, n) {
-	      return this.delegate = {
-	        i: x(r),
-	        r: e,
-	        n: n
-	      }, "next" === this.method && (this.arg = t), f;
+	  })();
+	}
+	function _regeneratorDefine(e, r, n, t) {
+	  var i = Object.defineProperty;
+	  try {
+	    i({}, "", {});
+	  } catch (e) {
+	    i = 0;
+	  }
+	  _regeneratorDefine = function (e, r, n, t) {
+	    function o(r, n) {
+	      _regeneratorDefine(e, r, function (e) {
+	        return this._invoke(r, n, e);
+	      });
 	    }
-	  }, r;
+	    r ? i ? i(e, r, {
+	      value: n,
+	      enumerable: !t,
+	      configurable: !t,
+	      writable: !t
+	    }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2));
+	  }, _regeneratorDefine(e, r, n, t);
 	}
 	function _setPrototypeOf(t, e) {
 	  return _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function (t, e) {
@@ -454,15 +346,6 @@ var focusTrapDemoBundle = (function () {
 	function _toPropertyKey(t) {
 	  var i = _toPrimitive(t, "string");
 	  return "symbol" == typeof i ? i : i + "";
-	}
-	function _typeof(o) {
-	  "@babel/helpers - typeof";
-
-	  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-	    return typeof o;
-	  } : function (o) {
-	    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-	  }, _typeof(o);
 	}
 	function _unsupportedIterableToArray(r, a) {
 	  if (r) {
@@ -495,7 +378,7 @@ var focusTrapDemoBundle = (function () {
 	}
 
 	/*!
-	* tabbable 6.2.0
+	* tabbable 6.3.0
 	* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 	*/
 	// NOTE: separate `:not()` selectors has broader browser support than the newer
@@ -522,7 +405,7 @@ var focusTrapDemoBundle = (function () {
 	 * @returns {boolean} True if inert itself or by way of being in an inert ancestor.
 	 *  False if `node` is falsy.
 	 */
-	var isInert = function isInert(node, lookUp) {
+	var _isInert = function isInert(node, lookUp) {
 	  var _node$getAttribute;
 	  if (lookUp === void 0) {
 	    lookUp = true;
@@ -538,7 +421,7 @@ var focusTrapDemoBundle = (function () {
 	  //  code works for any kind of node
 	  // CAREFUL: JSDom does not appear to support certain selectors like `:not([inert] *)`
 	  //  so it likely would not support `:is([inert] *)` either...
-	  var result = inert || lookUp && node && isInert(node.parentNode); // recursive
+	  var result = inert || lookUp && node && _isInert(node.parentNode); // recursive
 
 	  return result;
 	};
@@ -566,7 +449,7 @@ var focusTrapDemoBundle = (function () {
 	var getCandidates = function getCandidates(el, includeContainer, filter) {
 	  // even if `includeContainer=false`, we still have to check it for inertness because
 	  //  if it's inert, all its children are inert
-	  if (isInert(el)) {
+	  if (_isInert(el)) {
 	    return [];
 	  }
 	  var candidates = Array.prototype.slice.apply(el.querySelectorAll(candidateSelector));
@@ -611,12 +494,12 @@ var focusTrapDemoBundle = (function () {
 	 * @param {IterativeOptions} options
 	 * @returns {Array.<Element|CandidateScope>}
 	 */
-	var getCandidatesIteratively = function getCandidatesIteratively(elements, includeContainer, options) {
+	var _getCandidatesIteratively = function getCandidatesIteratively(elements, includeContainer, options) {
 	  var candidates = [];
 	  var elementsToCheck = Array.from(elements);
 	  while (elementsToCheck.length) {
 	    var element = elementsToCheck.shift();
-	    if (isInert(element, false)) {
+	    if (_isInert(element, false)) {
 	      // no need to look up since we're drilling down
 	      // anything inside this container will also be inert
 	      continue;
@@ -625,7 +508,7 @@ var focusTrapDemoBundle = (function () {
 	      // add shadow dom slot scope (slot itself cannot be focusable)
 	      var assigned = element.assignedElements();
 	      var content = assigned.length ? assigned : element.children;
-	      var nestedCandidates = getCandidatesIteratively(content, true, options);
+	      var nestedCandidates = _getCandidatesIteratively(content, true, options);
 	      if (options.flatten) {
 	        candidates.push.apply(candidates, nestedCandidates);
 	      } else {
@@ -649,7 +532,7 @@ var focusTrapDemoBundle = (function () {
 	      // no inert look up because we're already drilling down and checking for inertness
 	      //  on the way down, so all containers to this root node should have already been
 	      //  vetted as non-inert
-	      var validShadowRoot = !isInert(shadowRoot, false) && (!options.shadowRootFilter || options.shadowRootFilter(element));
+	      var validShadowRoot = !_isInert(shadowRoot, false) && (!options.shadowRootFilter || options.shadowRootFilter(element));
 	      if (shadowRoot && validShadowRoot) {
 	        // add shadow dom scope IIF a shadow root node was given; otherwise, an undisclosed
 	        //  shadow exists, so look at light dom children as fallback BUT create a scope for any
@@ -657,7 +540,7 @@ var focusTrapDemoBundle = (function () {
 	        //  children of the web component element (which has the shadow), in the light dom, but
 	        //  slotted somewhere _inside_ the undisclosed shadow) -- the scope is created below,
 	        //  _after_ we return from this recursive call
-	        var _nestedCandidates = getCandidatesIteratively(shadowRoot === true ? element.children : shadowRoot.children, true, options);
+	        var _nestedCandidates = _getCandidatesIteratively(shadowRoot === true ? element.children : shadowRoot.children, true, options);
 	        if (options.flatten) {
 	          candidates.push.apply(candidates, _nestedCandidates);
 	        } else {
@@ -834,6 +717,28 @@ var focusTrapDemoBundle = (function () {
 	var isHidden = function isHidden(node, _ref) {
 	  var displayCheck = _ref.displayCheck,
 	    getShadowRoot = _ref.getShadowRoot;
+	  if (displayCheck === 'full-native') {
+	    if ('checkVisibility' in node) {
+	      // Chrome >= 105, Edge >= 105, Firefox >= 106, Safari >= 17.4
+	      // @see https://developer.mozilla.org/en-US/docs/Web/API/Element/checkVisibility#browser_compatibility
+	      var visible = node.checkVisibility({
+	        // Checking opacity might be desirable for some use cases, but natively,
+	        // opacity zero elements _are_ focusable and tabbable.
+	        checkOpacity: false,
+	        opacityProperty: false,
+	        contentVisibilityAuto: true,
+	        visibilityProperty: true,
+	        // This is an alias for `visibilityProperty`. Contemporary browsers
+	        // support both. However, this alias has wider browser support (Chrome
+	        // >= 105 and Firefox >= 106, vs. Chrome >= 121 and Firefox >= 122), so
+	        // we include it anyway.
+	        checkVisibilityCSS: true
+	      });
+	      return !visible;
+	    }
+	    // Fall through to manual visibility checks
+	  }
+
 	  // NOTE: visibility will be `undefined` if node is detached from the document
 	  //  (see notes about this further down), which means we will consider it visible
 	  //  (this is legacy behavior from a very long way back)
@@ -847,7 +752,10 @@ var focusTrapDemoBundle = (function () {
 	  if (matches.call(nodeUnderDetails, 'details:not([open]) *')) {
 	    return true;
 	  }
-	  if (!displayCheck || displayCheck === 'full' || displayCheck === 'legacy-full') {
+	  if (!displayCheck || displayCheck === 'full' ||
+	  // full-native can run this branch when it falls through in case
+	  // Element#checkVisibility is unsupported
+	  displayCheck === 'full-native' || displayCheck === 'legacy-full') {
 	    if (typeof getShadowRoot === 'function') {
 	      // figure out if we should consider the node to be in an undisclosed shadow and use the
 	      //  'non-zero-area' fallback
@@ -960,7 +868,7 @@ var focusTrapDemoBundle = (function () {
 	  // we must do an inert look up to filter out any elements inside an inert ancestor
 	  //  because we're limited in the type of selectors we can use in JSDom (see related
 	  //  note related to `candidateSelectors`)
-	  isInert(node) || isHiddenInput(node) || isHidden(node, options) ||
+	  _isInert(node) || isHiddenInput(node) || isHidden(node, options) ||
 	  // For a details element with a summary, the summary element gets the focus
 	  isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
 	    return false;
@@ -973,7 +881,7 @@ var focusTrapDemoBundle = (function () {
 	  }
 	  return true;
 	};
-	var isValidShadowRootTabbable = function isValidShadowRootTabbable(shadowHostNode) {
+	var isShadowRootTabbable = function isShadowRootTabbable(shadowHostNode) {
 	  var tabIndex = parseInt(shadowHostNode.getAttribute('tabindex'), 10);
 	  if (isNaN(tabIndex) || tabIndex >= 0) {
 	    return true;
@@ -987,14 +895,14 @@ var focusTrapDemoBundle = (function () {
 	 * @param {Array.<Element|CandidateScope>} candidates
 	 * @returns Element[]
 	 */
-	var sortByOrder = function sortByOrder(candidates) {
+	var _sortByOrder = function sortByOrder(candidates) {
 	  var regularTabbables = [];
 	  var orderedTabbables = [];
 	  candidates.forEach(function (item, i) {
 	    var isScope = !!item.scopeParent;
 	    var element = isScope ? item.scopeParent : item;
 	    var candidateTabindex = getSortOrderTabIndex(element, isScope);
-	    var elements = isScope ? sortByOrder(item.candidates) : element;
+	    var elements = isScope ? _sortByOrder(item.candidates) : element;
 	    if (candidateTabindex === 0) {
 	      isScope ? regularTabbables.push.apply(regularTabbables, elements) : regularTabbables.push(element);
 	    } else {
@@ -1016,22 +924,22 @@ var focusTrapDemoBundle = (function () {
 	  options = options || {};
 	  var candidates;
 	  if (options.getShadowRoot) {
-	    candidates = getCandidatesIteratively([container], options.includeContainer, {
+	    candidates = _getCandidatesIteratively([container], options.includeContainer, {
 	      filter: isNodeMatchingSelectorTabbable.bind(null, options),
 	      flatten: false,
 	      getShadowRoot: options.getShadowRoot,
-	      shadowRootFilter: isValidShadowRootTabbable
+	      shadowRootFilter: isShadowRootTabbable
 	    });
 	  } else {
 	    candidates = getCandidates(container, options.includeContainer, isNodeMatchingSelectorTabbable.bind(null, options));
 	  }
-	  return sortByOrder(candidates);
+	  return _sortByOrder(candidates);
 	};
 	var focusable = function focusable(container, options) {
 	  options = options || {};
 	  var candidates;
 	  if (options.getShadowRoot) {
-	    candidates = getCandidatesIteratively([container], options.includeContainer, {
+	    candidates = _getCandidatesIteratively([container], options.includeContainer, {
 	      filter: isNodeMatchingSelectorFocusable.bind(null, options),
 	      flatten: true,
 	      getShadowRoot: options.getShadowRoot
@@ -1064,12 +972,18 @@ var focusTrapDemoBundle = (function () {
 	};
 
 	var activeFocusTraps = {
+	  // Returns the trap from the top of the stack.
+	  getActiveTrap: function getActiveTrap(trapStack) {
+	    if ((trapStack === null || trapStack === void 0 ? void 0 : trapStack.length) > 0) {
+	      return trapStack[trapStack.length - 1];
+	    }
+	    return null;
+	  },
+	  // Pauses the currently active trap, then adds a new trap to the stack.
 	  activateTrap: function activateTrap(trapStack, trap) {
-	    if (trapStack.length > 0) {
-	      var activeTrap = trapStack[trapStack.length - 1];
-	      if (activeTrap !== trap) {
-	        activeTrap._setPausedState(true);
-	      }
+	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+	    if (trap !== activeTrap) {
+	      activeFocusTraps.pauseTrap(trapStack);
 	    }
 	    var trapIndex = trapStack.indexOf(trap);
 	    if (trapIndex === -1) {
@@ -1080,13 +994,24 @@ var focusTrapDemoBundle = (function () {
 	      trapStack.push(trap);
 	    }
 	  },
+	  // Removes the trap from the top of the stack, then unpauses the next trap down.
 	  deactivateTrap: function deactivateTrap(trapStack, trap) {
 	    var trapIndex = trapStack.indexOf(trap);
 	    if (trapIndex !== -1) {
 	      trapStack.splice(trapIndex, 1);
 	    }
-	    if (trapStack.length > 0 && !trapStack[trapStack.length - 1]._isManuallyPaused()) {
-	      trapStack[trapStack.length - 1]._setPausedState(false);
+	    activeFocusTraps.unpauseTrap(trapStack);
+	  },
+	  // Pauses the trap at the top of the stack.
+	  pauseTrap: function pauseTrap(trapStack) {
+	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+	    activeTrap === null || activeTrap === void 0 || activeTrap._setPausedState(true);
+	  },
+	  // Unpauses the trap at the top of the stack.
+	  unpauseTrap: function unpauseTrap(trapStack) {
+	    var activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+	    if (activeTrap && !activeTrap._isManuallyPaused()) {
+	      activeTrap._setPausedState(false);
 	    }
 	  }
 	};
@@ -1140,7 +1065,7 @@ var focusTrapDemoBundle = (function () {
 	// NOTE: this must be _outside_ `createFocusTrap()` to make sure all traps in this
 	//  current instance use the same stack if `userOptions.trapStack` isn't specified
 	var internalTrapStack = [];
-	var createFocusTrap$C = function createFocusTrap(elements, userOptions) {
+	var createFocusTrap$D = function createFocusTrap(elements, userOptions) {
 	  // SSR: a live trap shouldn't be created in this type of environment so this
 	  //  should be safe code to execute if the `document` option isn't specified
 	  var doc = (userOptions === null || userOptions === void 0 ? void 0 : userOptions.document) || document;
@@ -1149,29 +1074,31 @@ var focusTrapDemoBundle = (function () {
 	    returnFocusOnDeactivate: true,
 	    escapeDeactivates: true,
 	    delayInitialFocus: true,
+	    isolateSubtrees: false,
 	    isKeyForward: isKeyForward,
 	    isKeyBackward: isKeyBackward
 	  }, userOptions);
 	  var state = {
 	    // containers given to createFocusTrap()
-	    // @type {Array<HTMLElement>}
+	    /** @type {Array<HTMLElement>} */
 	    containers: [],
 	    // list of objects identifying tabbable nodes in `containers` in the trap
 	    // NOTE: it's possible that a group has no tabbable nodes if nodes get removed while the trap
 	    //  is active, but the trap should never get to a state where there isn't at least one group
 	    //  with at least one tabbable node in it (that would lead to an error condition that would
 	    //  result in an error being thrown)
-	    // @type {Array<{
-	    //   container: HTMLElement,
-	    //   tabbableNodes: Array<HTMLElement>, // empty if none
-	    //   focusableNodes: Array<HTMLElement>, // empty if none
-	    //   posTabIndexesFound: boolean,
-	    //   firstTabbableNode: HTMLElement|undefined,
-	    //   lastTabbableNode: HTMLElement|undefined,
-	    //   firstDomTabbableNode: HTMLElement|undefined,
-	    //   lastDomTabbableNode: HTMLElement|undefined,
-	    //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
-	    // }>}
+	    /** @type {Array<{
+	     *    container: HTMLElement,
+	     *    tabbableNodes: Array<HTMLElement>, // empty if none
+	     *    focusableNodes: Array<HTMLElement>, // empty if none
+	     *    posTabIndexesFound: boolean,
+	     *    firstTabbableNode: HTMLElement|undefined,
+	     *    lastTabbableNode: HTMLElement|undefined,
+	     *    firstDomTabbableNode: HTMLElement|undefined,
+	     *    lastDomTabbableNode: HTMLElement|undefined,
+	     *    nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
+	     *  }>}
+	     */
 	    containerGroups: [],
 	    // same order/length as `containers` list
 
@@ -1180,6 +1107,12 @@ var focusTrapDemoBundle = (function () {
 	    // NOTE: same order as `containers` and `containerGroups`, but __not necessarily__
 	    //  the same length
 	    tabbableGroups: [],
+	    // references to nodes that are siblings to the ancestors of this trap's containers.
+	    /** @type {Set<HTMLElement>} */
+	    adjacentElements: new Set(),
+	    // references to nodes that were inert before the trap was activated.
+	    /** @type {Set<HTMLElement>} */
+	    alreadyInert: new Set(),
 	    nodeFocusedBeforeActivation: null,
 	    mostRecentlyFocusedNode: null,
 	    active: false,
@@ -1783,6 +1716,74 @@ var focusTrapDemoBundle = (function () {
 	    doc.addEventListener('keydown', checkEscapeKey);
 	    return trap;
 	  };
+
+	  /**
+	   * Traverses up the DOM from each of `containers`, collecting references to
+	   * the elements that are siblings to `container` or an ancestor of `container`.
+	   * @param {Array<HTMLElement>} containers
+	   */
+	  var collectAdjacentElements = function collectAdjacentElements(containers) {
+	    // Re-activate all adjacent elements & clear previous collection.
+	    if (state.active && !state.paused) {
+	      trap._setSubtreeIsolation(false);
+	    }
+	    state.adjacentElements.clear();
+	    state.alreadyInert.clear();
+
+	    // Collect all ancestors of all containers to avoid redundant processing.
+	    var containerAncestors = new Set();
+	    var adjacentElements = new Set();
+
+	    // Compile all elements adjacent to the focus trap containers & lineage.
+	    var _iterator = _createForOfIteratorHelper(containers),
+	      _step;
+	    try {
+	      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+	        var container = _step.value;
+	        containerAncestors.add(container);
+	        var insideShadowRoot = typeof ShadowRoot !== 'undefined' && container.getRootNode() instanceof ShadowRoot;
+	        var current = container;
+	        while (current) {
+	          containerAncestors.add(current);
+	          var parent = current.parentElement;
+	          var siblings = [];
+	          if (parent) {
+	            siblings = parent.children;
+	          } else if (!parent && insideShadowRoot) {
+	            siblings = current.getRootNode().children;
+	            parent = current.getRootNode().host;
+	            insideShadowRoot = typeof ShadowRoot !== 'undefined' && parent.getRootNode() instanceof ShadowRoot;
+	          }
+
+	          // Add all the children, we'll remove container lineage later.
+	          var _iterator2 = _createForOfIteratorHelper(siblings),
+	            _step2;
+	          try {
+	            for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+	              var child = _step2.value;
+	              adjacentElements.add(child);
+	            }
+	          } catch (err) {
+	            _iterator2.e(err);
+	          } finally {
+	            _iterator2.f();
+	          }
+	          current = parent;
+	        }
+	      }
+
+	      // Multi-container traps may overlap.
+	      // Remove elements within container lineages.
+	    } catch (err) {
+	      _iterator.e(err);
+	    } finally {
+	      _iterator.f();
+	    }
+	    containerAncestors.forEach(function (el) {
+	      adjacentElements["delete"](el);
+	    });
+	    state.adjacentElements = adjacentElements;
+	  };
 	  var removeListeners = function removeListeners() {
 	    if (!state.active) {
 	      return;
@@ -1851,26 +1852,47 @@ var focusTrapDemoBundle = (function () {
 	      var onActivate = getOption(activateOptions, 'onActivate');
 	      var onPostActivate = getOption(activateOptions, 'onPostActivate');
 	      var checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
-	      if (!checkCanFocusTrap) {
-	        updateTabbableNodes();
+
+	      // If a currently-active trap is isolating its subtree, we need to remove
+	      // that isolation to allow the new trap to find tabbable nodes.
+	      var preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
+	      var revertState = false;
+	      if (preexistingTrap && !preexistingTrap.paused) {
+	        preexistingTrap._setSubtreeIsolation(false);
+	        revertState = true;
 	      }
-	      state.active = true;
-	      state.paused = false;
-	      state.nodeFocusedBeforeActivation = _getActiveElement(doc);
-	      onActivate === null || onActivate === void 0 || onActivate();
-	      var finishActivation = function finishActivation() {
-	        if (checkCanFocusTrap) {
+	      try {
+	        if (!checkCanFocusTrap) {
 	          updateTabbableNodes();
 	        }
-	        addListeners();
-	        updateObservedNodes();
-	        onPostActivate === null || onPostActivate === void 0 || onPostActivate();
-	      };
-	      if (checkCanFocusTrap) {
-	        checkCanFocusTrap(state.containers.concat()).then(finishActivation, finishActivation);
-	        return this;
+	        state.active = true;
+	        state.paused = false;
+	        state.nodeFocusedBeforeActivation = _getActiveElement(doc);
+	        onActivate === null || onActivate === void 0 || onActivate();
+	        var finishActivation = function finishActivation() {
+	          if (checkCanFocusTrap) {
+	            updateTabbableNodes();
+	          }
+	          addListeners();
+	          updateObservedNodes();
+	          if (config.isolateSubtrees) {
+	            trap._setSubtreeIsolation(true);
+	          }
+	          onPostActivate === null || onPostActivate === void 0 || onPostActivate();
+	        };
+	        if (checkCanFocusTrap) {
+	          checkCanFocusTrap(state.containers.concat()).then(finishActivation, finishActivation);
+	          return this;
+	        }
+	        finishActivation();
+	      } catch (error) {
+	        // If our activation throws an exception and the stack hasn't changed,
+	        // we need to re-enable the prior trap's subtree isolation.
+	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState) {
+	          preexistingTrap._setSubtreeIsolation(true);
+	        }
+	        throw error;
 	      }
-	      finishActivation();
 	      return this;
 	    },
 	    deactivate: function deactivate(deactivateOptions) {
@@ -1884,6 +1906,15 @@ var focusTrapDemoBundle = (function () {
 	      }, deactivateOptions);
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
+
+	      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
+	      // This allows the next trap down to update its tabbable nodes properly.
+	      //
+	      // If this trap is not top of the stack, don't change any current isolation.
+	      if (!state.paused) {
+	        trap._setSubtreeIsolation(false);
+	      }
+	      state.alreadyInert.clear();
 	      removeListeners();
 	      state.active = false;
 	      state.paused = false;
@@ -1931,8 +1962,14 @@ var focusTrapDemoBundle = (function () {
 	      state.containers = elementsAsArray.map(function (element) {
 	        return typeof element === 'string' ? doc.querySelector(element) : element;
 	      });
+	      if (config.isolateSubtrees) {
+	        collectAdjacentElements(state.containers);
+	      }
 	      if (state.active) {
 	        updateTabbableNodes();
+	        if (config.isolateSubtrees && !state.paused) {
+	          trap._setSubtreeIsolation(true);
+	        }
 	      }
 	      updateObservedNodes();
 	      return this;
@@ -1956,17 +1993,40 @@ var focusTrapDemoBundle = (function () {
 	          onPause === null || onPause === void 0 || onPause();
 	          removeListeners();
 	          updateObservedNodes();
+	          trap._setSubtreeIsolation(false);
 	          onPostPause === null || onPostPause === void 0 || onPostPause();
 	        } else {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
 	          onUnpause === null || onUnpause === void 0 || onUnpause();
+	          trap._setSubtreeIsolation(true);
 	          updateTabbableNodes();
 	          addListeners();
 	          updateObservedNodes();
 	          onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause();
 	        }
 	        return this;
+	      }
+	    },
+	    _setSubtreeIsolation: {
+	      value: function value(isEnabled) {
+	        if (config.isolateSubtrees) {
+	          state.adjacentElements.forEach(function (el) {
+	            if (isEnabled) {
+	              // check both attribute and property to ensure initial state is captured
+	              // correctly across different browsers and test environments (like JSDOM)
+	              var isInitiallyInert = el.inert || el.hasAttribute('inert');
+	              if (isInitiallyInert) {
+	                state.alreadyInert.add(el);
+	              }
+	              el.inert = true;
+	            } else {
+	              if (state.alreadyInert.has(el)) ; else {
+	                el.inert = false;
+	              }
+	            }
+	          });
+	        }
 	      }
 	    }
 	  });
@@ -1976,17 +2036,17 @@ var focusTrapDemoBundle = (function () {
 	  return trap;
 	};
 
-	var focusTrapFork = /*#__PURE__*/Object.freeze({
+	var focusTrap = /*#__PURE__*/Object.freeze({
 		__proto__: null,
-		createFocusTrap: createFocusTrap$C
+		createFocusTrap: createFocusTrap$D
 	});
 
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrapFork);
+	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
 
-	var createFocusTrap$B = require$$0.createFocusTrap;
+	var createFocusTrap$C = require$$0.createFocusTrap;
 	var _default = function _default() {
 	  var container = document.getElementById('default');
-	  var focusTrap = createFocusTrap$B('#default', {
+	  var focusTrap = createFocusTrap$C('#default', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -1998,7 +2058,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-default').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$A = require$$0.createFocusTrap;
+	var createFocusTrap$B = require$$0.createFocusTrap;
 	var globalTrapStack = function globalTrapStack() {
 	  var container = document.getElementById('global-trap-stack');
 	  var counter = container.querySelector('.counter');
@@ -2006,7 +2066,7 @@ var focusTrapDemoBundle = (function () {
 	  var updateCounter = function updateCounter() {
 	    counter.innerHTML = window.__trapStack.length;
 	  };
-	  var focusTrap = createFocusTrap$A('#global-trap-stack', {
+	  var focusTrap = createFocusTrap$B('#global-trap-stack', {
 	    trapStack: window.__trapStack,
 	    onPostActivate: function onPostActivate() {
 	      container.classList.add('is-active');
@@ -2022,11 +2082,11 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-global-trap-stack').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$z = require$$0.createFocusTrap;
+	var createFocusTrap$A = require$$0.createFocusTrap;
 	var animatedDialog = function animatedDialog() {
 	  var container = document.getElementById('animated-dialog');
 	  var activatedFlag = document.getElementById('animated-dialog-trap-activated');
-	  var focusTrap = createFocusTrap$z('#animated-dialog', {
+	  var focusTrap = createFocusTrap$A('#animated-dialog', {
 	    // Called before focus is sent
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
@@ -2062,13 +2122,13 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-animated-dialog').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$y = require$$0.createFocusTrap;
+	var createFocusTrap$z = require$$0.createFocusTrap;
 	var animatedTrigger = function animatedTrigger() {
 	  var container = document.getElementById('animated-trigger');
 	  var trigger = document.getElementById('activate-animated-trigger');
 	  var deactivatedFlag = document.getElementById('animated-trigger-trap-deactivated');
 	  var returnFocusCheckbox = document.getElementById('animated-trigger-returnfocus');
-	  var focusTrap = createFocusTrap$y('#animated-trigger', {
+	  var focusTrap = createFocusTrap$z('#animated-trigger', {
 	    // Called before focus is sent
 	    onActivate: function onActivate() {
 	      container.classList.add('is-active');
@@ -2104,11 +2164,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$x = require$$0.createFocusTrap;
+	var createFocusTrap$y = require$$0.createFocusTrap;
 	var _escapeDeactivates = function escapeDeactivates() {
 	  var container = document.getElementById('escape-deactivates');
 	  var escapeDeactivatesOption = document.getElementById('escape-deactivates-option');
-	  var focusTrap = createFocusTrap$x('#escape-deactivates', {
+	  var focusTrap = createFocusTrap$y('#escape-deactivates', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2127,7 +2187,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-escape-deactivates').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$w = require$$0.createFocusTrap;
+	var createFocusTrap$x = require$$0.createFocusTrap;
 	var escapeKeyCancelation = function escapeKeyCancelation() {
 	  var container = document.getElementById('escape-key-cancelation');
 	  var escapeCancelingInput = document.getElementById('escape-handling-input');
@@ -2136,7 +2196,7 @@ var focusTrapDemoBundle = (function () {
 	      event.preventDefault();
 	    }
 	  });
-	  var focusTrap = createFocusTrap$w('#escape-key-cancelation', {
+	  var focusTrap = createFocusTrap$x('#escape-key-cancelation', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2151,7 +2211,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-escape-key-cancelation').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$v = require$$0.createFocusTrap;
+	var createFocusTrap$w = require$$0.createFocusTrap;
 	var initialElementNoEscape = function initialElementNoEscape() {
 	  var container = document.getElementById('iene');
 	  var activateTrigger = document.getElementById('activate-iene');
@@ -2160,7 +2220,7 @@ var focusTrapDemoBundle = (function () {
 	  var initialize = function initialize(_ref) {
 	    var _ref$initialFocus = _ref.initialFocus,
 	      initialFocus = _ref$initialFocus === void 0 ? '#focused-input' : _ref$initialFocus;
-	    return createFocusTrap$v(container, {
+	    return createFocusTrap$w(container, {
 	      onActivate: function onActivate() {
 	        return container.classList.add('is-active');
 	      },
@@ -2197,11 +2257,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$u = require$$0.createFocusTrap;
+	var createFocusTrap$v = require$$0.createFocusTrap;
 	var trickyInitialFocus = function trickyInitialFocus() {
 	  var container = document.getElementById('tif');
 	  var focusable = document.getElementById('tif-hide-focusable');
-	  var focusTrap = createFocusTrap$u(container, {
+	  var focusTrap = createFocusTrap$v(container, {
 	    fallbackFocus: container,
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
@@ -2220,7 +2280,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$t = require$$0.createFocusTrap;
+	var createFocusTrap$u = require$$0.createFocusTrap;
 	var initialSelectorWithFallback = function initialSelectorWithFallback() {
 	  var container = document.getElementById('iswf');
 	  var activateTrigger = document.getElementById('activate-iswf');
@@ -2229,7 +2289,7 @@ var focusTrapDemoBundle = (function () {
 	  var button = document.getElementById('initial-focus-btn-iswf');
 	  var buttonParent = button.parentNode;
 	  var initialize = function initialize() {
-	    return createFocusTrap$t(container, {
+	    return createFocusTrap$u(container, {
 	      onActivate: function onActivate() {
 	        return container.classList.add('is-active');
 	      },
@@ -2260,10 +2320,10 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$s = require$$0.createFocusTrap;
+	var createFocusTrap$t = require$$0.createFocusTrap;
 	var initiallyFocusedContainer = function initiallyFocusedContainer() {
 	  var container = document.getElementById('ifc');
-	  var focusTrap = createFocusTrap$s('#ifc', {
+	  var focusTrap = createFocusTrap$t('#ifc', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2279,11 +2339,11 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-ifc').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$r = require$$0.createFocusTrap;
+	var createFocusTrap$s = require$$0.createFocusTrap;
 	var hiddenTreasures = function hiddenTreasures() {
 	  var container = document.getElementById('ht');
 	  var more = document.getElementById('ht-more');
-	  var focusTrap = createFocusTrap$r(container, {
+	  var focusTrap = createFocusTrap$s(container, {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2300,7 +2360,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$q = require$$0.createFocusTrap;
+	var createFocusTrap$r = require$$0.createFocusTrap;
 	var nested = function nested() {
 	  var primary = document.getElementById('nested');
 	  var nested = document.getElementById('nested-nested');
@@ -2310,7 +2370,7 @@ var focusTrapDemoBundle = (function () {
 	  primary.dataset.ftTestPrimaryOnPostPauseCalledTimes = 0;
 	  primary.dataset.ftTestPrimaryOnUnpauseCalledTimes = 0;
 	  primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes = 0;
-	  var primaryFocusTrap = createFocusTrap$q('#nested', {
+	  var primaryFocusTrap = createFocusTrap$r('#nested', {
 	    onDeactivate: function onDeactivate() {
 	      return primary.style.display = 'none';
 	    },
@@ -2327,7 +2387,7 @@ var focusTrapDemoBundle = (function () {
 	      return primary.dataset.ftTestPrimaryOnPostUnpauseCalledTimes++;
 	    }
 	  });
-	  var nestedFocusTrap = createFocusTrap$q('#nested-nested', {
+	  var nestedFocusTrap = createFocusTrap$r('#nested-nested', {
 	    onDeactivate: function onDeactivate() {
 	      nested.style.display = 'none';
 	    }
@@ -2344,16 +2404,16 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('nested-deactivate-nested').addEventListener('click', nestedFocusTrap.deactivate);
 	};
 
-	var createFocusTrap$p = require$$0.createFocusTrap;
+	var createFocusTrap$q = require$$0.createFocusTrap;
 	var sibling = function sibling() {
 	  var container = document.getElementById('sibling-first');
 	  var second = document.getElementById('sibling-second');
-	  var firstFocusTrap = createFocusTrap$p('#sibling-first', {
+	  var firstFocusTrap = createFocusTrap$q('#sibling-first', {
 	    onDeactivate: function onDeactivate() {
 	      return container.classList.remove('is-active');
 	    }
 	  });
-	  var secondFocusTrap = createFocusTrap$p('#sibling-second', {
+	  var secondFocusTrap = createFocusTrap$q('#sibling-second', {
 	    onDeactivate: function onDeactivate() {
 	      second.style.display = 'none';
 	      second.classList.remove('is-active');
@@ -2372,10 +2432,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-second-sibling').addEventListener('click', secondFocusTrap.deactivate);
 	};
 
-	var createFocusTrap$o = require$$0.createFocusTrap;
+	var createFocusTrap$p = require$$0.createFocusTrap;
 	var inputActivation = function inputActivation() {
 	  var container = document.getElementById('input-activation');
-	  var focusTrap = createFocusTrap$o(container, {
+	  var focusTrap = createFocusTrap$p(container, {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2387,10 +2447,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-input-activation').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$n = require$$0.createFocusTrap;
+	var createFocusTrap$o = require$$0.createFocusTrap;
 	var container = document.getElementById('delay');
 	var delay = function delay() {
-	  var focusTrap = createFocusTrap$n(container, {
+	  var focusTrap = createFocusTrap$o(container, {
 	    onActivate: function onActivate() {
 	      container.style.opacity = '1';
 	      container.classList.add('is-active');
@@ -2412,10 +2472,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('close-button-delay').addEventListener('click', hideContainer);
 	};
 
-	var createFocusTrap$m = require$$0.createFocusTrap;
+	var createFocusTrap$n = require$$0.createFocusTrap;
 	var radio = function radio() {
 	  var container = document.getElementById('radio');
-	  var focusTrap = createFocusTrap$m('#radio', {
+	  var focusTrap = createFocusTrap$n('#radio', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2427,10 +2487,10 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-radio').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$l = require$$0.createFocusTrap;
+	var createFocusTrap$m = require$$0.createFocusTrap;
 	var iframe = function iframe() {
 	  var container = document.getElementById('iframe');
-	  var focusTrap = createFocusTrap$l('#iframe', {
+	  var focusTrap = createFocusTrap$m('#iframe', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2442,14 +2502,14 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-iframe').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$k = require$$0.createFocusTrap;
+	var createFocusTrap$l = require$$0.createFocusTrap;
 	var allowOutsideClick = function allowOutsideClick() {
 	  var container = document.getElementById('allowoutsideclick');
 	  var trigger = document.getElementById('activate-allowoutsideclick');
 	  var active = false;
 	  var allowOutsideClick = true;
 	  function initialize() {
-	    return createFocusTrap$k('#allowoutsideclick', {
+	    return createFocusTrap$l('#allowoutsideclick', {
 	      allowOutsideClick: allowOutsideClick,
 	      escapeDeactivates: false,
 	      onActivate: function onActivate() {
@@ -2490,7 +2550,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$j = require$$0.createFocusTrap;
+	var createFocusTrap$k = require$$0.createFocusTrap;
 	var clickOutsideDeactivates = function clickOutsideDeactivates() {
 	  var container = document.getElementById('clickoutsidedeactivates');
 	  var trigger = document.getElementById('activate-clickoutsidedeactivates');
@@ -2502,7 +2562,7 @@ var focusTrapDemoBundle = (function () {
 	  var notice = document.createElement('span');
 	  notice.appendChild(document.createTextNode('-> Must click on checkbox to deactivate'));
 	  var initialize = function initialize() {
-	    return createFocusTrap$j('#clickoutsidedeactivates', {
+	    return createFocusTrap$k('#clickoutsidedeactivates', {
 	      returnFocusOnDeactivate: returnFocusOnDeactivate,
 	      clickOutsideDeactivates: clickOutsideDeactivates,
 	      escapeDeactivates: false,
@@ -2547,10 +2607,10 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$i = require$$0.createFocusTrap;
+	var createFocusTrap$j = require$$0.createFocusTrap;
 	var setReturnFocus = function setReturnFocus() {
 	  var container = document.getElementById('setreturnfocus');
-	  var focusTrap = createFocusTrap$i('#setreturnfocus', {
+	  var focusTrap = createFocusTrap$j('#setreturnfocus', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2563,7 +2623,7 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-setreturnfocus').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$h = require$$0.createFocusTrap;
+	var createFocusTrap$i = require$$0.createFocusTrap;
 	var setReturnFocusFunction = function setReturnFocusFunction() {
 	  var container = document.getElementById('setreturnfocus-function');
 	  var clickedElement;
@@ -2578,7 +2638,7 @@ var focusTrapDemoBundle = (function () {
 	    }
 	    return false;
 	  };
-	  var focusTrap = createFocusTrap$h('#setreturnfocus-function', {
+	  var focusTrap = createFocusTrap$i('#setreturnfocus-function', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2600,10 +2660,10 @@ var focusTrapDemoBundle = (function () {
 	  document.querySelector('#deactivate-setreturnfocus-function > #no-focus').addEventListener('click', handleDeactivate);
 	};
 
-	var createFocusTrap$g = require$$0.createFocusTrap;
+	var createFocusTrap$h = require$$0.createFocusTrap;
 	var noDelay = function noDelay() {
 	  var container = document.getElementById('no-delay');
-	  var focusTrap = createFocusTrap$g(container, {
+	  var focusTrap = createFocusTrap$h(container, {
 	    delayInitialFocus: false,
 	    onActivate: function onActivate() {
 	      container.style.opacity = '1';
@@ -2627,11 +2687,11 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('close-button-no-delay').addEventListener('click', hideContainer);
 	};
 
-	var createFocusTrap$f = require$$0.createFocusTrap;
+	var createFocusTrap$g = require$$0.createFocusTrap;
 	var multipleElements = function multipleElements() {
 	  var container = document.getElementById('multipleelements');
 	  var selectors = ['#multipleelements-1', '#multipleelements-3'];
-	  var focusTrap = createFocusTrap$f(selectors, {
+	  var focusTrap = createFocusTrap$g(selectors, {
 	    clickOutsideDeactivates: true,
 	    onActivate: function onActivate() {
 	      container.classList.add('is-active');
@@ -2654,11 +2714,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$e = require$$0.createFocusTrap;
+	var createFocusTrap$f = require$$0.createFocusTrap;
 	var multipleElementsDelete = function multipleElementsDelete() {
 	  var container = document.getElementById('multipleelements-delete');
 	  var selectors = ['#multipleelements-delete-1', '#multipleelements-delete-2'];
-	  var focusTrap = createFocusTrap$e(selectors, {
+	  var focusTrap = createFocusTrap$f(selectors, {
 	    allowOutsideClick: function allowOutsideClick(event) {
 	      return event.target.id === 'deactivate-multipleelements-delete';
 	    },
@@ -2686,11 +2746,11 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$d = require$$0.createFocusTrap;
+	var createFocusTrap$e = require$$0.createFocusTrap;
 	var multipleElementsDeleteAll = function multipleElementsDeleteAll() {
 	  var container = document.getElementById('multipleelements-delete-all');
 	  var selectors = ['#multipleelements-delete-all-1', '#multipleelements-delete-all-2'];
-	  var focusTrap = createFocusTrap$d(selectors, {
+	  var focusTrap = createFocusTrap$e(selectors, {
 	    fallbackFocus: '#deactivate-multipleelements-delete-all',
 	    allowOutsideClick: function allowOutsideClick(event) {
 	      return event.target.id === 'deactivate-multipleelements-delete-all';
@@ -2720,7 +2780,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$c = require$$0.createFocusTrap;
+	var createFocusTrap$d = require$$0.createFocusTrap;
 	var multipleElementsMultipleTraps = function multipleElementsMultipleTraps() {
 	  var container = document.getElementById('multipleelements-multipletraps');
 	  var isTrap1Active = false;
@@ -2744,7 +2804,7 @@ var focusTrapDemoBundle = (function () {
 	  };
 	  var trap1Selectors = ['#multipleelements-multipletraps-1', '#multipleelements-multipletraps-3'];
 	  var trap2Selectors = ['#multipleelements-multipletraps-2', '#multipleelements-multipletraps-4'];
-	  var focusTrap1 = createFocusTrap$c(trap1Selectors, {
+	  var focusTrap1 = createFocusTrap$d(trap1Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap2Active) {
@@ -2763,7 +2823,7 @@ var focusTrapDemoBundle = (function () {
 	    },
 	    allowOutsideClick: allowOutsideClick
 	  });
-	  var focusTrap2 = createFocusTrap$c(trap2Selectors, {
+	  var focusTrap2 = createFocusTrap$d(trap2Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap1Active) {
@@ -2796,7 +2856,7 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$b = require$$0.createFocusTrap;
+	var createFocusTrap$c = require$$0.createFocusTrap;
 	var multipleTrapsManualPause = function multipleTrapsManualPause() {
 	  var container = document.getElementById('multipletraps-manual-pause');
 	  var isTrap1Active = false;
@@ -2820,7 +2880,7 @@ var focusTrapDemoBundle = (function () {
 	  };
 	  var trap1Selectors = ['#multipletraps-manual-pause-1'];
 	  var trap2Selectors = ['#multipletraps-manual-pause-2'];
-	  var focusTrap1 = createFocusTrap$b(trap1Selectors, {
+	  var focusTrap1 = createFocusTrap$c(trap1Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap2Active) {
@@ -2839,7 +2899,7 @@ var focusTrapDemoBundle = (function () {
 	    },
 	    allowOutsideClick: allowOutsideClick
 	  });
-	  var focusTrap2 = createFocusTrap$b(trap2Selectors, {
+	  var focusTrap2 = createFocusTrap$c(trap2Selectors, {
 	    onActivate: function onActivate() {
 	      onActivateTrap();
 	      if (isTrap1Active) {
@@ -2884,10 +2944,10 @@ var focusTrapDemoBundle = (function () {
 	  });
 	};
 
-	var createFocusTrap$a = require$$0.createFocusTrap;
+	var createFocusTrap$b = require$$0.createFocusTrap;
 	var arrowKeys = function arrowKeys() {
 	  var container = document.getElementById('arrow-keys');
-	  var focusTrap = createFocusTrap$a('#arrow-keys', {
+	  var focusTrap = createFocusTrap$b('#arrow-keys', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2905,13 +2965,13 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-arrow-keys').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var createFocusTrap$9 = require$$0.createFocusTrap;
+	var createFocusTrap$a = require$$0.createFocusTrap;
 	var domRemove = function domRemove() {
 	  var container = document.getElementById('dom-remove');
 	  document.getElementById('dom-remove-button').addEventListener('click', function (event) {
 	    event.target.remove();
 	  });
-	  var focusTrap = createFocusTrap$9('#dom-remove', {
+	  var focusTrap = createFocusTrap$a('#dom-remove', {
 	    onActivate: function onActivate() {
 	      return container.classList.add('is-active');
 	    },
@@ -2923,695 +2983,72 @@ var focusTrapDemoBundle = (function () {
 	  document.getElementById('deactivate-dom-remove').addEventListener('click', focusTrap.deactivate);
 	};
 
-	var runtime = {exports: {}};
-
-	(function (module) {
-	  var runtime = function (exports) {
-
-	    var Op = Object.prototype;
-	    var hasOwn = Op.hasOwnProperty;
-	    var defineProperty = Object.defineProperty || function (obj, key, desc) {
-	      obj[key] = desc.value;
-	    };
-	    var undefined$1; // More compressible than void 0.
-	    var $Symbol = typeof Symbol === "function" ? Symbol : {};
-	    var iteratorSymbol = $Symbol.iterator || "@@iterator";
-	    var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-	    var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-	    function define(obj, key, value) {
-	      Object.defineProperty(obj, key, {
-	        value: value,
-	        enumerable: true,
-	        configurable: true,
-	        writable: true
-	      });
-	      return obj[key];
+	var createFocusTrap$9 = require$$0.createFocusTrap;
+	var isolateSubtree = function isolateSubtree() {
+	  var container = document.getElementById('isolate-subtree');
+	  var altContainer = document.getElementById('isolate-subtree-alt-container');
+	  var nestedTrapContainer = document.getElementById('isolate-subtree-nested');
+	  var secondTrapContainer = document.getElementById('isolate-subtree-sibling');
+	  var focusTrap = createFocusTrap$9([container, altContainer], {
+	    isolateSubtrees: true,
+	    onActivate: function onActivate() {
+	      container.classList.add('is-active');
+	      altContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      container.classList.remove('is-active');
+	      altContainer.classList.remove('is-active');
 	    }
-	    try {
-	      // IE 8 has a broken Object.defineProperty that only works on DOM objects.
-	      define({}, "");
-	    } catch (err) {
-	      define = function define(obj, key, value) {
-	        return obj[key] = value;
-	      };
+	  });
+	  var nestedTrap = createFocusTrap$9(nestedTrapContainer, {
+	    isolateSubtrees: true,
+	    onActivate: function onActivate() {
+	      nestedTrapContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      nestedTrapContainer.classList.remove('is-active');
 	    }
-	    function wrap(innerFn, outerFn, self, tryLocsList) {
-	      // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-	      var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-	      var generator = Object.create(protoGenerator.prototype);
-	      var context = new Context(tryLocsList || []);
-
-	      // The ._invoke method unifies the implementations of the .next,
-	      // .throw, and .return methods.
-	      defineProperty(generator, "_invoke", {
-	        value: makeInvokeMethod(innerFn, self, context)
-	      });
-	      return generator;
+	  });
+	  var secondTrap = createFocusTrap$9(secondTrapContainer, {
+	    isolateSubtrees: true,
+	    onActivate: function onActivate() {
+	      secondTrapContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      secondTrapContainer.classList.remove('is-active');
 	    }
-	    exports.wrap = wrap;
-
-	    // Try/catch helper to minimize deoptimizations. Returns a completion
-	    // record like context.tryEntries[i].completion. This interface could
-	    // have been (and was previously) designed to take a closure to be
-	    // invoked without arguments, but in all the cases we care about we
-	    // already have an existing method we want to call, so there's no need
-	    // to create a new function object. We can even get away with assuming
-	    // the method takes exactly one argument, since that happens to be true
-	    // in every case, so we don't have to touch the arguments object. The
-	    // only additional allocation required is the completion record, which
-	    // has a stable shape and so hopefully should be cheap to allocate.
-	    function tryCatch(fn, obj, arg) {
-	      try {
-	        return {
-	          type: "normal",
-	          arg: fn.call(obj, arg)
-	        };
-	      } catch (err) {
-	        return {
-	          type: "throw",
-	          arg: err
-	        };
-	      }
-	    }
-	    var GenStateSuspendedStart = "suspendedStart";
-	    var GenStateSuspendedYield = "suspendedYield";
-	    var GenStateExecuting = "executing";
-	    var GenStateCompleted = "completed";
-
-	    // Returning this object from the innerFn has the same effect as
-	    // breaking out of the dispatch switch statement.
-	    var ContinueSentinel = {};
-
-	    // Dummy constructor functions that we use as the .constructor and
-	    // .constructor.prototype properties for functions that return Generator
-	    // objects. For full spec compliance, you may wish to configure your
-	    // minifier not to mangle the names of these two functions.
-	    function Generator() {}
-	    function GeneratorFunction() {}
-	    function GeneratorFunctionPrototype() {}
-
-	    // This is a polyfill for %IteratorPrototype% for environments that
-	    // don't natively support it.
-	    var IteratorPrototype = {};
-	    define(IteratorPrototype, iteratorSymbol, function () {
-	      return this;
-	    });
-	    var getProto = Object.getPrototypeOf;
-	    var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-	    if (NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-	      // This environment has a native %IteratorPrototype%; use it instead
-	      // of the polyfill.
-	      IteratorPrototype = NativeIteratorPrototype;
-	    }
-	    var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype);
-	    GeneratorFunction.prototype = GeneratorFunctionPrototype;
-	    defineProperty(Gp, "constructor", {
-	      value: GeneratorFunctionPrototype,
-	      configurable: true
-	    });
-	    defineProperty(GeneratorFunctionPrototype, "constructor", {
-	      value: GeneratorFunction,
-	      configurable: true
-	    });
-	    GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction");
-
-	    // Helper for defining the .next, .throw, and .return methods of the
-	    // Iterator interface in terms of a single ._invoke method.
-	    function defineIteratorMethods(prototype) {
-	      ["next", "throw", "return"].forEach(function (method) {
-	        define(prototype, method, function (arg) {
-	          return this._invoke(method, arg);
-	        });
-	      });
-	    }
-	    exports.isGeneratorFunction = function (genFun) {
-	      var ctor = typeof genFun === "function" && genFun.constructor;
-	      return ctor ? ctor === GeneratorFunction ||
-	      // For the native GeneratorFunction constructor, the best we can
-	      // do is to check its .name property.
-	      (ctor.displayName || ctor.name) === "GeneratorFunction" : false;
-	    };
-	    exports.mark = function (genFun) {
-	      if (Object.setPrototypeOf) {
-	        Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-	      } else {
-	        genFun.__proto__ = GeneratorFunctionPrototype;
-	        define(genFun, toStringTagSymbol, "GeneratorFunction");
-	      }
-	      genFun.prototype = Object.create(Gp);
-	      return genFun;
-	    };
-
-	    // Within the body of any async function, `await x` is transformed to
-	    // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-	    // `hasOwn.call(value, "__await")` to determine if the yielded value is
-	    // meant to be awaited.
-	    exports.awrap = function (arg) {
-	      return {
-	        __await: arg
-	      };
-	    };
-	    function AsyncIterator(generator, PromiseImpl) {
-	      function invoke(method, arg, resolve, reject) {
-	        var record = tryCatch(generator[method], generator, arg);
-	        if (record.type === "throw") {
-	          reject(record.arg);
-	        } else {
-	          var result = record.arg;
-	          var value = result.value;
-	          if (value && _typeof(value) === "object" && hasOwn.call(value, "__await")) {
-	            return PromiseImpl.resolve(value.__await).then(function (value) {
-	              invoke("next", value, resolve, reject);
-	            }, function (err) {
-	              invoke("throw", err, resolve, reject);
-	            });
-	          }
-	          return PromiseImpl.resolve(value).then(function (unwrapped) {
-	            // When a yielded Promise is resolved, its final value becomes
-	            // the .value of the Promise<{value,done}> result for the
-	            // current iteration.
-	            result.value = unwrapped;
-	            resolve(result);
-	          }, function (error) {
-	            // If a rejected Promise was yielded, throw the rejection back
-	            // into the async generator function so it can be handled there.
-	            return invoke("throw", error, resolve, reject);
-	          });
-	        }
-	      }
-	      var previousPromise;
-	      function enqueue(method, arg) {
-	        function callInvokeWithMethodAndArg() {
-	          return new PromiseImpl(function (resolve, reject) {
-	            invoke(method, arg, resolve, reject);
-	          });
-	        }
-	        return previousPromise =
-	        // If enqueue has been called before, then we want to wait until
-	        // all previous Promises have been resolved before calling invoke,
-	        // so that results are always delivered in the correct order. If
-	        // enqueue has not been called before, then it is important to
-	        // call invoke immediately, without waiting on a callback to fire,
-	        // so that the async generator function has the opportunity to do
-	        // any necessary setup in a predictable way. This predictability
-	        // is why the Promise constructor synchronously invokes its
-	        // executor callback, and why async functions synchronously
-	        // execute code before the first await. Since we implement simple
-	        // async functions in terms of async generators, it is especially
-	        // important to get this right, even though it requires care.
-	        previousPromise ? previousPromise.then(callInvokeWithMethodAndArg,
-	        // Avoid propagating failures to Promises returned by later
-	        // invocations of the iterator.
-	        callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg();
-	      }
-
-	      // Define the unified helper method that is used to implement .next,
-	      // .throw, and .return (see defineIteratorMethods).
-	      defineProperty(this, "_invoke", {
-	        value: enqueue
-	      });
-	    }
-	    defineIteratorMethods(AsyncIterator.prototype);
-	    define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
-	      return this;
-	    });
-	    exports.AsyncIterator = AsyncIterator;
-
-	    // Note that simple async functions are implemented on top of
-	    // AsyncIterator objects; they just return a Promise for the value of
-	    // the final result produced by the iterator.
-	    exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) {
-	      if (PromiseImpl === void 0) PromiseImpl = Promise;
-	      var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl);
-	      return exports.isGeneratorFunction(outerFn) ? iter // If outerFn is a generator, return the full iterator.
-	      : iter.next().then(function (result) {
-	        return result.done ? result.value : iter.next();
-	      });
-	    };
-	    function makeInvokeMethod(innerFn, self, context) {
-	      var state = GenStateSuspendedStart;
-	      return function invoke(method, arg) {
-	        if (state === GenStateExecuting) {
-	          throw new Error("Generator is already running");
-	        }
-	        if (state === GenStateCompleted) {
-	          if (method === "throw") {
-	            throw arg;
-	          }
-
-	          // Be forgiving, per 25.3.3.3.3 of the spec:
-	          // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-	          return doneResult();
-	        }
-	        context.method = method;
-	        context.arg = arg;
-	        while (true) {
-	          var delegate = context.delegate;
-	          if (delegate) {
-	            var delegateResult = maybeInvokeDelegate(delegate, context);
-	            if (delegateResult) {
-	              if (delegateResult === ContinueSentinel) continue;
-	              return delegateResult;
-	            }
-	          }
-	          if (context.method === "next") {
-	            // Setting context._sent for legacy support of Babel's
-	            // function.sent implementation.
-	            context.sent = context._sent = context.arg;
-	          } else if (context.method === "throw") {
-	            if (state === GenStateSuspendedStart) {
-	              state = GenStateCompleted;
-	              throw context.arg;
-	            }
-	            context.dispatchException(context.arg);
-	          } else if (context.method === "return") {
-	            context.abrupt("return", context.arg);
-	          }
-	          state = GenStateExecuting;
-	          var record = tryCatch(innerFn, self, context);
-	          if (record.type === "normal") {
-	            // If an exception is thrown from innerFn, we leave state ===
-	            // GenStateExecuting and loop back for another invocation.
-	            state = context.done ? GenStateCompleted : GenStateSuspendedYield;
-	            if (record.arg === ContinueSentinel) {
-	              continue;
-	            }
-	            return {
-	              value: record.arg,
-	              done: context.done
-	            };
-	          } else if (record.type === "throw") {
-	            state = GenStateCompleted;
-	            // Dispatch the exception by looping back around to the
-	            // context.dispatchException(context.arg) call above.
-	            context.method = "throw";
-	            context.arg = record.arg;
-	          }
-	        }
-	      };
-	    }
-
-	    // Call delegate.iterator[context.method](context.arg) and handle the
-	    // result, either by returning a { value, done } result from the
-	    // delegate iterator, or by modifying context.method and context.arg,
-	    // setting context.delegate to null, and returning the ContinueSentinel.
-	    function maybeInvokeDelegate(delegate, context) {
-	      var methodName = context.method;
-	      var method = delegate.iterator[methodName];
-	      if (method === undefined$1) {
-	        // A .throw or .return when the delegate iterator has no .throw
-	        // method, or a missing .next mehtod, always terminate the
-	        // yield* loop.
-	        context.delegate = null;
-
-	        // Note: ["return"] must be used for ES3 parsing compatibility.
-	        if (methodName === "throw" && delegate.iterator["return"]) {
-	          // If the delegate iterator has a return method, give it a
-	          // chance to clean up.
-	          context.method = "return";
-	          context.arg = undefined$1;
-	          maybeInvokeDelegate(delegate, context);
-	          if (context.method === "throw") {
-	            // If maybeInvokeDelegate(context) changed context.method from
-	            // "return" to "throw", let that override the TypeError below.
-	            return ContinueSentinel;
-	          }
-	        }
-	        if (methodName !== "return") {
-	          context.method = "throw";
-	          context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method");
-	        }
-	        return ContinueSentinel;
-	      }
-	      var record = tryCatch(method, delegate.iterator, context.arg);
-	      if (record.type === "throw") {
-	        context.method = "throw";
-	        context.arg = record.arg;
-	        context.delegate = null;
-	        return ContinueSentinel;
-	      }
-	      var info = record.arg;
-	      if (!info) {
-	        context.method = "throw";
-	        context.arg = new TypeError("iterator result is not an object");
-	        context.delegate = null;
-	        return ContinueSentinel;
-	      }
-	      if (info.done) {
-	        // Assign the result of the finished delegate to the temporary
-	        // variable specified by delegate.resultName (see delegateYield).
-	        context[delegate.resultName] = info.value;
-
-	        // Resume execution at the desired location (see delegateYield).
-	        context.next = delegate.nextLoc;
-
-	        // If context.method was "throw" but the delegate handled the
-	        // exception, let the outer generator proceed normally. If
-	        // context.method was "next", forget context.arg since it has been
-	        // "consumed" by the delegate iterator. If context.method was
-	        // "return", allow the original .return call to continue in the
-	        // outer generator.
-	        if (context.method !== "return") {
-	          context.method = "next";
-	          context.arg = undefined$1;
-	        }
-	      } else {
-	        // Re-yield the result returned by the delegate method.
-	        return info;
-	      }
-
-	      // The delegate iterator is finished, so forget it and continue with
-	      // the outer generator.
-	      context.delegate = null;
-	      return ContinueSentinel;
-	    }
-
-	    // Define Generator.prototype.{next,throw,return} in terms of the
-	    // unified ._invoke helper method.
-	    defineIteratorMethods(Gp);
-	    define(Gp, toStringTagSymbol, "Generator");
-
-	    // A Generator should always return itself as the iterator object when the
-	    // @@iterator function is called on it. Some browsers' implementations of the
-	    // iterator prototype chain incorrectly implement this, causing the Generator
-	    // object to not be returned from this call. This ensures that doesn't happen.
-	    // See https://github.com/facebook/regenerator/issues/274 for more details.
-	    define(Gp, iteratorSymbol, function () {
-	      return this;
-	    });
-	    define(Gp, "toString", function () {
-	      return "[object Generator]";
-	    });
-	    function pushTryEntry(locs) {
-	      var entry = {
-	        tryLoc: locs[0]
-	      };
-	      if (1 in locs) {
-	        entry.catchLoc = locs[1];
-	      }
-	      if (2 in locs) {
-	        entry.finallyLoc = locs[2];
-	        entry.afterLoc = locs[3];
-	      }
-	      this.tryEntries.push(entry);
-	    }
-	    function resetTryEntry(entry) {
-	      var record = entry.completion || {};
-	      record.type = "normal";
-	      delete record.arg;
-	      entry.completion = record;
-	    }
-	    function Context(tryLocsList) {
-	      // The root entry object (effectively a try statement without a catch
-	      // or a finally block) gives us a place to store values thrown from
-	      // locations where there is no enclosing try statement.
-	      this.tryEntries = [{
-	        tryLoc: "root"
-	      }];
-	      tryLocsList.forEach(pushTryEntry, this);
-	      this.reset(true);
-	    }
-	    exports.keys = function (val) {
-	      var object = Object(val);
-	      var keys = [];
-	      for (var key in object) {
-	        keys.push(key);
-	      }
-	      keys.reverse();
-
-	      // Rather than returning an object with a next method, we keep
-	      // things simple and return the next function itself.
-	      return function next() {
-	        while (keys.length) {
-	          var key = keys.pop();
-	          if (key in object) {
-	            next.value = key;
-	            next.done = false;
-	            return next;
-	          }
-	        }
-
-	        // To avoid creating an additional object, we just hang the .value
-	        // and .done properties off the next function object itself. This
-	        // also ensures that the minifier will not anonymize the function.
-	        next.done = true;
-	        return next;
-	      };
-	    };
-	    function values(iterable) {
-	      if (iterable) {
-	        var iteratorMethod = iterable[iteratorSymbol];
-	        if (iteratorMethod) {
-	          return iteratorMethod.call(iterable);
-	        }
-	        if (typeof iterable.next === "function") {
-	          return iterable;
-	        }
-	        if (!isNaN(iterable.length)) {
-	          var i = -1,
-	            next = function next() {
-	              while (++i < iterable.length) {
-	                if (hasOwn.call(iterable, i)) {
-	                  next.value = iterable[i];
-	                  next.done = false;
-	                  return next;
-	                }
-	              }
-	              next.value = undefined$1;
-	              next.done = true;
-	              return next;
-	            };
-	          return next.next = next;
-	        }
-	      }
-
-	      // Return an iterator with no values.
-	      return {
-	        next: doneResult
-	      };
-	    }
-	    exports.values = values;
-	    function doneResult() {
-	      return {
-	        value: undefined$1,
-	        done: true
-	      };
-	    }
-	    Context.prototype = {
-	      constructor: Context,
-	      reset: function reset(skipTempReset) {
-	        this.prev = 0;
-	        this.next = 0;
-	        // Resetting context._sent for legacy support of Babel's
-	        // function.sent implementation.
-	        this.sent = this._sent = undefined$1;
-	        this.done = false;
-	        this.delegate = null;
-	        this.method = "next";
-	        this.arg = undefined$1;
-	        this.tryEntries.forEach(resetTryEntry);
-	        if (!skipTempReset) {
-	          for (var name in this) {
-	            // Not sure about the optimal order of these conditions:
-	            if (name.charAt(0) === "t" && hasOwn.call(this, name) && !isNaN(+name.slice(1))) {
-	              this[name] = undefined$1;
-	            }
-	          }
-	        }
-	      },
-	      stop: function stop() {
-	        this.done = true;
-	        var rootEntry = this.tryEntries[0];
-	        var rootRecord = rootEntry.completion;
-	        if (rootRecord.type === "throw") {
-	          throw rootRecord.arg;
-	        }
-	        return this.rval;
-	      },
-	      dispatchException: function dispatchException(exception) {
-	        if (this.done) {
-	          throw exception;
-	        }
-	        var context = this;
-	        function handle(loc, caught) {
-	          record.type = "throw";
-	          record.arg = exception;
-	          context.next = loc;
-	          if (caught) {
-	            // If the dispatched exception was caught by a catch block,
-	            // then let that catch block handle the exception normally.
-	            context.method = "next";
-	            context.arg = undefined$1;
-	          }
-	          return !!caught;
-	        }
-	        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-	          var entry = this.tryEntries[i];
-	          var record = entry.completion;
-	          if (entry.tryLoc === "root") {
-	            // Exception thrown outside of any try block that could handle
-	            // it, so set the completion value of the entire function to
-	            // throw the exception.
-	            return handle("end");
-	          }
-	          if (entry.tryLoc <= this.prev) {
-	            var hasCatch = hasOwn.call(entry, "catchLoc");
-	            var hasFinally = hasOwn.call(entry, "finallyLoc");
-	            if (hasCatch && hasFinally) {
-	              if (this.prev < entry.catchLoc) {
-	                return handle(entry.catchLoc, true);
-	              } else if (this.prev < entry.finallyLoc) {
-	                return handle(entry.finallyLoc);
-	              }
-	            } else if (hasCatch) {
-	              if (this.prev < entry.catchLoc) {
-	                return handle(entry.catchLoc, true);
-	              }
-	            } else if (hasFinally) {
-	              if (this.prev < entry.finallyLoc) {
-	                return handle(entry.finallyLoc);
-	              }
-	            } else {
-	              throw new Error("try statement without catch or finally");
-	            }
-	          }
-	        }
-	      },
-	      abrupt: function abrupt(type, arg) {
-	        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-	          var entry = this.tryEntries[i];
-	          if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) {
-	            var finallyEntry = entry;
-	            break;
-	          }
-	        }
-	        if (finallyEntry && (type === "break" || type === "continue") && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc) {
-	          // Ignore the finally entry if control is not jumping to a
-	          // location outside the try/catch block.
-	          finallyEntry = null;
-	        }
-	        var record = finallyEntry ? finallyEntry.completion : {};
-	        record.type = type;
-	        record.arg = arg;
-	        if (finallyEntry) {
-	          this.method = "next";
-	          this.next = finallyEntry.finallyLoc;
-	          return ContinueSentinel;
-	        }
-	        return this.complete(record);
-	      },
-	      complete: function complete(record, afterLoc) {
-	        if (record.type === "throw") {
-	          throw record.arg;
-	        }
-	        if (record.type === "break" || record.type === "continue") {
-	          this.next = record.arg;
-	        } else if (record.type === "return") {
-	          this.rval = this.arg = record.arg;
-	          this.method = "return";
-	          this.next = "end";
-	        } else if (record.type === "normal" && afterLoc) {
-	          this.next = afterLoc;
-	        }
-	        return ContinueSentinel;
-	      },
-	      finish: function finish(finallyLoc) {
-	        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-	          var entry = this.tryEntries[i];
-	          if (entry.finallyLoc === finallyLoc) {
-	            this.complete(entry.completion, entry.afterLoc);
-	            resetTryEntry(entry);
-	            return ContinueSentinel;
-	          }
-	        }
-	      },
-	      "catch": function _catch(tryLoc) {
-	        for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-	          var entry = this.tryEntries[i];
-	          if (entry.tryLoc === tryLoc) {
-	            var record = entry.completion;
-	            if (record.type === "throw") {
-	              var thrown = record.arg;
-	              resetTryEntry(entry);
-	            }
-	            return thrown;
-	          }
-	        }
-
-	        // The context.catch method must only be called with a location
-	        // argument that corresponds to a known catch block.
-	        throw new Error("illegal catch attempt");
-	      },
-	      delegateYield: function delegateYield(iterable, resultName, nextLoc) {
-	        this.delegate = {
-	          iterator: values(iterable),
-	          resultName: resultName,
-	          nextLoc: nextLoc
-	        };
-	        if (this.method === "next") {
-	          // Deliberately forget the last sent value so that we don't
-	          // accidentally pass it on to the delegate.
-	          this.arg = undefined$1;
-	        }
-	        return ContinueSentinel;
-	      }
-	    };
-
-	    // Regardless of whether this script is executing as a CommonJS module
-	    // or not, return the runtime object so that we can declare the variable
-	    // regeneratorRuntime in the outer scope, which allows this module to be
-	    // injected easily by `bin/regenerator --include-runtime script.js`.
-	    return exports;
-	  }(
-	  // If this script is executing as a CommonJS module, use module.exports
-	  // as the regeneratorRuntime namespace. Otherwise create a new empty
-	  // object. Either way, the resulting object will be used to initialize
-	  // the regeneratorRuntime variable at the top of this file.
-	  module.exports );
-	  try {
-	    regeneratorRuntime = runtime;
-	  } catch (accidentalStrictMode) {
-	    // This module should not be running in strict mode, so the above
-	    // assignment should always work unless something is misconfigured. Just
-	    // in case runtime.js accidentally runs in strict mode, in modern engines
-	    // we can explicitly access globalThis. In older engines we can escape
-	    // strict mode using a global Function call. This could conceivably fail
-	    // if a Content Security Policy forbids using Function, but in that case
-	    // the proper solution is to fix the accidental strict mode problem. If
-	    // you've misconfigured your bundler to force strict mode and applied a
-	    // CSP to forbid Function, and you're not willing to fix either of those
-	    // problems, please detail your unique predicament in a GitHub issue.
-	    if ((typeof globalThis === "undefined" ? "undefined" : _typeof(globalThis)) === "object") {
-	      globalThis.regeneratorRuntime = runtime;
-	    } else {
-	      Function("r", "regeneratorRuntime = r")(runtime);
-	    }
-	  }
-	})(runtime);
+	  });
+	  document.getElementById('activate-isolate-subtree').addEventListener('click', focusTrap.activate);
+	  document.getElementById('deactivate-isolate-subtree').addEventListener('click', focusTrap.deactivate);
+	  document.getElementById('activate-nested-isolate-subtree').addEventListener('click', nestedTrap.activate);
+	  document.getElementById('deactivate-nested-isolate-subtree').addEventListener('click', nestedTrap.deactivate);
+	  document.getElementById('activate-second-isolate-subtree').addEventListener('click', secondTrap.activate);
+	  document.getElementById('deactivate-second-isolate-subtree').addEventListener('click', secondTrap.deactivate);
+	};
 
 	// needed for the async function we export here
 
 	var createFocusTrap$8 = require$$0.createFocusTrap;
 	var inIframe = /*#__PURE__*/function () {
-	  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+	  var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
 	    var contextIframe, targetDocument, trapWrapper, focusTrap;
-	    return _regeneratorRuntime().wrap(function _callee$(_context) {
-	      while (1) switch (_context.prev = _context.next) {
+	    return _regenerator().w(function (_context) {
+	      while (1) switch (_context.n) {
 	        case 0:
 	          contextIframe = document.getElementById('in-iframe'); // wait for iFrame DOM to completely load
 	        case 1:
 	          if (contextIframe.contentWindow.document.getElementById('in-iframe-trap')) {
-	            _context.next = 6;
+	            _context.n = 3;
 	            break;
 	          }
-	          _context.next = 4;
+	          _context.n = 2;
 	          return new Promise(function (r) {
 	            return setTimeout(r, 500);
 	          });
-	        case 4:
-	          _context.next = 1;
+	        case 2:
+	          _context.n = 1;
 	          break;
-	        case 6:
+	        case 3:
 	          targetDocument = contextIframe.contentWindow.document;
 	          if (targetDocument) {
 	            trapWrapper = targetDocument.getElementById('in-iframe-trap');
@@ -3627,9 +3064,8 @@ var focusTrapDemoBundle = (function () {
 	            document.getElementById('activate-in-iframe').addEventListener('click', focusTrap.activate);
 	            targetDocument.getElementById('deactivate-in-iframe').addEventListener('click', focusTrap.deactivate);
 	          }
-	        case 8:
-	        case "end":
-	          return _context.stop();
+	        case 4:
+	          return _context.a(2);
 	      }
 	    }, _callee);
 	  }));
@@ -3981,6 +3417,7 @@ var focusTrapDemoBundle = (function () {
 	multipleTrapsManualPause();
 	arrowKeys();
 	domRemove();
+	isolateSubtree();
 
 	//
 	// ❗️ MANUALLY TESTED DEMOS ❗️

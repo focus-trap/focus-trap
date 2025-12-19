@@ -689,11 +689,11 @@ describe('focus-trap', () => {
 
       // activate outer trap and element in outer trap should be focused
       cy.get('@testRoot')
-        .findByRole('button', { name: /^activate trap/ })
+        .get('#activate-nested')
         .as('lastlyFocusedElBeforeTrapIsActivated')
         .click();
 
-      cy.findByRole('button', { name: /^deactivate outer trap/ })
+      cy.get('#deactivate-nested')
         .as('firstTabbableElInOuterTrap')
         .should('be.focused');
 

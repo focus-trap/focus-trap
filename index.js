@@ -7,12 +7,20 @@ import {
 } from 'tabbable';
 
 const activeFocusTraps = {
+  // Returns the trap from the top of the stack.
+  getActiveTrap(trapStack) {
+    if (trapStack?.length > 0) {
+      return trapStack[trapStack.length - 1];
+    }
+    return null;
+  },
+
+  // Pauses the currently active trap, then adds a new trap to the stack.
   activateTrap(trapStack, trap) {
-    if (trapStack.length > 0) {
-      const activeTrap = trapStack[trapStack.length - 1];
-      if (activeTrap !== trap) {
-        activeTrap._setPausedState(true);
-      }
+    const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+
+    if (trap !== activeTrap) {
+      activeFocusTraps.pauseTrap(trapStack);
     }
 
     const trapIndex = trapStack.indexOf(trap);
@@ -25,17 +33,28 @@ const activeFocusTraps = {
     }
   },
 
+  // Removes the trap from the top of the stack, then unpauses the next trap down.
   deactivateTrap(trapStack, trap) {
     const trapIndex = trapStack.indexOf(trap);
     if (trapIndex !== -1) {
       trapStack.splice(trapIndex, 1);
     }
 
-    if (
-      trapStack.length > 0 &&
-      !trapStack[trapStack.length - 1]._isManuallyPaused()
-    ) {
-      trapStack[trapStack.length - 1]._setPausedState(false);
+    activeFocusTraps.unpauseTrap(trapStack);
+  },
+
+  // Pauses the trap at the top of the stack.
+  pauseTrap(trapStack) {
+    const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+    activeTrap?._setPausedState(true);
+  },
+
+  // Unpauses the trap at the top of the stack.
+  unpauseTrap(trapStack) {
+    const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
+
+    if (activeTrap && !activeTrap._isManuallyPaused()) {
+      activeTrap._setPausedState(false);
     }
   },
 };
@@ -109,6 +128,7 @@ const createFocusTrap = function (elements, userOptions) {
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
+    isolateSubtrees: false,
     isKeyForward,
     isKeyBackward,
     ...userOptions,
@@ -116,7 +136,7 @@ const createFocusTrap = function (elements, userOptions) {
 
   const state = {
     // containers given to createFocusTrap()
-    // @type {Array<HTMLElement>}
+    /** @type {Array<HTMLElement>} */
     containers: [],
 
     // list of objects identifying tabbable nodes in `containers` in the trap
@@ -124,17 +144,18 @@ const createFocusTrap = function (elements, userOptions) {
     //  is active, but the trap should never get to a state where there isn't at least one group
     //  with at least one tabbable node in it (that would lead to an error condition that would
     //  result in an error being thrown)
-    // @type {Array<{
-    //   container: HTMLElement,
-    //   tabbableNodes: Array<HTMLElement>, // empty if none
-    //   focusableNodes: Array<HTMLElement>, // empty if none
-    //   posTabIndexesFound: boolean,
-    //   firstTabbableNode: HTMLElement|undefined,
-    //   lastTabbableNode: HTMLElement|undefined,
-    //   firstDomTabbableNode: HTMLElement|undefined,
-    //   lastDomTabbableNode: HTMLElement|undefined,
-    //   nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
-    // }>}
+    /** @type {Array<{
+     *    container: HTMLElement,
+     *    tabbableNodes: Array<HTMLElement>, // empty if none
+     *    focusableNodes: Array<HTMLElement>, // empty if none
+     *    posTabIndexesFound: boolean,
+     *    firstTabbableNode: HTMLElement|undefined,
+     *    lastTabbableNode: HTMLElement|undefined,
+     *    firstDomTabbableNode: HTMLElement|undefined,
+     *    lastDomTabbableNode: HTMLElement|undefined,
+     *    nextTabbableNode: (node: HTMLElement, forward: boolean) => HTMLElement|undefined
+     *  }>}
+     */
     containerGroups: [], // same order/length as `containers` list
 
     // references to objects in `containerGroups`, but only those that actually have
@@ -143,6 +164,13 @@ const createFocusTrap = function (elements, userOptions) {
     //  the same length
     tabbableGroups: [],
 
+    // references to nodes that are siblings to the ancestors of this trap's containers.
+    /** @type {Set<HTMLElement>} */
+    adjacentElements: new Set(),
+
+    // references to nodes that were inert before the trap was activated.
+    /** @type {Set<HTMLElement>} */
+    alreadyInert: new Set(),
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -857,6 +885,64 @@ const createFocusTrap = function (elements, userOptions) {
     return trap;
   };
 
+  /**
+   * Traverses up the DOM from each of `containers`, collecting references to
+   * the elements that are siblings to `container` or an ancestor of `container`.
+   * @param {Array<HTMLElement>} containers
+   */
+  const collectAdjacentElements = function (containers) {
+    // Re-activate all adjacent elements & clear previous collection.
+    if (state.active && !state.paused) {
+      trap._setSubtreeIsolation(false);
+    }
+    state.adjacentElements.clear();
+    state.alreadyInert.clear();
+
+    // Collect all ancestors of all containers to avoid redundant processing.
+    const containerAncestors = new Set();
+
+    const adjacentElements = new Set();
+
+    // Compile all elements adjacent to the focus trap containers & lineage.
+    for (const container of containers) {
+      containerAncestors.add(container);
+      let insideShadowRoot =
+        typeof ShadowRoot !== 'undefined' &&
+        container.getRootNode() instanceof ShadowRoot;
+      let current = container;
+      while (current) {
+        containerAncestors.add(current);
+
+        let parent = current.parentElement;
+        let siblings = [];
+        if (parent) {
+          siblings = parent.children;
+        } else if (!parent && insideShadowRoot) {
+          siblings = current.getRootNode().children;
+          parent = current.getRootNode().host;
+          insideShadowRoot =
+            typeof ShadowRoot !== 'undefined' &&
+            parent.getRootNode() instanceof ShadowRoot;
+        }
+
+        // Add all the children, we'll remove container lineage later.
+        for (const child of siblings) {
+          adjacentElements.add(child);
+        }
+
+        current = parent;
+      }
+    }
+
+    // Multi-container traps may overlap.
+    // Remove elements within container lineages.
+    containerAncestors.forEach((el) => {
+      adjacentElements.delete(el);
+    });
+
+    state.adjacentElements = adjacentElements;
+  };
+
   const removeListeners = function () {
     if (!state.active) {
       return;
@@ -936,34 +1022,58 @@ const createFocusTrap = function (elements, userOptions) {
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
 
-      if (!checkCanFocusTrap) {
-        updateTabbableNodes();
+      // If a currently-active trap is isolating its subtree, we need to remove
+      // that isolation to allow the new trap to find tabbable nodes.
+      const preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
+      let revertState = false;
+      if (preexistingTrap && !preexistingTrap.paused) {
+        preexistingTrap._setSubtreeIsolation(false);
+        revertState = true;
       }
 
-      state.active = true;
-      state.paused = false;
-      state.nodeFocusedBeforeActivation = getActiveElement(doc);
-
-      onActivate?.();
-
-      const finishActivation = () => {
-        if (checkCanFocusTrap) {
+      try {
+        if (!checkCanFocusTrap) {
           updateTabbableNodes();
         }
-        addListeners();
-        updateObservedNodes();
-        onPostActivate?.();
-      };
 
-      if (checkCanFocusTrap) {
-        checkCanFocusTrap(state.containers.concat()).then(
-          finishActivation,
-          finishActivation
-        );
-        return this;
+        state.active = true;
+        state.paused = false;
+        state.nodeFocusedBeforeActivation = getActiveElement(doc);
+
+        onActivate?.();
+
+        const finishActivation = () => {
+          if (checkCanFocusTrap) {
+            updateTabbableNodes();
+          }
+          addListeners();
+          updateObservedNodes();
+          if (config.isolateSubtrees) {
+            trap._setSubtreeIsolation(true);
+          }
+          onPostActivate?.();
+        };
+
+        if (checkCanFocusTrap) {
+          checkCanFocusTrap(state.containers.concat()).then(
+            finishActivation,
+            finishActivation
+          );
+          return this;
+        }
+
+        finishActivation();
+      } catch (error) {
+        // If our activation throws an exception and the stack hasn't changed,
+        // we need to re-enable the prior trap's subtree isolation.
+        if (
+          preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
+          revertState
+        ) {
+          preexistingTrap._setSubtreeIsolation(true);
+        }
+        throw error;
       }
-
-      finishActivation();
       return this;
     },
 
@@ -982,6 +1092,14 @@ const createFocusTrap = function (elements, userOptions) {
       clearTimeout(state.delayInitialFocusTimer); // noop if undefined
       state.delayInitialFocusTimer = undefined;
 
+      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
+      // This allows the next trap down to update its tabbable nodes properly.
+      //
+      // If this trap is not top of the stack, don't change any current isolation.
+      if (!state.paused) {
+        trap._setSubtreeIsolation(false);
+      }
+      state.alreadyInert.clear();
       removeListeners();
       state.active = false;
       state.paused = false;
@@ -1051,8 +1169,16 @@ const createFocusTrap = function (elements, userOptions) {
         typeof element === 'string' ? doc.querySelector(element) : element
       );
 
+      if (config.isolateSubtrees) {
+        collectAdjacentElements(state.containers);
+      }
+
       if (state.active) {
         updateTabbableNodes();
+
+        if (config.isolateSubtrees && !state.paused) {
+          trap._setSubtreeIsolation(true);
+        }
       }
 
       updateObservedNodes();
@@ -1074,6 +1200,7 @@ const createFocusTrap = function (elements, userOptions) {
         }
 
         state.paused = paused;
+
         if (paused) {
           const onPause = getOption(options, 'onPause');
           const onPostPause = getOption(options, 'onPostPause');
@@ -1081,6 +1208,7 @@ const createFocusTrap = function (elements, userOptions) {
 
           removeListeners();
           updateObservedNodes();
+          trap._setSubtreeIsolation(false);
 
           onPostPause?.();
         } else {
@@ -1089,6 +1217,7 @@ const createFocusTrap = function (elements, userOptions) {
 
           onUnpause?.();
 
+          trap._setSubtreeIsolation(true);
           updateTabbableNodes();
           addListeners();
           updateObservedNodes();
@@ -1097,6 +1226,29 @@ const createFocusTrap = function (elements, userOptions) {
         }
 
         return this;
+      },
+    },
+    _setSubtreeIsolation: {
+      value(isEnabled) {
+        if (config.isolateSubtrees) {
+          state.adjacentElements.forEach((el) => {
+            if (isEnabled) {
+              // check both attribute and property to ensure initial state is captured
+              // correctly across different browsers and test environments (like JSDOM)
+              const isInitiallyInert = el.inert || el.hasAttribute('inert');
+              if (isInitiallyInert) {
+                state.alreadyInert.add(el);
+              }
+              el.inert = true;
+            } else {
+              if (state.alreadyInert.has(el)) {
+                // do nothing
+              } else {
+                el.inert = false;
+              }
+            }
+          });
+        }
       },
     },
   });

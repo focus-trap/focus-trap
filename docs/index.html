@@ -544,6 +544,90 @@
       </p>
     </div>
 
+    <div id="demo-isolate-subtree">
+      <h2 id="isolate-subtree-heading">isolate subtree</h2>
+      <style>
+        [inert] {
+          opacity: 0.5;
+        }
+      </style>
+      <p>
+        focus-trap prevents screen reader access to content not contained within the trap. For easier visibility on this site, inert items will be faded.
+      </p>
+      <p>
+        <button id="activate-isolate-subtree" aria-describedby="isolate-subtree-heading">
+          activate outer trap
+        </button>
+      </p>
+      <div id="isolate-subtree" class="trap">
+        <p>
+          Here is a focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+        <p>
+          <button id="activate-nested-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            activate nested trap
+          </button>
+        </p>
+        <p>
+          <button id="activate-second-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            activate second, unrelated trap
+          </button>
+        </p>
+        <p>
+          <button id="deactivate-isolate-subtree" aria-describedby="isolate-subtree-heading">
+            deactivate outer trap
+          </button>
+        </p>
+        <div id="isolate-subtree-nested" class="trap">
+          <p>
+            Here is a nested focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+          </p>
+          <p>
+            <button id="deactivate-nested-isolate-subtree">
+              deactivate nested trap
+            </button>
+          </p>
+        </div>
+      </div>
+      <div id="inert-isolate-subtree" style="background: #eee; padding: 1rem; margin: 1rem 0" inert>
+        This element and its entire subtree is already inert, and thus hidden from assistive technologies.
+        <p>
+          <label for="inert-input-is" class="inline-label">
+            An inert input
+          </label>
+          <input id="inert-input-is">
+        </p>
+        <p>
+          <button id="inert-button-is">
+            An inert button
+          </button>
+        </p>
+      </div>
+      <div id="isolate-subtree-alt-container" class="trap">
+        <p>
+          Here is a second container for our focus trap <a href="#">with</a> <a href="#">some</a> <a href="#">focusable</a> parts.
+        </p>
+      </div>
+      <div id="isolate-subtree-sibling" class="trap" style="margin: 1rem 0">
+        This is a second, unrelated trap.
+        <p>
+          <label for="sibling-input-is" class="inline-label">
+            An unrelated input
+          </label>
+          <input id="sibling-input-is">
+        </p>
+        <p>
+          <button id="deactivate-second-isolate-subtree">
+            Deactivate second, unrelated trap
+          </button>
+        </p>
+      </div>
+
+      <p>
+        <a href="https://github.com/focus-trap/focus-trap/blob/master/docs/js/isolate-subtree.js">View demo source <span aria-hidden="true">&gt;&gt;</span></a>
+      </p>
+    </div>
+
     <div id="demo-radio">
       <h2 id="radio-heading">radio group</h2>
       <p>
@@ -613,8 +697,7 @@
       </p>
       <p>
         ⚠️ As it executes inside the iframe, it cannot prevent clicks on links
-        in the parent document. This is the same drawback as you might experience
-        when putting a focus-trap <a href="#demo-in-open-shadow-dom">inside a Shadow DOM</a>.
+        in the parent document.
       </p>
       <p>
         <button id="activate-in-iframe" aria-describedby="in-iframe-heading">
