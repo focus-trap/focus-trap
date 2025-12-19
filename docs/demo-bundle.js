@@ -1741,7 +1741,7 @@ var focusTrapDemoBundle = (function () {
 	      for (_iterator.s(); !(_step = _iterator.n()).done;) {
 	        var container = _step.value;
 	        containerAncestors.add(container);
-	        var insideShadowRoot = container.getRootNode() instanceof ShadowRoot;
+	        var insideShadowRoot = typeof ShadowRoot !== 'undefined' && container.getRootNode() instanceof ShadowRoot;
 	        var current = container;
 	        while (current) {
 	          containerAncestors.add(current);
@@ -1752,7 +1752,7 @@ var focusTrapDemoBundle = (function () {
 	          } else if (!parent && insideShadowRoot) {
 	            siblings = current.getRootNode().children;
 	            parent = current.getRootNode().host;
-	            insideShadowRoot = parent.getRootNode() instanceof ShadowRoot;
+	            insideShadowRoot = typeof ShadowRoot !== 'undefined' && parent.getRootNode() instanceof ShadowRoot;
 	          }
 
 	          // Add all the children, we'll remove container lineage later.

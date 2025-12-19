@@ -906,7 +906,9 @@ const createFocusTrap = function (elements, userOptions) {
     // Compile all elements adjacent to the focus trap containers & lineage.
     for (const container of containers) {
       containerAncestors.add(container);
-      let insideShadowRoot = container.getRootNode() instanceof ShadowRoot;
+      let insideShadowRoot =
+        typeof ShadowRoot !== 'undefined' &&
+        container.getRootNode() instanceof ShadowRoot;
       let current = container;
       while (current) {
         containerAncestors.add(current);
@@ -918,7 +920,9 @@ const createFocusTrap = function (elements, userOptions) {
         } else if (!parent && insideShadowRoot) {
           siblings = current.getRootNode().children;
           parent = current.getRootNode().host;
-          insideShadowRoot = parent.getRootNode() instanceof ShadowRoot;
+          insideShadowRoot =
+            typeof ShadowRoot !== 'undefined' &&
+            parent.getRootNode() instanceof ShadowRoot;
         }
 
         // Add all the children, we'll remove container lineage later.
