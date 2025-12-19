@@ -1086,6 +1086,7 @@ const createFocusTrap = function (elements, userOptions) {
       // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
       // This allows the next trap down to update its tabbable nodes properly.
       trap._setSubtreeIsolation(false);
+      state.alreadyInert.clear();
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
 
@@ -1228,10 +1229,6 @@ const createFocusTrap = function (elements, userOptions) {
               }
             }
           });
-
-          if (!isEnabled) {
-            state.alreadyInert.clear();
-          }
         }
       },
     },

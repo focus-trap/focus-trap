@@ -113,4 +113,56 @@ describe('isolateSubtrees', () => {
     expect(activateFirst.inert).not.toBe(true);
     expect(nestedTrapEl.inert).not.toBe(true);
   });
+
+  it('should track elements that were inert before activation', async () => {
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
+    const { containerEl } = renderFixture('isolateSubtrees');
+
+    const firstTrapEl = containerEl.querySelector('#first-trap');
+    const activateFirst = containerEl.querySelector('#activate-first');
+    const deactivateFirst = containerEl.querySelector('#deactivate-first');
+    const firstTrap = createFocusTrap(firstTrapEl, { ...trapOptions });
+    activateFirst.addEventListener('click', firstTrap.activate);
+    deactivateFirst.addEventListener('click', firstTrap.deactivate);
+
+    const secondTrapEl = containerEl.querySelector('#second-trap');
+    const activateSecond = containerEl.querySelector('#activate-second');
+    const deactivateSecond = containerEl.querySelector('#deactivate-second');
+    const secondTrap = createFocusTrap(secondTrapEl, { ...trapOptions });
+    activateSecond.addEventListener('click', secondTrap.activate);
+    deactivateSecond.addEventListener('click', secondTrap.deactivate);
+
+    const nestedTrapEl = containerEl.querySelector('#nested-trap');
+    const activateNested = containerEl.querySelector('#activate-nested');
+    const deactivateNested = containerEl.querySelector('#deactivate-nested');
+    const nestedTrap = createFocusTrap(nestedTrapEl, { ...trapOptions });
+    activateNested.addEventListener('click', nestedTrap.activate);
+    deactivateNested.addEventListener('click', nestedTrap.deactivate);
+
+    const alreadyInert = containerEl.querySelector('#inert-sibling');
+
+    // Activate first trap.
+    userEvent.click(activateFirst);
+    await waitFor(() => expect(firstTrap.active).toBe(true));
+    expect(firstTrap.paused).toBe(false);
+    expect(alreadyInert.inert).toBe(true);
+
+    // Activate second trap.
+    userEvent.click(activateSecond);
+    await waitFor(() => expect(secondTrap.active).toBe(true));
+    expect(secondTrap.paused).toBe(false);
+    expect(firstTrap.paused).toBe(true);
+    expect(alreadyInert.inert).toBe(true);
+
+    // Deactivate second trap.
+    userEvent.click(deactivateSecond);
+    await waitFor(() => expect(secondTrap.active).toBe(false));
+    expect(firstTrap.paused).toBe(false);
+    expect(alreadyInert.inert).toBe(true);
+
+    // Deactivate first trap.
+    userEvent.click(deactivateFirst);
+    await waitFor(() => expect(firstTrap.active).toBe(false));
+    expect(alreadyInert.inert).toBe(true);
+  });
 });
