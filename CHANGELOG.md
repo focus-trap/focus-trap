@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.7.0
+
+### Minor Changes
+
+- 14b9155: Adds a new feature "isolateSubtrees", allowing focus-trap to prevent screen readers from reading content outside the trap
+
 ## 7.6.6
 
 ### Patch Changes
