@@ -5,7 +5,7 @@ on:
     branches: [master]
 
 permissions:
-  # `id-token` and `contents` are requried for NPM Trusted Publishing with OIDC
+  # `id-token` and `contents` are required for NPM Trusted Publishing with OIDC
   # @see https://docs.npmjs.com/trusted-publishers
   id-token: write
   contents: read
@@ -49,4 +49,4 @@ jobs:
         with:
           publish: npm run release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
