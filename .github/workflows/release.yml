@@ -52,4 +52,4 @@ jobs:
         with:
           publish: npm run release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
