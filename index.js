@@ -1233,18 +1233,42 @@ const createFocusTrap = function (elements, userOptions) {
         if (config.isolateSubtrees) {
           state.adjacentElements.forEach((el) => {
             if (isEnabled) {
-              // check both attribute and property to ensure initial state is captured
-              // correctly across different browsers and test environments (like JSDOM)
-              const isInitiallyInert = el.inert || el.hasAttribute('inert');
-              if (isInitiallyInert) {
-                state.alreadyInert.add(el);
+              switch (config.isolateSubtrees) {
+                case 'aria-hidden':
+                  // check both attribute and property to ensure initial state is captured
+                  // correctly across different browsers and test environments (like JSDOM)
+                  if (
+                    el.ariaHidden ||
+                    el.getAttribute('aria-hidden')?.toLowerCase() === 'true'
+                  ) {
+                    state.alreadyInert.add(el);
+                  }
+
+                  el.ariaHidden = true;
+                  break;
+
+                default:
+                  // check both attribute and property to ensure initial state is captured
+                  // correctly across different browsers and test environments (like JSDOM)
+                  if (el.inert || el.hasAttribute('inert')) {
+                    state.alreadyInert.add(el);
+                  }
+                  el.inert = true;
+                  break;
               }
-              el.inert = true;
             } else {
               if (state.alreadyInert.has(el)) {
                 // do nothing
               } else {
-                el.inert = false;
+                switch (config.isolateSubtrees) {
+                  case 'aria-hidden':
+                    el.ariaHidden = null;
+                    break;
+
+                  default:
+                    el.inert = false;
+                    break;
+                }
               }
             }
           });
