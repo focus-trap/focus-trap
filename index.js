@@ -1238,7 +1238,7 @@ const createFocusTrap = function (elements, userOptions) {
                   // check both attribute and property to ensure initial state is captured
                   // correctly across different browsers and test environments (like JSDOM)
                   if (
-                    el.ariaHidden ||
+                    el.ariaHidden === 'true' ||
                     el.getAttribute('aria-hidden')?.toLowerCase() === 'true'
                   ) {
                     state.alreadyInert.add(el);
