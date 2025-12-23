@@ -274,14 +274,14 @@ Default: `true`. Delays the autofocus to the next execution frame when the focus
 ##### isolateSubtrees
 
 ```typescript
-boolean
+boolean | 'inert' | 'aria-hidden'
 ```
 
-Default: `false`. Isolates the portion of the DOM tree containing the focus trap when activated. This prevents screen readers and other assistive technologies from accessing page content outside of the trap. When the trap is deactivated, any elements that were `inert` prior to activation will be left `inert`.
+Default: `false`. Isolates the portion of the DOM tree containing the focus trap when activated. This prevents screen readers and other assistive technologies from accessing page content outside of the trap. `"aria-hidden"` will utilize the `aria-hidden` attribute. `true`, `"inert"`, and all other truthy values will use the `inert` attribute. When the trap is deactivated, any elements that were `inert` or `aria-hidden` prior to activation will be left in their original state.
 
-🔺 Note that when this option is `true`, all user interactions outside of the trapped element are prevented and content will be inaccessible to screen readers. This prevents the use of the `clickOutsideDeactivates` feature.
+🔺 Note that when this option uses `inert`, all user interactions outside of the trapped element are prevented and content will be inaccessible to screen readers. This prevents the use of the `clickOutsideDeactivates` feature.
 
-🔺 Note that when this option is `true` and the trap is activated, elements that are siblings to either the trap's container or any of its ancestor elements have `inert` applied. If any of these elements is already `inert`, the trap will not remove `inert` from that element when deactivating the trap.
+🔺 Note that when this option is used and the trap is activated, elements that are siblings to either the trap's container or any of its ancestor elements have `inert` or `aria-hidden` applied. If any of these elements is already `inert` or `aria-hidden`, the trap will not remove the attribute from that element when deactivating the trap. Manual changes to these attributes while a trap is active is likely to cause headaches.
 
 ##### document
 
