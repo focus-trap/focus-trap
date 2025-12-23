@@ -551,4 +551,28 @@ describe('isolateSubtrees', () => {
     expect(inertSibling.getAttribute('aria-hidden') === 'true').toBe(true);
     expect(ordinarySibling.getAttribute('aria-hidden') === 'true').toBe(false);
   });
+
+  it('should deactivate trap when using aria-hidden in combination with clickOutsideDeactivates', async () => {
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
+    const { containerEl } = renderFixture('isolateSubtrees');
+
+    const firstTrapEl = containerEl.querySelector('#first-trap');
+    const firstTrap = createFocusTrap(firstTrapEl, {
+      ...trapOptions,
+      isolateSubtrees: 'aria-hidden',
+      clickOutsideDeactivates: true,
+    });
+    const activateFirst = containerEl.querySelector('#activate-first');
+    activateFirst.addEventListener('click', firstTrap.activate);
+
+    const ordinarySibling = containerEl.querySelector('#ordinary-sibling');
+
+    userEvent.click(activateFirst);
+    await waitFor(() => expect(firstTrap.active).toBe(true));
+    expect(ordinarySibling.getAttribute('aria-hidden') === 'true').toBe(true);
+
+    userEvent.click(ordinarySibling);
+    await waitFor(() => expect(firstTrap.active).toBe(false));
+    expect(ordinarySibling.getAttribute('aria-hidden') === 'true').toBe(false);
+  })
 });
