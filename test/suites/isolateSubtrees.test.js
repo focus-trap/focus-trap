@@ -315,17 +315,13 @@ describe('isolateSubtrees', () => {
     // Activate first trap.
     expect(secondTrapEl.ariaHidden).not.toBe('true');
     userEvent.click(activateFirst);
-    await waitFor(() =>
-      expect(secondTrapEl.ariaHidden).toBe('true')
-    );
+    await waitFor(() => expect(secondTrapEl.ariaHidden).toBe('true'));
     expect(activateFirst.ariaHidden).toBe('true');
     expect(nestedTrapEl.ariaHidden).not.toBe('true');
 
     // Deactivate first trap.
     userEvent.click(deactivateFirst);
-    await waitFor(() =>
-      expect(secondTrapEl.ariaHidden).not.toBe('true')
-    );
+    await waitFor(() => expect(secondTrapEl.ariaHidden).not.toBe('true'));
     expect(activateFirst.ariaHidden).not.toBe('true');
     expect(nestedTrapEl.ariaHidden).not.toBe('true');
   });
@@ -366,49 +362,35 @@ describe('isolateSubtrees', () => {
 
     // Activate first trap.
     userEvent.click(activateFirst);
-    await waitFor(() =>
-      expect(secondTrapEl.ariaHidden).toBe('true')
-    );
+    await waitFor(() => expect(secondTrapEl.ariaHidden).toBe('true'));
     expect(firstTrapEl.ariaHidden).not.toBe('true');
     expect(activateFirst.ariaHidden).toBe('true');
     expect(nestedTrapEl.ariaHidden).not.toBe('true');
 
     // Activate second trap.
     userEvent.click(activateSecond);
-    await waitFor(() =>
-      expect(secondTrapEl.ariaHidden).not.toBe('true')
-    );
+    await waitFor(() => expect(secondTrapEl.ariaHidden).not.toBe('true'));
     expect(firstTrapEl.ariaHidden).toBe('true');
     expect(activateFirst.ariaHidden).toBe('true');
 
     // Deactivate second trap.
     userEvent.click(deactivateSecond);
-    await waitFor(() =>
-      expect(secondTrapEl.ariaHidden).toBe('true')
-    );
+    await waitFor(() => expect(secondTrapEl.ariaHidden).toBe('true'));
     expect(firstTrapEl.ariaHidden).not.toBe('true');
     expect(activateFirst.ariaHidden).toBe('true');
     expect(nestedTrapEl.ariaHidden).not.toBe('true');
 
     // Activate nested trap.
     userEvent.click(activateNested);
-    await waitFor(() =>
-      expect(activateNested.ariaHidden).toBe('true')
-    );
+    await waitFor(() => expect(activateNested.ariaHidden).toBe('true'));
 
     // Deactivate nested trap.
     userEvent.click(deactivateNested);
-    await waitFor(() =>
-      expect(activateNested.ariaHidden).not.toBe(
-        'true'
-      )
-    );
+    await waitFor(() => expect(activateNested.ariaHidden).not.toBe('true'));
 
     // Deactivate first trap.
     userEvent.click(deactivateFirst);
-    await waitFor(() =>
-      expect(secondTrapEl.ariaHidden).not.toBe('true')
-    );
+    await waitFor(() => expect(secondTrapEl.ariaHidden).not.toBe('true'));
     expect(activateFirst.ariaHidden).not.toBe('true');
     expect(nestedTrapEl.ariaHidden).not.toBe('true');
   });
