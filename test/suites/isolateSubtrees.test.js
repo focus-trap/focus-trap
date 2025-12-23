@@ -574,5 +574,5 @@ describe('isolateSubtrees', () => {
     userEvent.click(ordinarySibling);
     await waitFor(() => expect(firstTrap.active).toBe(false));
     expect(ordinarySibling.getAttribute('aria-hidden') === 'true').toBe(false);
-  })
+  });
 });
