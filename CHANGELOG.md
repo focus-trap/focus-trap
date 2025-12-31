@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.7.1
+
+### Patch Changes
+
+- a386578: Bump tabbable dependency for improved inert handling
+
 ## 7.7.0
 
 ### Minor Changes
