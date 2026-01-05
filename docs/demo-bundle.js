@@ -1,7 +1,6 @@
 /*!
 * focus-trap demo bundle
 */
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -2021,7 +2020,7 @@ var focusTrapDemoBundle = (function () {
 	                  if (el.ariaHidden === 'true' || ((_el$getAttribute = el.getAttribute('aria-hidden')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.toLowerCase()) === 'true') {
 	                    state.alreadyInert.add(el);
 	                  }
-	                  el.ariaHidden = true;
+	                  el.setAttribute('aria-hidden', 'true');
 	                  break;
 	                default:
 	                  // check both attribute and property to ensure initial state is captured
@@ -2029,17 +2028,17 @@ var focusTrapDemoBundle = (function () {
 	                  if (el.inert || el.hasAttribute('inert')) {
 	                    state.alreadyInert.add(el);
 	                  }
-	                  el.inert = true;
+	                  el.setAttribute('inert', true);
 	                  break;
 	              }
 	            } else {
 	              if (state.alreadyInert.has(el)) ; else {
 	                switch (config.isolateSubtrees) {
 	                  case 'aria-hidden':
-	                    el.ariaHidden = null;
+	                    el.removeAttribute('aria-hidden');
 	                    break;
 	                  default:
-	                    el.inert = false;
+	                    el.removeAttribute('inert');
 	                    break;
 	                }
 	              }

@@ -1244,7 +1244,7 @@ const createFocusTrap = function (elements, userOptions) {
                     state.alreadyInert.add(el);
                   }
 
-                  el.ariaHidden = true;
+                  el.setAttribute('aria-hidden', 'true');
                   break;
 
                 default:
@@ -1253,7 +1253,7 @@ const createFocusTrap = function (elements, userOptions) {
                   if (el.inert || el.hasAttribute('inert')) {
                     state.alreadyInert.add(el);
                   }
-                  el.inert = true;
+                  el.setAttribute('inert', true);
                   break;
               }
             } else {
@@ -1262,11 +1262,11 @@ const createFocusTrap = function (elements, userOptions) {
               } else {
                 switch (config.isolateSubtrees) {
                   case 'aria-hidden':
-                    el.ariaHidden = null;
+                    el.removeAttribute('aria-hidden');
                     break;
 
                   default:
-                    el.inert = false;
+                    el.removeAttribute('inert');
                     break;
                 }
               }
