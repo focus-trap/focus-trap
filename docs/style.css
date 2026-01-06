@@ -90,3 +90,7 @@ kbd {
   padding: 1em 2em;
   border: 1px solid #ccc;
 }
+
+[inert], [aria-hidden] {
+  opacity: 0.5;
+}
