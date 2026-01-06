@@ -1109,7 +1109,7 @@ var focusTrapDemoBundle = (function () {
 	    // references to nodes that are siblings to the ancestors of this trap's containers.
 	    /** @type {Set<HTMLElement>} */
 	    adjacentElements: new Set(),
-	    // references to nodes that were inert before the trap was activated.
+	    // references to nodes that were inert or aria-hidden before the trap was activated.
 	    /** @type {Set<HTMLElement>} */
 	    alreadySilent: new Set(),
 	    nodeFocusedBeforeActivation: null,
