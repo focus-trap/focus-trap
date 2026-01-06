@@ -1111,7 +1111,7 @@ var focusTrapDemoBundle = (function () {
 	    adjacentElements: new Set(),
 	    // references to nodes that were inert before the trap was activated.
 	    /** @type {Set<HTMLElement>} */
-	    alreadyInert: new Set(),
+	    alreadySilent: new Set(),
 	    nodeFocusedBeforeActivation: null,
 	    mostRecentlyFocusedNode: null,
 	    active: false,
@@ -1727,7 +1727,7 @@ var focusTrapDemoBundle = (function () {
 	      trap._setSubtreeIsolation(false);
 	    }
 	    state.adjacentElements.clear();
-	    state.alreadyInert.clear();
+	    state.alreadySilent.clear();
 
 	    // Collect all ancestors of all containers to avoid redundant processing.
 	    var containerAncestors = new Set();
@@ -1913,7 +1913,7 @@ var focusTrapDemoBundle = (function () {
 	      if (!state.paused) {
 	        trap._setSubtreeIsolation(false);
 	      }
-	      state.alreadyInert.clear();
+	      state.alreadySilent.clear();
 	      removeListeners();
 	      state.active = false;
 	      state.paused = false;
@@ -2018,7 +2018,7 @@ var focusTrapDemoBundle = (function () {
 	                  // check both attribute and property to ensure initial state is captured
 	                  // correctly across different browsers and test environments (like JSDOM)
 	                  if (el.ariaHidden === 'true' || ((_el$getAttribute = el.getAttribute('aria-hidden')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.toLowerCase()) === 'true') {
-	                    state.alreadyInert.add(el);
+	                    state.alreadySilent.add(el);
 	                  }
 	                  el.setAttribute('aria-hidden', 'true');
 	                  break;
@@ -2026,13 +2026,13 @@ var focusTrapDemoBundle = (function () {
 	                  // check both attribute and property to ensure initial state is captured
 	                  // correctly across different browsers and test environments (like JSDOM)
 	                  if (el.inert || el.hasAttribute('inert')) {
-	                    state.alreadyInert.add(el);
+	                    state.alreadySilent.add(el);
 	                  }
 	                  el.setAttribute('inert', true);
 	                  break;
 	              }
 	            } else {
-	              if (state.alreadyInert.has(el)) ; else {
+	              if (state.alreadySilent.has(el)) ; else {
 	                switch (config.isolateSubtrees) {
 	                  case 'aria-hidden':
 	                    el.removeAttribute('aria-hidden');

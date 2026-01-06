@@ -170,7 +170,7 @@ const createFocusTrap = function (elements, userOptions) {
 
     // references to nodes that were inert before the trap was activated.
     /** @type {Set<HTMLElement>} */
-    alreadyInert: new Set(),
+    alreadySilent: new Set(),
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -896,7 +896,7 @@ const createFocusTrap = function (elements, userOptions) {
       trap._setSubtreeIsolation(false);
     }
     state.adjacentElements.clear();
-    state.alreadyInert.clear();
+    state.alreadySilent.clear();
 
     // Collect all ancestors of all containers to avoid redundant processing.
     const containerAncestors = new Set();
@@ -1099,7 +1099,7 @@ const createFocusTrap = function (elements, userOptions) {
       if (!state.paused) {
         trap._setSubtreeIsolation(false);
       }
-      state.alreadyInert.clear();
+      state.alreadySilent.clear();
       removeListeners();
       state.active = false;
       state.paused = false;
@@ -1241,7 +1241,7 @@ const createFocusTrap = function (elements, userOptions) {
                     el.ariaHidden === 'true' ||
                     el.getAttribute('aria-hidden')?.toLowerCase() === 'true'
                   ) {
-                    state.alreadyInert.add(el);
+                    state.alreadySilent.add(el);
                   }
 
                   el.setAttribute('aria-hidden', 'true');
@@ -1251,13 +1251,13 @@ const createFocusTrap = function (elements, userOptions) {
                   // check both attribute and property to ensure initial state is captured
                   // correctly across different browsers and test environments (like JSDOM)
                   if (el.inert || el.hasAttribute('inert')) {
-                    state.alreadyInert.add(el);
+                    state.alreadySilent.add(el);
                   }
                   el.setAttribute('inert', true);
                   break;
               }
             } else {
-              if (state.alreadyInert.has(el)) {
+              if (state.alreadySilent.has(el)) {
                 // do nothing
               } else {
                 switch (config.isolateSubtrees) {
