@@ -91,6 +91,7 @@ kbd {
   border: 1px solid #ccc;
 }
 
-[inert], [aria-hidden] {
+[inert],
+[aria-hidden="true"]:not(.icon) {
   opacity: 0.5;
 }
