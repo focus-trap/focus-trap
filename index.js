@@ -168,9 +168,9 @@ const createFocusTrap = function (elements, userOptions) {
     /** @type {Set<HTMLElement>} */
     adjacentElements: new Set(),
 
-    // references to nodes that were inert before the trap was activated.
+    // references to nodes that were inert or aria-hidden before the trap was activated.
     /** @type {Set<HTMLElement>} */
-    alreadyInert: new Set(),
+    alreadySilent: new Set(),
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -896,7 +896,7 @@ const createFocusTrap = function (elements, userOptions) {
       trap._setSubtreeIsolation(false);
     }
     state.adjacentElements.clear();
-    state.alreadyInert.clear();
+    state.alreadySilent.clear();
 
     // Collect all ancestors of all containers to avoid redundant processing.
     const containerAncestors = new Set();
@@ -1099,7 +1099,7 @@ const createFocusTrap = function (elements, userOptions) {
       if (!state.paused) {
         trap._setSubtreeIsolation(false);
       }
-      state.alreadyInert.clear();
+      state.alreadySilent.clear();
       removeListeners();
       state.active = false;
       state.paused = false;
@@ -1233,18 +1233,42 @@ const createFocusTrap = function (elements, userOptions) {
         if (config.isolateSubtrees) {
           state.adjacentElements.forEach((el) => {
             if (isEnabled) {
-              // check both attribute and property to ensure initial state is captured
-              // correctly across different browsers and test environments (like JSDOM)
-              const isInitiallyInert = el.inert || el.hasAttribute('inert');
-              if (isInitiallyInert) {
-                state.alreadyInert.add(el);
+              switch (config.isolateSubtrees) {
+                case 'aria-hidden':
+                  // check both attribute and property to ensure initial state is captured
+                  // correctly across different browsers and test environments (like JSDOM)
+                  if (
+                    el.ariaHidden === 'true' ||
+                    el.getAttribute('aria-hidden')?.toLowerCase() === 'true'
+                  ) {
+                    state.alreadySilent.add(el);
+                  }
+
+                  el.setAttribute('aria-hidden', 'true');
+                  break;
+
+                default:
+                  // check both attribute and property to ensure initial state is captured
+                  // correctly across different browsers and test environments (like JSDOM)
+                  if (el.inert || el.hasAttribute('inert')) {
+                    state.alreadySilent.add(el);
+                  }
+                  el.setAttribute('inert', true);
+                  break;
               }
-              el.inert = true;
             } else {
-              if (state.alreadyInert.has(el)) {
+              if (state.alreadySilent.has(el)) {
                 // do nothing
               } else {
-                el.inert = false;
+                switch (config.isolateSubtrees) {
+                  case 'aria-hidden':
+                    el.removeAttribute('aria-hidden');
+                    break;
+
+                  default:
+                    el.removeAttribute('inert');
+                    break;
+                }
               }
             }
           });

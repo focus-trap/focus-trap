@@ -90,3 +90,8 @@ kbd {
   padding: 1em 2em;
   border: 1px solid #ccc;
 }
+
+[inert],
+[aria-hidden="true"]:not(.icon) {
+  opacity: 0.5;
+}

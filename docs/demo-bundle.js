@@ -1,7 +1,6 @@
 /*!
 * focus-trap demo bundle
 */
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -1110,9 +1109,9 @@ var focusTrapDemoBundle = (function () {
 	    // references to nodes that are siblings to the ancestors of this trap's containers.
 	    /** @type {Set<HTMLElement>} */
 	    adjacentElements: new Set(),
-	    // references to nodes that were inert before the trap was activated.
+	    // references to nodes that were inert or aria-hidden before the trap was activated.
 	    /** @type {Set<HTMLElement>} */
-	    alreadyInert: new Set(),
+	    alreadySilent: new Set(),
 	    nodeFocusedBeforeActivation: null,
 	    mostRecentlyFocusedNode: null,
 	    active: false,
@@ -1728,7 +1727,7 @@ var focusTrapDemoBundle = (function () {
 	      trap._setSubtreeIsolation(false);
 	    }
 	    state.adjacentElements.clear();
-	    state.alreadyInert.clear();
+	    state.alreadySilent.clear();
 
 	    // Collect all ancestors of all containers to avoid redundant processing.
 	    var containerAncestors = new Set();
@@ -1914,7 +1913,7 @@ var focusTrapDemoBundle = (function () {
 	      if (!state.paused) {
 	        trap._setSubtreeIsolation(false);
 	      }
-	      state.alreadyInert.clear();
+	      state.alreadySilent.clear();
 	      removeListeners();
 	      state.active = false;
 	      state.paused = false;
@@ -2012,17 +2011,36 @@ var focusTrapDemoBundle = (function () {
 	      value: function value(isEnabled) {
 	        if (config.isolateSubtrees) {
 	          state.adjacentElements.forEach(function (el) {
+	            var _el$getAttribute;
 	            if (isEnabled) {
-	              // check both attribute and property to ensure initial state is captured
-	              // correctly across different browsers and test environments (like JSDOM)
-	              var isInitiallyInert = el.inert || el.hasAttribute('inert');
-	              if (isInitiallyInert) {
-	                state.alreadyInert.add(el);
+	              switch (config.isolateSubtrees) {
+	                case 'aria-hidden':
+	                  // check both attribute and property to ensure initial state is captured
+	                  // correctly across different browsers and test environments (like JSDOM)
+	                  if (el.ariaHidden === 'true' || ((_el$getAttribute = el.getAttribute('aria-hidden')) === null || _el$getAttribute === void 0 ? void 0 : _el$getAttribute.toLowerCase()) === 'true') {
+	                    state.alreadySilent.add(el);
+	                  }
+	                  el.setAttribute('aria-hidden', 'true');
+	                  break;
+	                default:
+	                  // check both attribute and property to ensure initial state is captured
+	                  // correctly across different browsers and test environments (like JSDOM)
+	                  if (el.inert || el.hasAttribute('inert')) {
+	                    state.alreadySilent.add(el);
+	                  }
+	                  el.setAttribute('inert', true);
+	                  break;
 	              }
-	              el.inert = true;
 	            } else {
-	              if (state.alreadyInert.has(el)) ; else {
-	                el.inert = false;
+	              if (state.alreadySilent.has(el)) ; else {
+	                switch (config.isolateSubtrees) {
+	                  case 'aria-hidden':
+	                    el.removeAttribute('aria-hidden');
+	                    break;
+	                  default:
+	                    el.removeAttribute('inert');
+	                    break;
+	                }
 	              }
 	            }
 	          });
@@ -3000,8 +3018,28 @@ var focusTrapDemoBundle = (function () {
 	      altContainer.classList.remove('is-active');
 	    }
 	  });
+	  var focusTrap_ariaHidden = createFocusTrap$9([container, altContainer], {
+	    isolateSubtrees: 'aria-hidden',
+	    onActivate: function onActivate() {
+	      container.classList.add('is-active');
+	      altContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      container.classList.remove('is-active');
+	      altContainer.classList.remove('is-active');
+	    }
+	  });
 	  var nestedTrap = createFocusTrap$9(nestedTrapContainer, {
 	    isolateSubtrees: true,
+	    onActivate: function onActivate() {
+	      nestedTrapContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      nestedTrapContainer.classList.remove('is-active');
+	    }
+	  });
+	  var nestedTrap_ariaHidden = createFocusTrap$9(nestedTrapContainer, {
+	    isolateSubtrees: 'aria-hidden',
 	    onActivate: function onActivate() {
 	      nestedTrapContainer.classList.add('is-active');
 	    },
@@ -3018,12 +3056,33 @@ var focusTrapDemoBundle = (function () {
 	      secondTrapContainer.classList.remove('is-active');
 	    }
 	  });
+	  var secondTrap_ariaHidden = createFocusTrap$9(secondTrapContainer, {
+	    isolateSubtrees: 'aria-hidden',
+	    onActivate: function onActivate() {
+	      secondTrapContainer.classList.add('is-active');
+	    },
+	    onDeactivate: function onDeactivate() {
+	      secondTrapContainer.classList.remove('is-active');
+	    }
+	  });
 	  document.getElementById('activate-isolate-subtree').addEventListener('click', focusTrap.activate);
-	  document.getElementById('deactivate-isolate-subtree').addEventListener('click', focusTrap.deactivate);
+	  document.getElementById('activate-isolate-subtree-aria').addEventListener('click', focusTrap_ariaHidden.activate);
+	  document.getElementById('deactivate-isolate-subtree').addEventListener('click', function () {
+	    focusTrap.deactivate();
+	    focusTrap_ariaHidden.deactivate();
+	  });
 	  document.getElementById('activate-nested-isolate-subtree').addEventListener('click', nestedTrap.activate);
-	  document.getElementById('deactivate-nested-isolate-subtree').addEventListener('click', nestedTrap.deactivate);
+	  document.getElementById('activate-nested-isolate-subtree-aria').addEventListener('click', nestedTrap_ariaHidden.activate);
+	  document.getElementById('deactivate-nested-isolate-subtree').addEventListener('click', function () {
+	    nestedTrap.deactivate();
+	    nestedTrap_ariaHidden.deactivate();
+	  });
 	  document.getElementById('activate-second-isolate-subtree').addEventListener('click', secondTrap.activate);
-	  document.getElementById('deactivate-second-isolate-subtree').addEventListener('click', secondTrap.deactivate);
+	  document.getElementById('activate-second-isolate-subtree-aria').addEventListener('click', secondTrap_ariaHidden.activate);
+	  document.getElementById('deactivate-second-isolate-subtree').addEventListener('click', function () {
+	    secondTrap.deactivate();
+	    secondTrap_ariaHidden.deactivate();
+	  });
 	};
 
 	// needed for the async function we export here
