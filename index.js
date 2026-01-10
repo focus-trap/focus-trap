@@ -893,7 +893,7 @@ const createFocusTrap = function (elements, userOptions) {
   const collectAdjacentElements = function (containers) {
     // Re-activate all adjacent elements & clear previous collection.
     if (state.active && !state.paused) {
-      trap._setSubtreeIsolation?.(false);
+      trap._setSubtreeIsolation(false);
     }
     state.adjacentElements.clear();
     state.alreadySilent.clear();
@@ -1027,6 +1027,9 @@ const createFocusTrap = function (elements, userOptions) {
       const preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
       let revertState = false;
       if (preexistingTrap && !preexistingTrap.paused) {
+        // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+        //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+        //  since this is a trap we may not have created from this instance of the library
         preexistingTrap._setSubtreeIsolation?.(false);
         revertState = true;
       }
@@ -1049,7 +1052,7 @@ const createFocusTrap = function (elements, userOptions) {
           addListeners();
           updateObservedNodes();
           if (config.isolateSubtrees) {
-            trap._setSubtreeIsolation?.(true);
+            trap._setSubtreeIsolation(true);
           }
           onPostActivate?.();
         };
@@ -1070,6 +1073,9 @@ const createFocusTrap = function (elements, userOptions) {
           preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
           revertState
         ) {
+          // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+          //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+          //  since this is a trap we may not have created from this instance of the library
           preexistingTrap._setSubtreeIsolation?.(true);
         }
         throw error;
@@ -1097,7 +1103,7 @@ const createFocusTrap = function (elements, userOptions) {
       //
       // If this trap is not top of the stack, don't change any current isolation.
       if (!state.paused) {
-        trap._setSubtreeIsolation?.(false);
+        trap._setSubtreeIsolation(false);
       }
       state.alreadySilent.clear();
       removeListeners();
@@ -1177,7 +1183,7 @@ const createFocusTrap = function (elements, userOptions) {
         updateTabbableNodes();
 
         if (config.isolateSubtrees && !state.paused) {
-          trap._setSubtreeIsolation?.(true);
+          trap._setSubtreeIsolation(true);
         }
       }
 
@@ -1208,7 +1214,7 @@ const createFocusTrap = function (elements, userOptions) {
 
           removeListeners();
           updateObservedNodes();
-          trap._setSubtreeIsolation?.(false);
+          trap._setSubtreeIsolation(false);
 
           onPostPause?.();
         } else {
@@ -1217,7 +1223,7 @@ const createFocusTrap = function (elements, userOptions) {
 
           onUnpause?.();
 
-          trap._setSubtreeIsolation?.(true);
+          trap._setSubtreeIsolation(true);
           updateTabbableNodes();
           addListeners();
           updateObservedNodes();

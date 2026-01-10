@@ -1,7 +1,6 @@
 /*!
 * focus-trap demo bundle
 */
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -1718,8 +1717,7 @@ var focusTrapDemoBundle = (function () {
 	  var collectAdjacentElements = function collectAdjacentElements(containers) {
 	    // Re-activate all adjacent elements & clear previous collection.
 	    if (state.active && !state.paused) {
-	      var _trap$_setSubtreeIsol, _trap;
-	      (_trap$_setSubtreeIsol = (_trap = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol === void 0 || _trap$_setSubtreeIsol.call(_trap, false);
+	      trap._setSubtreeIsolation(false);
 	    }
 	    state.adjacentElements.clear();
 	    state.alreadySilent.clear();
@@ -1853,6 +1851,9 @@ var focusTrapDemoBundle = (function () {
 	      var revertState = false;
 	      if (preexistingTrap && !preexistingTrap.paused) {
 	        var _preexistingTrap$_set;
+	        // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+	        //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+	        //  since this is a trap we may not have created from this instance of the library
 	        (_preexistingTrap$_set = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set === void 0 || _preexistingTrap$_set.call(preexistingTrap, false);
 	        revertState = true;
 	      }
@@ -1871,8 +1872,7 @@ var focusTrapDemoBundle = (function () {
 	          addListeners();
 	          updateObservedNodes();
 	          if (config.isolateSubtrees) {
-	            var _trap$_setSubtreeIsol2, _trap2;
-	            (_trap$_setSubtreeIsol2 = (_trap2 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol2 === void 0 || _trap$_setSubtreeIsol2.call(_trap2, true);
+	            trap._setSubtreeIsolation(true);
 	          }
 	          onPostActivate === null || onPostActivate === void 0 || onPostActivate();
 	        };
@@ -1886,6 +1886,9 @@ var focusTrapDemoBundle = (function () {
 	        // we need to re-enable the prior trap's subtree isolation.
 	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState) {
 	          var _preexistingTrap$_set2;
+	          // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+	          //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+	          //  since this is a trap we may not have created from this instance of the library
 	          (_preexistingTrap$_set2 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set2 === void 0 || _preexistingTrap$_set2.call(preexistingTrap, true);
 	        }
 	        throw error;
@@ -1909,8 +1912,7 @@ var focusTrapDemoBundle = (function () {
 	      //
 	      // If this trap is not top of the stack, don't change any current isolation.
 	      if (!state.paused) {
-	        var _trap$_setSubtreeIsol3, _trap3;
-	        (_trap$_setSubtreeIsol3 = (_trap3 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol3 === void 0 || _trap$_setSubtreeIsol3.call(_trap3, false);
+	        trap._setSubtreeIsolation(false);
 	      }
 	      state.alreadySilent.clear();
 	      removeListeners();
@@ -1966,8 +1968,7 @@ var focusTrapDemoBundle = (function () {
 	      if (state.active) {
 	        updateTabbableNodes();
 	        if (config.isolateSubtrees && !state.paused) {
-	          var _trap$_setSubtreeIsol4, _trap4;
-	          (_trap$_setSubtreeIsol4 = (_trap4 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol4 === void 0 || _trap$_setSubtreeIsol4.call(_trap4, true);
+	          trap._setSubtreeIsolation(true);
 	        }
 	      }
 	      updateObservedNodes();
@@ -1987,20 +1988,18 @@ var focusTrapDemoBundle = (function () {
 	        }
 	        state.paused = paused;
 	        if (paused) {
-	          var _trap$_setSubtreeIsol5, _trap5;
 	          var onPause = getOption(options, 'onPause');
 	          var onPostPause = getOption(options, 'onPostPause');
 	          onPause === null || onPause === void 0 || onPause();
 	          removeListeners();
 	          updateObservedNodes();
-	          (_trap$_setSubtreeIsol5 = (_trap5 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol5 === void 0 || _trap$_setSubtreeIsol5.call(_trap5, false);
+	          trap._setSubtreeIsolation(false);
 	          onPostPause === null || onPostPause === void 0 || onPostPause();
 	        } else {
-	          var _trap$_setSubtreeIsol6, _trap6;
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
 	          onUnpause === null || onUnpause === void 0 || onUnpause();
-	          (_trap$_setSubtreeIsol6 = (_trap6 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol6 === void 0 || _trap$_setSubtreeIsol6.call(_trap6, true);
+	          trap._setSubtreeIsolation(true);
 	          updateTabbableNodes();
 	          addListeners();
 	          updateObservedNodes();
