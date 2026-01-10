@@ -377,15 +377,12 @@ var focusTrapDemoBundle = (function () {
 	}
 
 	/*!
-	* tabbable 6.3.0
+	* tabbable 6.4.0
 	* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 	*/
 	// NOTE: separate `:not()` selectors has broader browser support than the newer
 	//  `:not([inert], [inert] *)` (Feb 2023)
-	// CAREFUL: JSDom does not support `:not([inert] *)` as a selector; using it causes
-	//  the entire query to fail, resulting in no nodes found, which will break a lot
-	//  of things... so we have to rely on JS to identify nodes inside an inert container
-	var candidateSelectors = ['input:not([inert])', 'select:not([inert])', 'textarea:not([inert])', 'a[href]:not([inert])', 'button:not([inert])', '[tabindex]:not(slot):not([inert])', 'audio[controls]:not([inert])', 'video[controls]:not([inert])', '[contenteditable]:not([contenteditable="false"]):not([inert])', 'details>summary:first-of-type:not([inert])', 'details:not([inert])'];
+	var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
 	var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
 	var NoElement = typeof Element === 'undefined';
 	var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
@@ -398,7 +395,7 @@ var focusTrapDemoBundle = (function () {
 
 	/**
 	 * Determines if a node is inert or in an inert ancestor.
-	 * @param {Element} [node]
+	 * @param {Node} [node]
 	 * @param {boolean} [lookUp] If true and `node` is not inert, looks up at ancestors to
 	 *  see if any of them are inert. If false, only `node` itself is considered.
 	 * @returns {boolean} True if inert itself or by way of being in an inert ancestor.
@@ -418,10 +415,10 @@ var focusTrapDemoBundle = (function () {
 	  // NOTE: this could also be handled with `node.matches('[inert], :is([inert] *)')`
 	  //  if it weren't for `matches()` not being a function on shadow roots; the following
 	  //  code works for any kind of node
-	  // CAREFUL: JSDom does not appear to support certain selectors like `:not([inert] *)`
-	  //  so it likely would not support `:is([inert] *)` either...
-	  var result = inert || lookUp && node && _isInert(node.parentNode); // recursive
-
+	  var result = inert || lookUp && node && (
+	  // closest does not exist on shadow roots, so we fall back to a manual
+	  // lookup upward, in case it is not defined.
+	  typeof node.closest === 'function' ? node.closest('[inert]') : _isInert(node.parentNode));
 	  return result;
 	};
 
@@ -447,7 +444,7 @@ var focusTrapDemoBundle = (function () {
 	 */
 	var getCandidates = function getCandidates(el, includeContainer, filter) {
 	  // even if `includeContainer=false`, we still have to check it for inertness because
-	  //  if it's inert, all its children are inert
+	  //  if it's inert (either by itself or via its parent), then all its children are inert
 	  if (_isInert(el)) {
 	    return [];
 	  }
@@ -863,11 +860,7 @@ var focusTrapDemoBundle = (function () {
 	  return false;
 	};
 	var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable(options, node) {
-	  if (node.disabled ||
-	  // we must do an inert look up to filter out any elements inside an inert ancestor
-	  //  because we're limited in the type of selectors we can use in JSDom (see related
-	  //  note related to `candidateSelectors`)
-	  _isInert(node) || isHiddenInput(node) || isHidden(node, options) ||
+	  if (node.disabled || isHiddenInput(node) || isHidden(node, options) ||
 	  // For a details element with a summary, the summary element gets the focus
 	  isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
 	    return false;
@@ -958,7 +951,7 @@ var focusTrapDemoBundle = (function () {
 	  }
 	  return isNodeMatchingSelectorTabbable(options, node);
 	};
-	var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe').join(',');
+	var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe:not([inert]):not([inert] *)').join(',');
 	var isFocusable = function isFocusable(node, options) {
 	  options = options || {};
 	  if (!node) {
@@ -1857,7 +1850,11 @@ var focusTrapDemoBundle = (function () {
 	      var preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
 	      var revertState = false;
 	      if (preexistingTrap && !preexistingTrap.paused) {
-	        preexistingTrap._setSubtreeIsolation(false);
+	        var _preexistingTrap$_set;
+	        // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+	        //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+	        //  since this is a trap we may not have created from this instance of the library
+	        (_preexistingTrap$_set = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set === void 0 || _preexistingTrap$_set.call(preexistingTrap, false);
 	        revertState = true;
 	      }
 	      try {
@@ -1888,7 +1885,11 @@ var focusTrapDemoBundle = (function () {
 	        // If our activation throws an exception and the stack hasn't changed,
 	        // we need to re-enable the prior trap's subtree isolation.
 	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState) {
-	          preexistingTrap._setSubtreeIsolation(true);
+	          var _preexistingTrap$_set2;
+	          // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+	          //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+	          //  since this is a trap we may not have created from this instance of the library
+	          (_preexistingTrap$_set2 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set2 === void 0 || _preexistingTrap$_set2.call(preexistingTrap, true);
 	        }
 	        throw error;
 	      }

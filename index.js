@@ -1027,7 +1027,10 @@ const createFocusTrap = function (elements, userOptions) {
       const preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
       let revertState = false;
       if (preexistingTrap && !preexistingTrap.paused) {
-        preexistingTrap._setSubtreeIsolation(false);
+        // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+        //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+        //  since this is a trap we may not have created from this instance of the library
+        preexistingTrap._setSubtreeIsolation?.(false);
         revertState = true;
       }
 
@@ -1070,7 +1073,10 @@ const createFocusTrap = function (elements, userOptions) {
           preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
           revertState
         ) {
-          preexistingTrap._setSubtreeIsolation(true);
+          // [#1729] method MAY not exist if using `trapStack` option to share stack with older
+          //  versions of Focus-trap in the same DOM so use optional chaining here just in case
+          //  since this is a trap we may not have created from this instance of the library
+          preexistingTrap._setSubtreeIsolation?.(true);
         }
         throw error;
       }
