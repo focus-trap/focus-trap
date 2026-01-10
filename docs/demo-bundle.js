@@ -1,6 +1,7 @@
 /*!
 * focus-trap demo bundle
 */
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':9967/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var focusTrapDemoBundle = (function () {
 	'use strict';
 
@@ -377,15 +378,12 @@ var focusTrapDemoBundle = (function () {
 	}
 
 	/*!
-	* tabbable 6.3.0
+	* tabbable 6.4.0
 	* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 	*/
 	// NOTE: separate `:not()` selectors has broader browser support than the newer
 	//  `:not([inert], [inert] *)` (Feb 2023)
-	// CAREFUL: JSDom does not support `:not([inert] *)` as a selector; using it causes
-	//  the entire query to fail, resulting in no nodes found, which will break a lot
-	//  of things... so we have to rely on JS to identify nodes inside an inert container
-	var candidateSelectors = ['input:not([inert])', 'select:not([inert])', 'textarea:not([inert])', 'a[href]:not([inert])', 'button:not([inert])', '[tabindex]:not(slot):not([inert])', 'audio[controls]:not([inert])', 'video[controls]:not([inert])', '[contenteditable]:not([contenteditable="false"]):not([inert])', 'details>summary:first-of-type:not([inert])', 'details:not([inert])'];
+	var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
 	var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
 	var NoElement = typeof Element === 'undefined';
 	var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
@@ -398,7 +396,7 @@ var focusTrapDemoBundle = (function () {
 
 	/**
 	 * Determines if a node is inert or in an inert ancestor.
-	 * @param {Element} [node]
+	 * @param {Node} [node]
 	 * @param {boolean} [lookUp] If true and `node` is not inert, looks up at ancestors to
 	 *  see if any of them are inert. If false, only `node` itself is considered.
 	 * @returns {boolean} True if inert itself or by way of being in an inert ancestor.
@@ -418,10 +416,10 @@ var focusTrapDemoBundle = (function () {
 	  // NOTE: this could also be handled with `node.matches('[inert], :is([inert] *)')`
 	  //  if it weren't for `matches()` not being a function on shadow roots; the following
 	  //  code works for any kind of node
-	  // CAREFUL: JSDom does not appear to support certain selectors like `:not([inert] *)`
-	  //  so it likely would not support `:is([inert] *)` either...
-	  var result = inert || lookUp && node && _isInert(node.parentNode); // recursive
-
+	  var result = inert || lookUp && node && (
+	  // closest does not exist on shadow roots, so we fall back to a manual
+	  // lookup upward, in case it is not defined.
+	  typeof node.closest === 'function' ? node.closest('[inert]') : _isInert(node.parentNode));
 	  return result;
 	};
 
@@ -447,7 +445,7 @@ var focusTrapDemoBundle = (function () {
 	 */
 	var getCandidates = function getCandidates(el, includeContainer, filter) {
 	  // even if `includeContainer=false`, we still have to check it for inertness because
-	  //  if it's inert, all its children are inert
+	  //  if it's inert (either by itself or via its parent), then all its children are inert
 	  if (_isInert(el)) {
 	    return [];
 	  }
@@ -863,11 +861,7 @@ var focusTrapDemoBundle = (function () {
 	  return false;
 	};
 	var isNodeMatchingSelectorFocusable = function isNodeMatchingSelectorFocusable(options, node) {
-	  if (node.disabled ||
-	  // we must do an inert look up to filter out any elements inside an inert ancestor
-	  //  because we're limited in the type of selectors we can use in JSDom (see related
-	  //  note related to `candidateSelectors`)
-	  _isInert(node) || isHiddenInput(node) || isHidden(node, options) ||
+	  if (node.disabled || isHiddenInput(node) || isHidden(node, options) ||
 	  // For a details element with a summary, the summary element gets the focus
 	  isDetailsWithSummary(node) || isDisabledFromFieldset(node)) {
 	    return false;
@@ -958,7 +952,7 @@ var focusTrapDemoBundle = (function () {
 	  }
 	  return isNodeMatchingSelectorTabbable(options, node);
 	};
-	var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe').join(',');
+	var focusableCandidateSelector = /* #__PURE__ */candidateSelectors.concat('iframe:not([inert]):not([inert] *)').join(',');
 	var isFocusable = function isFocusable(node, options) {
 	  options = options || {};
 	  if (!node) {
@@ -1724,7 +1718,8 @@ var focusTrapDemoBundle = (function () {
 	  var collectAdjacentElements = function collectAdjacentElements(containers) {
 	    // Re-activate all adjacent elements & clear previous collection.
 	    if (state.active && !state.paused) {
-	      trap._setSubtreeIsolation(false);
+	      var _trap$_setSubtreeIsol, _trap;
+	      (_trap$_setSubtreeIsol = (_trap = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol === void 0 || _trap$_setSubtreeIsol.call(_trap, false);
 	    }
 	    state.adjacentElements.clear();
 	    state.alreadySilent.clear();
@@ -1857,7 +1852,8 @@ var focusTrapDemoBundle = (function () {
 	      var preexistingTrap = activeFocusTraps.getActiveTrap(trapStack);
 	      var revertState = false;
 	      if (preexistingTrap && !preexistingTrap.paused) {
-	        preexistingTrap._setSubtreeIsolation(false);
+	        var _preexistingTrap$_set;
+	        (_preexistingTrap$_set = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set === void 0 || _preexistingTrap$_set.call(preexistingTrap, false);
 	        revertState = true;
 	      }
 	      try {
@@ -1875,7 +1871,8 @@ var focusTrapDemoBundle = (function () {
 	          addListeners();
 	          updateObservedNodes();
 	          if (config.isolateSubtrees) {
-	            trap._setSubtreeIsolation(true);
+	            var _trap$_setSubtreeIsol2, _trap2;
+	            (_trap$_setSubtreeIsol2 = (_trap2 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol2 === void 0 || _trap$_setSubtreeIsol2.call(_trap2, true);
 	          }
 	          onPostActivate === null || onPostActivate === void 0 || onPostActivate();
 	        };
@@ -1888,7 +1885,8 @@ var focusTrapDemoBundle = (function () {
 	        // If our activation throws an exception and the stack hasn't changed,
 	        // we need to re-enable the prior trap's subtree isolation.
 	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState) {
-	          preexistingTrap._setSubtreeIsolation(true);
+	          var _preexistingTrap$_set2;
+	          (_preexistingTrap$_set2 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set2 === void 0 || _preexistingTrap$_set2.call(preexistingTrap, true);
 	        }
 	        throw error;
 	      }
@@ -1911,7 +1909,8 @@ var focusTrapDemoBundle = (function () {
 	      //
 	      // If this trap is not top of the stack, don't change any current isolation.
 	      if (!state.paused) {
-	        trap._setSubtreeIsolation(false);
+	        var _trap$_setSubtreeIsol3, _trap3;
+	        (_trap$_setSubtreeIsol3 = (_trap3 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol3 === void 0 || _trap$_setSubtreeIsol3.call(_trap3, false);
 	      }
 	      state.alreadySilent.clear();
 	      removeListeners();
@@ -1967,7 +1966,8 @@ var focusTrapDemoBundle = (function () {
 	      if (state.active) {
 	        updateTabbableNodes();
 	        if (config.isolateSubtrees && !state.paused) {
-	          trap._setSubtreeIsolation(true);
+	          var _trap$_setSubtreeIsol4, _trap4;
+	          (_trap$_setSubtreeIsol4 = (_trap4 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol4 === void 0 || _trap$_setSubtreeIsol4.call(_trap4, true);
 	        }
 	      }
 	      updateObservedNodes();
@@ -1987,18 +1987,20 @@ var focusTrapDemoBundle = (function () {
 	        }
 	        state.paused = paused;
 	        if (paused) {
+	          var _trap$_setSubtreeIsol5, _trap5;
 	          var onPause = getOption(options, 'onPause');
 	          var onPostPause = getOption(options, 'onPostPause');
 	          onPause === null || onPause === void 0 || onPause();
 	          removeListeners();
 	          updateObservedNodes();
-	          trap._setSubtreeIsolation(false);
+	          (_trap$_setSubtreeIsol5 = (_trap5 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol5 === void 0 || _trap$_setSubtreeIsol5.call(_trap5, false);
 	          onPostPause === null || onPostPause === void 0 || onPostPause();
 	        } else {
+	          var _trap$_setSubtreeIsol6, _trap6;
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
 	          onUnpause === null || onUnpause === void 0 || onUnpause();
-	          trap._setSubtreeIsolation(true);
+	          (_trap$_setSubtreeIsol6 = (_trap6 = trap)._setSubtreeIsolation) === null || _trap$_setSubtreeIsol6 === void 0 || _trap$_setSubtreeIsol6.call(_trap6, true);
 	          updateTabbableNodes();
 	          addListeners();
 	          updateObservedNodes();
