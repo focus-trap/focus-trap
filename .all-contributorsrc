@@ -393,6 +393,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ShGKme",
+      "name": "Grigorii K. Shartsev",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25978914?v=4",
+      "profile": "https://github.com/ShGKme",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
