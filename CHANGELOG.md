@@ -1,5 +1,15 @@
 # Changelog
 
+## 7.8.0
+
+### Minor Changes
+
+- c214581: Adds aria-hidden support to isolateSubtrees config option
+
+### Patch Changes
+
+- bb36e15: Fix undefined method `_setSubtreeIsolation` crash when using `trapStack` in DOM with older versions of Focus-trap ([#1729](https://github.com/focus-trap/focus-trap/issues/1729))
+
 ## 7.7.1
 
 ### Patch Changes
