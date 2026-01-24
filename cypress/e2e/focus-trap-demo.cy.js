@@ -958,6 +958,9 @@ describe('focus-trap', () => {
       cy.get('#delay').should(($div) => {
         expect($div[0].style.opacity).to.equal('1');
       });
+      cy.get('#delay')
+        .should('have.attr', 'data-hide-is-focused-on-post-activate')
+        .and('equal', 'true');
       cy.get('#close-button-delay').as('hideButtonInTrap').should('have.focus');
 
       // crucial focus-trap feature: mouse click is trapped
@@ -979,6 +982,9 @@ describe('focus-trap', () => {
       cy.get('#no-delay').should(($div) => {
         expect($div[0].style.opacity).to.equal('1');
       });
+      cy.get('#no-delay')
+        .should('have.attr', 'data-hide-is-focused-on-post-activate')
+        .and('equal', 'true');
       cy.get('#close-button-no-delay')
         .as('hideButtonInTrap')
         .should('have.focus');
