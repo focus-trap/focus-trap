@@ -11,7 +11,7 @@ module.exports = () => {
     onPostActivate() {
       // NOTE: this is used when running e2e tests to check that onPostActivate() is indeed being
       //  called AFTER the initial focus node has been focused, whether the initial focus is
-      //  delayed or not (`no-delay.js` demo has the same check)
+      //  delayed or not (`delay.js` demo has the same check)
       const hideEl = document.getElementById('close-button-no-delay');
       container.dataset.hideIsFocusedOnPostActivate =
         document.activeElement === hideEl;
