@@ -110,7 +110,7 @@
     "jest-watch-typeahead": "^3.0.1",
     "onchange": "^7.1.0",
     "prettier": "^3.8.1",
-    "rollup": "^4.55.3",
+    "rollup": "^4.57.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
     "start-server-and-test": "^2.1.3",
