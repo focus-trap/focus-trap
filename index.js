@@ -652,7 +652,7 @@ const createFocusTrap = function (elements, userOptions) {
     const target = getActualTarget(e);
 
     if (findContainerIndex(target, e) >= 0) {
-      // allow the click since it ocurred inside the trap
+      // allow the click since it occurred inside the trap
       return;
     }
 
@@ -847,9 +847,15 @@ const createFocusTrap = function (elements, userOptions) {
   // EVENT LISTENERS
   //
 
+  /**
+   * Adds listeners to the document necessary for trapping focus and attempts to set focus
+   *  to the configured initial focus node. Does nothing if the trap isn't active.
+   * @returns {Promise<void>} Resolved (always) once the initial focus node has been focused.
+   *  Also resolved if the trap isn't active.
+   */
   const addListeners = function () {
     if (!state.active) {
-      return;
+      return Promise.resolve();
     }
 
     // There can be only one listening focus trap at a time
@@ -857,11 +863,21 @@ const createFocusTrap = function (elements, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    state.delayInitialFocusTimer = config.delayInitialFocus
-      ? delay(function () {
+    /** @type {Promise<void>} */
+    let promise;
+    if (config.delayInitialFocus) {
+      // NOTE: Promise constructor callback is called synchronously, which is what we want
+      //  since we need to capture the timer ID immediately
+      promise = new Promise((resolve) => {
+        state.delayInitialFocusTimer = delay(function () {
           tryFocus(getInitialFocusNode());
-        })
-      : tryFocus(getInitialFocusNode());
+          resolve();
+        });
+      });
+    } else {
+      promise = Promise.resolve();
+      tryFocus(getInitialFocusNode());
+    }
 
     doc.addEventListener('focusin', checkFocusIn, true);
     doc.addEventListener('mousedown', checkPointerDown, {
@@ -882,7 +898,7 @@ const createFocusTrap = function (elements, userOptions) {
     });
     doc.addEventListener('keydown', checkEscapeKey);
 
-    return trap;
+    return promise;
   };
 
   /**
@@ -1045,15 +1061,20 @@ const createFocusTrap = function (elements, userOptions) {
 
         onActivate?.();
 
-        const finishActivation = () => {
+        const finishActivation = async () => {
           if (checkCanFocusTrap) {
             updateTabbableNodes();
           }
-          addListeners();
+
+          // NOTE: wait for initial focus node to get focused before we potentially isolate
+          //  the subtrees with aria-hidden while focus is still in some other subtree and
+          //  not yet in the trap, resulting in some browsers (e.g. Chrome) logging to the
+          //  console that they, "Blocked aria-hidden on an element because its descendant
+          //  retained focus..."
+          await addListeners();
+
+          trap._setSubtreeIsolation(true);
           updateObservedNodes();
-          if (config.isolateSubtrees) {
-            trap._setSubtreeIsolation(true);
-          }
           onPostActivate?.();
         };
 
@@ -1182,7 +1203,7 @@ const createFocusTrap = function (elements, userOptions) {
       if (state.active) {
         updateTabbableNodes();
 
-        if (config.isolateSubtrees && !state.paused) {
+        if (!state.paused) {
           trap._setSubtreeIsolation(true);
         }
       }
@@ -1213,8 +1234,8 @@ const createFocusTrap = function (elements, userOptions) {
           onPause?.();
 
           removeListeners();
-          updateObservedNodes();
           trap._setSubtreeIsolation(false);
+          updateObservedNodes();
 
           onPostPause?.();
         } else {
@@ -1223,12 +1244,22 @@ const createFocusTrap = function (elements, userOptions) {
 
           onUnpause?.();
 
-          trap._setSubtreeIsolation(true);
-          updateTabbableNodes();
-          addListeners();
-          updateObservedNodes();
+          const finishUnpause = async () => {
+            updateTabbableNodes();
 
-          onPostUnpause?.();
+            // NOTE: wait for initial focus node to get focused before we potentially isolate
+            //  the subtrees with aria-hidden while focus is still in some other subtree and
+            //  not yet in the trap, resulting in some browsers (e.g. Chrome) logging to the
+            //  console that they, "Blocked aria-hidden on an element because its descendant
+            //  retained focus..."
+            await addListeners();
+
+            trap._setSubtreeIsolation(true);
+            updateObservedNodes();
+            onPostUnpause?.();
+          };
+
+          finishUnpause();
         }
 
         return this;

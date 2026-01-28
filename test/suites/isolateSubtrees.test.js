@@ -114,7 +114,7 @@ describe('isolateSubtrees', () => {
     await waitFor(() =>
       expect(secondTrapEl.hasAttribute('inert')).not.toBe(true)
     );
-    expect(firstTrapEl.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(firstTrapEl.hasAttribute('inert')).toBe(true));
     expect(activateFirst.hasAttribute('inert')).toBe(true);
 
     // Deactivate second trap.
@@ -186,23 +186,29 @@ describe('isolateSubtrees', () => {
     userEvent.click(activateFirst);
     await waitFor(() => expect(firstTrap.active).toBe(true));
     expect(firstTrap.paused).toBe(false);
-    expect(inertSibling.hasAttribute('inert')).toBe(true);
-    expect(ordinarySibling.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(inertSibling.hasAttribute('inert')).toBe(true));
+    await waitFor(() =>
+      expect(ordinarySibling.hasAttribute('inert')).toBe(true)
+    );
 
     // Activate second trap.
     userEvent.click(activateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(true));
     expect(secondTrap.paused).toBe(false);
     expect(firstTrap.paused).toBe(true);
-    expect(inertSibling.hasAttribute('inert')).toBe(true);
-    expect(ordinarySibling.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(inertSibling.hasAttribute('inert')).toBe(true));
+    await waitFor(() =>
+      expect(ordinarySibling.hasAttribute('inert')).toBe(true)
+    );
 
     // Deactivate second trap.
     userEvent.click(deactivateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(false));
     expect(firstTrap.paused).toBe(false);
-    expect(inertSibling.hasAttribute('inert')).toBe(true);
-    expect(ordinarySibling.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(inertSibling.hasAttribute('inert')).toBe(true));
+    await waitFor(() =>
+      expect(ordinarySibling.hasAttribute('inert')).toBe(true)
+    );
 
     // Deactivate first trap.
     userEvent.click(deactivateFirst);
@@ -240,16 +246,20 @@ describe('isolateSubtrees', () => {
     firstTrap.activate();
     await waitFor(() => expect(firstTrap.active).toBe(true));
     expect(firstTrap.paused).toBe(false);
-    expect(inertSibling.hasAttribute('inert')).toBe(true);
-    expect(ordinarySibling.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(inertSibling.hasAttribute('inert')).toBe(true));
+    await waitFor(() =>
+      expect(ordinarySibling.hasAttribute('inert')).toBe(true)
+    );
 
     // Activate second trap.
     secondTrap.activate();
     await waitFor(() => expect(secondTrap.active).toBe(true));
     expect(secondTrap.paused).toBe(false);
     expect(firstTrap.paused).toBe(true);
-    expect(inertSibling.hasAttribute('inert')).toBe(true);
-    expect(ordinarySibling.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(inertSibling.hasAttribute('inert')).toBe(true));
+    await waitFor(() =>
+      expect(ordinarySibling.hasAttribute('inert')).toBe(true)
+    );
 
     // Deactivate first trap.
     firstTrap.deactivate();
@@ -264,8 +274,10 @@ describe('isolateSubtrees', () => {
     await waitFor(() => expect(nestedTrap.active).toBe(true));
     expect(nestedTrap.paused).toBe(false);
     expect(secondTrap.paused).toBe(true);
-    expect(inertSibling.hasAttribute('inert')).toBe(true);
-    expect(ordinarySibling.hasAttribute('inert')).toBe(true);
+    await waitFor(() => expect(inertSibling.hasAttribute('inert')).toBe(true));
+    await waitFor(() =>
+      expect(ordinarySibling.hasAttribute('inert')).toBe(true)
+    );
 
     // Deactivate second trap.
     secondTrap.deactivate();
@@ -442,7 +454,9 @@ describe('isolateSubtrees', () => {
     await waitFor(() =>
       expect(secondTrapEl.getAttribute('aria-hidden')).not.toBe('true')
     );
-    expect(firstTrapEl.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(firstTrapEl.getAttribute('aria-hidden')).toBe('true')
+    );
     expect(activateFirst.getAttribute('aria-hidden')).toBe('true');
 
     // Deactivate second trap.
@@ -524,15 +538,23 @@ describe('isolateSubtrees', () => {
     await waitFor(() => expect(secondTrap.active).toBe(true));
     expect(secondTrap.paused).toBe(false);
     expect(firstTrap.paused).toBe(true);
-    expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(inertSibling.getAttribute('aria-hidden')).toBe('true')
+    );
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
     // Deactivate second trap.
     userEvent.click(deactivateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(false));
     expect(firstTrap.paused).toBe(false);
-    expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(inertSibling.getAttribute('aria-hidden')).toBe('true')
+    );
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
     // Deactivate first trap.
     userEvent.click(deactivateFirst);
@@ -570,16 +592,24 @@ describe('isolateSubtrees', () => {
     firstTrap.activate();
     await waitFor(() => expect(firstTrap.active).toBe(true));
     expect(firstTrap.paused).toBe(false);
-    expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(inertSibling.getAttribute('aria-hidden')).toBe('true')
+    );
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
     // Activate second trap.
     secondTrap.activate();
     await waitFor(() => expect(secondTrap.active).toBe(true));
     expect(secondTrap.paused).toBe(false);
     expect(firstTrap.paused).toBe(true);
-    expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(inertSibling.getAttribute('aria-hidden')).toBe('true')
+    );
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
     // Deactivate first trap.
     firstTrap.deactivate();
@@ -594,8 +624,12 @@ describe('isolateSubtrees', () => {
     await waitFor(() => expect(nestedTrap.active).toBe(true));
     expect(nestedTrap.paused).toBe(false);
     expect(secondTrap.paused).toBe(true);
-    expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(inertSibling.getAttribute('aria-hidden')).toBe('true')
+    );
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
     // Deactivate second trap.
     secondTrap.deactivate();
