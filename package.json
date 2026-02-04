@@ -93,7 +93,7 @@
     "babel-jest": "^30.1.2",
     "babel-loader": "^10.0.0",
     "cross-env": "^10.1.0",
-    "cypress": "^15.9.0",
+    "cypress": "^15.10.0",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
