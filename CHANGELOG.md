@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.1
+
+### Patch Changes
+
+- 7d5010e: Loosen checkCanFocusTrap Promise resolution type to `unknown` to make it easier to use `Promise.all()` or `Promise.allSettled()` as the returned Promise (`Promise<void>` was causing issues because those Promise APIs do not resolve with a `void` value).
+
 ## 8.0.0
 
 ### Major Changes
