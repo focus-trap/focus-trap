@@ -391,7 +391,7 @@ These options are used to override the focus trap's default behavior for this pa
 
 - **onActivate** `{() => void}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 - **onPostActivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
-- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
+- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<unknown>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
 
 ### trap.deactivate()
 
