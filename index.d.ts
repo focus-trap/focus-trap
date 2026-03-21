@@ -71,13 +71,16 @@ declare module 'focus-trap' {
      * It should return a promise that only resolves once all the listed `containers`
      * are able to receive focus.
      *
-     * The purpose of this is to prevent early focus-trap activation on animated
+     * This option exists to prevent early focus-trap activation on animated
      * dialogs that fade in and out. When a dialog fades in, there is a brief delay
      * between the activation of the trap and the trap element being focusable.
+     *
+     * 🔺 It does not matter whether the Promise resolves or rejects, only that it
+     * settles. A rejected Promise will not result in cancellation of trap activation.
      */
     checkCanFocusTrap?: (
       containers: Array<HTMLElement | SVGElement>
-    ) => Promise<void>;
+    ) => Promise<unknown>;
 
     /**
      * A function that will be called **before** sending focus to the

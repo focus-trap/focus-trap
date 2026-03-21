@@ -144,10 +144,12 @@ Note that if [delayInitialFocus](#delayinitialfocus) is true, this handler will 
 ##### checkCanFocusTrap
 
 ```typescript
-(containers: Array<HTMLElement | SVGElement>) => Promise<void>
+(containers: Array<HTMLElement | SVGElement>) => Promise<unknown>
 ```
 
 Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option).
+
+🔺 It does not matter whether the Promise resolves or rejects, only that it settles. A rejected Promise will not result in cancellation of trap activation.
 
 ##### onDeactivate
 
@@ -389,7 +391,7 @@ These options are used to override the focus trap's default behavior for this pa
 
 - **onActivate** `{() => void}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
 - **onPostActivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
-- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<void>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
+- **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<unknown>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
 
 ### trap.deactivate()
 
