@@ -31,7 +31,7 @@
     "build": "npm run clean && npm run compile",
     "start": "npm run compile:demo -- --watch --environment SERVE,RELOAD",
     "start:cypress": "npm run compile:demo -- --environment SERVE,IS_CYPRESS_ENV:\"$CYPRESS_BROWSER\"",
-    "test:types": "tsc index.d.ts",
+    "test:types": "tsc",
     "test:unit": "jest",
     "test:coverage": "jest --coverage",
     "test:e2e": "ELECTRON_ENABLE_LOGGING=1 start-server-and-test start:cypress 9966 'cypress run --browser $CYPRESS_BROWSER --headless'",

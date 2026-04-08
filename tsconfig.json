@@ -1,2 +1,4 @@
 // required for ESLint config
-{}
+{
+  "files": ["index.d.ts"]
+}
