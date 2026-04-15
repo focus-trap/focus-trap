@@ -104,7 +104,7 @@
     "eslint-plugin-jest": "^29.15.2",
     "eslint-plugin-jest-dom": "^5.5.0",
     "eslint-plugin-testing-library": "^7.16.2",
-    "globals": "^17.4.0",
+    "globals": "^17.5.0",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "jest-watch-typeahead": "^3.0.1",
