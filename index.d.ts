@@ -27,7 +27,10 @@ declare module 'focus-trap' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Reserving ability to add/remove properties in the future
   export interface FocusTrapTabbableOptions extends TabbableCheckOptions {}
 
-  type LifecycleParameters = {
+  export type LifecycleParameters = {
+    /**
+     * The focus trap associated with the lifecycle hook.
+     */
     trap: FocusTrap;
   };
 
