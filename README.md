@@ -94,7 +94,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 ##### onActivate
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called **before** sending focus to the target element upon activation.
@@ -102,7 +102,7 @@ A function that will be called **before** sending focus to the target element up
 ##### onPostActivate
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called **after** sending focus to the target element upon activation **unless** initial focus is delayed because the  [delayInitialFocus](#delayinitialfocus) is true (default).
@@ -110,7 +110,7 @@ A function that will be called **after** sending focus to the target element upo
 ##### onPause
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called immediately after the trap's state is updated to be paused.
@@ -118,7 +118,7 @@ A function that will be called immediately after the trap's state is updated to 
 ##### onPostPause
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called after the trap has been completely paused and is no longer managing/trapping focus.
@@ -126,7 +126,7 @@ A function that will be called after the trap has been completely paused and is 
 ##### onUnpause
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called immediately after the trap's state is updated to be active again, but prior to updating its knowledge of what nodes are tabbable within its containers, and prior to actively managing/trapping focus.
@@ -134,7 +134,7 @@ A function that will be called immediately after the trap's state is updated to 
 ##### onPostUnpause
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called after the trap has been completely unpaused and is once again managing/trapping focus.
@@ -154,7 +154,7 @@ Animated dialogs have a small delay between when `onActivate` is called and when
 ##### onDeactivate
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
@@ -162,7 +162,7 @@ A function that will be called **before** returning focus to the node that had f
 ##### onPostDeactivate
 
 ```typescript
-() => void
+({ trap: FocusTrap }) => void
 ```
 
 A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
