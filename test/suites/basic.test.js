@@ -13,7 +13,7 @@ describe('basic', () => {
     };
   });
 
-  it('should run all lifecycle callbacks and pass the trap as an argument', async () => {
+  it('should run all lifecycle callbacks', async () => {
     /** @type {import('../tools/testingUtility.js').RenderResults} */
     const results = renderFixture('basic');
     const { activateEl, trapEl } = results;
