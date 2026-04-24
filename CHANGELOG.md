@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.1.0
+
+### Minor Changes
+
+- 642f7f2: Update lifecycle hooks to include the associated focus trap as a parameter.
+
 ## 8.0.1
 
 ### Patch Changes
