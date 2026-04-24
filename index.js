@@ -1059,7 +1059,7 @@ const createFocusTrap = function (elements, userOptions) {
         state.paused = false;
         state.nodeFocusedBeforeActivation = getActiveElement(doc);
 
-        onActivate?.();
+        onActivate?.({ trap });
 
         const finishActivation = async () => {
           if (checkCanFocusTrap) {
@@ -1075,7 +1075,7 @@ const createFocusTrap = function (elements, userOptions) {
 
           trap._setSubtreeIsolation(true);
           updateObservedNodes();
-          onPostActivate?.();
+          onPostActivate?.({ trap });
         };
 
         if (checkCanFocusTrap) {
@@ -1143,14 +1143,14 @@ const createFocusTrap = function (elements, userOptions) {
         'returnFocusOnDeactivate'
       );
 
-      onDeactivate?.();
+      onDeactivate?.({ trap });
 
       const finishDeactivation = () => {
         delay(() => {
           if (returnFocus) {
             tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
           }
-          onPostDeactivate?.();
+          onPostDeactivate?.({ trap });
         });
       };
 
@@ -1231,18 +1231,18 @@ const createFocusTrap = function (elements, userOptions) {
         if (paused) {
           const onPause = getOption(options, 'onPause');
           const onPostPause = getOption(options, 'onPostPause');
-          onPause?.();
+          onPause?.({ trap });
 
           removeListeners();
           trap._setSubtreeIsolation(false);
           updateObservedNodes();
 
-          onPostPause?.();
+          onPostPause?.({ trap });
         } else {
           const onUnpause = getOption(options, 'onUnpause');
           const onPostUnpause = getOption(options, 'onPostUnpause');
 
-          onUnpause?.();
+          onUnpause?.({ trap });
 
           const finishUnpause = async () => {
             updateTabbableNodes();
@@ -1256,7 +1256,7 @@ const createFocusTrap = function (elements, userOptions) {
 
             trap._setSubtreeIsolation(true);
             updateObservedNodes();
-            onPostUnpause?.();
+            onPostUnpause?.({ trap });
           };
 
           finishUnpause();

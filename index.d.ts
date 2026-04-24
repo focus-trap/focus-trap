@@ -27,42 +27,52 @@ declare module 'focus-trap' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- Reserving ability to add/remove properties in the future
   export interface FocusTrapTabbableOptions extends TabbableCheckOptions {}
 
+  /**
+   * Standard non-positional parameters for lifecycle hooks in {@link Options}.
+   */
+  export type LifecycleParameters = {
+    /**
+     * The focus trap associated with the lifecycle hook.
+     */
+    trap: FocusTrap;
+  };
+
   export interface Options {
     /**
      * A function that will be called **before** sending focus to the
      * target element upon activation.
      */
-    onActivate?: () => void;
+    onActivate?: (params: LifecycleParameters) => void;
 
     /**
      * A function that will be called **after** focus has been sent to the
      * target element upon activation.
      */
-    onPostActivate?: () => void;
+    onPostActivate?: (params: LifecycleParameters) => void;
 
     /**
      * A function that will be called immediately after the trap's state is updated to be paused.
      */
-    onPause?: () => void;
+    onPause?: (params: LifecycleParameters) => void;
 
     /**
      * A function that will be called after the trap has been completely paused and is no longer
      *  managing/trapping focus.
      */
-    onPostPause?: () => void;
+    onPostPause?: (params: LifecycleParameters) => void;
 
     /**
      * A function that will be called immediately after the trap's state is updated to be active
      *  again, but prior to updating its knowledge of what nodes are tabbable within its containers,
      *  and prior to actively managing/trapping focus.
      */
-    onUnpause?: () => void;
+    onUnpause?: (params: LifecycleParameters) => void;
 
     /**
      * A function that will be called after the trap has been completely unpaused and is once
      *  again managing/trapping focus.
      */
-    onPostUnpause?: () => void;
+    onPostUnpause?: (params: LifecycleParameters) => void;
 
     /**
      * A function for determining if it is safe to send focus to the focus trap
@@ -86,14 +96,14 @@ declare module 'focus-trap' {
      * A function that will be called **before** sending focus to the
      * trigger element upon deactivation.
      */
-    onDeactivate?: () => void;
+    onDeactivate?: (params: LifecycleParameters) => void;
 
     /**
      * A function that will be called after the trap is deactivated, after `onDeactivate`.
      * If `returnFocus` was set, it will be called **after** focus has been sent to the trigger
      * element upon deactivation; otherwise, it will be called after deactivation completes.
      */
-    onPostDeactivate?: () => void;
+    onPostDeactivate?: (params: LifecycleParameters) => void;
     /**
      * A function for determining if it is safe to send focus back to the `trigger` element.
      *

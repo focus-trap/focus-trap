@@ -94,7 +94,7 @@ Returns a new focus trap on `element` (one or more "containers" of tabbable node
 ##### onActivate
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called **before** sending focus to the target element upon activation.
@@ -102,7 +102,7 @@ A function that will be called **before** sending focus to the target element up
 ##### onPostActivate
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called **after** sending focus to the target element upon activation **unless** initial focus is delayed because the  [delayInitialFocus](#delayinitialfocus) is true (default).
@@ -110,7 +110,7 @@ A function that will be called **after** sending focus to the target element upo
 ##### onPause
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called immediately after the trap's state is updated to be paused.
@@ -118,7 +118,7 @@ A function that will be called immediately after the trap's state is updated to 
 ##### onPostPause
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called after the trap has been completely paused and is no longer managing/trapping focus.
@@ -126,7 +126,7 @@ A function that will be called after the trap has been completely paused and is 
 ##### onUnpause
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called immediately after the trap's state is updated to be active again, but prior to updating its knowledge of what nodes are tabbable within its containers, and prior to actively managing/trapping focus.
@@ -134,7 +134,7 @@ A function that will be called immediately after the trap's state is updated to 
 ##### onPostUnpause
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called after the trap has been completely unpaused and is once again managing/trapping focus.
@@ -154,7 +154,7 @@ Animated dialogs have a small delay between when `onActivate` is called and when
 ##### onDeactivate
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called **before** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation.
@@ -162,7 +162,7 @@ A function that will be called **before** returning focus to the node that had f
 ##### onPostDeactivate
 
 ```typescript
-() => void
+(params: LifecycleParameters) => void
 ```
 
 A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
@@ -389,8 +389,8 @@ Returns the `trap`.
 
 These options are used to override the focus trap's default behavior for this particular activation.
 
-- **onActivate** `{() => void}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
-- **onPostActivate** `{() => void}`: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
+- **onActivate** `{(params: LifecycleParameters) => void}`: Default: whatever you chose for `createOptions.onActivate`. `null` or `false` are the equivalent of a `noop`.
+- **onPostActivate** `{(params: LifecycleParameters) => void}`: Default: whatever you chose for `createOptions.onPostActivate`. `null` or `false` are the equivalent of a `noop`.
 - **checkCanFocusTrap** `{(containers: Array<HTMLElement | SVGElement>) => Promise<unknown>}`: Default: whatever you chose for `createOptions.checkCanFocusTrap`.
 
 ### trap.deactivate()
@@ -408,8 +408,8 @@ Returns the `trap`.
 These options are used to override the focus trap's default behavior for this particular deactivation.
 
 - **returnFocus** `{boolean}`: Default: whatever you set for `createOptions.returnFocusOnDeactivate`. If `true`, then the `setReturnFocus` option (specified when the trap was created) is used to determine where focus will be returned.
-- **onDeactivate** `{() => void}`: Default: whatever you set for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
-- **onPostDeactivate** `{() => void}`: Default: whatever you set for `createOptions.onPostDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **onDeactivate** `{(params: LifecycleParameters) => void}`: Default: whatever you set for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
+- **onPostDeactivate** `{(params: LifecycleParameters) => void}`: Default: whatever you set for `createOptions.onPostDeactivate`. `null` or `false` are the equivalent of a `noop`.
 - **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: Default: whatever you set for `createOptions.checkCanReturnFocus`. Not called if the `returnFocus` option is falsy. `trigger` is either the originally focused node prior to activation, or the result of the `setReturnFocus` configuration option.
 
 ### trap.pause()
@@ -436,8 +436,8 @@ This is useful in various cases, one of which is when you want one focus trap wi
 
 These options are used to override the focus trap's default behavior for this particular pausing.
 
-- **onPause** `{() => void}`: Default: whatever you chose for `createOptions.onPause`. `null` or `false` are the equivalent of a `noop`.
-- **onPostPause** `{() => void}`: Default: whatever you chose for `createOptions.onPostPause`. `null` or `false` are the equivalent of a `noop`.
+- **onPause** `{(params: LifecycleParameters) => void}`: Default: whatever you chose for `createOptions.onPause`. `null` or `false` are the equivalent of a `noop`.
+- **onPostPause** `{(params: LifecycleParameters) => void}`: Default: whatever you chose for `createOptions.onPostPause`. `null` or `false` are the equivalent of a `noop`.
 
 ### trap.unpause()
 
@@ -461,8 +461,8 @@ Returns the `trap`.
 
 These options are used to override the focus trap's default behavior for this particular unpausing.
 
-- **onUnpause** `{() => void}`: Default: whatever you chose for `createOptions.onUnpause`. `null` or `false` are the equivalent of a `noop`.
-- **onPostUnpause** `{() => void}`: Default: whatever you chose for `createOptions.onPostUnpause`. `null` or `false` are the equivalent of a `noop`.
+- **onUnpause** `{(params: LifecycleParameters) => void}`: Default: whatever you chose for `createOptions.onUnpause`. `null` or `false` are the equivalent of a `noop`.
+- **onPostUnpause** `{(params: LifecycleParameters) => void}`: Default: whatever you chose for `createOptions.onPostUnpause`. `null` or `false` are the equivalent of a `noop`.
 
 ### trap.updateContainerElements()
 
