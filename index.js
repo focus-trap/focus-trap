@@ -128,6 +128,7 @@ const createFocusTrap = function (elements, userOptions) {
     returnFocusOnDeactivate: true,
     escapeDeactivates: true,
     delayInitialFocus: true,
+    delayReturnFocus: true,
     isolateSubtrees: false,
     isKeyForward,
     isKeyBackward,
@@ -1137,6 +1138,7 @@ const createFocusTrap = function (elements, userOptions) {
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
       const checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
+      const delayReturnFocus = getOption(options, 'delayReturnFocus');
       const returnFocus = getOption(
         options,
         'returnFocus',
@@ -1144,14 +1146,19 @@ const createFocusTrap = function (elements, userOptions) {
       );
 
       onDeactivate?.({ trap });
+      const completeDeactivation = () => {
+        if (returnFocus) {
+          tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+        }
+        onPostDeactivate?.({ trap });
+      };
 
       const finishDeactivation = () => {
-        delay(() => {
-          if (returnFocus) {
-            tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
-          }
-          onPostDeactivate?.({ trap });
-        });
+        if (delayReturnFocus) {
+          delay(completeDeactivation);
+        } else {
+          completeDeactivation();
+        }
       };
 
       if (returnFocus && checkCanReturnFocus) {

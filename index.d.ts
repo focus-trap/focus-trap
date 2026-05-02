@@ -102,6 +102,8 @@ declare module 'focus-trap' {
      * A function that will be called after the trap is deactivated, after `onDeactivate`.
      * If `returnFocus` was set, it will be called **after** focus has been sent to the trigger
      * element upon deactivation; otherwise, it will be called after deactivation completes.
+     * The return-focus and this callback timing can be delayed by one frame via
+     * `delayReturnFocus` (default `true`).
      */
     onPostDeactivate?: (params: LifecycleParameters) => void;
     /**
@@ -118,6 +120,9 @@ declare module 'focus-trap' {
      *
      * This handler is **not** called if the `returnFocusOnDeactivate` configuration option
      * (or the `returnFocus` deactivation option) is falsy.
+     *
+     * 🔺 If `delayReturnFocus` is `true` (default), there is still a one-frame delay after
+     * this Promise settles before focus is returned and `onPostDeactivate` is called.
      */
     checkCanReturnFocus?: (trigger: HTMLElement | SVGElement) => Promise<void>;
 
@@ -199,8 +204,18 @@ declare module 'focus-trap' {
      * Default: `true`. Delays the autofocus when the focus trap is activated.
      * This prevents elements within the focusable element from capturing
      * the event that triggered the focus trap activation.
+     * Use this with `checkCanFocusTrap` to control activation timing.
      */
     delayInitialFocus?: boolean;
+    /**
+     * Default: `true`. Delays return focus when the focus trap is deactivated.
+     * This also delays `onPostDeactivate` by one frame.
+     * Set to `false` to skip that extra delay.
+     *
+     * Note that `checkCanReturnFocus`, if configured, still gates deactivation timing:
+     * deactivation waits for that Promise to settle before this option is applied.
+     */
+    delayReturnFocus?: boolean;
     /**
      * Default: `false`. Prevents screen readers from accessing content outside
      * the focus trap. Values of `true` or `'inert'` use the `inert` attribute,

@@ -150,6 +150,7 @@ Note that if [delayInitialFocus](#delayinitialfocus) is true, this handler will 
 Animated dialogs have a small delay between when `onActivate` is called and when the focus trap is focusable. `checkCanFocusTrap` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to the first tabbable node (in tab order) in the focus trap (or the node configured in the `initialFocus` option).
 
 🔺 It does not matter whether the Promise resolves or rejects, only that it settles. A rejected Promise will not result in cancellation of trap activation.
+🔺 This controls **when activation may proceed**. The separate [delayInitialFocus](#delayinitialfocus) option controls whether there is an additional one-frame delay before focus is sent once activation can proceed.
 
 ##### onDeactivate
 
@@ -167,6 +168,8 @@ A function that will be called **before** returning focus to the node that had f
 
 A function that will be called after the trap is deactivated, after `onDeactivate`. If the `returnFocus` deactivation option was set, it will be called **after** returning focus to the node that had focus prior to activation (or configured with the `setReturnFocus` option) upon deactivation; otherwise, it will be called after deactivation completes.
 
+By default, this callback is delayed by one frame along with return-focus timing; set [delayReturnFocus](#delayreturnfocus) to `false` to remove that extra delay.
+
 ##### checkCanReturnFocus
 
 ```typescript
@@ -174,6 +177,8 @@ A function that will be called after the trap is deactivated, after `onDeactivat
 ```
 
 An animated trigger button will have a small delay between when `onDeactivate` is called and when the focus is able to be sent back to the trigger. `checkCanReturnFocus` expects a promise to be returned. When that promise settles (resolves or rejects), focus will be sent to to the node that had focus prior to the activation of the trap (or the node configured in the `setReturnFocus` option).
+
+🔺 If [delayReturnFocus](#delayreturnfocus) is `true` (default), there is still an additional one-frame delay after this Promise settles before focus is returned and `onPostDeactivate` is called.
 
 ##### initialFocus
 
@@ -272,6 +277,19 @@ boolean
 Default: `true`. Delays the autofocus to the next execution frame when the focus trap is activated. This prevents elements within the focusable element from capturing the event that triggered the focus trap activation.
 
 🔺 Note that when this option is `true` (default), it means the initial element to be focused will not be focused until **after** [onPostActivate](#onpostactivate) or [onPostUnpause](#onpostunpause) are called.
+🔺 This option controls the extra frame delay on activation. Use [checkCanFocusTrap](#checkcanfocustrap) to gate activation readiness, and [delayReturnFocus](#delayreturnfocus) plus [checkCanReturnFocus](#checkcanreturnfocus) for the equivalent deactivation timing controls.
+
+##### delayReturnFocus
+
+```typescript
+boolean
+```
+
+Default: `true`. Delays return-focus to the next execution frame when the focus trap is deactivated.
+
+- This same delay also applies to [onPostDeactivate](#onpostdeactivate).
+- Set to `false` to skip the extra frame delay.
+- If [checkCanReturnFocus](#checkcanreturnfocus) is configured, that Promise must still settle first.
 
 ##### isolateSubtrees
 
@@ -410,7 +428,7 @@ These options are used to override the focus trap's default behavior for this pa
 - **returnFocus** `{boolean}`: Default: whatever you set for `createOptions.returnFocusOnDeactivate`. If `true`, then the `setReturnFocus` option (specified when the trap was created) is used to determine where focus will be returned.
 - **onDeactivate** `{(params: LifecycleParameters) => void}`: Default: whatever you set for `createOptions.onDeactivate`. `null` or `false` are the equivalent of a `noop`.
 - **onPostDeactivate** `{(params: LifecycleParameters) => void}`: Default: whatever you set for `createOptions.onPostDeactivate`. `null` or `false` are the equivalent of a `noop`.
-- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: Default: whatever you set for `createOptions.checkCanReturnFocus`. Not called if the `returnFocus` option is falsy. `trigger` is either the originally focused node prior to activation, or the result of the `setReturnFocus` configuration option.
+- **checkCanReturnFocus** `{(trigger: HTMLElement | SVGElement) => Promise<void>}`: Default: whatever you set for `createOptions.checkCanReturnFocus`. Not called if the `returnFocus` option is falsy. `trigger` is either the originally focused node prior to activation, or the result of the `setReturnFocus` configuration option. After this Promise settles, `createOptions.delayReturnFocus` determines whether return-focus and `onPostDeactivate` are immediate (`false`) or delayed by one frame (`true`, default).
 
 ### trap.pause()
 
