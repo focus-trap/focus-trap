@@ -1154,7 +1154,7 @@ const createFocusTrap = function (elements, userOptions) {
       };
 
       const finishDeactivation = () => {
-        if (delayReturnFocus) {
+        if (delayReturnFocus && returnFocus) {
           delay(completeDeactivation);
         } else {
           completeDeactivation();

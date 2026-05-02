@@ -170,6 +170,31 @@ describe('lifecycle timing', () => {
     }
   });
 
+  it('should call onPostDeactivate synchronously when returnFocus is false with default delayReturnFocus', () => {
+    jest.useFakeTimers();
+    try {
+      const events = [];
+      const { triggerEl, trapEl } = renderTrap('single-no-return-focus');
+      const trap = createFocusTrap(trapEl, {
+        ...baseTrapOptions,
+        onDeactivate: () => events.push('onDeactivate'),
+        onPostDeactivate: () => events.push('onPostDeactivate'),
+      });
+
+      triggerEl.focus();
+      trap.activate();
+      trap.deactivate({ returnFocus: false });
+
+      expect(events).toEqual(['onDeactivate', 'onPostDeactivate']);
+
+      jest.runOnlyPendingTimers();
+
+      expect(events).toEqual(['onDeactivate', 'onPostDeactivate']);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it('should skip one-frame delay after checkCanReturnFocus settles when delayReturnFocus is false', async () => {
     const events = [];
     const { triggerEl, trapEl } = renderTrap('single-no-delay');
