@@ -1066,6 +1066,7 @@ var focusTrapDemoBundle = (function () {
 	    returnFocusOnDeactivate: true,
 	    escapeDeactivates: true,
 	    delayInitialFocus: true,
+	    delayReturnFocus: true,
 	    isolateSubtrees: false,
 	    isKeyForward: isKeyForward,
 	    isKeyBackward: isKeyBackward
@@ -1812,16 +1813,22 @@ var focusTrapDemoBundle = (function () {
 	  //
 
 	  var checkDomRemoval = function checkDomRemoval(mutations) {
+	    var focusedNode = state.mostRecentlyFocusedNode;
+	    if (!focusedNode) {
+	      return;
+	    }
 	    var isFocusedNodeRemoved = mutations.some(function (mutation) {
 	      var removedNodes = Array.from(mutation.removedNodes);
 	      return removedNodes.some(function (node) {
-	        return node === state.mostRecentlyFocusedNode;
+	        return node === focusedNode || typeof node.contains === 'function' && node.contains(focusedNode);
 	      });
 	    });
 
-	    // If the currently focused is removed then browsers will move focus to the
+	    // If the currently focused node is removed then browsers will move focus to the
 	    // <body> element. If this happens, try to move focus back into the trap.
-	    if (isFocusedNodeRemoved) {
+	    if (isFocusedNodeRemoved && state.containers.some(function (container) {
+	      return container === null || container === void 0 ? void 0 : container.isConnected;
+	    })) {
 	      _tryFocus(getInitialFocusNode());
 	    }
 	  };
@@ -1882,7 +1889,9 @@ var focusTrapDemoBundle = (function () {
 	        state.active = true;
 	        state.paused = false;
 	        state.nodeFocusedBeforeActivation = _getActiveElement(doc);
-	        onActivate === null || onActivate === void 0 || onActivate();
+	        onActivate === null || onActivate === void 0 || onActivate({
+	          trap: trap
+	        });
 	        var finishActivation = /*#__PURE__*/function () {
 	          var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
 	            return _regenerator().w(function (_context) {
@@ -1902,7 +1911,9 @@ var focusTrapDemoBundle = (function () {
 	                case 1:
 	                  trap._setSubtreeIsolation(true);
 	                  updateObservedNodes();
-	                  onPostActivate === null || onPostActivate === void 0 || onPostActivate();
+	                  onPostActivate === null || onPostActivate === void 0 || onPostActivate({
+	                    trap: trap
+	                  });
 	                case 2:
 	                  return _context.a(2);
 	              }
@@ -1959,15 +1970,25 @@ var focusTrapDemoBundle = (function () {
 	      var onDeactivate = getOption(options, 'onDeactivate');
 	      var onPostDeactivate = getOption(options, 'onPostDeactivate');
 	      var checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
+	      var delayReturnFocus = getOption(options, 'delayReturnFocus');
 	      var returnFocus = getOption(options, 'returnFocus', 'returnFocusOnDeactivate');
-	      onDeactivate === null || onDeactivate === void 0 || onDeactivate();
-	      var finishDeactivation = function finishDeactivation() {
-	        delay$1(function () {
-	          if (returnFocus) {
-	            _tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
-	          }
-	          onPostDeactivate === null || onPostDeactivate === void 0 || onPostDeactivate();
+	      onDeactivate === null || onDeactivate === void 0 || onDeactivate({
+	        trap: trap
+	      });
+	      var completeDeactivation = function completeDeactivation() {
+	        if (returnFocus) {
+	          _tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+	        }
+	        onPostDeactivate === null || onPostDeactivate === void 0 || onPostDeactivate({
+	          trap: trap
 	        });
+	      };
+	      var finishDeactivation = function finishDeactivation() {
+	        if (delayReturnFocus && returnFocus) {
+	          delay$1(completeDeactivation);
+	        } else {
+	          completeDeactivation();
+	        }
 	      };
 	      if (returnFocus && checkCanReturnFocus) {
 	        checkCanReturnFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation)).then(finishDeactivation, finishDeactivation);
@@ -2026,15 +2047,21 @@ var focusTrapDemoBundle = (function () {
 	        if (paused) {
 	          var onPause = getOption(options, 'onPause');
 	          var onPostPause = getOption(options, 'onPostPause');
-	          onPause === null || onPause === void 0 || onPause();
+	          onPause === null || onPause === void 0 || onPause({
+	            trap: trap
+	          });
 	          removeListeners();
 	          trap._setSubtreeIsolation(false);
 	          updateObservedNodes();
-	          onPostPause === null || onPostPause === void 0 || onPostPause();
+	          onPostPause === null || onPostPause === void 0 || onPostPause({
+	            trap: trap
+	          });
 	        } else {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
-	          onUnpause === null || onUnpause === void 0 || onUnpause();
+	          onUnpause === null || onUnpause === void 0 || onUnpause({
+	            trap: trap
+	          });
 	          var finishUnpause = /*#__PURE__*/function () {
 	            var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
 	              return _regenerator().w(function (_context2) {
@@ -2052,7 +2079,9 @@ var focusTrapDemoBundle = (function () {
 	                  case 1:
 	                    trap._setSubtreeIsolation(true);
 	                    updateObservedNodes();
-	                    onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause();
+	                    onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause({
+	                      trap: trap
+	                    });
 	                  case 2:
 	                    return _context2.a(2);
 	                }
@@ -2762,7 +2791,7 @@ var focusTrapDemoBundle = (function () {
 	    onPostActivate: function onPostActivate() {
 	      // NOTE: this is used when running e2e tests to check that onPostActivate() is indeed being
 	      //  called AFTER the initial focus node has been focused, whether the initial focus is
-	      //  delayed or not (`no-delay.js` demo has the same check)
+	      //  delayed or not (`delay.js` demo has the same check)
 	      var hideEl = document.getElementById('close-button-no-delay');
 	      container.dataset.hideIsFocusedOnPostActivate = document.activeElement === hideEl;
 	    },
@@ -3073,6 +3102,9 @@ var focusTrapDemoBundle = (function () {
 	  var container = document.getElementById('dom-remove');
 	  document.getElementById('dom-remove-button').addEventListener('click', function (event) {
 	    event.target.remove();
+	  });
+	  document.getElementById('dom-remove-parent-button').addEventListener('click', function () {
+	    document.getElementById('dom-remove-parent-wrapper').remove();
 	  });
 	  var focusTrap = createFocusTrap$a('#dom-remove', {
 	    onActivate: function onActivate() {

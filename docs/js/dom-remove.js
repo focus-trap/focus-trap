@@ -8,6 +8,11 @@ module.exports = () => {
     .addEventListener('click', function (event) {
       event.target.remove();
     });
+  document
+    .getElementById('dom-remove-parent-button')
+    .addEventListener('click', function () {
+      document.getElementById('dom-remove-parent-wrapper').remove();
+    });
 
   const focusTrap = createFocusTrap('#dom-remove', {
     onActivate: () => container.classList.add('is-active'),

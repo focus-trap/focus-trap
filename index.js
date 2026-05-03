@@ -980,16 +980,28 @@ const createFocusTrap = function (elements, userOptions) {
   //
 
   const checkDomRemoval = function (mutations) {
+    const focusedNode = state.mostRecentlyFocusedNode;
+    if (!focusedNode) {
+      return;
+    }
     const isFocusedNodeRemoved = mutations.some(function (mutation) {
       const removedNodes = Array.from(mutation.removedNodes);
       return removedNodes.some(function (node) {
-        return node === state.mostRecentlyFocusedNode;
+        return (
+          node === focusedNode ||
+          (typeof node.contains === 'function' && node.contains(focusedNode))
+        );
       });
     });
 
-    // If the currently focused is removed then browsers will move focus to the
+    // If the currently focused node is removed then browsers will move focus to the
     // <body> element. If this happens, try to move focus back into the trap.
-    if (isFocusedNodeRemoved) {
+    if (
+      isFocusedNodeRemoved &&
+      state.containers.some(function (container) {
+        return container?.isConnected;
+      })
+    ) {
       tryFocus(getInitialFocusNode());
     }
   };
