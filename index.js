@@ -1002,7 +1002,11 @@ const createFocusTrap = function (elements, userOptions) {
         return container?.isConnected;
       })
     ) {
-      tryFocus(getInitialFocusNode());
+      // Refresh tabbable state before resolving initial focus because
+      // getInitialFocusNode() may fall back to the first tabbable node in the trap.
+      updateTabbableNodes();
+      const initialFocusNode = getInitialFocusNode();
+      tryFocus(initialFocusNode);
     }
   };
 
