@@ -1,5 +1,15 @@
 # Changelog
 
+## 8.2.0
+
+### Minor Changes
+
+- 567dbe1: Add new `delayReturnFocus` option (default true) to control whether return focus and onPostDeactivate are deferred by one frame.
+
+### Patch Changes
+
+- b70e8d9: Fix bug where removing the ancestor of a focused node within a trap would result in focus landing on the body instead of remaining in the trap (#1660).
+
 ## 8.1.0
 
 ### Minor Changes
