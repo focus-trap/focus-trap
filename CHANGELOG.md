@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- 567dbe1: Add new `delayReturnFocus` option (default true) to control whether return focus and onPostDeactivate are deferred by one frame.
+- 567dbe1: Add new `delayReturnFocus` option (default true) to control whether return focus and onPostDeactivate are deferred by one frame (#1689).
 
 ### Patch Changes
 
