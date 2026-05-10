@@ -851,12 +851,13 @@ const createFocusTrap = function (elements, userOptions) {
   /**
    * Adds listeners to the document necessary for trapping focus and attempts to set focus
    *  to the configured initial focus node. Does nothing if the trap isn't active.
-   * @returns {Promise<void>} Resolved (always) once the initial focus node has been focused.
-   *  Also resolved if the trap isn't active.
+   * @returns {Promise<void> | undefined} A promise resolved once the initial focus node has
+   *  been focused when `delayInitialFocus=true`; `undefined` when focus is set synchronously
+   *  or the trap isn't active.
    */
   const addListeners = function () {
     if (!state.active) {
-      return Promise.resolve();
+      return;
     }
 
     // There can be only one listening focus trap at a time
@@ -864,7 +865,7 @@ const createFocusTrap = function (elements, userOptions) {
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
-    /** @type {Promise<void>} */
+    /** @type {Promise<void> | undefined} */
     let promise;
     if (config.delayInitialFocus) {
       // NOTE: Promise constructor callback is called synchronously, which is what we want
@@ -876,7 +877,6 @@ const createFocusTrap = function (elements, userOptions) {
         });
       });
     } else {
-      promise = Promise.resolve();
       tryFocus(getInitialFocusNode());
     }
 
@@ -1078,21 +1078,28 @@ const createFocusTrap = function (elements, userOptions) {
 
         onActivate?.({ trap });
 
-        const finishActivation = async () => {
+        const finishActivation = () => {
           if (checkCanFocusTrap) {
             updateTabbableNodes();
           }
 
-          // NOTE: wait for initial focus node to get focused before we potentially isolate
-          //  the subtrees with aria-hidden while focus is still in some other subtree and
-          //  not yet in the trap, resulting in some browsers (e.g. Chrome) logging to the
-          //  console that they, "Blocked aria-hidden on an element because its descendant
-          //  retained focus..."
-          await addListeners();
+          const afterListeners = () => {
+            trap._setSubtreeIsolation(true);
+            updateObservedNodes();
+            onPostActivate?.({ trap });
+          };
 
-          trap._setSubtreeIsolation(true);
-          updateObservedNodes();
-          onPostActivate?.({ trap });
+          // NOTE: wait for initial focus node to get focused (whether activation is fully,
+          //  partially, or not asynchronous) before we potentially isolate the subtrees
+          //  with aria-hidden while focus is still in some other subtree and not yet in
+          //  the trap, resulting in some browsers (e.g. Chrome) logging to the console that
+          //  they, "Blocked aria-hidden on an element because its descendant retained focus..."
+          const listenersPromise = addListeners();
+          if (listenersPromise) {
+            listenersPromise.then(afterListeners);
+          } else {
+            afterListeners();
+          }
         };
 
         if (checkCanFocusTrap) {
@@ -1267,19 +1274,26 @@ const createFocusTrap = function (elements, userOptions) {
 
           onUnpause?.({ trap });
 
-          const finishUnpause = async () => {
+          const finishUnpause = () => {
             updateTabbableNodes();
 
-            // NOTE: wait for initial focus node to get focused before we potentially isolate
-            //  the subtrees with aria-hidden while focus is still in some other subtree and
-            //  not yet in the trap, resulting in some browsers (e.g. Chrome) logging to the
-            //  console that they, "Blocked aria-hidden on an element because its descendant
-            //  retained focus..."
-            await addListeners();
+            const afterListeners = () => {
+              trap._setSubtreeIsolation(true);
+              updateObservedNodes();
+              onPostUnpause?.({ trap });
+            };
 
-            trap._setSubtreeIsolation(true);
-            updateObservedNodes();
-            onPostUnpause?.({ trap });
+            // NOTE: wait for initial focus node to get focused (whether activation is fully,
+            //  partially, or not asynchronous) before we potentially isolate the subtrees
+            //  with aria-hidden while focus is still in some other subtree and not yet in
+            //  the trap, resulting in some browsers (e.g. Chrome) logging to the console that
+            //  they, "Blocked aria-hidden on an element because its descendant retained focus..."
+            const listenersPromise = addListeners();
+            if (listenersPromise) {
+              listenersPromise.then(afterListeners);
+            } else {
+              afterListeners();
+            }
           };
 
           finishUnpause();

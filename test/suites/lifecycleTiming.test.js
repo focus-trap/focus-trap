@@ -30,6 +30,10 @@ describe('lifecycle timing', () => {
   const createLifecycleCallbacks = (events, prefix) => ({
     onActivate: () => events.push(`${prefix}:onActivate`),
     onPostActivate: () => events.push(`${prefix}:onPostActivate`),
+    onPause: () => events.push(`${prefix}:onPause`),
+    onPostPause: () => events.push(`${prefix}:onPostPause`),
+    onUnpause: () => events.push(`${prefix}:onUnpause`),
+    onPostUnpause: () => events.push(`${prefix}:onPostUnpause`),
     onDeactivate: () => events.push(`${prefix}:onDeactivate`),
     onPostDeactivate: () => events.push(`${prefix}:onPostDeactivate`),
   });
@@ -73,7 +77,11 @@ describe('lifecycle timing', () => {
       'trap1:onActivate',
       'trap1:onPostActivate',
       'trap2:onActivate',
+      'trap1:onPause',
+      'trap1:onPostPause',
       'trap2:onPostActivate',
+      'trap1:onUnpause',
+      'trap1:onPostUnpause',
       'trap2:onDeactivate',
       'trap1:onDeactivate',
       'trap2:onPostDeactivate',
@@ -122,7 +130,57 @@ describe('lifecycle timing', () => {
       'trap1:onActivate',
       'trap1:onPostActivate',
       'trap2:onActivate',
+      'trap1:onPause',
+      'trap1:onPostPause',
       'trap2:onPostActivate',
+      'trap1:onUnpause',
+      'trap1:onPostUnpause',
+      'trap2:onDeactivate',
+      'trap2:onPostDeactivate',
+      'trap1:onDeactivate',
+      'trap1:onPostDeactivate',
+    ]);
+  });
+
+  it('should fire all lifecycle callbacks synchronously across stacked traps when delays are disabled', () => {
+    // Verifies the fix for #1862: with delayInitialFocus=false and delayReturnFocus=false,
+    //  the entire activate -> activate -> deactivate -> deactivate sequence must complete within a
+    //  single microtask, with onPostActivate and onPostUnpause firing inline instead of
+    //  being deferred by an unnecessary `await Promise.resolve()`.
+    const events = [];
+    const trapStack = [];
+    const first = renderTrap('sync-first');
+    const second = renderTrap('sync-second');
+
+    const firstTrap = createFocusTrap(first.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      delayReturnFocus: false,
+      ...createLifecycleCallbacks(events, 'trap1'),
+    });
+    const secondTrap = createFocusTrap(second.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      delayReturnFocus: false,
+      ...createLifecycleCallbacks(events, 'trap2'),
+    });
+
+    first.triggerEl.focus();
+    firstTrap.activate();
+    secondTrap.activate();
+    secondTrap.deactivate();
+    firstTrap.deactivate();
+
+    // all callbacks must have fired synchronously — no awaits needed
+    expect(events).toEqual([
+      'trap1:onActivate',
+      'trap1:onPostActivate',
+      'trap2:onActivate',
+      'trap1:onPause',
+      'trap1:onPostPause',
+      'trap2:onPostActivate',
+      'trap1:onUnpause',
+      'trap1:onPostUnpause',
       'trap2:onDeactivate',
       'trap2:onPostDeactivate',
       'trap1:onDeactivate',
