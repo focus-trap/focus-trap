@@ -90,7 +90,7 @@
     "@typescript-eslint/eslint-plugin": "^8.59.2",
     "@typescript-eslint/parser": "^8.58.2",
     "all-contributors-cli": "^6.26.1",
-    "babel-jest": "^30.3.0",
+    "babel-jest": "^30.4.1",
     "babel-loader": "^10.1.1",
     "cross-env": "^10.1.0",
     "cypress": "^15.14.2",
