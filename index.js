@@ -301,6 +301,31 @@ const createFocusTrap = function (elements, userOptions) {
     return node;
   };
 
+  /**
+   * Gets the current activeElement. If it's a web-component and has open shadow-root
+   * it will recursively search inside shadow roots for the "true" activeElement.
+   *
+   * @param {Document | ShadowRoot} el
+   *
+   * @returns {HTMLElement} The element that currently has the focus
+   **/
+  const getActiveElement = function (el) {
+    const activeElement = el.activeElement;
+
+    if (!activeElement) {
+      return;
+    }
+
+    if (
+      activeElement.shadowRoot &&
+      activeElement.shadowRoot.activeElement !== null
+    ) {
+      return getActiveElement(activeElement.shadowRoot);
+    }
+
+    return activeElement;
+  };
+
   const getInitialFocusNode = function () {
     let node = getNodeForOption('initialFocus', { hasFallback: true });
 
@@ -313,9 +338,11 @@ const createFocusTrap = function (elements, userOptions) {
       node === undefined ||
       (node && !isFocusable(node, config.tabbableOptions))
     ) {
+      const activeElement = getActiveElement(doc);
+
       // option not specified nor focusable: use fallback options
-      if (findContainerIndex(doc.activeElement) >= 0) {
-        node = doc.activeElement;
+      if (findContainerIndex(activeElement) >= 0) {
+        node = activeElement;
       } else {
         const firstTabbableGroup = state.tabbableGroups[0];
         const firstTabbableNode =
@@ -455,31 +482,6 @@ const createFocusTrap = function (elements, userOptions) {
         "At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps."
       );
     }
-  };
-
-  /**
-   * Gets the current activeElement. If it's a web-component and has open shadow-root
-   * it will recursively search inside shadow roots for the "true" activeElement.
-   *
-   * @param {Document | ShadowRoot} el
-   *
-   * @returns {HTMLElement} The element that currently has the focus
-   **/
-  const getActiveElement = function (el) {
-    const activeElement = el.activeElement;
-
-    if (!activeElement) {
-      return;
-    }
-
-    if (
-      activeElement.shadowRoot &&
-      activeElement.shadowRoot.activeElement !== null
-    ) {
-      return getActiveElement(activeElement.shadowRoot);
-    }
-
-    return activeElement;
   };
 
   const tryFocus = function (node) {
