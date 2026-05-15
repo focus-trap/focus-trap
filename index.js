@@ -313,7 +313,7 @@ const createFocusTrap = function (elements, userOptions) {
     const activeElement = el.activeElement;
 
     if (!activeElement) {
-      return;
+      return null;
     }
 
     if (
