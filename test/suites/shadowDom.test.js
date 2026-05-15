@@ -119,8 +119,7 @@ describe('shadow DOM', () => {
 
     const testCaseInput = testCase.shadowRoot.querySelector('#input');
     const dialog = testCase.shadowRoot.querySelector('#dialog');
-    const dialogCloseButton =
-      dialog.shadowRoot.querySelector('#closeButton');
+    const dialogCloseButton = dialog.shadowRoot.querySelector('#closeButton');
     const picker = testCase.shadowRoot.querySelector('#picker');
     const pickerTrigger = picker.shadowRoot.querySelector('#trigger');
     const pickerInput = picker.shadowRoot.querySelector('#input');
