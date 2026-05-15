@@ -307,7 +307,7 @@ const createFocusTrap = function (elements, userOptions) {
    *
    * @param {Document | ShadowRoot} el
    *
-  * @returns {HTMLElement|null} The element that currently has the focus. `null` if a focused element isn't found.
+   * @returns {HTMLElement|null} The element that currently has the focus. `null` if a focused element isn't found.
    **/
   const getActiveElement = function (el) {
     const activeElement = el.activeElement;
