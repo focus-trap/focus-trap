@@ -1,5 +1,12 @@
 # Changelog
 
+## 8.2.1
+
+### Patch Changes
+
+- 7e0e518: Fixes lifecycle ordering bug introduced in v8.0.0 that always delays the order even if `delayInitialFocus=false`, `delayReturnFocus=false`, `checkCanFocusTrap=undefined`, `checkCanReturnFocus=undefined` (which would indicate a fully synchronous activation/pause/unpause/deactivation process) [#1862](https://github.com/focus-trap/focus-trap/issues/1862)
+- 2cba31e: Improve shadow DOM focus handling for nested traps by ensuring a parent trap resumes using the innermost active element ([#1885](https://github.com/focus-trap/focus-trap/issues/1885))
+
 ## 8.2.0
 
 ### Minor Changes
