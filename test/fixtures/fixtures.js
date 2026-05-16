@@ -25,6 +25,11 @@ const domFixtures = {
       }
     ),
   },
+  shadowDom: {
+    html: fs.readFileSync(path.resolve(__dirname, './dom/shadowDom.html'), {
+      encoding: 'utf-8',
+    }),
+  },
 };
 
 module.exports = {

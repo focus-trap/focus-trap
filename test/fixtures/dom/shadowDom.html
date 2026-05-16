@@ -1,0 +1,27 @@
+<!--
+NOTE: script blocks are always executed AFTER the HTML is loaded no matter the
+ node order here
+-->
+
+<div id="fixture">
+  <test-case></test-case>
+
+  <template id="testCaseTemplate">
+    <test-dialog id="dialog">
+      <test-picker id="picker"></test-picker>
+      <input id="input" placeholder="2. Click here after opening the picker, focus should stay here" />
+    </test-dialog>
+  </template>
+
+  <template id="testDialogTemplate">
+    <button id="closeButton">x</button>
+    <slot></slot>
+  </template>
+
+  <template id="testPickerTemplate">
+    <button id="trigger" placeholder="1. Click me to open picker options and activate nested focus trap" />
+    <div id="optionsContainer">
+      <input id="input" placeholder="Fake focusable picker options" />
+    </div>
+  </template>
+</div>
