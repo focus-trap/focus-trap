@@ -5,6 +5,7 @@ require('./animated-trigger')();
 require('./escape-deactivates')();
 require('./escape-key-cancelation')();
 require('./initial-element-no-escape')();
+require('./prevent-scroll-initial-focus')();
 require('./tricky-initial-focus')();
 require('./initial-selector-with-fallback')();
 require('./initially-focused-container')();

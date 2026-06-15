@@ -132,7 +132,8 @@ declare module 'focus-trap' {
      * for no initially focused element at all.
      *
      * NOTE: Setting this option to `false` (or a function that returns `false`)
-     * will prevent the `fallbackFocus` option from being used.
+     * will prevent the `fallbackFocus` option from being used unless `preventScroll`
+     * is `true`, in which case focus falls back to the default initial-focus behavior.
      *
      * Setting this option to `undefined` (or a function that returns `undefined`)
      * will result in the default behavior.
@@ -147,11 +148,11 @@ declare module 'focus-trap' {
      * tabbable elements. *Make sure the fallback element has a negative
      * `tabindex` so it can be programmatically focused.
      *
-     * NOTE: If `initialFocus` is `false` (or a function that returns `false`),
-     * this function will not be called when the trap is activated, and no element
-     * will be initially focused. This function may still be called while the trap
-     * is active if things change such that there are no longer any tabbable nodes
-     * in the trap.
+     * NOTE: If `initialFocus` is `false` (or a function that returns `false`) and
+     * `preventScroll` is not `true`, this function will not be called when the trap
+     * is activated, and no element will be initially focused. This function may
+     * still be called while the trap is active if things change such that there are
+     * no longer any tabbable nodes in the trap.
      */
     fallbackFocus?: FocusTarget;
     /**

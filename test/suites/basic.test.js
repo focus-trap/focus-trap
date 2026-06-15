@@ -119,4 +119,48 @@ describe('basic', () => {
       'onPostDeactivate',
     ]);
   });
+
+  it('activates with default focus resolution when initialFocus=false and preventScroll=true', async () => {
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
+    const results = renderFixture('basic');
+    const { activateEl, trapEl } = results;
+    const firstTabbableEl = trapEl?.querySelector('a');
+
+    const focusTrap = createFocusTrap(trapEl, {
+      ...trapOptions,
+      delayInitialFocus: false,
+      initialFocus: false,
+      preventScroll: true,
+    });
+
+    activateEl?.focus();
+    expect(activateEl).toHaveFocus();
+
+    focusTrap.activate();
+
+    await waitFor(() => {
+      expect(firstTabbableEl).toHaveFocus();
+    });
+  });
+
+  it('does not focus any trap element when initialFocus=false and preventScroll is not set', () => {
+    /** @type {import('../tools/testingUtility.js').RenderResults} */
+    const results = renderFixture('basic');
+    const { activateEl, trapEl } = results;
+    const firstTabbableEl = trapEl?.querySelector('a');
+
+    const focusTrap = createFocusTrap(trapEl, {
+      ...trapOptions,
+      delayInitialFocus: false,
+      initialFocus: false,
+    });
+
+    activateEl?.focus();
+    expect(activateEl).toHaveFocus();
+
+    focusTrap.activate();
+
+    expect(firstTabbableEl).not.toHaveFocus();
+    expect(activateEl).toHaveFocus();
+  });
 });

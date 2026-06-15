@@ -328,10 +328,15 @@ const createFocusTrap = function (elements, userOptions) {
 
   const getInitialFocusNode = function () {
     let node = getNodeForOption('initialFocus', { hasFallback: true });
-
-    // false explicitly indicates we want no initialFocus at all
+    // false explicitly indicates we want no initialFocus at all, unless
+    //  preventScroll is enabled, in which case we still resolve a default node
+    //  to allow focus without scrolling
     if (node === false) {
-      return false;
+      if (!config.preventScroll) {
+        return false;
+      }
+
+      node = undefined;
     }
 
     if (

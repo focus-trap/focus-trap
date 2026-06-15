@@ -453,7 +453,7 @@ describe('focus-trap', () => {
     ['false', 'function-false'].forEach((option) => {
       it(`on trap activation, does not focus ANY element in the trap, when initialFocus=${
         option === 'false' ? option : '`() => false`'
-      }`, () => {
+      } and preventScroll is not set`, () => {
         cy.get('#select-iene').select(option);
 
         cy.get('@activateTrapBtn').click();
@@ -535,6 +535,38 @@ describe('focus-trap', () => {
 
       // crucial focus-trap feature: mouse click is trapped
       verifyCrucialFocusTrapOnClicking('@trapChild');
+
+      // focus can be transitioned freely when trap is deactivated
+      cy.get('@deactivateTrapBtn').click();
+
+      verifyFocusIsNotTrapped(cy.get('@lastlyFocusedElBeforeTrapIsActivated'));
+    });
+  });
+  describe('demo: psif', () => {
+    beforeEach(() => {
+      cy.get('#demo-psif').as('testRoot');
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^activate trap/ })
+        .as('activateTrapBtn')
+        .as('lastlyFocusedElBeforeTrapIsActivated');
+
+      cy.get('@testRoot')
+        .findByRole('button', { name: /^deactivate trap/ })
+        .as('deactivateTrapBtn');
+
+      cy.get('@testRoot')
+        .findByRole('link', { name: 'with' })
+        .as('firstElementInTrap');
+    });
+
+    it('on trap activation, focuses first tabbable element when initialFocus=false and preventScroll=true', () => {
+      cy.get('@activateTrapBtn').click();
+
+      cy.get('@firstElementInTrap').should('be.focused');
+
+      // crucial focus-trap feature: mouse click is trapped
+      verifyCrucialFocusTrapOnClicking('@firstElementInTrap');
 
       // focus can be transitioned freely when trap is deactivated
       cy.get('@deactivateTrapBtn').click();

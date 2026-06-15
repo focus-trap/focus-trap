@@ -188,7 +188,7 @@ HTMLElement | SVGElement | string | false | undefined | (() => HTMLElement | SVG
 
 By default (when `undefined` or the function returns `undefined`), when a focus trap is activated, the active element will receive focus if it's in the trap, otherwise, the first element in the focus trap's tab order will receive focus. With this option you can specify a different element to receive that initial focus. Can be a DOM node, or a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these. You can also set this option to `false` (or to a function that returns `false`) to prevent any initial focus at all when the trap activates.
 
-- Setting this option to `false` (or a function that returns `false`) will prevent the `fallbackFocus` option from being used.
+- Setting this option to `false` (or a function that returns `false`) will prevent the `fallbackFocus` option from being used unless `preventScroll` is also `true`, in which case focus falls back to the default initial-focus behavior.
 - If the option resolves to a non-focusable node (e.g. one that exists, but is hidden), the default behavior will be used (as though the option weren't set at all).
 - If the option resolves to a non-existent node, an exception will be thrown.
 - If the option resolves to a valid selector string (directly set, or returned from a function), but the selector doesn't match a node, the trap will fall back to the `fallbackFocus` node option. If that option also fails to yield a node, an exception will be thrown.
@@ -203,7 +203,7 @@ HTMLElement | SVGElement | string | () => HTMLElement | SVGElement | string
 
 By default, an error will be thrown if the focus trap contains no elements in its tab order. With this option you can specify a fallback element to programmatically receive focus if no other tabbable elements are found. For example, you may want a popover's `<div>` to receive focus if the popover's content includes no tabbable elements. *Make sure the fallback element has a negative `tabindex` so it can be programmatically focused.* The option value can be a DOM node, a selector string (which will be passed to `document.querySelector()` to find the DOM node), or a function that returns any of these.
 
-- If `initialFocus` is `false` (or a function that returns `false`), this function will not be called when the trap is activated, and no element will be initially focused. This function may still be called while the trap is active if things change such that there are no longer any tabbable nodes in the trap.
+- If `initialFocus` is `false` (or a function that returns `false`) and `preventScroll` is not `true`, this function will not be called when the trap is activated, and no element will be initially focused. This function may still be called while the trap is active if things change such that there are no longer any tabbable nodes in the trap.
 - ⚠️ See warning below about **[Shadow DOM](#shadow-dom)** and selector strings.
 
 ##### escapeDeactivates
