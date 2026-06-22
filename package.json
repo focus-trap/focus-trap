@@ -68,7 +68,7 @@
     "tabbable": "^6.5.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.29.7",
+    "@babel/cli": "^8.0.1",
     "@babel/core": "^7.29.7",
     "@babel/eslint-parser": "^7.29.7",
     "@babel/eslint-plugin": "^7.29.7",
