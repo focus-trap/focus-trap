@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.2.2
+
+### Patch Changes
+
+- 859bda8: Update tabbable to v6.5.0 for visibility fix and image map support
+
 ## 8.2.1
 
 ### Patch Changes
