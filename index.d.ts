@@ -17,8 +17,7 @@ declare module 'focus-trap' {
    * an opt-out, or a function that returns a DOM node or `false`.
    */
   export type FocusTargetOrFalse =
-    | FocusTargetValueOrFalse
-    | (() => FocusTargetValueOrFalse);
+    FocusTargetValueOrFalse | (() => FocusTargetValueOrFalse);
 
   type MouseEventToBoolean = (event: MouseEvent | TouchEvent) => boolean;
   type KeyboardEventToBoolean = (event: KeyboardEvent) => boolean;
