@@ -403,6 +403,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "anupamme",
+      "name": "Anupam Mediratta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/667857?v=4",
+      "profile": "https://github.com/anupamme",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
