@@ -86,7 +86,7 @@
     "@testing-library/user-event": "^14.6.7",
     "@types/jest": "^30.0.0",
     "@types/jquery": "^4.0.1",
-    "@types/node": "^26.4.1",
+    "@types/node": "^26.5.0",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.68.0",
     "all-contributors-cli": "^6.26.1",
