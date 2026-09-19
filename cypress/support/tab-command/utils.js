@@ -16,78 +16,78 @@ const TABBABLE_SELECTOR = [
   'audio[controls]',
   'video[controls]',
   'summary',
-].join(', ')
+].join(', ');
 
 const getTabSequence = (doc) => {
   const candidates = Array.from(doc.querySelectorAll(TABBABLE_SELECTOR)).filter(
-    isTabbable,
-  )
+    isTabbable
+  );
   const positiveTabIndex = candidates
     .filter((el) => getTabIndex(el) > 0)
-    .sort(compareByTabOrder)
-  const naturalTabOrder = candidates.filter((el) => getTabIndex(el) === 0)
+    .sort(compareByTabOrder);
+  const naturalTabOrder = candidates.filter((el) => getTabIndex(el) === 0);
 
-  return positiveTabIndex.concat(naturalTabOrder)
-}
+  return positiveTabIndex.concat(naturalTabOrder);
+};
 
 const compareByTabOrder = (left, right) => {
-  const tabIndexDiff = getTabIndex(left) - getTabIndex(right)
+  const tabIndexDiff = getTabIndex(left) - getTabIndex(right);
 
   if (tabIndexDiff !== 0) {
-    return tabIndexDiff
+    return tabIndexDiff;
   }
 
-  const { Node } = left.ownerDocument.defaultView
-  const position = left.compareDocumentPosition(right)
+  const { Node } = left.ownerDocument.defaultView;
+  const position = left.compareDocumentPosition(right);
 
   if (position & Node.DOCUMENT_POSITION_FOLLOWING) {
-    return -1
+    return -1;
   }
 
   if (position & Node.DOCUMENT_POSITION_PRECEDING) {
-    return 1
+    return 1;
   }
 
-  return 0
-}
+  return 0;
+};
 
 const isFocusable = (el) => {
   if (!el || el.nodeType !== 1) {
-    return false
+    return false;
   }
 
   if (isDisabled(el) || isHidden(el) || isInert(el)) {
-    return false
+    return false;
   }
 
   if (getTabIndex(el) >= 0) {
-    return true
+    return true;
   }
 
   if (typeof el.focus !== 'function') {
-    return false
+    return false;
   }
 
-  const nodeName = el.nodeName.toLowerCase()
+  const nodeName = el.nodeName.toLowerCase();
 
   if (nodeName === 'a' || nodeName === 'area') {
-    return el.hasAttribute('href')
+    return el.hasAttribute('href');
   }
 
   if (nodeName === 'input') {
-    return el.type !== 'hidden'
+    return el.type !== 'hidden';
   }
 
   if (nodeName === 'iframe') {
-    return true
+    return true;
   }
 
   if (nodeName === 'audio' || nodeName === 'video') {
-    return el.hasAttribute('controls')
+    return el.hasAttribute('controls');
   }
 
   if (nodeName === 'summary') {
-    return true
+    return true;
   }
 
   if (
@@ -95,52 +95,52 @@ const isFocusable = (el) => {
     nodeName === 'select' ||
     nodeName === 'textarea'
   ) {
-    return true
+    return true;
   }
 
-  return el.hasAttribute('contenteditable')
-}
+  return el.hasAttribute('contenteditable');
+};
 
 const isTabbable = (el) => {
   if (!isFocusable(el)) {
-    return false
+    return false;
   }
 
   if (isDisabled(el) || isHidden(el) || isInert(el)) {
-    return false
+    return false;
   }
 
-  return getTabIndex(el) >= 0
-}
+  return getTabIndex(el) >= 0;
+};
 
 const isDisabled = (el) => {
-  return 'disabled' in el && Boolean(el.disabled)
-}
+  return 'disabled' in el && Boolean(el.disabled);
+};
 
 const isHidden = (el) => {
   if (el.hidden) {
-    return true
+    return true;
   }
 
-  const win = el.ownerDocument.defaultView
-  const style = win.getComputedStyle(el)
+  const win = el.ownerDocument.defaultView;
+  const style = win.getComputedStyle(el);
 
   if (style.visibility === 'hidden' || style.display === 'none') {
-    return true
+    return true;
   }
 
-  return el.getClientRects().length === 0
-}
+  return el.getClientRects().length === 0;
+};
 
 const isInert = (el) => {
-  return Boolean(el.closest('[inert]'))
-}
+  return Boolean(el.closest('[inert]'));
+};
 
 const getTabIndex = (el) => {
-  return typeof el.tabIndex === 'number' ? el.tabIndex : -1
-}
+  return typeof el.tabIndex === 'number' ? el.tabIndex : -1;
+};
 
 module.exports = {
   getTabSequence,
   isFocusable,
-}
+};

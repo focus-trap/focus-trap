@@ -23,9 +23,9 @@
 // Original work Copyright (c) 2019 Ben Kucera, MIT License.
 // https://github.com/kuceb/cypress-plugin-tab/blob/main/LICENSE
 
-const { getTabSequence, isFocusable } = require('./utils')
+const { getTabSequence, isFocusable } = require('./utils');
 
-const { _, Promise } = Cypress
+const { _, Promise } = Cypress;
 
 Cypress.Commands.add(
   'tab',
@@ -33,66 +33,71 @@ Cypress.Commands.add(
   (subject, opts = {}) => {
     const options = _.defaults({}, opts, {
       shift: false,
-    })
+    });
 
     if (subject) {
-      return performTab(subject[0], options)
+      return performTab(subject[0], options);
     }
 
-    const win = cy.state('window')
-    const activeElement = win.document.activeElement
+    const win = cy.state('window');
+    const activeElement = win.document.activeElement;
 
-    return performTab(activeElement, options)
-  },
-)
+    return performTab(activeElement, options);
+  }
+);
 
 const performTab = (el, options) => {
-  const doc = el.ownerDocument
-  const activeElement = doc.activeElement
+  const doc = el.ownerDocument;
+  const activeElement = doc.activeElement;
 
-  const seq = getTabSequence(doc)
-  const index = seq.indexOf(el)
+  const seq = getTabSequence(doc);
+  const index = seq.indexOf(el);
 
   if (index === -1 && el && !(el === doc.body) && !isFocusable(el)) {
     pluginError(`
       Subject is not a tabbable element
       - Use cy.get(\'body\').tab() if you wish to tab into the first element on the page
       - Use cy.focused().tab() if you wish to tab into the currently active element
-    `)
+    `);
   }
 
-  const newElm = nextItemFromIndex(index, seq, options.shift)
+  const newElm = nextItemFromIndex(index, seq, options.shift);
 
   const simulatedDefault = () => {
     if (newElm && newElm.select) {
-      newElm.select()
+      newElm.select();
     }
 
-    return cy.now('focus', cy.$$(newElm))
-  }
+    return cy.now('focus', cy.$$(newElm));
+  };
 
   return new Promise((resolve) => {
-    doc.defaultView.requestAnimationFrame(resolve)
-  }).then(() => {
-    return keydown(activeElement, options, simulatedDefault, () =>
-      doc.activeElement,
-    )
-  }).finally(() => {
-    keyup(activeElement, options)
+    doc.defaultView.requestAnimationFrame(resolve);
   })
-}
+    .then(() => {
+      return keydown(
+        activeElement,
+        options,
+        simulatedDefault,
+        () => doc.activeElement
+      );
+    })
+    .finally(() => {
+      keyup(activeElement, options);
+    });
+};
 
 const nextItemFromIndex = (i, seq, reverse) => {
   if (reverse) {
-    const nextIndex = i <= 0 ? seq.length - 1 : i - 1
+    const nextIndex = i <= 0 ? seq.length - 1 : i - 1;
 
-    return seq[nextIndex]
+    return seq[nextIndex];
   }
 
-  const nextIndex = i === seq.length - 1 ? 0 : i + 1
+  const nextIndex = i === seq.length - 1 ? 0 : i + 1;
 
-  return seq[nextIndex]
-}
+  return seq[nextIndex];
+};
 
 const tabKeyEventPartial = {
   key: 'Tab',
@@ -100,49 +105,58 @@ const tabKeyEventPartial = {
   keyCode: 9,
   which: 9,
   charCode: 0,
-}
+};
 
-const fireKeyEvent = (type, el, eventOptionsExtend, bubbles = false, cancelable = false) => {
-  const win = el.ownerDocument.defaultView
+const fireKeyEvent = (
+  type,
+  el,
+  eventOptionsExtend,
+  bubbles = false,
+  cancelable = false
+) => {
+  const win = el.ownerDocument.defaultView;
 
-  const eventInit = _.extend({
-    bubbles,
-    cancelable,
-    altKey: false,
-    ctrlKey: false,
-    metaKey: false,
-    shiftKey: false,
-  }, eventOptionsExtend)
+  const eventInit = _.extend(
+    {
+      bubbles,
+      cancelable,
+      altKey: false,
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+    },
+    eventOptionsExtend
+  );
 
-  const keyboardEvent = new win.KeyboardEvent(type, eventInit)
+  const keyboardEvent = new win.KeyboardEvent(type, eventInit);
 
-  const cancelled = !el.dispatchEvent(keyboardEvent)
+  const cancelled = !el.dispatchEvent(keyboardEvent);
 
-  return cancelled
-}
+  return cancelled;
+};
 
 const keydown = (el, options, onSucceed, onCancel) => {
   const eventOptions = _.extend({}, tabKeyEventPartial, {
     shiftKey: options.shift,
-  })
+  });
 
-  const cancelled = fireKeyEvent('keydown', el, eventOptions, true, true)
+  const cancelled = fireKeyEvent('keydown', el, eventOptions, true, true);
 
   if (cancelled) {
-    return onCancel()
+    return onCancel();
   }
 
-  return onSucceed()
-}
+  return onSucceed();
+};
 
 const keyup = (el, options) => {
   const eventOptions = _.extend({}, tabKeyEventPartial, {
     shiftKey: options.shift,
-  })
+  });
 
-  return fireKeyEvent('keyup', el, eventOptions, true, false)
-}
+  return fireKeyEvent('keyup', el, eventOptions, true, false);
+};
 
 const pluginError = (mes) => {
-  throw new Error(`[cypress-plugin-tab]: ${mes}`)
-}
+  throw new Error(`[cypress-plugin-tab]: ${mes}`);
+};
