@@ -12,5 +12,5 @@
 // You can read more here:
 // https://on.cypress.io/configuration
 // ***********************************************************
-import 'cypress-plugin-tab';
+import './tab-command';
 import '@testing-library/cypress/add-commands';
