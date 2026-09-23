@@ -1,5 +1,3 @@
-/* eslint-env node */
-
 import { createRequire } from 'module';
 import babelPlugin from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
@@ -185,7 +183,7 @@ const demo = {
   ],
 };
 
-let config = [];
+let config;
 console.log('Building for env', process.env.BUILD_ENV);
 
 switch (process.env.BUILD_ENV) {

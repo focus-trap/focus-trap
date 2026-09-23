@@ -2,21 +2,19 @@
 // ROOT ESLint Configuration
 //
 
-/* eslint-env node */
-
 import url from 'node:url';
 import path from 'node:path';
 import js from '@eslint/js';
 import globals from 'globals';
-import babel from '@babel/eslint-plugin';
-import babelParser from '@babel/eslint-parser';
 import typescript from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import prettier from 'eslint-config-prettier';
 import jest from 'eslint-plugin-jest';
 import jestDom from 'eslint-plugin-jest-dom';
 import cypress from 'eslint-plugin-cypress';
-import importPlugin from 'eslint-plugin-import';
+import importPlugin, {
+  flatConfigs as importFlatConfigs,
+} from 'eslint-plugin-import-x';
 import testingLibrary from 'eslint-plugin-testing-library';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
@@ -30,12 +28,10 @@ const tsconfigRootDir = __dirname;
 //
 
 // Plugins that apply to ALL envs
-const basePlugins = {
-  '@babel': babel, // @see https://www.npmjs.com/package/@babel/eslint-plugin
-};
+const basePlugins = {};
 
 const importPluginSettings = {
-  'import/resolver': {
+  'import-x/resolver': {
     node: {
       extensions: [
         '.js',
@@ -189,7 +185,7 @@ const typescriptRules = {
   ...typescript.configs['recommended-type-checked'].rules,
 
   // AFTER TypeScript rules to turn off `import` rules that TypeScript covers
-  ...importPlugin.flatConfigs.typescript.rules,
+  ...importFlatConfigs.typescript.rules,
 };
 
 //
@@ -253,12 +249,12 @@ const createToolingConfig = (isModule = true, isTypescript = false) => ({
   ignores: ['index.js', 'docs/**/*.*'],
   plugins: {
     ...basePlugins,
-    ...(isModule ? { import: importPlugin } : {}),
+    ...(isModule ? { 'import-x': importPlugin } : {}),
     ...(isTypescript ? { '@typescript-eslint': typescript } : {}),
   },
   languageOptions: {
     ecmaVersion,
-    parser: isTypescript ? typescriptParser : babelParser,
+    parser: isTypescript ? typescriptParser : undefined,
     parserOptions: {
       sourceType: isModule ? 'module' : 'script',
       ...(isModule && isTypescript
@@ -282,7 +278,7 @@ const createToolingConfig = (isModule = true, isTypescript = false) => ({
   },
   rules: {
     ...baseRules,
-    ...(isModule ? importPlugin.flatConfigs.recommended.rules : {}), // BEFORE TypeScript rules
+    ...(isModule ? importFlatConfigs.recommended.rules : {}), // BEFORE TypeScript rules
     ...(isModule && isTypescript ? typescriptRules : {}),
     'no-console': 'off', // OK in repo scripts
   },
@@ -296,11 +292,10 @@ const createSourceJSConfig = () => ({
   files: ['index.js'],
   plugins: {
     ...basePlugins,
-    import: importPlugin,
+    'import-x': importPlugin,
   },
   languageOptions: {
     ecmaVersion,
-    parser: babelParser,
     parserOptions: {
       sourceType: 'module',
       ecmaFeatures: {
@@ -319,7 +314,7 @@ const createSourceJSConfig = () => ({
   },
   rules: {
     ...baseRules,
-    ...importPlugin.flatConfigs.recommended.rules,
+    ...importFlatConfigs.recommended.rules,
   },
 });
 
@@ -342,7 +337,7 @@ const createSourceTSConfig = () => ({
   files: ['index.d.ts', 'docs/**/*.ts'],
   plugins: {
     ...basePlugins,
-    import: importPlugin,
+    'import-x': importPlugin,
     '@typescript-eslint': typescript,
   },
   languageOptions: {
@@ -365,7 +360,7 @@ const createSourceTSConfig = () => ({
   },
   rules: {
     ...baseRules,
-    ...importPlugin.flatConfigs.recommended.rules, // BEFORE TypeScript rules
+    ...importFlatConfigs.recommended.rules, // BEFORE TypeScript rules
     ...typescriptRules,
   },
 });
@@ -376,7 +371,7 @@ const createTestConfig = (isTypescript = false) => ({
     : ['test/**/*.js', 'cypress/e2e/**/*.js'],
   plugins: {
     ...basePlugins,
-    import: importPlugin,
+    'import-x': importPlugin,
     ...(isTypescript ? { '@typescript-eslint': typescript } : {}),
     jest,
     'jest-dom': jestDom,
@@ -385,7 +380,7 @@ const createTestConfig = (isTypescript = false) => ({
   },
   languageOptions: {
     ecmaVersion,
-    parser: isTypescript ? typescriptParser : babelParser,
+    parser: isTypescript ? typescriptParser : undefined,
     parserOptions: {
       ...(isTypescript
         ? {
@@ -409,7 +404,7 @@ const createTestConfig = (isTypescript = false) => ({
   },
   rules: {
     ...baseRules,
-    ...importPlugin.flatConfigs.recommended.rules, // BEFORE TypeScript rules
+    ...importFlatConfigs.recommended.rules, // BEFORE TypeScript rules
     ...(isTypescript ? typescriptRules : {}),
     ...testRules,
   },
