@@ -1,5 +1,3 @@
-/* eslint-env node */
-
 module.exports = {
   arrowParens: 'always',
   bracketSpacing: true,

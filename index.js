@@ -283,7 +283,8 @@ const createFocusTrap = function (elements, userOptions) {
         node = doc.querySelector(optionValue); // resolve to node, or null if fails
       } catch (err) {
         throw new Error(
-          `\`${optionName}\` appears to be an invalid selector; error="${err.message}"`
+          `\`${optionName}\` appears to be an invalid selector; error="${err.message}"`,
+          { cause: err }
         );
       }
 
