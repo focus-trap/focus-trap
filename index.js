@@ -6,6 +6,10 @@ import {
   getTabIndex,
 } from 'tabbable';
 
+// A delayed return must not override a newer focus-trap interaction. Keep this
+// per stack so independent documents/stacks do not invalidate each other.
+const stackChanges = new WeakMap();
+
 const activeFocusTraps = {
   // Returns the trap from the top of the stack.
   getActiveTrap(trapStack) {
@@ -17,6 +21,7 @@ const activeFocusTraps = {
 
   // Pauses the currently active trap, then adds a new trap to the stack.
   activateTrap(trapStack, trap) {
+    stackChanges.set(trapStack, {});
     const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
 
     if (trap !== activeTrap) {
@@ -35,6 +40,7 @@ const activeFocusTraps = {
 
   // Removes the trap from the top of the stack, then unpauses the next trap down.
   deactivateTrap(trapStack, trap) {
+    stackChanges.set(trapStack, {});
     const trapIndex = trapStack.indexOf(trap);
     if (trapIndex !== -1) {
       trapStack.splice(trapIndex, 1);
@@ -1160,6 +1166,9 @@ const createFocusTrap = function (elements, userOptions) {
       updateObservedNodes();
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
+      // Capture after the parent has resumed, but before callbacks can activate
+      // another trap (including this one).
+      const stackChange = stackChanges.get(trapStack);
 
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
@@ -1173,7 +1182,11 @@ const createFocusTrap = function (elements, userOptions) {
 
       onDeactivate?.({ trap });
       const completeDeactivation = () => {
-        if (returnFocus) {
+        if (
+          returnFocus &&
+          !state.active &&
+          stackChanges.get(trapStack) === stackChange
+        ) {
           tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
         }
         onPostDeactivate?.({ trap });
