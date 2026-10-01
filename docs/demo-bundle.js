@@ -12,7 +12,7 @@ var focusTrapDemoBundle = (function () {
 				var isInstance = false;
 	      try {
 	        isInstance = this instanceof a;
-	      } catch {}
+	      } catch (e) {}
 				if (isInstance) {
 	        return Reflect.construct(f, arguments, this.constructor);
 				}
@@ -377,12 +377,12 @@ var focusTrapDemoBundle = (function () {
 	}
 
 	/*!
-	* tabbable 6.4.0
+	* tabbable 6.5.0
 	* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 	*/
 	// NOTE: separate `:not()` selectors has broader browser support than the newer
 	//  `:not([inert], [inert] *)` (Feb 2023)
-	var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
+	var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'area[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
 	var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
 	var NoElement = typeof Element === 'undefined';
 	var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
@@ -740,7 +740,9 @@ var focusTrapDemoBundle = (function () {
 	  //  (this is legacy behavior from a very long way back)
 	  // NOTE: we check this regardless of `displayCheck="none"` because this is a
 	  //  _visibility_ check, not a _display_ check
-	  if (getComputedStyle(node).visibility === 'hidden') {
+	  var _getComputedStyle = getComputedStyle(node),
+	    visibility = _getComputedStyle.visibility;
+	  if (visibility === 'hidden' || visibility === 'collapse') {
 	    return true;
 	  }
 	  var isDirectSummary = matches.call(node, 'details>summary:first-of-type');
@@ -1204,7 +1206,9 @@ var focusTrapDemoBundle = (function () {
 	      try {
 	        node = doc.querySelector(optionValue); // resolve to node, or null if fails
 	      } catch (err) {
-	        throw new Error("`".concat(optionName, "` appears to be an invalid selector; error=\"").concat(err.message, "\""));
+	        throw new Error("`".concat(optionName, "` appears to be an invalid selector; error=\"").concat(err.message, "\""), {
+	          cause: err
+	        });
 	      }
 	      if (!node) {
 	        if (!hasFallback) {
@@ -1216,6 +1220,25 @@ var focusTrapDemoBundle = (function () {
 	    }
 	    return node;
 	  };
+
+	  /**
+	   * Gets the current activeElement. If it's a web-component and has open shadow-root
+	   * it will recursively search inside shadow roots for the "true" activeElement.
+	   *
+	   * @param {Document | ShadowRoot} el
+	   *
+	   * @returns {HTMLElement|null} The element that currently has the focus. `null` if a focused element isn't found.
+	   **/
+	  var _getActiveElement = function getActiveElement(el) {
+	    var activeElement = el.activeElement;
+	    if (!activeElement) {
+	      return null;
+	    }
+	    if (activeElement.shadowRoot && activeElement.shadowRoot.activeElement !== null) {
+	      return _getActiveElement(activeElement.shadowRoot);
+	    }
+	    return activeElement;
+	  };
 	  var getInitialFocusNode = function getInitialFocusNode() {
 	    var node = getNodeForOption('initialFocus', {
 	      hasFallback: true
@@ -1226,9 +1249,11 @@ var focusTrapDemoBundle = (function () {
 	      return false;
 	    }
 	    if (node === undefined || node && !isFocusable(node, config.tabbableOptions)) {
+	      var activeElement = _getActiveElement(doc);
+
 	      // option not specified nor focusable: use fallback options
-	      if (findContainerIndex(doc.activeElement) >= 0) {
-	        node = doc.activeElement;
+	      if (findContainerIndex(activeElement) >= 0) {
+	        node = activeElement;
 	      } else {
 	        var firstTabbableGroup = state.tabbableGroups[0];
 	        var firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
@@ -1340,30 +1365,11 @@ var focusTrapDemoBundle = (function () {
 	      throw new Error("At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps.");
 	    }
 	  };
-
-	  /**
-	   * Gets the current activeElement. If it's a web-component and has open shadow-root
-	   * it will recursively search inside shadow roots for the "true" activeElement.
-	   *
-	   * @param {Document | ShadowRoot} el
-	   *
-	   * @returns {HTMLElement} The element that currently has the focus
-	   **/
-	  var _getActiveElement = function getActiveElement(el) {
-	    var activeElement = el.activeElement;
-	    if (!activeElement) {
-	      return;
-	    }
-	    if (activeElement.shadowRoot && activeElement.shadowRoot.activeElement !== null) {
-	      return _getActiveElement(activeElement.shadowRoot);
-	    }
-	    return activeElement;
-	  };
 	  var _tryFocus = function tryFocus(node) {
 	    if (node === false) {
 	      return;
 	    }
-	    if (node === _getActiveElement(document)) {
+	    if (node === _getActiveElement(doc)) {
 	      return;
 	    }
 	    if (!node || !node.focus) {
