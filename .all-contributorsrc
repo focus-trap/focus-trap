@@ -412,6 +412,15 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "hao0x1",
+      "name": "Hao",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195776207?v=4",
+      "profile": "https://github.com/hao0x1",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
