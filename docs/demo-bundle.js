@@ -1370,6 +1370,7 @@ var focusTrapDemoBundle = (function () {
 	      return;
 	    }
 	    if (node === _getActiveElement(doc)) {
+	      state.mostRecentlyFocusedNode = node;
 	      return;
 	    }
 	    if (!node || !node.focus) {

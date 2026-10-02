@@ -491,6 +491,7 @@ const createFocusTrap = function (elements, userOptions) {
     }
 
     if (node === getActiveElement(doc)) {
+      state.mostRecentlyFocusedNode = node;
       return;
     }
 

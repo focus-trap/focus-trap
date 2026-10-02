@@ -1,3 +1,5 @@
+import { waitFor } from '@testing-library/dom';
+
 import { createFocusTrap } from '../../index';
 
 describe.each(['main document', 'iframe', 'iframe with shadow DOM'])(
@@ -55,6 +57,52 @@ describe.each(['main document', 'iframe', 'iframe with shadow DOM'])(
       expect(input.getRootNode().activeElement).toBe(input);
       expect(input.selectionStart).toBe(0);
       expect(input.selectionEnd).toBe(input.value.length);
+    });
+  }
+);
+
+describe.each(['main document', 'iframe'])(
+  'removal of an already-focused input in %s',
+  (context) => {
+    let trap;
+
+    afterEach(() => {
+      trap?.deactivate({ returnFocus: false });
+    });
+
+    it.each([
+      ['default delayed', {}],
+      ['synchronous', { delayInitialFocus: false }],
+    ])('restores focus with %s activation', async (_, options) => {
+      let doc = document;
+      if (context === 'iframe') {
+        const iframe = document.createElement('iframe');
+        document.body.appendChild(iframe);
+        doc = iframe.contentDocument;
+      }
+
+      const container = doc.createElement('div');
+      const input = doc.createElement('input');
+      const remainingButton = doc.createElement('button');
+      remainingButton.textContent = 'Remaining';
+      container.append(input, remainingButton);
+      doc.body.appendChild(container);
+      input.focus();
+
+      const onPostActivate = jest.fn();
+      trap = createFocusTrap(container, {
+        document: doc,
+        tabbableOptions: { displayCheck: 'none' },
+        onPostActivate,
+        ...options,
+      });
+      trap.activate();
+      await waitFor(() => expect(onPostActivate).toHaveBeenCalledTimes(1));
+      expect(input).toHaveFocus();
+
+      input.remove();
+
+      await waitFor(() => expect(remainingButton).toHaveFocus());
     });
   }
 );
