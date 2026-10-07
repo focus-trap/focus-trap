@@ -86,7 +86,7 @@
     "@types/jquery": "^4.0.1",
     "@types/node": "^26.6.1",
     "@typescript-eslint/eslint-plugin": "^8.70.1",
-    "@typescript-eslint/parser": "^8.70.1",
+    "@typescript-eslint/parser": "^8.71.0",
     "all-contributors-cli": "^6.26.1",
     "babel-jest": "^30.5.1",
     "babel-loader": "^10.1.1",
