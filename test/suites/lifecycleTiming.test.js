@@ -38,6 +38,63 @@ describe('lifecycle timing', () => {
     onPostDeactivate: () => events.push(`${prefix}:onPostDeactivate`),
   });
 
+  it('does not finish activation after its focus permission resolves following deactivation', async () => {
+    const { triggerEl, trapEl } = renderTrap('cancelled');
+    let resolvePermission;
+    const onPostActivate = jest.fn();
+    const trap = createFocusTrap(trapEl, {
+      ...baseTrapOptions,
+      onPostActivate,
+      checkCanFocusTrap: () =>
+        new Promise((resolve) => (resolvePermission = resolve)),
+    });
+    triggerEl.focus();
+    trap.activate();
+    trap.deactivate({ returnFocus: false });
+    resolvePermission();
+    await Promise.resolve();
+    expect(onPostActivate).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(triggerEl);
+  });
+
+  it('ignores a superseded activation permission after reactivation', async () => {
+    const { trapEl } = renderTrap('reactivated');
+    let resolvePermission;
+    const oldPostActivate = jest.fn();
+    const newPostActivate = jest.fn();
+    const trap = createFocusTrap(trapEl, baseTrapOptions);
+    trap.activate({
+      onPostActivate: oldPostActivate,
+      checkCanFocusTrap: () =>
+        new Promise((resolve) => (resolvePermission = resolve)),
+    });
+    trap.deactivate({ returnFocus: false });
+    trap.activate({ onPostActivate: newPostActivate });
+    resolvePermission();
+    await Promise.resolve();
+    expect(oldPostActivate).not.toHaveBeenCalled();
+    expect(newPostActivate).toHaveBeenCalledTimes(1);
+    trap.deactivate({ returnFocus: false });
+  });
+
+  it('does not complete activation when delayed focus deactivates the trap', async () => {
+    const { trapEl } = renderTrap('focus-cancelled');
+    const onPostActivate = jest.fn();
+    const trap = createFocusTrap(trapEl, {
+      ...baseTrapOptions,
+      delayInitialFocus: true,
+      onPostActivate,
+    });
+    trapEl.firstChild.addEventListener(
+      'focus',
+      () => trap.deactivate({ returnFocus: false }),
+      { once: true }
+    );
+    trap.activate();
+    await waitFor(() => expect(trap.active).toBe(false));
+    expect(onPostActivate).not.toHaveBeenCalled();
+  });
+
   it('should keep deactivation post-callbacks asynchronous by default across stacked traps', async () => {
     const events = [];
     const trapStack = [];

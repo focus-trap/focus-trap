@@ -1877,6 +1877,8 @@ var focusTrapDemoBundle = (function () {
 	      if (state.active) {
 	        return this;
 	      }
+	      var activation = {};
+	      state.activation = activation;
 	      var onActivate = getOption(activateOptions, 'onActivate');
 	      var onPostActivate = getOption(activateOptions, 'onPostActivate');
 	      var checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
@@ -1904,10 +1906,16 @@ var focusTrapDemoBundle = (function () {
 	          trap: trap
 	        });
 	        var finishActivation = function finishActivation() {
+	          if (!state.active || state.activation !== activation) {
+	            return;
+	          }
 	          if (checkCanFocusTrap) {
 	            updateTabbableNodes();
 	          }
 	          var afterListeners = function afterListeners() {
+	            if (!state.active || state.activation !== activation) {
+	              return;
+	            }
 	            trap._setSubtreeIsolation(true);
 	            updateObservedNodes();
 	            onPostActivate === null || onPostActivate === void 0 || onPostActivate({
