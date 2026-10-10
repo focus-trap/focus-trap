@@ -1055,6 +1055,9 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
+      const activation = {};
+      state.activation = activation;
+
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
@@ -1083,11 +1086,17 @@ const createFocusTrap = function (elements, userOptions) {
         onActivate?.({ trap });
 
         const finishActivation = () => {
+          if (!state.active || state.activation !== activation) {
+            return;
+          }
           if (checkCanFocusTrap) {
             updateTabbableNodes();
           }
 
           const afterListeners = () => {
+            if (!state.active || state.activation !== activation) {
+              return;
+            }
             trap._setSubtreeIsolation(true);
             updateObservedNodes();
             onPostActivate?.({ trap });
