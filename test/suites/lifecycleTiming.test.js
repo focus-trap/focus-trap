@@ -38,6 +38,41 @@ describe('lifecycle timing', () => {
     onPostDeactivate: () => events.push(`${prefix}:onPostDeactivate`),
   });
 
+  it.each(['resolve', 'reject'])(
+    'restores the active trap isolation after cancelled permission %s',
+    async (outcome) => {
+      const first = renderTrap('isolated-first');
+      const second = renderTrap('isolated-second');
+      const trapStack = [];
+      const firstTrap = createFocusTrap(first.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+        isolateSubtrees: 'aria-hidden',
+      });
+      let settlePermission;
+      const secondTrap = createFocusTrap(second.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+        checkCanFocusTrap: () =>
+          new Promise((resolve, reject) => {
+            settlePermission = outcome === 'resolve' ? resolve : reject;
+          }),
+      });
+      firstTrap.activate();
+      expect(second.trapEl).toHaveAttribute('aria-hidden', 'true');
+      secondTrap.activate();
+      expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+      secondTrap.deactivate({ returnFocus: false });
+      settlePermission();
+      await Promise.resolve();
+      expect(firstTrap.active).toBe(true);
+      expect(firstTrap.paused).toBe(false);
+      expect(second.trapEl).toHaveAttribute('aria-hidden', 'true');
+      firstTrap.deactivate({ returnFocus: false });
+      expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+    }
+  );
+
   it('does not finish activation after its focus permission resolves following deactivation', async () => {
     const { triggerEl, trapEl } = renderTrap('cancelled');
     let resolvePermission;

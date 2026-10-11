@@ -1907,6 +1907,11 @@ var focusTrapDemoBundle = (function () {
 	        });
 	        var finishActivation = function finishActivation() {
 	          if (!state.active || state.activation !== activation) {
+	            if (!state.active && revertState && preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && preexistingTrap.active && !preexistingTrap.paused) {
+	              var _preexistingTrap$_set2;
+	              (_preexistingTrap$_set2 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set2 === void 0 || _preexistingTrap$_set2.call(preexistingTrap, true);
+	              revertState = false;
+	            }
 	            return;
 	          }
 	          if (checkCanFocusTrap) {
@@ -1944,11 +1949,11 @@ var focusTrapDemoBundle = (function () {
 	        // If our activation throws an exception and the stack hasn't changed,
 	        // we need to re-enable the prior trap's subtree isolation.
 	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState) {
-	          var _preexistingTrap$_set2;
+	          var _preexistingTrap$_set3;
 	          // [#1729] method MAY not exist if using `trapStack` option to share stack with older
 	          //  versions of Focus-trap in the same DOM so use optional chaining here just in case
 	          //  since this is a trap we may not have created from this instance of the library
-	          (_preexistingTrap$_set2 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set2 === void 0 || _preexistingTrap$_set2.call(preexistingTrap, true);
+	          (_preexistingTrap$_set3 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set3 === void 0 || _preexistingTrap$_set3.call(preexistingTrap, true);
 	        }
 	        throw error;
 	      }

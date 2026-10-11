@@ -1087,6 +1087,16 @@ const createFocusTrap = function (elements, userOptions) {
 
         const finishActivation = () => {
           if (!state.active || state.activation !== activation) {
+            if (
+              !state.active &&
+              revertState &&
+              preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
+              preexistingTrap.active &&
+              !preexistingTrap.paused
+            ) {
+              preexistingTrap._setSubtreeIsolation?.(true);
+              revertState = false;
+            }
             return;
           }
           if (checkCanFocusTrap) {
