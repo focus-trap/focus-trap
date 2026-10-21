@@ -106,7 +106,7 @@
     "jest-environment-jsdom": "^30.5.1",
     "jest-watch-typeahead": "^3.0.1",
     "onchange": "^7.1.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.10",
     "rollup": "^4.64.2",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^3.0.0",
