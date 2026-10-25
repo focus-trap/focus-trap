@@ -38,9 +38,17 @@ describe('lifecycle timing', () => {
     onPostDeactivate: () => events.push(`${prefix}:onPostDeactivate`),
   });
 
-  it.each(['resolve', 'reject'])(
-    'restores the active trap isolation after cancelled permission %s',
-    async (outcome) => {
+  it.each([
+    ['resolve', false],
+    ['reject', false],
+    ['resolve', true],
+    ['reject', true],
+    ['resolve', 'before cancellation'],
+    ['reject', 'before cancellation'],
+    ['resolve', 'newer trap before cancellation'],
+  ])(
+    'restores isolation after cancelled permission %s, reapplied=%s',
+    async (outcome, reapplied) => {
       const first = renderTrap('isolated-first');
       const second = renderTrap('isolated-second');
       const trapStack = [];
@@ -62,7 +70,27 @@ describe('lifecycle timing', () => {
       expect(second.trapEl).toHaveAttribute('aria-hidden', 'true');
       secondTrap.activate();
       expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+      if (reapplied === 'before cancellation') {
+        firstTrap.pause();
+        firstTrap.unpause();
+      }
+      if (reapplied === 'newer trap before cancellation') {
+        const third = renderTrap('temporary-isolated');
+        const thirdTrap = createFocusTrap(third.trapEl, {
+          ...baseTrapOptions,
+          trapStack,
+          isolateSubtrees: 'aria-hidden',
+        });
+        thirdTrap.activate();
+        thirdTrap.deactivate({ returnFocus: false });
+      }
       secondTrap.deactivate({ returnFocus: false });
+      if (reapplied) {
+        firstTrap.pause();
+        firstTrap.unpause();
+      } else {
+        expect(second.trapEl).toHaveAttribute('aria-hidden', 'true');
+      }
       settlePermission();
       await Promise.resolve();
       expect(firstTrap.active).toBe(true);
@@ -70,6 +98,65 @@ describe('lifecycle timing', () => {
       expect(second.trapEl).toHaveAttribute('aria-hidden', 'true');
       firstTrap.deactivate({ returnFocus: false });
       expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+    }
+  );
+
+  it('preserves a newer trap isolation when a pending activation is cancelled', async () => {
+    const first = renderTrap('older-isolated');
+    const second = renderTrap('pending-isolated');
+    const third = renderTrap('newer-isolated');
+    const trapStack = [];
+    const options = {
+      ...baseTrapOptions,
+      trapStack,
+      isolateSubtrees: 'aria-hidden',
+    };
+    const firstTrap = createFocusTrap(first.trapEl, options);
+    let resolvePermission;
+    const secondTrap = createFocusTrap(second.trapEl, {
+      ...options,
+      checkCanFocusTrap: () =>
+        new Promise((resolve) => (resolvePermission = resolve)),
+    });
+    const thirdTrap = createFocusTrap(third.trapEl, options);
+    firstTrap.activate();
+    secondTrap.activate();
+    thirdTrap.activate();
+    secondTrap.deactivate({ returnFocus: false });
+    resolvePermission();
+    await Promise.resolve();
+    expect(third.trapEl).not.toHaveAttribute('aria-hidden');
+    expect(first.trapEl).toHaveAttribute('aria-hidden', 'true');
+    thirdTrap.deactivate({ returnFocus: false });
+    firstTrap.deactivate({ returnFocus: false });
+    expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+    expect(third.trapEl).not.toHaveAttribute('aria-hidden');
+  });
+
+  it.each([
+    [true, 'inert', ''],
+    ['aria-hidden', 'aria-hidden', 'true'],
+  ])(
+    'preserves existing isolation when containers change, mode=%s',
+    (mode, attribute, value) => {
+      const first = renderTrap('old-container');
+      const second = renderTrap('new-container');
+      const hidden = document.createElement('div');
+      hidden.setAttribute(attribute, value);
+      document.body.appendChild(hidden);
+      const trap = createFocusTrap(first.trapEl, {
+        ...baseTrapOptions,
+        isolateSubtrees: mode,
+      });
+      trap.activate();
+      trap.updateContainerElements(second.trapEl);
+      expect(first.trapEl).toHaveAttribute(attribute);
+      expect(second.trapEl).not.toHaveAttribute(attribute);
+      trap.deactivate({ returnFocus: false });
+      expect(first.trapEl).not.toHaveAttribute(attribute);
+      expect(second.trapEl).not.toHaveAttribute(attribute);
+      expect(hidden).toHaveAttribute(attribute);
+      hidden.remove();
     }
   );
 
