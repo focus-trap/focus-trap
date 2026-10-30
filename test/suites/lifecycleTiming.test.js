@@ -285,38 +285,71 @@ describe('lifecycle timing', () => {
     expect(events).toEqual(['onDeactivate', 'onPostDeactivate']);
   });
 
-  it('should not finish unpausing a trap deactivated by its initial focus', () => {
-    const events = [];
-    const trapStack = [];
-    const first = renderTrap('unpause-deactivated-first');
-    const second = renderTrap('unpause-deactivated-second');
+  it.each([
+    [
+      'deactivated',
+      (trap) => trap.deactivate({ returnFocus: false }),
+      ['first:onUnpause', 'first:onDeactivate'],
+    ],
+    [
+      'reactivated',
+      (trap) => {
+        trap.deactivate({ returnFocus: false });
+        trap.activate();
+      },
+      [
+        'first:onUnpause',
+        'first:onDeactivate',
+        'first:onActivate',
+        'first:onPostActivate',
+      ],
+    ],
+    [
+      'paused',
+      (trap) => trap.pause(),
+      ['first:onUnpause', 'first:onPause', 'first:onPostPause'],
+    ],
+  ])(
+    'should not finish unpausing a trap %s by its initial focus',
+    (_, interrupt, expectedEvents) => {
+      const events = [];
+      const trapStack = [];
+      const first = renderTrap('unpause-interrupted-first');
+      const second = renderTrap('unpause-interrupted-second');
 
-    const firstTrap = createFocusTrap(first.trapEl, {
-      ...baseTrapOptions,
-      trapStack,
-      isolateSubtrees: 'aria-hidden',
-      onUnpause: () => events.push('first:onUnpause'),
-      onPostUnpause: () => events.push('first:onPostUnpause'),
-      onDeactivate: () => events.push('first:onDeactivate'),
-    });
-    const secondTrap = createFocusTrap(second.trapEl, {
-      ...baseTrapOptions,
-      trapStack,
-    });
+      const firstTrap = createFocusTrap(first.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+        isolateSubtrees: 'aria-hidden',
+        onActivate: () => events.push('first:onActivate'),
+        onPostActivate: () => events.push('first:onPostActivate'),
+        onPause: () => events.push('first:onPause'),
+        onPostPause: () => events.push('first:onPostPause'),
+        onUnpause: () => events.push('first:onUnpause'),
+        onPostUnpause: () => events.push('first:onPostUnpause'),
+        onDeactivate: () => events.push('first:onDeactivate'),
+      });
+      const secondTrap = createFocusTrap(second.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+      });
 
-    firstTrap.activate();
-    secondTrap.activate();
+      firstTrap.activate();
+      secondTrap.activate();
+      events.length = 0;
 
-    // deactivate the first trap as soon as it focuses its initial focus node on unpause
-    first.trapEl.firstChild.addEventListener(
-      'focus',
-      () => firstTrap.deactivate({ returnFocus: false }),
-      { once: true }
-    );
-    secondTrap.deactivate({ returnFocus: false });
+      // interrupt the first trap as soon as it focuses its initial focus node on unpause
+      first.trapEl.firstChild.addEventListener(
+        'focus',
+        () => interrupt(firstTrap),
+        { once: true }
+      );
+      secondTrap.deactivate({ returnFocus: false });
 
-    expect(firstTrap.active).toBe(false);
-    expect(events).toEqual(['first:onUnpause', 'first:onDeactivate']);
-    expect(second.trapEl).not.toHaveAttribute('aria-hidden');
-  });
+      expect(events).toEqual(expectedEvents);
+
+      firstTrap.deactivate({ returnFocus: false });
+      expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+    }
+  );
 });

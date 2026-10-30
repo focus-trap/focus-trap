@@ -1116,6 +1116,9 @@ var focusTrapDemoBundle = (function () {
 	    // timer ID for when delayInitialFocus is true and initial focus in this trap
 	    //  has been delayed during activation
 	    delayInitialFocusTimer: undefined,
+	    // unique token for the unpause in progress, if any, so a cancelled unpause (e.g. the trap
+	    //  was deactivated or paused again before it finished) doesn't finish later
+	    unpausing: undefined,
 	    // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
 	    recentNavEvent: undefined
 	  };
@@ -1970,6 +1973,7 @@ var focusTrapDemoBundle = (function () {
 	      }, deactivateOptions);
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
+	      state.unpausing = undefined; // cancel any unpause still in progress
 
 	      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
 	      // This allows the next trap down to update its tabbable nodes properly.
@@ -2067,6 +2071,7 @@ var focusTrapDemoBundle = (function () {
 	          onPause === null || onPause === void 0 || onPause({
 	            trap: trap
 	          });
+	          state.unpausing = undefined; // cancel any unpause still in progress
 	          removeListeners();
 	          trap._setSubtreeIsolation(false);
 	          updateObservedNodes();
@@ -2079,12 +2084,15 @@ var focusTrapDemoBundle = (function () {
 	          onUnpause === null || onUnpause === void 0 || onUnpause({
 	            trap: trap
 	          });
+	          var unpausing = {};
+	          state.unpausing = unpausing;
 	          var finishUnpause = function finishUnpause() {
 	            updateTabbableNodes();
 	            var afterListeners = function afterListeners() {
-	              // NOTE: the trap may have been deactivated while unpausing (e.g. by a focus
-	              //  handler on the initial focus node) in which case there's nothing to finish
-	              if (!state.active) {
+	              // NOTE: the trap may have been deactivated (and even reactivated), or paused
+	              //  again, while unpausing (e.g. by a focus handler on the initial focus node)
+	              //  in which case this unpause has been cancelled and there's nothing to finish
+	              if (state.unpausing !== unpausing) {
 	                return;
 	              }
 	              trap._setSubtreeIsolation(true);
