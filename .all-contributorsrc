@@ -431,6 +431,16 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "feritcemkahraman",
+      "name": "Ferit Cem",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92086876?v=4",
+      "profile": "https://github.com/feritcemkahraman",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
