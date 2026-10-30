@@ -1116,6 +1116,9 @@ var focusTrapDemoBundle = (function () {
 	    // timer ID for when delayInitialFocus is true and initial focus in this trap
 	    //  has been delayed during activation
 	    delayInitialFocusTimer: undefined,
+	    // unique token for the unpause in progress, if any, so a cancelled unpause (e.g. the trap
+	    //  was deactivated or paused again before it finished) doesn't finish later
+	    unpausing: undefined,
 	    // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
 	    recentNavEvent: undefined
 	  };
@@ -1970,6 +1973,7 @@ var focusTrapDemoBundle = (function () {
 	      }, deactivateOptions);
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
+	      state.unpausing = undefined; // cancel any unpause still in progress
 
 	      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
 	      // This allows the next trap down to update its tabbable nodes properly.
@@ -2067,6 +2071,7 @@ var focusTrapDemoBundle = (function () {
 	          onPause === null || onPause === void 0 || onPause({
 	            trap: trap
 	          });
+	          state.unpausing = undefined; // cancel any unpause still in progress
 	          removeListeners();
 	          trap._setSubtreeIsolation(false);
 	          updateObservedNodes();
@@ -2076,12 +2081,26 @@ var focusTrapDemoBundle = (function () {
 	        } else {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
+
+	          // NOTE: register this unpause __before__ calling `onUnpause()` so that it gets
+	          //  cancelled if the handler deactivates or pauses the trap
+	          var unpausing = {};
+	          state.unpausing = unpausing;
 	          onUnpause === null || onUnpause === void 0 || onUnpause({
 	            trap: trap
 	          });
+	          if (state.unpausing !== unpausing) {
+	            return this; // cancelled by `onUnpause()`
+	          }
 	          var finishUnpause = function finishUnpause() {
 	            updateTabbableNodes();
 	            var afterListeners = function afterListeners() {
+	              // NOTE: the trap may have been deactivated (and even reactivated), or paused
+	              //  again, while unpausing (e.g. by a focus handler on the initial focus node)
+	              //  in which case this unpause has been cancelled and there's nothing to finish
+	              if (state.unpausing !== unpausing) {
+	                return;
+	              }
 	              trap._setSubtreeIsolation(true);
 	              updateObservedNodes();
 	              onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause({
@@ -2153,12 +2172,12 @@ var focusTrapDemoBundle = (function () {
 	  return trap;
 	};
 
-	var focusTrap = /*#__PURE__*/Object.freeze({
+	var wtunpause = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		createFocusTrap: createFocusTrap$D
 	});
 
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
+	var require$$0 = /*@__PURE__*/getAugmentedNamespace(wtunpause);
 
 	var createFocusTrap$C = require$$0.createFocusTrap;
 	var _default = function _default() {
