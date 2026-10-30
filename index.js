@@ -1301,10 +1301,16 @@ const createFocusTrap = function (elements, userOptions) {
           const onUnpause = getOption(options, 'onUnpause');
           const onPostUnpause = getOption(options, 'onPostUnpause');
 
-          onUnpause?.({ trap });
-
+          // NOTE: register this unpause __before__ calling `onUnpause()` so that it gets
+          //  cancelled if the handler deactivates or pauses the trap
           const unpausing = {};
           state.unpausing = unpausing;
+
+          onUnpause?.({ trap });
+
+          if (state.unpausing !== unpausing) {
+            return this; // cancelled by `onUnpause()`
+          }
 
           const finishUnpause = () => {
             updateTabbableNodes();

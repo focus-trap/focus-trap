@@ -2081,11 +2081,17 @@ var focusTrapDemoBundle = (function () {
 	        } else {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
+
+	          // NOTE: register this unpause __before__ calling `onUnpause()` so that it gets
+	          //  cancelled if the handler deactivates or pauses the trap
+	          var unpausing = {};
+	          state.unpausing = unpausing;
 	          onUnpause === null || onUnpause === void 0 || onUnpause({
 	            trap: trap
 	          });
-	          var unpausing = {};
-	          state.unpausing = unpausing;
+	          if (state.unpausing !== unpausing) {
+	            return this; // cancelled by `onUnpause()`
+	          }
 	          var finishUnpause = function finishUnpause() {
 	            updateTabbableNodes();
 	            var afterListeners = function afterListeners() {
