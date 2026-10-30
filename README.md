@@ -245,6 +245,8 @@ boolean
 
 Default: `true`. If `false`, when the trap is deactivated, focus will *not* return to the element that had focus before activation.
 
+A pending asynchronous or delayed return is skipped if another trap interaction has superseded it on the same trap stack, including reactivating this trap. `onPostDeactivate` still runs when the pending deactivation completes.
+
 - 💬 When using this option in conjunction with `clickOutsideDeactivates=true`:
   - If `returnFocusOnDeactivate=true` and the outside click causing deactivation is on a focusable element, focus will __not__ return to that element; instead, it will return to the node focused just before activation.
   - If `returnFocusOnDeactivate=false` and the outside click is on a focusable node, focus will __remain__ on that node instead of the node focused just before activation. If the outside click is on a non-focusable node, then "nothing" will have focus post-deactivation.
