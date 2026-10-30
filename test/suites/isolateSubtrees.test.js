@@ -527,14 +527,16 @@ describe('isolateSubtrees', () => {
     const ordinarySibling = containerEl.querySelector('#ordinary-sibling');
 
     // Activate first trap.
-    userEvent.click(activateFirst);
+    await userEvent.click(activateFirst);
     await waitFor(() => expect(firstTrap.active).toBe(true));
     expect(firstTrap.paused).toBe(false);
     expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
     // Activate second trap.
-    userEvent.click(activateSecond);
+    await userEvent.click(activateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(true));
     expect(secondTrap.paused).toBe(false);
     expect(firstTrap.paused).toBe(true);
@@ -546,7 +548,7 @@ describe('isolateSubtrees', () => {
     );
 
     // Deactivate second trap.
-    userEvent.click(deactivateSecond);
+    await userEvent.click(deactivateSecond);
     await waitFor(() => expect(secondTrap.active).toBe(false));
     expect(firstTrap.paused).toBe(false);
     await waitFor(() =>
@@ -557,7 +559,7 @@ describe('isolateSubtrees', () => {
     );
 
     // Deactivate first trap.
-    userEvent.click(deactivateFirst);
+    await userEvent.click(deactivateFirst);
     await waitFor(() => expect(firstTrap.active).toBe(false));
     expect(inertSibling.getAttribute('aria-hidden')).toBe('true');
     expect(ordinarySibling.getAttribute('aria-hidden')).not.toBe('true');
@@ -663,11 +665,13 @@ describe('isolateSubtrees', () => {
 
     const ordinarySibling = containerEl.querySelector('#ordinary-sibling');
 
-    userEvent.click(activateFirst);
+    await userEvent.click(activateFirst);
     await waitFor(() => expect(firstTrap.active).toBe(true));
-    expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true');
+    await waitFor(() =>
+      expect(ordinarySibling.getAttribute('aria-hidden')).toBe('true')
+    );
 
-    userEvent.click(ordinarySibling);
+    await userEvent.click(ordinarySibling);
     await waitFor(() => expect(firstTrap.active).toBe(false));
     expect(ordinarySibling.getAttribute('aria-hidden')).not.toBe('true');
   });

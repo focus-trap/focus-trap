@@ -155,3 +155,172 @@ it('returns focus normally after an asynchronous check rejects', async () => {
   await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
   expect(first.trigger).toHaveFocus();
 });
+
+function deferred() {
+  let resolve;
+  const promise = new Promise((finish) => {
+    resolve = finish;
+  });
+  return { promise, resolve };
+}
+
+it('skips return while a newer activation is still awaiting permission', async () => {
+  const returning = deferred();
+  const activating = deferred();
+  const onPostDeactivate = jest.fn();
+  const stack = [];
+  const first = mount('first', stack, {
+    checkCanReturnFocus: () => returning.promise,
+    onPostDeactivate,
+  });
+  const next = mount('next', stack, {
+    checkCanFocusTrap: () => activating.promise,
+  });
+  traps.push(first.trap, next.trap);
+  first.trigger.focus();
+  first.trap.activate();
+  first.trap.deactivate();
+  next.trigger.focus();
+  const oldFocus = jest.fn();
+  first.trigger.addEventListener('focus', oldFocus);
+  next.trap.activate();
+  returning.resolve();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+  expect(oldFocus).not.toHaveBeenCalled();
+  expect(next.trigger).toHaveFocus();
+  activating.resolve();
+  await waitFor(() => expect(next.input).toHaveFocus());
+});
+
+it('never focuses the old target when parent unpause opens a third trap', async () => {
+  const returning = deferred();
+  const stack = [];
+  const third = mount('third', stack);
+  const parent = mount('parent', stack, {
+    onPostUnpause: () => {
+      third.trap.activate();
+      third.input.setSelectionRange(3, 3);
+    },
+  });
+  const returnTarget = document.createElement('button');
+  parent.container.appendChild(returnTarget);
+  const onPostDeactivate = jest.fn();
+  const child = mount('child', stack, {
+    setReturnFocus: returnTarget,
+    checkCanReturnFocus: () => returning.promise,
+    onPostDeactivate,
+  });
+  traps.push(parent.trap, child.trap, third.trap);
+  parent.trap.activate();
+  child.trap.activate();
+  const oldFocus = jest.fn();
+  returnTarget.addEventListener('focus', oldFocus);
+  child.trap.deactivate();
+  expect(third.input).toHaveFocus();
+  returning.resolve();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+  expect(oldFocus).not.toHaveBeenCalled();
+  expect(third.input).toHaveFocus();
+  expect(third.input.selectionStart).toBe(3);
+  expect(third.input.selectionEnd).toBe(3);
+  // Do not reactivate third during cleanup when parent resumes again.
+  parent.trap.deactivate({ returnFocus: false });
+});
+
+it('supersedes returns across separate stacks in the same document', async () => {
+  const returning = deferred();
+  const onPostDeactivate = jest.fn();
+  const first = mount('first', [], {
+    checkCanReturnFocus: () => returning.promise,
+    onPostDeactivate,
+  });
+  const next = mount('next', []);
+  traps.push(first.trap, next.trap);
+  first.trigger.focus();
+  first.trap.activate();
+  first.trap.deactivate();
+  const oldFocus = jest.fn();
+  first.trigger.addEventListener('focus', oldFocus);
+  next.trap.activate();
+  next.input.setSelectionRange(3, 3);
+  returning.resolve();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+  expect(oldFocus).not.toHaveBeenCalled();
+  expect(next.input).toHaveFocus();
+  expect(next.input.selectionStart).toBe(3);
+  expect(next.input.selectionEnd).toBe(3);
+});
+
+it('skips an old return after the same trap reopens and closes again', async () => {
+  const returning = deferred();
+  const onPostDeactivate = jest.fn();
+  const first = mount('first', [], {
+    checkCanReturnFocus: () => returning.promise,
+    onPostDeactivate,
+  });
+  traps.push(first.trap);
+  first.trigger.focus();
+  first.trap.activate();
+  first.trap.deactivate();
+  first.trap.activate();
+  first.trap.deactivate({ returnFocus: false });
+  const oldFocus = jest.fn();
+  first.trigger.addEventListener('focus', oldFocus);
+  returning.resolve();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(2));
+  expect(oldFocus).not.toHaveBeenCalled();
+  expect(first.input).toHaveFocus();
+});
+
+it('supersedes a pending return when another trap is publicly unpaused', async () => {
+  const returning = deferred();
+  const onPostDeactivate = jest.fn();
+  const next = mount('next', []);
+  const first = mount('first', [], {
+    checkCanReturnFocus: () => returning.promise,
+    onPostDeactivate,
+  });
+  traps.push(first.trap, next.trap);
+  next.trap.activate();
+  next.trap.pause();
+  first.trigger.focus();
+  first.trap.activate();
+  first.trap.deactivate();
+  next.trap.unpause();
+  next.input.setSelectionRange(3, 3);
+  const oldFocus = jest.fn();
+  first.trigger.addEventListener('focus', oldFocus);
+  returning.resolve();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+  expect(oldFocus).not.toHaveBeenCalled();
+  expect(next.input.selectionStart).toBe(3);
+  expect(next.input.selectionEnd).toBe(3);
+});
+
+it('does not invalidate a return because a trap activates in another document', async () => {
+  const returning = deferred();
+  const onPostDeactivate = jest.fn();
+  const first = mount('first', [], {
+    checkCanReturnFocus: () => returning.promise,
+    onPostDeactivate,
+  });
+  const iframe = document.createElement('iframe');
+  document.body.appendChild(iframe);
+  const doc = iframe.contentDocument;
+  const container = doc.createElement('div');
+  container.appendChild(doc.createElement('input'));
+  doc.body.appendChild(container);
+  const next = createFocusTrap(container, {
+    ...options,
+    document: doc,
+    trapStack: [],
+  });
+  traps.push(first.trap, next);
+  first.trigger.focus();
+  first.trap.activate();
+  first.trap.deactivate();
+  next.activate();
+  returning.resolve();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+  expect(first.trigger).toHaveFocus();
+});

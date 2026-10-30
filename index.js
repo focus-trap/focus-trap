@@ -7,8 +7,8 @@ import {
 } from 'tabbable';
 
 // A delayed return must not override a newer focus-trap interaction. Keep this
-// per stack so independent documents/stacks do not invalidate each other.
-const stackChanges = new WeakMap();
+// per document so separate stacks share ownership while iframes remain independent.
+const documentInteractions = new WeakMap();
 
 const activeFocusTraps = {
   // Returns the trap from the top of the stack.
@@ -21,7 +21,6 @@ const activeFocusTraps = {
 
   // Pauses the currently active trap, then adds a new trap to the stack.
   activateTrap(trapStack, trap) {
-    stackChanges.set(trapStack, {});
     const activeTrap = activeFocusTraps.getActiveTrap(trapStack);
 
     if (trap !== activeTrap) {
@@ -40,7 +39,6 @@ const activeFocusTraps = {
 
   // Removes the trap from the top of the stack, then unpauses the next trap down.
   deactivateTrap(trapStack, trap) {
-    stackChanges.set(trapStack, {});
     const trapIndex = trapStack.indexOf(trap);
     if (trapIndex !== -1) {
       trapStack.splice(trapIndex, 1);
@@ -178,6 +176,7 @@ const createFocusTrap = function (elements, userOptions) {
     // references to nodes that were inert or aria-hidden before the trap was activated.
     /** @type {Set<HTMLElement>} */
     alreadySilent: new Set(),
+    subtreeIsolated: false,
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -911,6 +910,9 @@ const createFocusTrap = function (elements, userOptions) {
       });
     } else {
       tryFocus(getInitialFocusNode());
+      if (!state.active) {
+        return;
+      }
     }
 
     doc.addEventListener('focusin', checkFocusIn, true);
@@ -1084,6 +1086,10 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
+      const activation = {};
+      state.activation = activation;
+      documentInteractions.set(doc, {});
+
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
@@ -1098,6 +1104,7 @@ const createFocusTrap = function (elements, userOptions) {
         //  since this is a trap we may not have created from this instance of the library
         preexistingTrap._setSubtreeIsolation?.(false);
         revertState = true;
+        activation.preexistingTrap = preexistingTrap;
       }
 
       try {
@@ -1112,11 +1119,17 @@ const createFocusTrap = function (elements, userOptions) {
         onActivate?.({ trap });
 
         const finishActivation = () => {
+          if (!state.active || state.activation !== activation) {
+            return;
+          }
           if (checkCanFocusTrap) {
             updateTabbableNodes();
           }
 
           const afterListeners = () => {
+            if (!state.active || state.activation !== activation) {
+              return;
+            }
             trap._setSubtreeIsolation(true);
             updateObservedNodes();
             onPostActivate?.({ trap });
@@ -1127,6 +1140,7 @@ const createFocusTrap = function (elements, userOptions) {
           //  with aria-hidden while focus is still in some other subtree and not yet in
           //  the trap, resulting in some browsers (e.g. Chrome) logging to the console that
           //  they, "Blocked aria-hidden on an element because its descendant retained focus..."
+          activation.preexistingTrap = undefined;
           const listenersPromise = addListeners();
           if (listenersPromise) {
             listenersPromise.then(afterListeners);
@@ -1190,10 +1204,23 @@ const createFocusTrap = function (elements, userOptions) {
       state.paused = false;
       updateObservedNodes();
 
+      // Automatic parent resumption is part of this interaction. Capture before
+      // its callbacks can start a new interaction (including reopening this trap).
+      const activation = state.activation;
+      const interaction = {};
+      documentInteractions.set(doc, interaction);
       activeFocusTraps.deactivateTrap(trapStack, trap);
-      // Capture after the parent has resumed, but before callbacks can activate
-      // another trap (including this one).
-      const stackChange = stackChanges.get(trapStack);
+
+      // Pending activation has not joined the stack, so unpause did not restore isolation.
+      const preexistingTrap = state.activation?.preexistingTrap;
+      if (
+        preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
+        preexistingTrap?.active &&
+        !preexistingTrap.paused
+      ) {
+        preexistingTrap._setSubtreeIsolation?.(true);
+      }
+      state.activation.preexistingTrap = undefined;
 
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
@@ -1209,8 +1236,8 @@ const createFocusTrap = function (elements, userOptions) {
       const completeDeactivation = () => {
         if (
           returnFocus &&
-          !state.active &&
-          stackChanges.get(trapStack) === stackChange
+          state.activation === activation &&
+          documentInteractions.get(doc) === interaction
         ) {
           tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
         }
@@ -1251,6 +1278,7 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
+      documentInteractions.set(doc, {});
       state.manuallyPaused = false;
 
       if (trapStack[trapStack.length - 1] !== this) {
@@ -1363,6 +1391,10 @@ const createFocusTrap = function (elements, userOptions) {
     _setSubtreeIsolation: {
       value(isEnabled) {
         if (config.isolateSubtrees) {
+          if (state.subtreeIsolated === isEnabled) {
+            return;
+          }
+          state.subtreeIsolated = isEnabled;
           state.adjacentElements.forEach((el) => {
             if (isEnabled) {
               switch (config.isolateSubtrees) {
