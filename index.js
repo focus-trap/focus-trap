@@ -188,6 +188,10 @@ const createFocusTrap = function (elements, userOptions) {
     //  has been delayed during activation
     delayInitialFocusTimer: undefined,
 
+    // unique token for the unpause in progress, if any, so a cancelled unpause (e.g. the trap
+    //  was deactivated or paused again before it finished) doesn't finish later
+    unpausing: undefined,
+
     // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
     recentNavEvent: undefined,
   };
@@ -496,7 +500,8 @@ const createFocusTrap = function (elements, userOptions) {
       return;
     }
 
-    if (node === getActiveElement(document)) {
+    if (node === getActiveElement(doc)) {
+      state.mostRecentlyFocusedNode = node;
       return;
     }
 
@@ -579,7 +584,16 @@ const createFocusTrap = function (elements, userOptions) {
           //  and is not followed by any other tabbable node, in which
           //  case, we should handle shift+tab as if focus were on the container's
           //  first tabbable node, and go to the last tabbable node of the LAST group
-          startOfGroupIndex = containerIndex;
+          // NOTE: `containerIndex` is an index into `state.containerGroups`, which
+          //  `state.tabbableGroups` doesn't match when some containers have no tabbable
+          //  nodes, so use the first tabbable group at or after the target's container
+          //  (i.e. its own group, if it has one), wrapping around to the FIRST group
+          startOfGroupIndex = Math.max(
+            0,
+            state.tabbableGroups.findIndex(
+              (group) => state.containerGroups.indexOf(group) >= containerIndex
+            )
+          );
         }
 
         if (startOfGroupIndex >= 0) {
@@ -623,7 +637,17 @@ const createFocusTrap = function (elements, userOptions) {
           //  and is not followed by any other tabbable node, in which
           //  case, we should handle tab as if focus were on the container's
           //  last tabbable node, and go to the first tabbable node of the FIRST group
-          lastOfGroupIndex = containerIndex;
+          // NOTE: `containerIndex` is an index into `state.containerGroups`, which
+          //  `state.tabbableGroups` doesn't match when some containers have no tabbable
+          //  nodes, so use the last tabbable group at or before the target's container
+          //  (i.e. its own group, if it has one), wrapping around to the LAST group
+          const nextGroupIndex = state.tabbableGroups.findIndex(
+            (group) => state.containerGroups.indexOf(group) > containerIndex
+          );
+          lastOfGroupIndex =
+            nextGroupIndex > 0
+              ? nextGroupIndex - 1
+              : state.tabbableGroups.length - 1;
         }
 
         if (lastOfGroupIndex >= 0) {
@@ -1151,6 +1175,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       clearTimeout(state.delayInitialFocusTimer); // noop if undefined
       state.delayInitialFocusTimer = undefined;
+      state.unpausing = undefined; // cancel any unpause still in progress
 
       // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
       // This allows the next trap down to update its tabbable nodes properly.
@@ -1279,6 +1304,7 @@ const createFocusTrap = function (elements, userOptions) {
           const onPostPause = getOption(options, 'onPostPause');
           onPause?.({ trap });
 
+          state.unpausing = undefined; // cancel any unpause still in progress
           removeListeners();
           trap._setSubtreeIsolation(false);
           updateObservedNodes();
@@ -1288,12 +1314,28 @@ const createFocusTrap = function (elements, userOptions) {
           const onUnpause = getOption(options, 'onUnpause');
           const onPostUnpause = getOption(options, 'onPostUnpause');
 
+          // NOTE: register this unpause __before__ calling `onUnpause()` so that it gets
+          //  cancelled if the handler deactivates or pauses the trap
+          const unpausing = {};
+          state.unpausing = unpausing;
+
           onUnpause?.({ trap });
+
+          if (state.unpausing !== unpausing) {
+            return this; // cancelled by `onUnpause()`
+          }
 
           const finishUnpause = () => {
             updateTabbableNodes();
 
             const afterListeners = () => {
+              // NOTE: the trap may have been deactivated (and even reactivated), or paused
+              //  again, while unpausing (e.g. by a focus handler on the initial focus node)
+              //  in which case this unpause has been cancelled and there's nothing to finish
+              if (state.unpausing !== unpausing) {
+                return;
+              }
+
               trap._setSubtreeIsolation(true);
               updateObservedNodes();
               onPostUnpause?.({ trap });

@@ -412,6 +412,35 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "hao0x1",
+      "name": "Hao",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195776207?v=4",
+      "profile": "https://github.com/hao0x1",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "rtroost",
+      "name": "Rob Troost",
+      "avatar_url": "https://avatars.githubusercontent.com/u/253343?v=4",
+      "profile": "https://github.com/rtroost",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "feritcemkahraman",
+      "name": "Ferit Cem",
+      "avatar_url": "https://avatars.githubusercontent.com/u/92086876?v=4",
+      "profile": "https://github.com/feritcemkahraman",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

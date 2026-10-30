@@ -1,5 +1,17 @@
 # Changelog
 
+## 8.2.4
+
+### Patch Changes
+
+- efb9b7e: Fix Tab and Shift+Tab when focus is on a container (or a non-tabbable node at its edge) in a trap where some containers have no tabbable nodes. The trap used the container's position among all containers as its position among containers with tabbable nodes, so it threw `Cannot read properties of undefined (reading 'firstDomTabbableNode')` and let focus escape, or moved focus to the wrong container.
+
+## 8.2.3
+
+### Patch Changes
+
+- 7863b4d: Preserve an input's existing caret position or text selection when activating a trap in an iframe. Typing after activation no longer replaces the input's entire value. Also keep track of an already-focused input so removing it restores focus inside the trap.
+
 ## 8.2.2
 
 ### Patch Changes

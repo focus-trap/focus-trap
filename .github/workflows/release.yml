@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: latest
           check-latest: true
           registry-url: 'https://registry.npmjs.org' # required for NPM Trusted Publishing
 

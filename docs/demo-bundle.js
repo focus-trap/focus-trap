@@ -12,7 +12,7 @@ var focusTrapDemoBundle = (function () {
 				var isInstance = false;
 	      try {
 	        isInstance = this instanceof a;
-	      } catch {}
+	      } catch (e) {}
 				if (isInstance) {
 	        return Reflect.construct(f, arguments, this.constructor);
 				}
@@ -377,12 +377,12 @@ var focusTrapDemoBundle = (function () {
 	}
 
 	/*!
-	* tabbable 6.4.0
+	* tabbable 6.5.0
 	* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 	*/
 	// NOTE: separate `:not()` selectors has broader browser support than the newer
 	//  `:not([inert], [inert] *)` (Feb 2023)
-	var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
+	var candidateSelectors = ['input:not([inert]):not([inert] *)', 'select:not([inert]):not([inert] *)', 'textarea:not([inert]):not([inert] *)', 'a[href]:not([inert]):not([inert] *)', 'area[href]:not([inert]):not([inert] *)', 'button:not([inert]):not([inert] *)', '[tabindex]:not(slot):not([inert]):not([inert] *)', 'audio[controls]:not([inert]):not([inert] *)', 'video[controls]:not([inert]):not([inert] *)', '[contenteditable]:not([contenteditable="false"]):not([inert]):not([inert] *)', 'details>summary:first-of-type:not([inert]):not([inert] *)', 'details:not([inert]):not([inert] *)'];
 	var candidateSelector = /* #__PURE__ */candidateSelectors.join(',');
 	var NoElement = typeof Element === 'undefined';
 	var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
@@ -740,7 +740,9 @@ var focusTrapDemoBundle = (function () {
 	  //  (this is legacy behavior from a very long way back)
 	  // NOTE: we check this regardless of `displayCheck="none"` because this is a
 	  //  _visibility_ check, not a _display_ check
-	  if (getComputedStyle(node).visibility === 'hidden') {
+	  var _getComputedStyle = getComputedStyle(node),
+	    visibility = _getComputedStyle.visibility;
+	  if (visibility === 'hidden' || visibility === 'collapse') {
 	    return true;
 	  }
 	  var isDirectSummary = matches.call(node, 'details>summary:first-of-type');
@@ -1114,6 +1116,9 @@ var focusTrapDemoBundle = (function () {
 	    // timer ID for when delayInitialFocus is true and initial focus in this trap
 	    //  has been delayed during activation
 	    delayInitialFocusTimer: undefined,
+	    // unique token for the unpause in progress, if any, so a cancelled unpause (e.g. the trap
+	    //  was deactivated or paused again before it finished) doesn't finish later
+	    unpausing: undefined,
 	    // the most recent KeyboardEvent for the configured nav key (typically [SHIFT+]TAB), if any
 	    recentNavEvent: undefined
 	  };
@@ -1204,7 +1209,9 @@ var focusTrapDemoBundle = (function () {
 	      try {
 	        node = doc.querySelector(optionValue); // resolve to node, or null if fails
 	      } catch (err) {
-	        throw new Error("`".concat(optionName, "` appears to be an invalid selector; error=\"").concat(err.message, "\""));
+	        throw new Error("`".concat(optionName, "` appears to be an invalid selector; error=\"").concat(err.message, "\""), {
+	          cause: err
+	        });
 	      }
 	      if (!node) {
 	        if (!hasFallback) {
@@ -1216,6 +1223,25 @@ var focusTrapDemoBundle = (function () {
 	    }
 	    return node;
 	  };
+
+	  /**
+	   * Gets the current activeElement. If it's a web-component and has open shadow-root
+	   * it will recursively search inside shadow roots for the "true" activeElement.
+	   *
+	   * @param {Document | ShadowRoot} el
+	   *
+	   * @returns {HTMLElement|null} The element that currently has the focus. `null` if a focused element isn't found.
+	   **/
+	  var _getActiveElement = function getActiveElement(el) {
+	    var activeElement = el.activeElement;
+	    if (!activeElement) {
+	      return null;
+	    }
+	    if (activeElement.shadowRoot && activeElement.shadowRoot.activeElement !== null) {
+	      return _getActiveElement(activeElement.shadowRoot);
+	    }
+	    return activeElement;
+	  };
 	  var getInitialFocusNode = function getInitialFocusNode() {
 	    var node = getNodeForOption('initialFocus', {
 	      hasFallback: true
@@ -1226,9 +1252,11 @@ var focusTrapDemoBundle = (function () {
 	      return false;
 	    }
 	    if (node === undefined || node && !isFocusable(node, config.tabbableOptions)) {
+	      var activeElement = _getActiveElement(doc);
+
 	      // option not specified nor focusable: use fallback options
-	      if (findContainerIndex(doc.activeElement) >= 0) {
-	        node = doc.activeElement;
+	      if (findContainerIndex(activeElement) >= 0) {
+	        node = activeElement;
 	      } else {
 	        var firstTabbableGroup = state.tabbableGroups[0];
 	        var firstTabbableNode = firstTabbableGroup && firstTabbableGroup.firstTabbableNode;
@@ -1340,30 +1368,12 @@ var focusTrapDemoBundle = (function () {
 	      throw new Error("At least one node with a positive tabindex was found in one of your focus-trap's multiple containers. Positive tabindexes are only supported in single-container focus-traps.");
 	    }
 	  };
-
-	  /**
-	   * Gets the current activeElement. If it's a web-component and has open shadow-root
-	   * it will recursively search inside shadow roots for the "true" activeElement.
-	   *
-	   * @param {Document | ShadowRoot} el
-	   *
-	   * @returns {HTMLElement} The element that currently has the focus
-	   **/
-	  var _getActiveElement = function getActiveElement(el) {
-	    var activeElement = el.activeElement;
-	    if (!activeElement) {
-	      return;
-	    }
-	    if (activeElement.shadowRoot && activeElement.shadowRoot.activeElement !== null) {
-	      return _getActiveElement(activeElement.shadowRoot);
-	    }
-	    return activeElement;
-	  };
 	  var _tryFocus = function tryFocus(node) {
 	    if (node === false) {
 	      return;
 	    }
-	    if (node === _getActiveElement(document)) {
+	    if (node === _getActiveElement(doc)) {
+	      state.mostRecentlyFocusedNode = node;
 	      return;
 	    }
 	    if (!node || !node.focus) {
@@ -1436,7 +1446,13 @@ var focusTrapDemoBundle = (function () {
 	          //  and is not followed by any other tabbable node, in which
 	          //  case, we should handle shift+tab as if focus were on the container's
 	          //  first tabbable node, and go to the last tabbable node of the LAST group
-	          startOfGroupIndex = containerIndex;
+	          // NOTE: `containerIndex` is an index into `state.containerGroups`, which
+	          //  `state.tabbableGroups` doesn't match when some containers have no tabbable
+	          //  nodes, so use the first tabbable group at or after the target's container
+	          //  (i.e. its own group, if it has one), wrapping around to the FIRST group
+	          startOfGroupIndex = Math.max(0, state.tabbableGroups.findIndex(function (group) {
+	            return state.containerGroups.indexOf(group) >= containerIndex;
+	          }));
 	        }
 	        if (startOfGroupIndex >= 0) {
 	          // YES: then shift+tab should go to the last tabbable node in the
@@ -1465,7 +1481,14 @@ var focusTrapDemoBundle = (function () {
 	          //  and is not followed by any other tabbable node, in which
 	          //  case, we should handle tab as if focus were on the container's
 	          //  last tabbable node, and go to the first tabbable node of the FIRST group
-	          lastOfGroupIndex = containerIndex;
+	          // NOTE: `containerIndex` is an index into `state.containerGroups`, which
+	          //  `state.tabbableGroups` doesn't match when some containers have no tabbable
+	          //  nodes, so use the last tabbable group at or before the target's container
+	          //  (i.e. its own group, if it has one), wrapping around to the LAST group
+	          var nextGroupIndex = state.tabbableGroups.findIndex(function (group) {
+	            return state.containerGroups.indexOf(group) > containerIndex;
+	          });
+	          lastOfGroupIndex = nextGroupIndex > 0 ? nextGroupIndex - 1 : state.tabbableGroups.length - 1;
 	        }
 	        if (lastOfGroupIndex >= 0) {
 	          // YES: then tab should go to the first tabbable node in the next
@@ -1950,6 +1973,7 @@ var focusTrapDemoBundle = (function () {
 	      }, deactivateOptions);
 	      clearTimeout(state.delayInitialFocusTimer); // noop if undefined
 	      state.delayInitialFocusTimer = undefined;
+	      state.unpausing = undefined; // cancel any unpause still in progress
 
 	      // Prior to removing this trap from the trapStack, we need to remove any applications of `inert`.
 	      // This allows the next trap down to update its tabbable nodes properly.
@@ -2047,6 +2071,7 @@ var focusTrapDemoBundle = (function () {
 	          onPause === null || onPause === void 0 || onPause({
 	            trap: trap
 	          });
+	          state.unpausing = undefined; // cancel any unpause still in progress
 	          removeListeners();
 	          trap._setSubtreeIsolation(false);
 	          updateObservedNodes();
@@ -2056,12 +2081,26 @@ var focusTrapDemoBundle = (function () {
 	        } else {
 	          var onUnpause = getOption(options, 'onUnpause');
 	          var onPostUnpause = getOption(options, 'onPostUnpause');
+
+	          // NOTE: register this unpause __before__ calling `onUnpause()` so that it gets
+	          //  cancelled if the handler deactivates or pauses the trap
+	          var unpausing = {};
+	          state.unpausing = unpausing;
 	          onUnpause === null || onUnpause === void 0 || onUnpause({
 	            trap: trap
 	          });
+	          if (state.unpausing !== unpausing) {
+	            return this; // cancelled by `onUnpause()`
+	          }
 	          var finishUnpause = function finishUnpause() {
 	            updateTabbableNodes();
 	            var afterListeners = function afterListeners() {
+	              // NOTE: the trap may have been deactivated (and even reactivated), or paused
+	              //  again, while unpausing (e.g. by a focus handler on the initial focus node)
+	              //  in which case this unpause has been cancelled and there's nothing to finish
+	              if (state.unpausing !== unpausing) {
+	                return;
+	              }
 	              trap._setSubtreeIsolation(true);
 	              updateObservedNodes();
 	              onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause({
@@ -2133,12 +2172,12 @@ var focusTrapDemoBundle = (function () {
 	  return trap;
 	};
 
-	var focusTrap = /*#__PURE__*/Object.freeze({
+	var wtunpause = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		createFocusTrap: createFocusTrap$D
 	});
 
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
+	var require$$0 = /*@__PURE__*/getAugmentedNamespace(wtunpause);
 
 	var createFocusTrap$C = require$$0.createFocusTrap;
 	var _default = function _default() {
