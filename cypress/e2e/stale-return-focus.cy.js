@@ -43,7 +43,7 @@ describe('superseded return focus', () => {
           return { trap, trigger, container, input };
         }
         let openThird = false;
-        let next;
+        let next = null;
         const parent =
           scenario === 'parent callback'
             ? mount({
