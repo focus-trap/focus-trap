@@ -575,7 +575,16 @@ const createFocusTrap = function (elements, userOptions) {
           //  and is not followed by any other tabbable node, in which
           //  case, we should handle shift+tab as if focus were on the container's
           //  first tabbable node, and go to the last tabbable node of the LAST group
-          startOfGroupIndex = containerIndex;
+          // NOTE: `containerIndex` is an index into `state.containerGroups`, which
+          //  `state.tabbableGroups` doesn't match when some containers have no tabbable
+          //  nodes, so use the first tabbable group at or after the target's container
+          //  (i.e. its own group, if it has one), wrapping around to the FIRST group
+          startOfGroupIndex = Math.max(
+            0,
+            state.tabbableGroups.findIndex(
+              (group) => state.containerGroups.indexOf(group) >= containerIndex
+            )
+          );
         }
 
         if (startOfGroupIndex >= 0) {
@@ -619,7 +628,17 @@ const createFocusTrap = function (elements, userOptions) {
           //  and is not followed by any other tabbable node, in which
           //  case, we should handle tab as if focus were on the container's
           //  last tabbable node, and go to the first tabbable node of the FIRST group
-          lastOfGroupIndex = containerIndex;
+          // NOTE: `containerIndex` is an index into `state.containerGroups`, which
+          //  `state.tabbableGroups` doesn't match when some containers have no tabbable
+          //  nodes, so use the last tabbable group at or before the target's container
+          //  (i.e. its own group, if it has one), wrapping around to the LAST group
+          const nextGroupIndex = state.tabbableGroups.findIndex(
+            (group) => state.containerGroups.indexOf(group) > containerIndex
+          );
+          lastOfGroupIndex =
+            nextGroupIndex > 0
+              ? nextGroupIndex - 1
+              : state.tabbableGroups.length - 1;
         }
 
         if (lastOfGroupIndex >= 0) {
