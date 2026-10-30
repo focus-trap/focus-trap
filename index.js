@@ -172,6 +172,7 @@ const createFocusTrap = function (elements, userOptions) {
     // references to nodes that were inert or aria-hidden before the trap was activated.
     /** @type {Set<HTMLElement>} */
     alreadySilent: new Set(),
+    subtreeIsolated: false,
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -901,6 +902,9 @@ const createFocusTrap = function (elements, userOptions) {
       });
     } else {
       tryFocus(getInitialFocusNode());
+      if (!state.active) {
+        return;
+      }
     }
 
     doc.addEventListener('focusin', checkFocusIn, true);
@@ -1074,6 +1078,9 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
+      const activation = {};
+      state.activation = activation;
+
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
       const checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
@@ -1088,6 +1095,7 @@ const createFocusTrap = function (elements, userOptions) {
         //  since this is a trap we may not have created from this instance of the library
         preexistingTrap._setSubtreeIsolation?.(false);
         revertState = true;
+        activation.preexistingTrap = preexistingTrap;
       }
 
       try {
@@ -1102,11 +1110,17 @@ const createFocusTrap = function (elements, userOptions) {
         onActivate?.({ trap });
 
         const finishActivation = () => {
+          if (!state.active || state.activation !== activation) {
+            return;
+          }
           if (checkCanFocusTrap) {
             updateTabbableNodes();
           }
 
           const afterListeners = () => {
+            if (!state.active || state.activation !== activation) {
+              return;
+            }
             trap._setSubtreeIsolation(true);
             updateObservedNodes();
             onPostActivate?.({ trap });
@@ -1117,6 +1131,7 @@ const createFocusTrap = function (elements, userOptions) {
           //  with aria-hidden while focus is still in some other subtree and not yet in
           //  the trap, resulting in some browsers (e.g. Chrome) logging to the console that
           //  they, "Blocked aria-hidden on an element because its descendant retained focus..."
+          activation.preexistingTrap = undefined;
           const listenersPromise = addListeners();
           if (listenersPromise) {
             listenersPromise.then(afterListeners);
@@ -1180,6 +1195,17 @@ const createFocusTrap = function (elements, userOptions) {
       updateObservedNodes();
 
       activeFocusTraps.deactivateTrap(trapStack, trap);
+
+      // Pending activation has not joined the stack, so unpause did not restore isolation.
+      const preexistingTrap = state.activation?.preexistingTrap;
+      if (
+        preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
+        preexistingTrap?.active &&
+        !preexistingTrap.paused
+      ) {
+        preexistingTrap._setSubtreeIsolation?.(true);
+      }
+      state.activation.preexistingTrap = undefined;
 
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
@@ -1328,6 +1354,10 @@ const createFocusTrap = function (elements, userOptions) {
     _setSubtreeIsolation: {
       value(isEnabled) {
         if (config.isolateSubtrees) {
+          if (state.subtreeIsolated === isEnabled) {
+            return;
+          }
+          state.subtreeIsolated = isEnabled;
           state.adjacentElements.forEach((el) => {
             if (isEnabled) {
               switch (config.isolateSubtrees) {
