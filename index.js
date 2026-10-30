@@ -1301,6 +1301,12 @@ const createFocusTrap = function (elements, userOptions) {
             updateTabbableNodes();
 
             const afterListeners = () => {
+              // NOTE: the trap may have been deactivated while unpausing (e.g. by a focus
+              //  handler on the initial focus node) in which case there's nothing to finish
+              if (!state.active) {
+                return;
+              }
+
               trap._setSubtreeIsolation(true);
               updateObservedNodes();
               onPostUnpause?.({ trap });

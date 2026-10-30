@@ -284,4 +284,39 @@ describe('lifecycle timing', () => {
 
     expect(events).toEqual(['onDeactivate', 'onPostDeactivate']);
   });
+
+  it('should not finish unpausing a trap deactivated by its initial focus', () => {
+    const events = [];
+    const trapStack = [];
+    const first = renderTrap('unpause-deactivated-first');
+    const second = renderTrap('unpause-deactivated-second');
+
+    const firstTrap = createFocusTrap(first.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      isolateSubtrees: 'aria-hidden',
+      onUnpause: () => events.push('first:onUnpause'),
+      onPostUnpause: () => events.push('first:onPostUnpause'),
+      onDeactivate: () => events.push('first:onDeactivate'),
+    });
+    const secondTrap = createFocusTrap(second.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+    });
+
+    firstTrap.activate();
+    secondTrap.activate();
+
+    // deactivate the first trap as soon as it focuses its initial focus node on unpause
+    first.trapEl.firstChild.addEventListener(
+      'focus',
+      () => firstTrap.deactivate({ returnFocus: false }),
+      { once: true }
+    );
+    secondTrap.deactivate({ returnFocus: false });
+
+    expect(firstTrap.active).toBe(false);
+    expect(events).toEqual(['first:onUnpause', 'first:onDeactivate']);
+    expect(second.trapEl).not.toHaveAttribute('aria-hidden');
+  });
 });

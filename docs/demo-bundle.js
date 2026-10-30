@@ -2082,6 +2082,11 @@ var focusTrapDemoBundle = (function () {
 	          var finishUnpause = function finishUnpause() {
 	            updateTabbableNodes();
 	            var afterListeners = function afterListeners() {
+	              // NOTE: the trap may have been deactivated while unpausing (e.g. by a focus
+	              //  handler on the initial focus node) in which case there's nothing to finish
+	              if (!state.active) {
+	                return;
+	              }
 	              trap._setSubtreeIsolation(true);
 	              updateObservedNodes();
 	              onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause({
@@ -2153,12 +2158,12 @@ var focusTrapDemoBundle = (function () {
 	  return trap;
 	};
 
-	var focusTrap = /*#__PURE__*/Object.freeze({
+	var wtunpause = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		createFocusTrap: createFocusTrap$D
 	});
 
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
+	var require$$0 = /*@__PURE__*/getAugmentedNamespace(wtunpause);
 
 	var createFocusTrap$C = require$$0.createFocusTrap;
 	var _default = function _default() {
