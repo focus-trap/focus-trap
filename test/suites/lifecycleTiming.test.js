@@ -101,6 +101,110 @@ describe('lifecycle timing', () => {
     }
   );
 
+  it('does not add listeners when paused during unpause', () => {
+    const { trapEl } = renderTrap('repause');
+    const trap = createFocusTrap(trapEl, {
+      ...baseTrapOptions,
+      onUnpause: () => trap.pause(),
+    });
+    trap.activate();
+    trap.pause();
+    const addListener = jest.spyOn(document, 'addEventListener');
+    trap.unpause();
+    expect(trap.paused).toBe(true);
+    expect(addListener).not.toHaveBeenCalled();
+    addListener.mockRestore();
+    trap.deactivate({ returnFocus: false });
+  });
+
+  it('does not add listeners when focus pauses the trap during unpause', () => {
+    const { trapEl, triggerEl } = renderTrap('focus-repause');
+    const trap = createFocusTrap(trapEl, baseTrapOptions);
+    trap.activate();
+    trap.pause();
+    triggerEl.focus();
+    trapEl.firstChild.addEventListener('focus', () => trap.pause(), {
+      once: true,
+    });
+    const addListener = jest.spyOn(document, 'addEventListener');
+    trap.unpause();
+    expect(trap.paused).toBe(true);
+    expect(addListener).not.toHaveBeenCalled();
+    addListener.mockRestore();
+    trap.deactivate({ returnFocus: false });
+  });
+
+  it.each([
+    [true, 'inert'],
+    ['aria-hidden', 'aria-hidden'],
+  ])(
+    'keeps the previous trap unisolated while another activation is pending: %s',
+    async (mode, attribute) => {
+      const a = renderTrap('pending-a');
+      const b = renderTrap('pending-b');
+      const c = renderTrap('pending-c');
+      const trapStack = [];
+      const first = createFocusTrap(a.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+        isolateSubtrees: mode,
+      });
+      let resolveB;
+      const second = createFocusTrap(b.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+        checkCanFocusTrap: () =>
+          new Promise((resolve) => {
+            resolveB = resolve;
+          }),
+      });
+      const third = createFocusTrap(c.trapEl, {
+        ...baseTrapOptions,
+        trapStack,
+        checkCanFocusTrap: () => new Promise(() => {}),
+      });
+      first.activate();
+      second.activate();
+      third.activate();
+      third.deactivate({ returnFocus: false });
+      expect(b.trapEl).not.toHaveAttribute(attribute);
+      resolveB();
+      await Promise.resolve();
+      expect(second.active).toBe(true);
+      expect(b.trapEl).not.toHaveAttribute(attribute);
+      second.deactivate({ returnFocus: false });
+      expect(b.trapEl).toHaveAttribute(attribute);
+      first.deactivate({ returnFocus: false });
+    }
+  );
+
+  it('restores previous isolation after all pending activations are cancelled', () => {
+    const a = renderTrap('all-pending-a');
+    const b = renderTrap('all-pending-b');
+    const c = renderTrap('all-pending-c');
+    const trapStack = [];
+    const first = createFocusTrap(a.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      isolateSubtrees: 'aria-hidden',
+    });
+    const options = {
+      ...baseTrapOptions,
+      trapStack,
+      checkCanFocusTrap: () => new Promise(() => {}),
+    };
+    const second = createFocusTrap(b.trapEl, options);
+    const third = createFocusTrap(c.trapEl, options);
+    first.activate();
+    second.activate();
+    third.activate();
+    second.deactivate({ returnFocus: false });
+    expect(c.trapEl).not.toHaveAttribute('aria-hidden');
+    third.deactivate({ returnFocus: false });
+    expect(c.trapEl).toHaveAttribute('aria-hidden', 'true');
+    first.deactivate({ returnFocus: false });
+  });
+
   it('preserves a newer trap isolation when a pending activation is cancelled', async () => {
     const first = renderTrap('older-isolated');
     const second = renderTrap('pending-isolated');

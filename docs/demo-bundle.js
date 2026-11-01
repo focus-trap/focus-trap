@@ -965,6 +965,15 @@ var focusTrapDemoBundle = (function () {
 	  return isNodeMatchingSelectorFocusable(options, node);
 	};
 
+	// Pending activations may temporarily share an unisolated previous trap.
+	var pendingIsolation = new WeakMap();
+	var releasePendingIsolation = function releasePendingIsolation(activation) {
+	  var previous = activation === null || activation === void 0 ? void 0 : activation.preexistingTrap;
+	  if (!previous) return;
+	  var count = pendingIsolation.get(previous);
+	  if (count === 1) pendingIsolation["delete"](previous);else pendingIsolation.set(previous, count - 1);
+	  activation.preexistingTrap = undefined;
+	};
 	var activeFocusTraps = {
 	  // Returns the trap from the top of the stack.
 	  getActiveTrap: function getActiveTrap(trapStack) {
@@ -1109,6 +1118,8 @@ var focusTrapDemoBundle = (function () {
 	    /** @type {Set<HTMLElement>} */
 	    alreadySilent: new Set(),
 	    subtreeIsolated: false,
+	    // Tracks the current activation and any prior trap whose isolation it suspended.
+	    activation: undefined,
 	    nodeFocusedBeforeActivation: null,
 	    mostRecentlyFocusedNode: null,
 	    active: false,
@@ -1705,7 +1716,7 @@ var focusTrapDemoBundle = (function () {
 	   *  or the trap isn't active.
 	   */
 	  var addListeners = function addListeners() {
-	    if (!state.active) {
+	    if (!state.active || state.paused) {
 	      return;
 	    }
 
@@ -1727,7 +1738,7 @@ var focusTrapDemoBundle = (function () {
 	      });
 	    } else {
 	      _tryFocus(getInitialFocusNode());
-	      if (!state.active) {
+	      if (!state.active || state.paused) {
 	        return;
 	      }
 	    }
@@ -1912,6 +1923,7 @@ var focusTrapDemoBundle = (function () {
 	        (_preexistingTrap$_set = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set === void 0 || _preexistingTrap$_set.call(preexistingTrap, false);
 	        revertState = true;
 	        activation.preexistingTrap = preexistingTrap;
+	        pendingIsolation.set(preexistingTrap, (pendingIsolation.get(preexistingTrap) || 0) + 1);
 	      }
 	      try {
 	        if (!checkCanFocusTrap) {
@@ -1946,7 +1958,7 @@ var focusTrapDemoBundle = (function () {
 	          //  with aria-hidden while focus is still in some other subtree and not yet in
 	          //  the trap, resulting in some browsers (e.g. Chrome) logging to the console that
 	          //  they, "Blocked aria-hidden on an element because its descendant retained focus..."
-	          activation.preexistingTrap = undefined;
+	          releasePendingIsolation(activation);
 	          var listenersPromise = addListeners();
 	          if (listenersPromise) {
 	            listenersPromise.then(afterListeners);
@@ -1960,9 +1972,10 @@ var focusTrapDemoBundle = (function () {
 	        }
 	        finishActivation();
 	      } catch (error) {
+	        releasePendingIsolation(activation);
 	        // If our activation throws an exception and the stack hasn't changed,
 	        // we need to re-enable the prior trap's subtree isolation.
-	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState) {
+	        if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && revertState && !pendingIsolation.has(preexistingTrap)) {
 	          var _preexistingTrap$_set2;
 	          // [#1729] method MAY not exist if using `trapStack` option to share stack with older
 	          //  versions of Focus-trap in the same DOM so use optional chaining here just in case
@@ -2002,11 +2015,11 @@ var focusTrapDemoBundle = (function () {
 
 	      // Pending activation has not joined the stack, so unpause did not restore isolation.
 	      var preexistingTrap = (_state$activation = state.activation) === null || _state$activation === void 0 ? void 0 : _state$activation.preexistingTrap;
-	      if (preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && preexistingTrap !== null && preexistingTrap !== void 0 && preexistingTrap.active && !preexistingTrap.paused) {
+	      releasePendingIsolation(state.activation);
+	      if (!pendingIsolation.has(preexistingTrap) && preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) && preexistingTrap !== null && preexistingTrap !== void 0 && preexistingTrap.active && !preexistingTrap.paused) {
 	        var _preexistingTrap$_set3;
 	        (_preexistingTrap$_set3 = preexistingTrap._setSubtreeIsolation) === null || _preexistingTrap$_set3 === void 0 || _preexistingTrap$_set3.call(preexistingTrap, true);
 	      }
-	      state.activation.preexistingTrap = undefined;
 	      var onDeactivate = getOption(options, 'onDeactivate');
 	      var onPostDeactivate = getOption(options, 'onPostDeactivate');
 	      var checkCanReturnFocus = getOption(options, 'checkCanReturnFocus');
@@ -2103,8 +2116,14 @@ var focusTrapDemoBundle = (function () {
 	            trap: trap
 	          });
 	          var finishUnpause = function finishUnpause() {
+	            if (!state.active || state.paused) {
+	              return;
+	            }
 	            updateTabbableNodes();
 	            var afterListeners = function afterListeners() {
+	              if (!state.active || state.paused) {
+	                return;
+	              }
 	              trap._setSubtreeIsolation(true);
 	              updateObservedNodes();
 	              onPostUnpause === null || onPostUnpause === void 0 || onPostUnpause({
@@ -2180,12 +2199,12 @@ var focusTrapDemoBundle = (function () {
 	  return trap;
 	};
 
-	var wt2053 = /*#__PURE__*/Object.freeze({
+	var focusTrap = /*#__PURE__*/Object.freeze({
 		__proto__: null,
 		createFocusTrap: createFocusTrap$D
 	});
 
-	var require$$0 = /*@__PURE__*/getAugmentedNamespace(wt2053);
+	var require$$0 = /*@__PURE__*/getAugmentedNamespace(focusTrap);
 
 	var createFocusTrap$C = require$$0.createFocusTrap;
 	var _default = function _default() {
