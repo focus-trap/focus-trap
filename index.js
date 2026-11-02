@@ -893,12 +893,15 @@ const createFocusTrap = function (elements, userOptions) {
    *  or the trap isn't active.
    */
   const addListeners = function () {
-    if (!state.active || state.paused) {
+    if (!state.active) {
       return;
     }
 
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trapStack, trap);
+    if (state.paused) {
+      return;
+    }
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
@@ -1138,7 +1141,9 @@ const createFocusTrap = function (elements, userOptions) {
             if (!state.active || state.activation !== activation) {
               return;
             }
-            trap._setSubtreeIsolation(true);
+            if (!state.paused) {
+              trap._setSubtreeIsolation(true);
+            }
             updateObservedNodes();
             onPostActivate?.({ trap });
           };

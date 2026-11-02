@@ -1716,12 +1716,15 @@ var focusTrapDemoBundle = (function () {
 	   *  or the trap isn't active.
 	   */
 	  var addListeners = function addListeners() {
-	    if (!state.active || state.paused) {
+	    if (!state.active) {
 	      return;
 	    }
 
 	    // There can be only one listening focus trap at a time
 	    activeFocusTraps.activateTrap(trapStack, trap);
+	    if (state.paused) {
+	      return;
+	    }
 
 	    // Delay ensures that the focused element doesn't capture the event
 	    // that caused the focus trap activation.
@@ -1946,7 +1949,9 @@ var focusTrapDemoBundle = (function () {
 	            if (!state.active || state.activation !== activation) {
 	              return;
 	            }
-	            trap._setSubtreeIsolation(true);
+	            if (!state.paused) {
+	              trap._setSubtreeIsolation(true);
+	            }
 	            updateObservedNodes();
 	            onPostActivate === null || onPostActivate === void 0 || onPostActivate({
 	              trap: trap

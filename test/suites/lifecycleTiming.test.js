@@ -101,6 +101,23 @@ describe('lifecycle timing', () => {
     }
   );
 
+  it('does not isolate other content if paused during activation', () => {
+    const { trapEl, triggerEl } = renderTrap('activation-pause');
+    const trap = createFocusTrap(trapEl, {
+      ...baseTrapOptions,
+      isolateSubtrees: 'aria-hidden',
+      onActivate: ({ trap: activatingTrap }) => activatingTrap.pause(),
+    });
+    trap.activate();
+    expect(trap.paused).toBe(true);
+    expect(triggerEl).not.toHaveAttribute('aria-hidden');
+    trap.unpause();
+    expect(trap.paused).toBe(false);
+    expect(triggerEl).toHaveAttribute('aria-hidden', 'true');
+    trap.deactivate({ returnFocus: false });
+    expect(triggerEl).not.toHaveAttribute('aria-hidden');
+  });
+
   it('does not add listeners when paused during unpause', () => {
     const { trapEl } = renderTrap('repause');
     const trap = createFocusTrap(trapEl, {
