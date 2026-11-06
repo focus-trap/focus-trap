@@ -1,6 +1,6 @@
 {
   "name": "@wavemaker/focus-trap",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Trap focus within a DOM node.",
   "main": "dist/focus-trap.js",
   "module": "dist/focus-trap.esm.js",
@@ -62,8 +62,7 @@
   },
   "homepage": "https://github.com/focus-trap/focus-trap#readme",
   "dependencies": {
-    "tabbable": "^6.0.1",
-    "yarn": "^1.22.19"
+    "tabbable": "^6.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",
