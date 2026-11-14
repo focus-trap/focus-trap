@@ -1373,10 +1373,16 @@ const createFocusTrap = function (elements, userOptions) {
               // NOTE: the trap may have been deactivated (and even reactivated), or paused
               //  again, while unpausing (e.g. by a focus handler on the initial focus node)
               //  in which case this unpause has been cancelled and there's nothing to finish
-              if (!state.active || state.paused || state.unpausing !== unpausing) {
+              if (state.unpausing !== unpausing) {
                 return;
               }
-              trap._setSubtreeIsolation(true);
+
+              // NOTE: don't re-isolate while another trap's activation is still pending
+              //  since it needs this trap's isolation removed to find its tabbable nodes;
+              //  it gets restored once that activation completes or is cancelled
+              if (!pendingIsolation.has(trap)) {
+                trap._setSubtreeIsolation(true);
+              }
               updateObservedNodes();
               onPostUnpause?.({ trap });
             };

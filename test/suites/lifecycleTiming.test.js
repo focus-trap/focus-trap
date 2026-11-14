@@ -222,6 +222,47 @@ describe('lifecycle timing', () => {
     first.deactivate({ returnFocus: false });
   });
 
+  it('does not re-isolate an unpaused trap while another activation is pending', async () => {
+    const a = renderTrap('unpaused-pending-a');
+    const b = renderTrap('unpaused-pending-b');
+    const c = renderTrap('unpaused-pending-c');
+    const trapStack = [];
+    const first = createFocusTrap(a.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      isolateSubtrees: true,
+    });
+    let resolveSecond;
+    let resolveThird;
+    const second = createFocusTrap(b.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      checkCanFocusTrap: () =>
+        new Promise((resolve) => (resolveSecond = resolve)),
+    });
+    const third = createFocusTrap(c.trapEl, {
+      ...baseTrapOptions,
+      trapStack,
+      checkCanFocusTrap: () =>
+        new Promise((resolve) => (resolveThird = resolve)),
+    });
+    first.activate();
+    second.activate();
+    third.activate();
+    resolveSecond();
+    await Promise.resolve();
+    expect(trapStack.at(-1)).toBe(second);
+    second.deactivate({ returnFocus: false }); // unpauses first
+    expect(c.trapEl).not.toHaveAttribute('inert');
+    resolveThird();
+    await Promise.resolve();
+    expect(trapStack.at(-1)).toBe(third);
+    third.deactivate({ returnFocus: false }); // unpauses first
+    expect(c.trapEl).toHaveAttribute('inert');
+    first.deactivate({ returnFocus: false });
+    expect(c.trapEl).not.toHaveAttribute('inert');
+  });
+
   it('preserves a newer trap isolation when a pending activation is cancelled', async () => {
     const first = renderTrap('older-isolated');
     const second = renderTrap('pending-isolated');
