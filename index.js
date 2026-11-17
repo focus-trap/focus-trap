@@ -10,6 +10,17 @@ import {
 // per document so separate stacks share ownership while iframes remain independent.
 const documentInteractions = new WeakMap();
 
+// Pending activations may temporarily share an unisolated previous trap.
+const pendingIsolation = new WeakMap();
+const releasePendingIsolation = (activation) => {
+  const previous = activation?.preexistingTrap;
+  if (!previous) return;
+  const count = pendingIsolation.get(previous);
+  if (count === 1) pendingIsolation.delete(previous);
+  else pendingIsolation.set(previous, count - 1);
+  activation.preexistingTrap = undefined;
+};
+
 const activeFocusTraps = {
   // Returns the trap from the top of the stack.
   getActiveTrap(trapStack) {
@@ -177,6 +188,8 @@ const createFocusTrap = function (elements, userOptions) {
     /** @type {Set<HTMLElement>} */
     alreadySilent: new Set(),
     subtreeIsolated: false,
+    // Tracks the current activation and any prior trap whose isolation it suspended.
+    activation: undefined,
     nodeFocusedBeforeActivation: null,
     mostRecentlyFocusedNode: null,
     active: false,
@@ -894,6 +907,9 @@ const createFocusTrap = function (elements, userOptions) {
 
     // There can be only one listening focus trap at a time
     activeFocusTraps.activateTrap(trapStack, trap);
+    if (state.paused) {
+      return;
+    }
 
     // Delay ensures that the focused element doesn't capture the event
     // that caused the focus trap activation.
@@ -910,7 +926,7 @@ const createFocusTrap = function (elements, userOptions) {
       });
     } else {
       tryFocus(getInitialFocusNode());
-      if (!state.active) {
+      if (!state.active || state.paused) {
         return;
       }
     }
@@ -1105,6 +1121,10 @@ const createFocusTrap = function (elements, userOptions) {
         preexistingTrap._setSubtreeIsolation?.(false);
         revertState = true;
         activation.preexistingTrap = preexistingTrap;
+        pendingIsolation.set(
+          preexistingTrap,
+          (pendingIsolation.get(preexistingTrap) || 0) + 1
+        );
       }
 
       try {
@@ -1130,7 +1150,9 @@ const createFocusTrap = function (elements, userOptions) {
             if (!state.active || state.activation !== activation) {
               return;
             }
-            trap._setSubtreeIsolation(true);
+            if (!state.paused) {
+              trap._setSubtreeIsolation(true);
+            }
             updateObservedNodes();
             onPostActivate?.({ trap });
           };
@@ -1140,7 +1162,7 @@ const createFocusTrap = function (elements, userOptions) {
           //  with aria-hidden while focus is still in some other subtree and not yet in
           //  the trap, resulting in some browsers (e.g. Chrome) logging to the console that
           //  they, "Blocked aria-hidden on an element because its descendant retained focus..."
-          activation.preexistingTrap = undefined;
+          releasePendingIsolation(activation);
           const listenersPromise = addListeners();
           if (listenersPromise) {
             listenersPromise.then(afterListeners);
@@ -1159,11 +1181,13 @@ const createFocusTrap = function (elements, userOptions) {
 
         finishActivation();
       } catch (error) {
+        releasePendingIsolation(activation);
         // If our activation throws an exception and the stack hasn't changed,
         // we need to re-enable the prior trap's subtree isolation.
         if (
           preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
-          revertState
+          revertState &&
+          !pendingIsolation.has(preexistingTrap)
         ) {
           // [#1729] method MAY not exist if using `trapStack` option to share stack with older
           //  versions of Focus-trap in the same DOM so use optional chaining here just in case
@@ -1213,14 +1237,15 @@ const createFocusTrap = function (elements, userOptions) {
 
       // Pending activation has not joined the stack, so unpause did not restore isolation.
       const preexistingTrap = state.activation?.preexistingTrap;
+      releasePendingIsolation(state.activation);
       if (
+        !pendingIsolation.has(preexistingTrap) &&
         preexistingTrap === activeFocusTraps.getActiveTrap(trapStack) &&
         preexistingTrap?.active &&
         !preexistingTrap.paused
       ) {
         preexistingTrap._setSubtreeIsolation?.(true);
       }
-      state.activation.preexistingTrap = undefined;
 
       const onDeactivate = getOption(options, 'onDeactivate');
       const onPostDeactivate = getOption(options, 'onPostDeactivate');
@@ -1354,6 +1379,9 @@ const createFocusTrap = function (elements, userOptions) {
           }
 
           const finishUnpause = () => {
+            if (!state.active || state.paused) {
+              return;
+            }
             updateTabbableNodes();
 
             const afterListeners = () => {
@@ -1364,7 +1392,12 @@ const createFocusTrap = function (elements, userOptions) {
                 return;
               }
 
-              trap._setSubtreeIsolation(true);
+              // NOTE: don't re-isolate while another trap's activation is still pending
+              //  since it needs this trap's isolation removed to find its tabbable nodes;
+              //  it gets restored once that activation completes or is cancelled
+              if (!pendingIsolation.has(trap)) {
+                trap._setSubtreeIsolation(true);
+              }
               updateObservedNodes();
               onPostUnpause?.({ trap });
             };
