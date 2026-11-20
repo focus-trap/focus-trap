@@ -6,6 +6,10 @@ import {
   getTabIndex,
 } from 'tabbable';
 
+// A delayed return must not override a newer focus-trap interaction. Keep this
+// per document so separate stacks share ownership while iframes remain independent.
+const documentInteractions = new WeakMap();
+
 // Pending activations may temporarily share an unisolated previous trap.
 const pendingIsolation = new WeakMap();
 const releasePendingIsolation = (activation) => {
@@ -1100,6 +1104,7 @@ const createFocusTrap = function (elements, userOptions) {
 
       const activation = {};
       state.activation = activation;
+      documentInteractions.set(doc, {});
 
       const onActivate = getOption(activateOptions, 'onActivate');
       const onPostActivate = getOption(activateOptions, 'onPostActivate');
@@ -1223,6 +1228,11 @@ const createFocusTrap = function (elements, userOptions) {
       state.paused = false;
       updateObservedNodes();
 
+      // Automatic parent resumption is part of this interaction. Capture before
+      // its callbacks can start a new interaction (including reopening this trap).
+      const activation = state.activation;
+      const interaction = {};
+      documentInteractions.set(doc, interaction);
       activeFocusTraps.deactivateTrap(trapStack, trap);
 
       // Pending activation has not joined the stack, so unpause did not restore isolation.
@@ -1249,8 +1259,22 @@ const createFocusTrap = function (elements, userOptions) {
 
       onDeactivate?.({ trap });
       const completeDeactivation = () => {
-        if (returnFocus) {
-          tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+        if (
+          returnFocus &&
+          state.activation === activation &&
+          documentInteractions.get(doc) === interaction
+        ) {
+          const returnNode = getReturnFocusNode(
+            state.nodeFocusedBeforeActivation
+          );
+          // A custom resolver may activate a trap, including this one.
+          // Recheck ownership before focusing its returned target.
+          if (
+            state.activation === activation &&
+            documentInteractions.get(doc) === interaction
+          ) {
+            tryFocus(returnNode);
+          }
         }
         onPostDeactivate?.({ trap });
       };
@@ -1289,6 +1313,7 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
+      documentInteractions.set(doc, {});
       state.manuallyPaused = false;
 
       if (trapStack[trapStack.length - 1] !== this) {
