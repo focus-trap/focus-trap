@@ -324,3 +324,51 @@ it('does not invalidate a return because a trap activates in another document', 
   await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
   expect(first.trigger).toHaveFocus();
 });
+
+it.each([false, true])(
+  'preserves a newer trap opened by setReturnFocus (delayed: %s)',
+  async (delayReturnFocus) => {
+    const stack = [];
+    const next = mount('resolver-next', stack);
+    const onPostDeactivate = jest.fn();
+    const first = mount('resolver-first', stack, {
+      delayReturnFocus,
+      onPostDeactivate,
+      setReturnFocus: (trigger) => {
+        next.trap.activate();
+        next.input.setSelectionRange(4, 4);
+        return trigger;
+      },
+    });
+    traps.push(first.trap, next.trap);
+    first.trigger.focus();
+    first.trap.activate();
+    const oldFocus = jest.spyOn(first.trigger, 'focus');
+    first.trap.deactivate();
+    await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+    expect(oldFocus).not.toHaveBeenCalled();
+    expect(next.input).toHaveFocus();
+    expect(next.input.selectionStart).toBe(4);
+    expect(next.input.selectionEnd).toBe(4);
+  }
+);
+
+it('does not invoke a return resolver after its delayed return was superseded', async () => {
+  const stack = [];
+  const resolver = jest.fn((trigger) => trigger);
+  const onPostDeactivate = jest.fn();
+  const first = mount('stale-resolver', stack, {
+    delayReturnFocus: true,
+    setReturnFocus: resolver,
+    onPostDeactivate,
+  });
+  const next = mount('new-owner', stack);
+  traps.push(first.trap, next.trap);
+  first.trigger.focus();
+  first.trap.activate();
+  first.trap.deactivate();
+  next.trap.activate();
+  await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+  expect(resolver).not.toHaveBeenCalled();
+  expect(next.input).toHaveFocus();
+});

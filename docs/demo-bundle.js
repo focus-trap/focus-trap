@@ -2000,7 +2000,12 @@ var focusTrapDemoBundle = (function () {
 	      });
 	      var completeDeactivation = function completeDeactivation() {
 	        if (returnFocus && state.activation === activation && documentInteractions.get(doc) === interaction) {
-	          _tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+	          var returnNode = getReturnFocusNode(state.nodeFocusedBeforeActivation);
+	          // A custom resolver may activate a trap, including this one.
+	          // Recheck ownership before focusing its returned target.
+	          if (state.activation === activation && documentInteractions.get(doc) === interaction) {
+	            _tryFocus(returnNode);
+	          }
 	        }
 	        onPostDeactivate === null || onPostDeactivate === void 0 || onPostDeactivate({
 	          trap: trap

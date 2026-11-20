@@ -112,3 +112,52 @@ describe('superseded return focus', () => {
     });
   });
 });
+
+[false, true].forEach((delayReturnFocus) => {
+  it(`preserves selection when a return resolver opens a trap (delayed: ${delayReturnFocus})`, () => {
+    cy.visit('index.html?bundle=cypress');
+    cy.document().then((doc) => {
+      const container = doc.createElement('div');
+      container.innerHTML =
+        '<button>trigger</button><div><input value="first"></div><div><input value="next draft"></div>';
+      doc.body.appendChild(container);
+      const [trigger, firstContainer, nextContainer] = container.children;
+      const nextInput = nextContainer.querySelector('input');
+      const stack = [];
+      const completed = deferred();
+      const options = {
+        document: doc,
+        trapStack: stack,
+        delayInitialFocus: false,
+        delayReturnFocus: false,
+      };
+      const next = createFocusTrap(nextContainer, options);
+      const first = createFocusTrap(firstContainer, {
+        ...options,
+        delayReturnFocus,
+        onPostDeactivate: () => completed.resolve(),
+        setReturnFocus: () => {
+          next.activate();
+          nextInput.setSelectionRange(4, 4);
+          return trigger;
+        },
+      });
+      trigger.focus();
+      first.activate();
+      const oldFocus = cy.stub(trigger, 'focus').callThrough();
+      first.deactivate();
+      return completed.promise
+        .then(() => {
+          expect(oldFocus).not.to.have.been.called;
+          expect(doc.activeElement).to.equal(nextInput);
+          expect(nextInput.selectionStart).to.equal(4);
+          expect(nextInput.selectionEnd).to.equal(4);
+        })
+        .finally(() => {
+          first.deactivate({ returnFocus: false });
+          next.deactivate({ returnFocus: false });
+          container.remove();
+        });
+    });
+  });
+});

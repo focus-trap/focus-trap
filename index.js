@@ -1264,7 +1264,17 @@ const createFocusTrap = function (elements, userOptions) {
           state.activation === activation &&
           documentInteractions.get(doc) === interaction
         ) {
-          tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+          const returnNode = getReturnFocusNode(
+            state.nodeFocusedBeforeActivation
+          );
+          // A custom resolver may activate a trap, including this one.
+          // Recheck ownership before focusing its returned target.
+          if (
+            state.activation === activation &&
+            documentInteractions.get(doc) === interaction
+          ) {
+            tryFocus(returnNode);
+          }
         }
         onPostDeactivate?.({ trap });
       };
