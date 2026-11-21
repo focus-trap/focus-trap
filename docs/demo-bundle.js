@@ -377,7 +377,7 @@ var focusTrapDemoBundle = (function () {
 	}
 
 	/*!
-	* tabbable 6.5.0
+	* tabbable 6.5.2
 	* @license MIT, https://github.com/focus-trap/tabbable/blob/master/LICENSE
 	*/
 	// NOTE: separate `:not()` selectors has broader browser support than the newer
@@ -387,10 +387,9 @@ var focusTrapDemoBundle = (function () {
 	var NoElement = typeof Element === 'undefined';
 	var matches = NoElement ? function () {} : Element.prototype.matches || Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 	var getRootNode = !NoElement && Element.prototype.getRootNode ? function (element) {
-	  var _element$getRootNode;
-	  return element === null || element === void 0 ? void 0 : (_element$getRootNode = element.getRootNode) === null || _element$getRootNode === void 0 ? void 0 : _element$getRootNode.call(element);
+	  return element == null || element.getRootNode == null ? void 0 : element.getRootNode();
 	} : function (element) {
-	  return element === null || element === void 0 ? void 0 : element.ownerDocument;
+	  return element == null ? void 0 : element.ownerDocument;
 	};
 
 	/**
@@ -402,14 +401,13 @@ var focusTrapDemoBundle = (function () {
 	 *  False if `node` is falsy.
 	 */
 	var _isInert = function isInert(node, lookUp) {
-	  var _node$getAttribute;
 	  if (lookUp === void 0) {
 	    lookUp = true;
 	  }
 	  // CAREFUL: JSDom does not support inert at all, so we can't use the `HTMLElement.inert`
 	  //  JS API property; we have to check the attribute, which can either be empty or 'true';
 	  //  if it's `null` (not specified) or 'false', it's an active element
-	  var inertAtt = node === null || node === void 0 ? void 0 : (_node$getAttribute = node.getAttribute) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.call(node, 'inert');
+	  var inertAtt = node == null || node.getAttribute == null ? void 0 : node.getAttribute('inert');
 	  var inert = inertAtt === '' || inertAtt === 'true';
 
 	  // NOTE: this could also be handled with `node.matches('[inert], :is([inert] *)')`
@@ -428,12 +426,12 @@ var focusTrapDemoBundle = (function () {
 	 * @returns True if it's content-editable; false if it's not or `node` is falsy.
 	 */
 	var isContentEditable = function isContentEditable(node) {
-	  var _node$getAttribute2;
+	  var _node$getAttribute;
 	  // CAREFUL: JSDom does not support the `HTMLElement.isContentEditable` API so we have
-	  //  to use the attribute directly to check for this, which can either be empty or 'true';
-	  //  if it's `null` (not specified) or 'false', it's a non-editable element
-	  var attValue = node === null || node === void 0 ? void 0 : (_node$getAttribute2 = node.getAttribute) === null || _node$getAttribute2 === void 0 ? void 0 : _node$getAttribute2.call(node, 'contenteditable');
-	  return attValue === '' || attValue === 'true';
+	  //  to use the case-insensitive attribute directly: empty, 'true', and 'plaintext-only'
+	  //  are editable states; `null` (not specified) and 'false' are not.
+	  var attValue = node == null || node.getAttribute == null || (_node$getAttribute = node.getAttribute('contenteditable')) == null ? void 0 : _node$getAttribute.toLowerCase();
+	  return attValue === '' || attValue === 'true' || attValue === 'plaintext-only';
 	};
 
 	/**
@@ -656,54 +654,6 @@ var focusTrapDemoBundle = (function () {
 	var isNonTabbableRadio = function isNonTabbableRadio(node) {
 	  return isRadio(node) && !isTabbableRadio(node);
 	};
-
-	// determines if a node is ultimately attached to the window's document
-	var isNodeAttached = function isNodeAttached(node) {
-	  var _nodeRoot;
-	  // The root node is the shadow root if the node is in a shadow DOM; some document otherwise
-	  //  (but NOT _the_ document; see second 'If' comment below for more).
-	  // If rootNode is shadow root, it'll have a host, which is the element to which the shadow
-	  //  is attached, and the one we need to check if it's in the document or not (because the
-	  //  shadow, and all nodes it contains, is never considered in the document since shadows
-	  //  behave like self-contained DOMs; but if the shadow's HOST, which is part of the document,
-	  //  is hidden, or is not in the document itself but is detached, it will affect the shadow's
-	  //  visibility, including all the nodes it contains). The host could be any normal node,
-	  //  or a custom element (i.e. web component). Either way, that's the one that is considered
-	  //  part of the document, not the shadow root, nor any of its children (i.e. the node being
-	  //  tested).
-	  // To further complicate things, we have to look all the way up until we find a shadow HOST
-	  //  that is attached (or find none) because the node might be in nested shadows...
-	  // If rootNode is not a shadow root, it won't have a host, and so rootNode should be the
-	  //  document (per the docs) and while it's a Document-type object, that document does not
-	  //  appear to be the same as the node's `ownerDocument` for some reason, so it's safer
-	  //  to ignore the rootNode at this point, and use `node.ownerDocument`. Otherwise,
-	  //  using `rootNode.contains(node)` will _always_ be true we'll get false-positives when
-	  //  node is actually detached.
-	  // NOTE: If `nodeRootHost` or `node` happens to be the `document` itself (which is possible
-	  //  if a tabbable/focusable node was quickly added to the DOM, focused, and then removed
-	  //  from the DOM as in https://github.com/focus-trap/focus-trap-react/issues/905), then
-	  //  `ownerDocument` will be `null`, hence the optional chaining on it.
-	  var nodeRoot = node && getRootNode(node);
-	  var nodeRootHost = (_nodeRoot = nodeRoot) === null || _nodeRoot === void 0 ? void 0 : _nodeRoot.host;
-
-	  // in some cases, a detached node will return itself as the root instead of a document or
-	  //  shadow root object, in which case, we shouldn't try to look further up the host chain
-	  var attached = false;
-	  if (nodeRoot && nodeRoot !== node) {
-	    var _nodeRootHost, _nodeRootHost$ownerDo, _node$ownerDocument;
-	    attached = !!((_nodeRootHost = nodeRootHost) !== null && _nodeRootHost !== void 0 && (_nodeRootHost$ownerDo = _nodeRootHost.ownerDocument) !== null && _nodeRootHost$ownerDo !== void 0 && _nodeRootHost$ownerDo.contains(nodeRootHost) || node !== null && node !== void 0 && (_node$ownerDocument = node.ownerDocument) !== null && _node$ownerDocument !== void 0 && _node$ownerDocument.contains(node));
-	    while (!attached && nodeRootHost) {
-	      var _nodeRoot2, _nodeRootHost2, _nodeRootHost2$ownerD;
-	      // since it's not attached and we have a root host, the node MUST be in a nested shadow DOM,
-	      //  which means we need to get the host's host and check if that parent host is contained
-	      //  in (i.e. attached to) the document
-	      nodeRoot = getRootNode(nodeRootHost);
-	      nodeRootHost = (_nodeRoot2 = nodeRoot) === null || _nodeRoot2 === void 0 ? void 0 : _nodeRoot2.host;
-	      attached = !!((_nodeRootHost2 = nodeRootHost) !== null && _nodeRootHost2 !== void 0 && (_nodeRootHost2$ownerD = _nodeRootHost2.ownerDocument) !== null && _nodeRootHost2$ownerD !== void 0 && _nodeRootHost2$ownerD.contains(nodeRootHost));
-	    }
-	  }
-	  return attached;
-	};
 	var isZeroArea = function isZeroArea(node) {
 	  var _node$getBoundingClie = node.getBoundingClientRect(),
 	    width = _node$getBoundingClie.width,
@@ -789,7 +739,7 @@ var focusTrapDemoBundle = (function () {
 	    // NOTE: We must consider case where node is inside a shadow DOM and given directly to
 	    //  `isTabbable()` or `isFocusable()` -- regardless of `getShadowRoot` option setting.
 
-	    if (isNodeAttached(node)) {
+	    if (node.isConnected) {
 	      // this works wherever the node is: if there's at least one client rect, it's
 	      //  somehow displayed; it also covers the CSS 'display: contents' case where the
 	      //  node itself is hidden in place of its contents; and there's no need to search
@@ -964,6 +914,10 @@ var focusTrapDemoBundle = (function () {
 	  }
 	  return isNodeMatchingSelectorFocusable(options, node);
 	};
+
+	// A delayed return must not override a newer focus-trap interaction. Keep this
+	// per document so separate stacks share ownership while iframes remain independent.
+	var documentInteractions = new WeakMap();
 
 	// Pending activations may temporarily share an unisolated previous trap.
 	var pendingIsolation = new WeakMap();
@@ -1913,6 +1867,7 @@ var focusTrapDemoBundle = (function () {
 	      }
 	      var activation = {};
 	      state.activation = activation;
+	      documentInteractions.set(doc, {});
 	      var onActivate = getOption(activateOptions, 'onActivate');
 	      var onPostActivate = getOption(activateOptions, 'onPostActivate');
 	      var checkCanFocusTrap = getOption(activateOptions, 'checkCanFocusTrap');
@@ -2020,6 +1975,12 @@ var focusTrapDemoBundle = (function () {
 	      state.active = false;
 	      state.paused = false;
 	      updateObservedNodes();
+
+	      // Automatic parent resumption is part of this interaction. Capture before
+	      // its callbacks can start a new interaction (including reopening this trap).
+	      var activation = state.activation;
+	      var interaction = {};
+	      documentInteractions.set(doc, interaction);
 	      activeFocusTraps.deactivateTrap(trapStack, trap);
 
 	      // Pending activation has not joined the stack, so unpause did not restore isolation.
@@ -2038,8 +1999,13 @@ var focusTrapDemoBundle = (function () {
 	        trap: trap
 	      });
 	      var completeDeactivation = function completeDeactivation() {
-	        if (returnFocus) {
-	          _tryFocus(getReturnFocusNode(state.nodeFocusedBeforeActivation));
+	        if (returnFocus && state.activation === activation && documentInteractions.get(doc) === interaction) {
+	          var returnNode = getReturnFocusNode(state.nodeFocusedBeforeActivation);
+	          // A custom resolver may activate a trap, including this one.
+	          // Recheck ownership before focusing its returned target.
+	          if (state.activation === activation && documentInteractions.get(doc) === interaction) {
+	            _tryFocus(returnNode);
+	          }
 	        }
 	        onPostDeactivate === null || onPostDeactivate === void 0 || onPostDeactivate({
 	          trap: trap
@@ -2073,6 +2039,11 @@ var focusTrapDemoBundle = (function () {
 	      state.manuallyPaused = false;
 	      if (trapStack[trapStack.length - 1] !== this) {
 	        return this;
+	      }
+
+	      // Only an unpause that actually resumes this trap starts a new interaction.
+	      if (state.paused) {
+	        documentInteractions.set(doc, {});
 	      }
 	      return this._setPausedState(false, unpauseOptions);
 	    },
