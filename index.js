@@ -1313,11 +1313,15 @@ const createFocusTrap = function (elements, userOptions) {
         return this;
       }
 
-      documentInteractions.set(doc, {});
       state.manuallyPaused = false;
 
       if (trapStack[trapStack.length - 1] !== this) {
         return this;
+      }
+
+      // Only an unpause that actually resumes this trap starts a new interaction.
+      if (state.paused) {
+        documentInteractions.set(doc, {});
       }
 
       return this._setPausedState(false, unpauseOptions);

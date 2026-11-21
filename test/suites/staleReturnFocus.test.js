@@ -297,6 +297,40 @@ it('supersedes a pending return when another trap is publicly unpaused', async (
   expect(next.input.selectionEnd).toBe(3);
 });
 
+it.each([
+  ['an unpaused trap', false],
+  ['a paused trap not on top of its stack', true],
+])(
+  'keeps a pending return when unpausing %s does nothing',
+  async (_, buried) => {
+    const returning = deferred();
+    const onPostDeactivate = jest.fn();
+    const stack = [];
+    const other = mount('other', stack);
+    const top = mount('top', stack);
+    const first = mount('first', [], {
+      checkCanReturnFocus: () => returning.promise,
+      onPostDeactivate,
+    });
+    traps.push(first.trap, other.trap, top.trap);
+    other.trap.activate();
+    if (buried) {
+      other.trap.pause();
+      top.trap.activate();
+    }
+    // keep `first` inside the active trap so its focus checks leave `first` alone
+    (buried ? top : other).container.append(first.trigger, first.container);
+    first.trigger.focus();
+    first.trap.activate();
+    first.trap.deactivate();
+    other.trap.unpause(); // no-op either way
+    first.input.focus();
+    returning.resolve();
+    await waitFor(() => expect(onPostDeactivate).toHaveBeenCalledTimes(1));
+    expect(first.trigger).toHaveFocus();
+  }
+);
+
 it('does not invalidate a return because a trap activates in another document', async () => {
   const returning = deferred();
   const onPostDeactivate = jest.fn();
