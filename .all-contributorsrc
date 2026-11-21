@@ -441,6 +441,16 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "sameerdeolalikar",
+      "name": "Sameer Deolalikar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/96577638?v=4",
+      "profile": "https://github.com/sameerdeolalikar",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
